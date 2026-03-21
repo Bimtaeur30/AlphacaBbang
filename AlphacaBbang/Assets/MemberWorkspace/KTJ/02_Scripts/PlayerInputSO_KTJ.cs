@@ -5,11 +5,8 @@ using UnityEngine.InputSystem;
 [CreateAssetMenu(fileName = "PlayerInputSO", menuName = "KTJ/Input/PlayerInputSO")]
 public class PlayerInputSO_KTJ : ScriptableObject, Controls.IGunActions
 {
-    public event Action OnAimKeyPressed;
-    public event Action OnAimKeyCanceled;
-
-    public event Action OnFireKeyPressed;
-    public event Action OnFireKeyCanceled;
+    public event Action<bool> OnAimEvent;
+    public event Action<bool> OnFireEvent;
 
     private Controls _controls;
 
@@ -28,27 +25,27 @@ public class PlayerInputSO_KTJ : ScriptableObject, Controls.IGunActions
         _controls.Gun.Disable();
     }
 
-    public void OnOnAim(InputAction.CallbackContext context)
+    public void OnAim(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            OnAimKeyPressed?.Invoke();
+            OnAimEvent?.Invoke(true);
         }
         else if (context.canceled)
         {
-            OnAimKeyCanceled?.Invoke();
+            OnAimEvent?.Invoke(false);
         }
     }
 
-    public void OnOnFire(InputAction.CallbackContext context)
+    public void OnFire(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            OnFireKeyPressed?.Invoke();
+            OnFireEvent?.Invoke(true);
         }
         else if (context.canceled)
         {
-            OnFireKeyCanceled?.Invoke();
+            OnFireEvent?.Invoke(false);
         }
     }
 }

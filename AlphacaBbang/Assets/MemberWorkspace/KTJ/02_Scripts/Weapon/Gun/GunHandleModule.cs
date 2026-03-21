@@ -1,0 +1,55 @@
+using UnityEngine;
+
+public class GunHandleModule : MonoBehaviour, IModule
+{
+    [SerializeField] private bool onAim;
+    [SerializeField] private bool onFire;
+    [SerializeField] private Gun currentGun;
+
+    private float _currentTime;
+
+    public void Initialize(ModuleOwner owner)
+    {
+    }
+
+    private void Update()
+    {
+        if (onFire && currentGun.GunData.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        {
+            _currentTime += Time.deltaTime;
+            if (_currentTime > currentGun.GunData.FireDuration)
+            {
+                currentGun.Fire();
+                _currentTime = 0;
+            }
+        }
+    }
+
+    public void Fire(bool v)
+    {
+        if (v)
+        {
+            onFire = true;
+            if (currentGun.GunData.FireMode == FireMode.Single) // 단발일 경우 한번 쏘기
+            {
+                currentGun.Fire();
+            }
+        }
+        else
+        {
+            onFire = false;
+        }
+    }
+
+    public void Aim(bool v)
+    {
+        if (v)
+        {
+            onAim = true;
+        }
+        else
+        {
+            onAim = false;
+        }
+    }
+}

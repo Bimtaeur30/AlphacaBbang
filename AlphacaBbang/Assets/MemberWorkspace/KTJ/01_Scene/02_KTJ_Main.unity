@@ -624,6 +624,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &719058682
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 719058683}
+  - component: {fileID: 719058684}
+  m_Layer: 0
+  m_Name: GunModule
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &719058683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719058682}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1531488058}
+  m_Father: {fileID: 1006143208}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &719058684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719058682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89238dbbc826ae84698361ad87404b8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GunHandleModule
+  onAim: 0
+  onFire: 0
+  currentGun: {fileID: 1531488059}
 --- !u!1 &753264807
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,6 +844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1006143208}
+  - component: {fileID: 1006143209}
   m_Layer: 0
   m_Name: ExPlayer
   m_TagString: Untagged
@@ -817,9 +866,22 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 753264808}
-  - {fileID: 1531488058}
+  - {fileID: 719058683}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1006143209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1006143204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54d3d03a301f67f49870d71186a19210, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_TJ
+  playerInputSO: {fileID: 11400000, guid: 7f331cee3fc0b2a4bae901ec427a6542, type: 2}
 --- !u!1 &1156434902
 GameObject:
   m_ObjectHideFlags: 0
@@ -1291,7 +1353,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1518052985}
-  m_Father: {fileID: 1006143208}
+  m_Father: {fileID: 719058683}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1531488059
 MonoBehaviour:
@@ -1305,7 +1367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExGun
-  playerInputSO: {fileID: 11400000, guid: 7f331cee3fc0b2a4bae901ec427a6542, type: 2}
+  <GunData>k__BackingField: {fileID: 11400000, guid: 77ce65765152f2e4f8cb3a884ebf06d3, type: 2}
 --- !u!1 &1543116128
 GameObject:
   m_ObjectHideFlags: 0

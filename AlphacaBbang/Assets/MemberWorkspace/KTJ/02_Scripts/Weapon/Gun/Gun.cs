@@ -5,7 +5,8 @@ using UnityEngine;
 
 public abstract class Gun : MonoBehaviour
 {
-    [field:SerializeField] public GunData GunData { get; private set; }
+    [field:SerializeField] public GunDataSO GunDataSO { get; private set; }
+    [field:SerializeField] public LayerMask TargetLayer { get; private set; }
 
     public abstract void Fire();
 }

@@ -14,10 +14,10 @@ public class GunHandleModule : MonoBehaviour, IModule
 
     private void Update()
     {
-        if (onFire && currentGun.GunData.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        if (onFire && currentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
         {
             _currentTime += Time.deltaTime;
-            if (_currentTime > currentGun.GunData.FireDuration)
+            if (_currentTime > currentGun.GunDataSO.FireInterval)
             {
                 currentGun.Fire();
                 _currentTime = 0;
@@ -30,7 +30,7 @@ public class GunHandleModule : MonoBehaviour, IModule
         if (v)
         {
             onFire = true;
-            if (currentGun.GunData.FireMode == FireMode.Single) // 단발일 경우 한번 쏘기
+            if (currentGun.GunDataSO.FireMode == FireMode.Single) // 단발일 경우 한번 쏘기
             {
                 currentGun.Fire();
             }

@@ -23,10 +23,10 @@ public class GunDataSO : ScriptableObject
     [field: SerializeField, Range(50, 200)] public int Durability { get; private set; } = 50; // 내구도
 
     [Header("RecoilX")]
-    [field: SerializeField, Range(0f, 10f)] public float RecoilForceX { get; private set; } = 1f; // 반동
+    [field: SerializeField, Range(0f, 20f)] public float RecoilForceX { get; private set; } = 1f; // 반동
 
     [Header("RecoilY")]
-    [field: SerializeField, Range(0f, 10f)] public float RecoilForceY { get; private set; } = 1f; // 반동
+    [field: SerializeField, Range(0f, 20f)] public float RecoilForceY { get; private set; } = 1f; // 반동
 
     [Header("Accuracy")]
     [field: SerializeField, Range(0f, 10f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐

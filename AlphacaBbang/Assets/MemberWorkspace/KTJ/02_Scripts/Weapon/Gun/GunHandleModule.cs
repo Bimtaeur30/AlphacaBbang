@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
-    [SerializeField] private bool onAim;
-    [SerializeField] private bool onFire;
+    [field:SerializeField] public bool onAim { get; private set; }
+    [field:SerializeField] public bool onFire { get; private set; }
     [SerializeField] private Gun currentGun;
 
     private float _currentTime;

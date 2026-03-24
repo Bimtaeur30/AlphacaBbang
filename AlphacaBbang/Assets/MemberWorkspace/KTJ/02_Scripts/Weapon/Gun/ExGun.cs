@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ExGun : Gun
 {
+    [SerializeField] private Transform firePos;
     [SerializeField] private float rayDistance = 10f;
     private RecoilController _recoilController;
 
@@ -15,8 +16,8 @@ public class ExGun : Gun
     {
         _recoilController.AddRecoil();
 
-        Vector3 finalDirection = _recoilController.ApplyRecoilToDirection(Vector3.right);
-        Vector3 origin = transform.position;
+        Vector3 finalDirection = Quaternion.Euler(0, 90, 0) * _recoilController.ApplyRecoilToDirection(firePos.forward);
+        Vector3 origin = firePos.position;
         //Vector3 direction = transform.right;
 
         Debug.DrawRay(origin, finalDirection * rayDistance, Color.red);

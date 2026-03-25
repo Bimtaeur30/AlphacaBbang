@@ -231,37 +231,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1004091336
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1004091337}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1004091337
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1004091336}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.79748, y: 0, z: -4.9235}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1132048642
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,14 +639,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GrenadeFirePos
   firingAngle: 45
   gravity: 9.8
-  currentGrenade: {fileID: 0}
   startPoint: {fileID: 2109145471}
-  grenadePrefab: {fileID: 8102630030962795089, guid: 37196a2d2f8527a4bb559c2ce4f4c300, type: 3}
   targetMark: {fileID: 1264165220301592963, guid: 4a32aa4d8eef8a2449ea0f126159e446, type: 3}
   layermask:
     serializedVersion: 2
     m_Bits: 64
-  behavior: {fileID: 0}
+  grenadeList:
+  - {fileID: 11400000, guid: b1a8dbb66c488e94bbfce3ddeb7cf857, type: 2}
+  - {fileID: 11400000, guid: dd70dd9ffefd49f4a8752f27a3bc34cc, type: 2}
+  - {fileID: 11400000, guid: f5ff75a0dc4b8454e8473da7a789cabe, type: 2}
+  currentGrenade: {fileID: 11400000, guid: b1a8dbb66c488e94bbfce3ddeb7cf857, type: 2}
 --- !u!4 &2109145471
 Transform:
   m_ObjectHideFlags: 0
@@ -702,4 +673,3 @@ SceneRoots:
   - {fileID: 1331986827}
   - {fileID: 2109145471}
   - {fileID: 425791973}
-  - {fileID: 1004091337}

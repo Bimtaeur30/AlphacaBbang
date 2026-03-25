@@ -5,23 +5,21 @@ namespace MemberWorkspace.CHG._02_Scripts
 {
     public class ObstacleFade : MonoBehaviour
     {
-        [SerializeField] private LayerMask obstacleLayer;
-        [SerializeField] private LayerMask playerLayer;
-        [SerializeField] private Transform target;
-        
-        private void Update()
+        private Renderer _render;
+
+        [ContextMenu("ChangeColor")]
+        private void ChangeColor()
         {
-            Vector3 direction = (target.position - transform.position).normalized;
-            RaycastHit[] hits = Physics.RaycastAll(transform.position, direction,Mathf.Infinity, 
-                obstacleLayer | playerLayer);
+            _render = GetComponent<MeshRenderer>();
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            _render.GetPropertyBlock(block);
+            
+            Color color = _render.sharedMaterial.GetColor("_BaseColor");
+            color.a = 0.5f;
+            block.SetColor("_BaseColor", color);
+            
+            _render.SetPropertyBlock(block);
 
-
-            for (int i = 0; i < hits.Length; i++)
-            {
-                
-            }
         }
-
-        
     }
 }

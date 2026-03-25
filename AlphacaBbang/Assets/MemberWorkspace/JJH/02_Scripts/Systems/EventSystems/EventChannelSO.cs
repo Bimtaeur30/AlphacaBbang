@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace _02_Scripts_Systems
+namespace JJH._02_Scripts_Systems.EventSystems
 {
     public class GameEvent
     {
     }
 
-    [CreateAssetMenu(fileName = "Event channel", menuName = "SO/Events/Channel")]
+    [CreateAssetMenu(fileName = "Event Channel", menuName = "SO/Events/Event Channel", order = 0)]
     public class EventChannelSO : ScriptableObject
     {
         private Dictionary<Type, Action<GameEvent>> _events = new();

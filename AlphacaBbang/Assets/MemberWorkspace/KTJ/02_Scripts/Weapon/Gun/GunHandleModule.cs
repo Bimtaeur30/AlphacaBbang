@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
-    [SerializeField] private bool onAim;
-    [SerializeField] private bool onFire;
+    [field:SerializeField] public bool onAim { get; private set; }
+    [field:SerializeField] public bool onFire { get; private set; }
     [SerializeField] private Gun currentGun;
 
     private float _currentTime;
@@ -14,7 +14,7 @@ public class GunHandleModule : MonoBehaviour, IModule
 
     private void Update()
     {
-        if (onFire && currentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        if (onFire && onAim && currentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
         {
             _currentTime += Time.deltaTime;
             if (_currentTime > currentGun.GunDataSO.FireInterval)
@@ -30,7 +30,7 @@ public class GunHandleModule : MonoBehaviour, IModule
         if (v)
         {
             onFire = true;
-            if (currentGun.GunDataSO.FireMode == FireMode.Single) // 단발일 경우 한번 쏘기
+            if (currentGun.GunDataSO.FireMode == FireMode.Single && onAim) // 단발일 경우 한번 쏘기
             {
                 currentGun.Fire();
             }

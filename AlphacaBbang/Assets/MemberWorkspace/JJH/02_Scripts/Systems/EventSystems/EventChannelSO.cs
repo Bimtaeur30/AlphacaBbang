@@ -8,7 +8,7 @@ namespace JJH._02_Scripts_Systems.EventSystems
     {
     }
 
-    [CreateAssetMenu(fileName = "Event Channel", menuName = "SO/Events/Event Channel", order = 0)]
+    [CreateAssetMenu(fileName = "Event Channel", menuName = "JJH/SO/Events/Event Channel", order = 0)]
     public class EventChannelSO : ScriptableObject
     {
         private Dictionary<Type, Action<GameEvent>> _events = new();

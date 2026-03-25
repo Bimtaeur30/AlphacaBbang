@@ -79,7 +79,7 @@ public class Player_TJ : ModuleOwner
 
                 if (direction.sqrMagnitude > 0.001f)
                 {
-                    transform.rotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.LookRotation(direction) * Quaternion.Euler(0, -90, 0);
                 }
             }
         }

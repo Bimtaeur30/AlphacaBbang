@@ -6,4 +6,6 @@ public class GrenadeSO : ScriptableObject
     public string grenadeName;
     public GameObject prefab;
     public int count;
+
+    public float range;
 }

@@ -8,6 +8,7 @@ public class GrenadeFirePos : MonoBehaviour
     [Header("발사 설정")]
     [SerializeField] private float firingAngle = 45.0f;
     [SerializeField] private float gravity = 9.8f;
+    [SerializeField] private float throwingDistance = 5.0f;
 
     [Header("위치")]
     public Transform startPoint;
@@ -20,6 +21,11 @@ public class GrenadeFirePos : MonoBehaviour
     [Header("무기 관리")]
     public List<GrenadeSO> grenadeList;
     public GrenadeSO currentGrenade;
+
+    [Header("포물선 라인렌더러")]
+    [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private int lineSegmentCount = 30;
+    [SerializeField] private float lineTimeStep = 0.1f;
 
     private int currentIndex = 0;
 
@@ -36,11 +42,16 @@ public class GrenadeFirePos : MonoBehaviour
         if (Mouse.current.rightButton.isPressed)
         {
             MousePosition();
+            DrawTrajectory();
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 StartCoroutine(SimulateProjectile());
             }
+        }
+        else
+        {
+            lineRenderer.positionCount = 0;
         }
     }
 
@@ -51,14 +62,23 @@ public class GrenadeFirePos : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layermask))
         {
+            Vector3 dir = hit.point - startPoint.position;
+
+            if (dir.magnitude > throwingDistance)
+            {
+                dir = dir.normalized * throwingDistance;
+            }
+
+            Vector3 finalPos = startPoint.position + dir;
+
             if (targetPoint == null)
             {
-                GameObject obj = Instantiate(targetMark, hit.point, Quaternion.identity);
+                GameObject obj = Instantiate(targetMark, finalPos, Quaternion.identity);
                 targetPoint = obj.transform;
             }
             else
             {
-                targetPoint.position = hit.point;
+                targetPoint.position = finalPos;
             }
         }
     }
@@ -77,7 +97,6 @@ public class GrenadeFirePos : MonoBehaviour
 
         currentGrenade.count--;
 
-        // 다 쓰면 다음 무기
         if (currentGrenade.count <= 0)
         {
             ChangeNextGrenade();
@@ -119,6 +138,49 @@ public class GrenadeFirePos : MonoBehaviour
         }
 
         currentGrenade = null;
-        Debug.Log("모든 폭탄 소진");
+        Debug.Log("폭탄 없어");
+    }
+    void OnDrawGizmos()
+    {
+        if (startPoint == null) return;
+
+        Gizmos.color = Color.green;
+
+        float range = throwingDistance;
+
+        Gizmos.DrawWireSphere(startPoint.position, range);
+    }
+
+    void DrawTrajectory()
+    {
+        if (targetPoint == null) return;
+
+        float distance = Vector3.Distance(startPoint.position, targetPoint.position);
+
+        float angleRad = firingAngle * Mathf.Deg2Rad;
+        float sinValue = Mathf.Sin(2 * angleRad);
+
+        if (Mathf.Abs(sinValue) < 0.01f) return;
+
+        float velocity = distance * gravity / sinValue;
+
+        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
+        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
+
+        Vector3 direction = (targetPoint.position - startPoint.position).normalized;
+        Vector3 velocityVector = new Vector3(direction.x * Vx, Vy - 0.5f, direction.z * Vx);
+
+        lineRenderer.positionCount = lineSegmentCount;
+
+        for (int i = 0; i < lineSegmentCount; i++)
+        {
+            float t = i * lineTimeStep;
+
+            Vector3 point = startPoint.position +
+                            velocityVector * t +
+                            0.5f * Physics.gravity * t * t;
+
+            lineRenderer.SetPosition(i, point);
+        }
     }
 }

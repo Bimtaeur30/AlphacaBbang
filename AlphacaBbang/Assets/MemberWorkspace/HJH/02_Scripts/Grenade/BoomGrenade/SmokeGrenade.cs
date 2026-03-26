@@ -3,10 +3,21 @@ using UnityEngine;
 
 public class SmokeGrenade : GrenadeBehavior
 {
-    public override IEnumerator Boom(GameObject projectile)
+    public GrenadeSO Grenade;
+    //public GameObject smokeZonePrefab;
+
+    protected override void OnExplode()
     {
-        Debug.Log("연막 생성");
-        Destroy(projectile);
-        yield break;
+        //Instantiate(smokeZonePrefab, transform.position, Quaternion.identity);
+    }
+
+    public void OnDrawGizmos()
+    {
+        Debug.Log("기즈모 켜짐");
+        Gizmos.color = Color.yellow;
+
+        float range = Grenade.range;
+
+        Gizmos.DrawWireSphere(gameObject.transform.position, range);
     }
 }

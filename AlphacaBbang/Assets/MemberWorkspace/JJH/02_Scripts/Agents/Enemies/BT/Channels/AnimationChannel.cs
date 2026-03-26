@@ -10,7 +10,6 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Channels
     [CreateAssetMenu(menuName = "Behavior/Event Channels/AnimationChannel")]
 #endif
     [Serializable, GeneratePropertyBag]
-    [EventChannelDescription(name: "AnimationChannel", message: "Set Animation To [Clip]", category: "Events", id: "bd309af26276afa779e263071e06ddc5")]
+    [EventChannelDescription(name: "AnimationChannel", message: "Set Animation to [Clip]", category: "Events", id: "208c46df98749213ca714c43843c3322")]
     public sealed partial class AnimationChannel : EventChannel<AnimParamSO> { }
 }
-

@@ -4,7 +4,7 @@ using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
 
-namespace JJH._02_Scripts.Enemies.BT.Channels
+namespace JJH._02_Scripts.Agents.Enemies.BT.Channels
 {
 #if UNITY_EDITOR
     [CreateAssetMenu(menuName = "Behavior/Event Channels/AnimationChannel")]

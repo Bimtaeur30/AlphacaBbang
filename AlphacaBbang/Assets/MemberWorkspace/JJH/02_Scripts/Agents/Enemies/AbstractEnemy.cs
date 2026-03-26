@@ -1,7 +1,7 @@
 using Unity.Behavior;
 using UnityEngine;
 
-namespace JJH._02_Scripts.Enemies
+namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : MonoBehaviour
     {

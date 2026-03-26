@@ -1,6 +1,6 @@
 using Unity.Behavior;
 
-namespace JJH._02_Scripts.Enemies.BT
+namespace JJH._02_Scripts.Agents.Enemies.BT
 {
     [BlackboardEnum]
     public enum EnemyState

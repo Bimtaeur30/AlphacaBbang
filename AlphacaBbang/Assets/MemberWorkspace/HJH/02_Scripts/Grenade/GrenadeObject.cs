@@ -18,6 +18,7 @@ public class GrenadeObject : MonoBehaviour
         if (collision.collider.CompareTag("Floor"))
         {
             isTriggered = true;
+
             StartCoroutine(behavior.Boom(gameObject));
         }
     }

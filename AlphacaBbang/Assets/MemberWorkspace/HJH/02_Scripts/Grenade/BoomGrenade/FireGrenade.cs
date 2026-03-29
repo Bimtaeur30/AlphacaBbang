@@ -3,10 +3,19 @@ using UnityEngine;
 
 public class FireGrenade : GrenadeBehavior
 {
-    public override IEnumerator Boom(GameObject projectile)
+    public GrenadeSO Grenade;
+    public GameObject fireZonePrefab;
+    protected override void OnExplode()
     {
-        Debug.Log("È­¿° »ý¼º");
-        Destroy(projectile);
-        yield break;
+        Instantiate(fireZonePrefab, transform.position, Quaternion.identity);
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+
+        float range = Grenade.range;
+
+        Gizmos.DrawWireSphere(gameObject.transform.position, range);
     }
 }

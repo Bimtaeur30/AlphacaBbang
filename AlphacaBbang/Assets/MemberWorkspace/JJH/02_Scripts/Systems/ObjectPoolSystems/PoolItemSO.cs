@@ -2,7 +2,7 @@
 
 namespace JJH._02_Scripts.Systems.ObjectPoolSystems
 {
-    [CreateAssetMenu(fileName = "Pool Item", menuName = "SO/Pool/Pool Item", order = 0)]
+    [CreateAssetMenu(fileName = "Pool Item", menuName = "JJH/SO/Pool/Pool Item", order = 0)]
     public class PoolItemSO : ScriptableObject
     {
         [HideInInspector] public string poolingName;

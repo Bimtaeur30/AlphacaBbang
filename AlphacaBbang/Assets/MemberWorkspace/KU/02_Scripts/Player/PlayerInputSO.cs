@@ -6,4 +6,8 @@ using UnityEngine.InputSystem;
 public class PlayerInputSO : ScriptableObject
 {
     public event Action<Vector2> OnMovementChange;
+    public void SetMovement(Vector2 movement)
+    {
+        OnMovementChange?.Invoke(movement);
+    }
 }

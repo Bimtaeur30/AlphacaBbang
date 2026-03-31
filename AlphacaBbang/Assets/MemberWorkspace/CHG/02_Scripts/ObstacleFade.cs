@@ -11,8 +11,6 @@ namespace MemberWorkspace.CHG._02_Scripts
         private Renderer _render;
         
         
-        
-        [ContextMenu("ChangeColor")]
         private void ChangeFade(Transform t, float alpha)
         {
             _render = t.transform.GetComponent<MeshRenderer>();
@@ -24,7 +22,6 @@ namespace MemberWorkspace.CHG._02_Scripts
             block.SetColor("_BaseColor", color);
             
             _render.SetPropertyBlock(block);
-
         }
 
         #region TestCode

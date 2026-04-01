@@ -13,7 +13,6 @@ public class SmokeGrenade : GrenadeBehavior
 
     public void OnDrawGizmos()
     {
-        Debug.Log("기즈모 켜짐");
         Gizmos.color = Color.yellow;
 
         float range = Grenade.range;

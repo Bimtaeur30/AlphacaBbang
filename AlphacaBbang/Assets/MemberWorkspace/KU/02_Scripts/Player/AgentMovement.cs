@@ -29,15 +29,16 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     private void CalculateMovement()
     {
         _velocity = Quaternion.Euler(0, -45f, 0) * _movementDirection;
-        _velocity *= _moveSpeed * Time.fixedDeltaTime;
-
+        _velocity *= _moveSpeed * Time.deltaTime;
 
         if (_velocity.sqrMagnitude > 0)
         {
             float rotationSpeed = 8f;
             Quaternion targetRotation = Quaternion.LookRotation(_velocity);
-            _owner.transform.rotation = Quaternion.Lerp(transform.parent.rotation,
-                targetRotation, rotationSpeed * Time.deltaTime);
+            _owner.transform.rotation = Quaternion.Lerp(
+                _owner.transform.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime);
         }
     }
 

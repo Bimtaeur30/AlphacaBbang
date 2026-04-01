@@ -23,6 +23,6 @@ public class Inventory : MonoBehaviour
 
     public bool UseItem(int index, GameObject user)
     {
-        
+        return true;
     }
 }

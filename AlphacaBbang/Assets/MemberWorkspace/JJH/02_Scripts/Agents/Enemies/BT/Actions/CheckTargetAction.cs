@@ -15,7 +15,21 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            return Status.Running;
+            if (Enemy.Value == null || Target.Value == null)
+                return Status.Failure;
+
+            AgentSensor sensor = Enemy.Value.Sensor;
+            AttackDataSO attackConfig = Enemy.Value.AttackData;
+
+            if (sensor.IsTargetInRange(attackConfig.DetectRange, out Collider hitCollider)
+                && sensor.IsTargetInSight(Enemy.Value.transform.position, attackConfig.DetectRange, hitCollider))
+            {
+                Target.Value = hitCollider.gameObject;
+                Debug.Log("Target set");
+                return Status.Success;
+            }
+
+            return Status.Failure;
         }
     }
 }

@@ -243,7 +243,6 @@ GameObject:
   - component: {fileID: 141946312}
   - component: {fileID: 141946311}
   - component: {fileID: 141946314}
-  - component: {fileID: 141946315}
   - component: {fileID: 141946313}
   m_Layer: 0
   m_Name: Player
@@ -281,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4911744df7ee1b341b5636d6459f713b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
+  <playerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
   _rotationSpeed: 9
 --- !u!143 &141946312
 CharacterController:
@@ -466,20 +465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8382f26fca9e29c4a8772c229c962409, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
---- !u!114 &141946315
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 141946309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b858002f023606c48996269369879498, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStaminaGaugeSystem
-  _gaugeImage: {fileID: 1844120193}
-  _gaugeMaxTime: 5
+  playerInput: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
 --- !u!1 &199718287
 GameObject:
   m_ObjectHideFlags: 0
@@ -881,7 +867,7 @@ GameObject:
   - component: {fileID: 373375710}
   - component: {fileID: 373375709}
   m_Layer: 5
-  m_Name: PlayerGauge Back
+  m_Name: PlayerGageBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2518,7 +2504,7 @@ GameObject:
   - component: {fileID: 1844120193}
   - component: {fileID: 1844120192}
   m_Layer: 5
-  m_Name: PlayerGauge Slider
+  m_Name: PlayerGageSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

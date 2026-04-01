@@ -40,6 +40,7 @@ public class InventoryUI : MonoBehaviour
     private bool _isRefreshingPreview;
 #endif
 
+    [ContextMenu("Initialize Slots")]
     private void InitSlots()
     {
         if (_contentAreaRT == null || _slotUIPrefab == null)

@@ -4,11 +4,11 @@ using UnityEngine;
 public class SmokeGrenade : GrenadeBehavior
 {
     public GrenadeSO Grenade;
-    //public GameObject smokeZonePrefab;
+    public GameObject smokeZonePrefab;
 
     protected override void OnExplode()
     {
-        //Instantiate(smokeZonePrefab, transform.position, Quaternion.identity);
+        Instantiate(smokeZonePrefab, transform.position, Quaternion.identity);
     }
 
     public void OnDrawGizmos()

@@ -11,6 +11,8 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     private Vector3 _movementDirection;
     private ModuleOwner _owner;
 
+    private float _currentSpeedMultiplier = 1;
+    private bool _useRotation = true;
 
 
     public void SetMovementDirection(Vector2 movementInput)
@@ -29,9 +31,9 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     private void CalculateMovement()
     {
         _velocity = Quaternion.Euler(0, -45f, 0) * _movementDirection;
-        _velocity *= _moveSpeed * Time.deltaTime;
+        _velocity *= _moveSpeed * _currentSpeedMultiplier * Time.deltaTime;
 
-        if (_velocity.sqrMagnitude > 0)
+        if (_useRotation && _velocity.sqrMagnitude > 0)
         {
             float rotationSpeed = 8f;
             Quaternion targetRotation = Quaternion.LookRotation(_velocity);
@@ -62,5 +64,15 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     {
         _owner = owner;
         _characterController = owner.GetComponent<CharacterController>();
+    }
+
+
+    public void SetUseRotation(bool useRotation)
+    {
+        _useRotation = useRotation;
+    }
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        _currentSpeedMultiplier = multiplier;
     }
 }

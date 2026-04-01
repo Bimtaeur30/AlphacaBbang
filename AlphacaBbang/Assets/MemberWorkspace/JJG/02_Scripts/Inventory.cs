@@ -13,6 +13,16 @@ public class Inventory : MonoBehaviour
         _inventoryUI = GetComponent<InventoryUI>();
         _items = new Item[capacity];
     }
-    
-    
+
+    public bool AddItem(ItemData itemData, int amount = 1)
+    {
+        
+        
+        return amount <= 0;
+    }
+
+    public bool UseItem(int index, GameObject user)
+    {
+        
+    }
 }

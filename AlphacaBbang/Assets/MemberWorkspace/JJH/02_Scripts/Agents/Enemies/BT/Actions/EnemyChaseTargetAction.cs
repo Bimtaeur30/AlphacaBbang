@@ -28,12 +28,12 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _enemyTrans = Enemy.Value.transform;
             _targetTrans = Target.Value.transform;
 
-            Vector2 direction = _targetTrans.position - _enemyTrans.position;
+            Vector3 direction = _targetTrans.position - _enemyTrans.position;
             _movement.SetMovementDirection(direction.normalized);
 
             if (Vector3.Distance(_targetTrans.position, _enemyTrans.position) < Enemy.Value.AttackData.StoppingDistance)
             {
-                _movement.SetMovementDirection(Vector2.zero);
+                _movement.SetMovementDirection(Vector3.zero);
             }
 
             return Status.Success;

@@ -3,28 +3,30 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : Agent
 {
-    [field: SerializeField] public PlayerInputSO playerInput { get; private set; }
+    [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
 
     [SerializeField] private float _rotationSpeed = 0;
 
     private IControllerMovement _movement;
+    private PlayerStaminaGaugeSystem _stamina;
 
     private Vector2 _lookInput;
-    public bool _isAiming {get; private set;}
+    public bool IsAiming {get; private set;}
 
     protected override void Awake()
     {
         base.Awake();
 
         _movement = GetModule<IControllerMovement>();
+        _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
 
-        playerInput.OnMovementChange += HandleMovement;
-        playerInput.OnLookChange += HandleLook;
-        playerInput.OnAim += HandleAim;
+        PlayerInput.OnMovementChange += HandleMovement;
+        PlayerInput.OnLookChange += HandleLook;
+        PlayerInput.OnAim += HandleAim;
     }
     private void Update()
     {
-        if (_isAiming)
+        if (IsAiming)
             RotateToMouse();
         else
             RotateToMovement();
@@ -81,7 +83,15 @@ public class PlayerController : Agent
 
     private void HandleAim(bool isAiming)
     {
-        _isAiming = isAiming;
+        if (_stamina != null)
+        {
+            if(!_stamina.CanAim)
+            {
+                isAiming = false;
+            }
+        }
+
+        IsAiming = isAiming;
 
         var movement = _movement as AgentMovement;
         movement.SetSpeedMultiplier(isAiming ? 0.3f : 1f);
@@ -90,8 +100,8 @@ public class PlayerController : Agent
 
     private void OnDestroy()
     {
-        playerInput.OnMovementChange -= HandleMovement;
-        playerInput.OnLookChange -= HandleLook;
-        playerInput.OnAim -= HandleAim;
+        PlayerInput.OnMovementChange -= HandleMovement;
+        PlayerInput.OnLookChange -= HandleLook;
+        PlayerInput.OnAim -= HandleAim;
     }
 }

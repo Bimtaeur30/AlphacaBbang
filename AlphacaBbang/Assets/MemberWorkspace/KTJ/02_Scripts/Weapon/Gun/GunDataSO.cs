@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum FireMode
 {
-    Single, Auto
+    Single, Auto, Shotgun
 }
 
 public enum BulletType
@@ -23,11 +24,17 @@ public class GunDataSO : ScriptableObject
     [field: SerializeField, Range(50, 200)] public int Durability { get; private set; } = 50; // 내구도
 
     [Header("RecoilX")]
-    [field: SerializeField, Range(0f, 20f)] public float RecoilForceX { get; private set; } = 1f; // 반동
+    [field: SerializeField, Range(0f, 100f)] public float RecoilForceX { get; private set; } = 1f; // 반동
 
     [Header("RecoilY")]
-    [field: SerializeField, Range(0f, 20f)] public float RecoilForceY { get; private set; } = 1f; // 반동
+    [field: SerializeField, Range(0f, 100f)] public float RecoilForceY { get; private set; } = 1f; // 반동
 
     [Header("Accuracy")]
-    [field: SerializeField, Range(0f, 10f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐
+    [field: SerializeField, Range(0f, 50f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐(샷건전용)
+
+    [Header("Accuracy")]
+    [field: SerializeField, Range(0f, 10f)] public float BulletFireCount { get; private set; } = 1f; // 한번에 나가는 총 개수(샷건전용)
+
+    [Header("UI")]
+    [field: SerializeField] public Sprite CrossHairSprite { get; private set; } // 조준 이미지
 }

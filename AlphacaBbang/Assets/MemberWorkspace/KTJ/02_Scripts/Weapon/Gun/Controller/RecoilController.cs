@@ -29,6 +29,7 @@ public class RecoilController : MonoBehaviour
 
     public Vector3 ApplyRecoilToDirection(Vector3 baseDirection)
     {
+
         Quaternion recoilRotation = Quaternion.Euler(-_currentRecoil.y, _currentRecoil.x, 0f);
         return recoilRotation * baseDirection;
     }

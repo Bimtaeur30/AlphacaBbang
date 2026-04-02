@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class FireZone : MonoBehaviour
 {
+    public GrenadeSO Grenade;
     public float damagePerSecond;
     public float duration;
     public float range;
 
     private void Start()
     {
+        duration = Grenade.Duration;
+
         StartCoroutine(Fire());
     }
 

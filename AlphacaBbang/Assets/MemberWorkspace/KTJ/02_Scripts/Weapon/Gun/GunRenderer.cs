@@ -10,8 +10,9 @@ public class GunRenderer : MonoBehaviour
         Animator = GetComponent<Animator>();
     }
 
-    public void PlayClip(int clipHash, float normalizedTime, float crossFadeDuration, int layerIndex = 0)
+    public void PlayClip(int clipHash, float normalizedTime, float crossFadeDuration, int layerIndex = 0, float speed = 1)
     {
         Animator.CrossFadeInFixedTime(clipHash, crossFadeDuration, layerIndex, normalizedTime);
+        Animator.SetFloat("SPEED", speed);
     }
 }

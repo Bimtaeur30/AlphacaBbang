@@ -9,19 +9,23 @@ public class Player_TJ : ModuleOwner
     #endregion
 
     #region 모듈
-    private GunHandleModule gunHandleModule;
+    public GunHandleModule gunHandleModule { get; private set; }
+    public CrossHairModule crossHairModule { get; private set; }
+    public Vector2 Forward { get; private set; }
     #endregion
 
     #region 퍼블릭변수
     public Camera MainCam { get; private set; }
-    public Vector2 MousePos { get; private set; }
     #endregion
-
 
     protected override void InitializeComponents()
     {
+        base.InitializeComponents();
         gunHandleModule = GetModule<GunHandleModule>();
         Debug.Assert(gunHandleModule != null, "gunHandleModule is null");
+        crossHairModule = GetModule<CrossHairModule>();
+        Debug.Assert(crossHairModule != null, "crossHairModule is null");
+
         MainCam = Camera.main;
     }
 
@@ -64,9 +68,7 @@ public class Player_TJ : ModuleOwner
     {
         if (gunHandleModule.onAim)
         {
-            Vector2 mousePos = Mouse.current.position.ReadValue();
-
-            Ray ray = MainCam.ScreenPointToRay(mousePos);
+            Ray ray = MainCam.ScreenPointToRay(crossHairModule.CHMousePos);
 
             Plane plane = new Plane(Vector3.up, transform.position);
 

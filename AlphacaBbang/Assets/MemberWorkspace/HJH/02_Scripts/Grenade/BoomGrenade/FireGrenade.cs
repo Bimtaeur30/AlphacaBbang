@@ -4,10 +4,13 @@ using UnityEngine;
 public class FireGrenade : GrenadeBehavior
 {
     public GrenadeSO Grenade;
-    public GameObject fireZonePrefab;
     protected override void OnExplode()
     {
-        Instantiate(fireZonePrefab, transform.position, Quaternion.identity);
+        var main = Grenade.particlePrefab.main;
+
+        main.startLifetime = Grenade.Duration;
+
+        Instantiate(Grenade.particlePrefab, transform.position, Quaternion.identity);
     }
 
     public void OnDrawGizmos()

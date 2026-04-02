@@ -52,6 +52,7 @@ public class GrenadeFirePos : MonoBehaviour
         else
         {
             lineRenderer.positionCount = 0;
+            ClearTargetPoint();
         }
     }
 
@@ -59,18 +60,13 @@ public class GrenadeFirePos : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit hit;
-
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layermask))
         {
             Vector3 dir = hit.point - startPoint.position;
-
             if (dir.magnitude > throwingDistance)
-            {
                 dir = dir.normalized * throwingDistance;
-            }
 
             Vector3 finalPos = startPoint.position + dir;
-
             if (targetPoint == null)
             {
                 GameObject obj = Instantiate(targetMark, finalPos, Quaternion.identity);
@@ -80,6 +76,14 @@ public class GrenadeFirePos : MonoBehaviour
             {
                 targetPoint.position = finalPos;
             }
+        }
+    }
+    public void ClearTargetPoint()
+    {
+        if (targetPoint != null)
+        {
+            Destroy(targetPoint.gameObject);
+            targetPoint = null;
         }
     }
 

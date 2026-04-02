@@ -1,6 +1,6 @@
+using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ExGun : Gun
@@ -9,9 +9,14 @@ public class ExGun : Gun
     [SerializeField] private float rayDistance = 10f;
     [SerializeField] private LineRenderer lineRenderer;
 
+    [SerializeField] private PoolManagerSO poolManager;
+    [SerializeField] private PoolItemSO effectPoolItem;
+
     private RecoilController _recoilController;
-    private void Awake()
+
+    protected override void Awake()
     {
+        base.Awake();
         _recoilController = GetComponentInChildren<RecoilController>();
         _recoilController.Init(GunDataSO);
         Debug.Assert( _recoilController != null , "리코일 컨트롤러가 자식으로 붙어있지 않습니다.");
@@ -32,6 +37,8 @@ public class ExGun : Gun
             Debug.Log("맞은 오브젝트 : " + hit.collider.name);
             Debug.Log("맞은 오브젝트 위치 : " + hit.point);
             endPoint = hit.point;
+            PoolParticleEffect effectPref = poolManager.Pop<PoolParticleEffect>(effectPoolItem);
+            effectPref.PlayClipEffect(hit.point, Quaternion.LookRotation(hit.normal));
         }
 
         StartCoroutine(DrawLine(origin, endPoint));
@@ -43,7 +50,7 @@ public class ExGun : Gun
         lineRenderer.SetPosition(0, origin);
         lineRenderer.SetPosition(1, endPoint);
 
-        yield return null;
+        yield return null; // 1프레임 대기
 
         lineRenderer.positionCount = 0;
     }

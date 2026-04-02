@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 405789610}
   - component: {fileID: 405789609}
   - component: {fileID: 405789608}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +397,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.2588186, z: -0, w: 0.965926}
   m_LocalPosition: {x: -1.84, y: 0.53, z: 1.21}
-  m_LocalScale: {x: 1, y: 1, z: 3.1972}
+  m_LocalScale: {x: 1, y: 5.6674, z: 3.1972}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1208551914}
@@ -762,7 +762,7 @@ GameObject:
   - component: {fileID: 618109329}
   - component: {fileID: 618109328}
   - component: {fileID: 618109327}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -876,7 +876,7 @@ GameObject:
   - component: {fileID: 696220331}
   - component: {fileID: 696220330}
   - component: {fileID: 696220329}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1166,6 +1166,7 @@ GameObject:
   - component: {fileID: 818624619}
   - component: {fileID: 818624618}
   - component: {fileID: 818624621}
+  - component: {fileID: 818624622}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1181,13 +1182,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818624616}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.28207052, z: -0, w: 0.9593937}
   m_LocalPosition: {x: 0.08, y: 1.1507, z: -0.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1495314282}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 32.768, z: 0}
 --- !u!136 &818624618
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1295,6 +1296,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &818624622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818624616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: edf8cbd884ff4390a9af25588df598eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.PlayerVisibility
+  viewRadius: 4.91
+  viewAngle: 83
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
+  targetLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  visibleTargets: []
+  meshResolution: 0.12
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1356,7 +1379,7 @@ GameObject:
   - component: {fileID: 866889829}
   - component: {fileID: 866889828}
   - component: {fileID: 866889827}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Capsule (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1470,7 +1493,7 @@ GameObject:
   - component: {fileID: 1051765868}
   - component: {fileID: 1051765867}
   - component: {fileID: 1051765866}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1487,7 +1510,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.2588186, z: -0, w: 0.965926}
   m_LocalPosition: {x: 2.47, y: 0.53, z: -1.86}
-  m_LocalScale: {x: 1, y: 1, z: 3.1972}
+  m_LocalScale: {x: 1, y: 5.5488, z: 3.1972}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1208551914}
@@ -1929,7 +1952,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1208551914}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2191,7 +2214,7 @@ GameObject:
   - component: {fileID: 1284186922}
   - component: {fileID: 1284186921}
   - component: {fileID: 1284186920}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2300,7 +2323,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1342896533}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Targets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3044,7 +3067,7 @@ GameObject:
   - component: {fileID: 2016812156}
   - component: {fileID: 2016812155}
   - component: {fileID: 2016812154}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

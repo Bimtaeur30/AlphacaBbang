@@ -8,7 +8,7 @@ namespace JJH._02_Scripts.Systems.SoundSystems
         Music
     }
 
-    [CreateAssetMenu(fileName = "Sound Clip", menuName = "SO/Sound/Sound Clip", order = 0)]
+    [CreateAssetMenu(fileName = "Sound Clip", menuName = "JJH/SO/Sound/Sound Clip", order = 0)]
     public class SoundClipSO : ScriptableObject
     {
         public AudioTypes audioType;

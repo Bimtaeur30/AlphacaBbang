@@ -8,6 +8,9 @@ public class SmokeGrenade : GrenadeBehavior
 
     protected override void OnExplode()
     {
+        var main = Grenade.particlePrefab.main;
+
+        main.startLifetime = Grenade.Duration;
         Instantiate(smokeZonePrefab, transform.position, Quaternion.identity);
     }
 

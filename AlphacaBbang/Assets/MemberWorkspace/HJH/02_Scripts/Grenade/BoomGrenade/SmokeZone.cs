@@ -7,9 +7,11 @@ public class SmokeZone : MonoBehaviour
     public float SpawnSecond;
     public float duration;
     public float range;
+    public GrenadeSO Grenade;
 
     private void Start()
     {
+        duration = Grenade.Duration;
         StartCoroutine(Fire());
     }
 

@@ -28,7 +28,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _moveTime = 0;
             _moveDuration = Random.Range(1f, 2f);
 
-            Vector2 move = Random.insideUnitCircle.normalized;
+            Vector3 move = Random.insideUnitCircle.normalized;
             _movement.SetMovementDirection(move);
 
             return Status.Running;
@@ -39,7 +39,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _moveTime += Time.deltaTime;
             if (_moveTime > _moveDuration)
             {
-                _movement.SetMovementDirection(Vector2.zero);
+                _movement.SetMovementDirection(Vector3.zero);
                 return Status.Success;
             }
 

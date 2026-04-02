@@ -39,6 +39,11 @@ public class ExGun : Gun
             endPoint = hit.point;
             PoolParticleEffect effectPref = poolManager.Pop<PoolParticleEffect>(effectPoolItem);
             effectPref.PlayClipEffect(hit.point, Quaternion.LookRotation(hit.normal));
+
+            if (hit.collider.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.TakeDamage(10f);
+            }
         }
 
         StartCoroutine(DrawLine(origin, endPoint));

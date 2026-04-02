@@ -7,23 +7,21 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
     private bool _isAiming;
     private bool _canAim = true;
+    public bool CanAim => _canAim;
 
     [SerializeField] private Image _gaugeImage;
 
     public float CurrentGauge { get; private set; }
+
     [SerializeField] private float _gaugeMaxTime = 10f;
-
-    private float _changeSpeed = 1f;
-
-    private float _aimCooldown = 2f;
+    [SerializeField] private float _minAimCooldown = 2f;
+    [SerializeField] private float _useSpeed = 1f;
+    private float _chargeSpeed = 1f;
     private float _cooldownTimer = 0f;
 
     private void Awake()
     {
-        if (TryGetComponent<PlayerController>(out PlayerController controller))
-        {
-            _playerInput = controller.PlayerInput;
-        }
+        _playerInput = GetComponentInParent<PlayerController>().PlayerInput;
 
         CurrentGauge = _gaugeMaxTime;
     }
@@ -51,11 +49,15 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
         UpdateGauge();
         UpdateCooldown();
         UpdateUI();
+        if (!_canAim)
+            _gaugeImage.color = Color.red;
+        else
+            _gaugeImage.color = Color.yellow;
     }
 
     private void UpdateGauge()
     {
-        float delta = _changeSpeed * Time.deltaTime;
+        float delta = _useSpeed * Time.deltaTime;
 
         if (_isAiming)
         {
@@ -67,14 +69,14 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
                 _isAiming = false;
                 _canAim = false;
-                _cooldownTimer = _aimCooldown;
+                _cooldownTimer = _minAimCooldown;
 
                 _playerInput.SetAim(false);
             }
         }
         else
         {
-            CurrentGauge += delta;
+            CurrentGauge += _chargeSpeed * Time.deltaTime;
         }
 
         CurrentGauge = Mathf.Clamp(CurrentGauge, 0, _gaugeMaxTime);

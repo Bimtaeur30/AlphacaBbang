@@ -8,6 +8,7 @@ public class PlayerController : Agent
     [SerializeField] private float _rotationSpeed = 0;
 
     private IControllerMovement _movement;
+    private PlayerStaminaGaugeSystem _stamina;
 
     private Vector2 _lookInput;
     public bool IsAiming {get; private set;}
@@ -17,6 +18,7 @@ public class PlayerController : Agent
         base.Awake();
 
         _movement = GetModule<IControllerMovement>();
+        _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnLookChange += HandleLook;
@@ -81,7 +83,15 @@ public class PlayerController : Agent
 
     private void HandleAim(bool isAiming)
     {
-        this.IsAiming = isAiming;
+        if (_stamina != null)
+        {
+            if(!_stamina.CanAim)
+            {
+                isAiming = false;
+            }
+        }
+
+        IsAiming = isAiming;
 
         var movement = _movement as AgentMovement;
         movement.SetSpeedMultiplier(isAiming ? 0.3f : 1f);

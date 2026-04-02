@@ -3,18 +3,24 @@ using UnityEngine;
 
 namespace JJH._02_Scripts.Agents
 {
-    public class AgentSensor : MonoBehaviour
+    public class AgentSensor : MonoBehaviour, IModule, ISensor
     {
         [SerializeField] private LayerMask obstacleLayer;
         [SerializeField] private LayerMask targetLayer;
 
-        [SerializeField] private Vector3 boxSize;
-        [SerializeField] private Vector3 offset;
+        private Agent _owner;
+
+        private float _debugRange = 0;
+
+        public void Initialize(ModuleOwner owner)
+        {
+            _owner = owner as Agent;
+        }
 
         public bool IsTargetInRange(float range, out Collider hitCollider)
         {
             hitCollider = Physics.OverlapSphere(transform.position, range, targetLayer).FirstOrDefault();
-
+            _debugRange = range;
             return hitCollider != null;
         }
 
@@ -24,15 +30,20 @@ namespace JJH._02_Scripts.Agents
 
             RaycastHit hit;
             bool isHit = Physics.Raycast(startPosition, direction.normalized,
-                out hit, direction.magnitude, obstacleLayer);
+                                                         out hit, direction.magnitude, obstacleLayer);
+
+            Debug.DrawLine(startPosition, target.transform.position, Color.red, 0.1f);
 
             return !isHit;
         }
 
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position + offset, boxSize);
+            if (_debugRange > 0f)
+            {
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireSphere(transform.position, _debugRange);
+            }
         }
     }
 }

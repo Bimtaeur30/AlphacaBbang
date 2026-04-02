@@ -17,9 +17,14 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 
     public void SetMovementDirection(Vector2 movementInput)
     {
-        _movementDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+        _movementDirection = Quaternion.Euler(0, -45f, 0) * new Vector3(movementInput.x, 0, movementInput.y).normalized;
     }
 
+    public void SetMovementDirection(Vector3 direction)
+    {
+        direction.y = 0f;
+        _movementDirection = direction.normalized;
+    }
 
     private void Update()
     {
@@ -30,7 +35,7 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 
     private void CalculateMovement()
     {
-        _velocity = Quaternion.Euler(0, -45f, 0) * _movementDirection;
+        _velocity = _movementDirection;
         _velocity *= _moveSpeed * _currentSpeedMultiplier * Time.deltaTime;
 
         if (_useRotation && _velocity.sqrMagnitude > 0)

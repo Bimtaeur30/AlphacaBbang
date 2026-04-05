@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public enum FireMode
 {
-    Single, Auto, Shotgun
+    Single, Auto, Spread
 }
 
 public enum BulletType
@@ -14,7 +14,8 @@ public enum BulletType
 [CreateAssetMenu(fileName = "Gun data", menuName = "KTJ/Gun/GunData")]
 public class GunDataSO : ScriptableObject
 {
-    [field:SerializeField] public FireMode FireMode { get; private set; }
+    [field: SerializeField] public FireMode FireMode { get; private set; }
+
     [field:SerializeField] public BulletType BulletType { get; private set; }
 
     [Header("Fire")]
@@ -30,10 +31,10 @@ public class GunDataSO : ScriptableObject
     [field: SerializeField, Range(0f, 100f)] public float RecoilForceY { get; private set; } = 1f; // 반동
 
     [Header("Accuracy")]
-    [field: SerializeField, Range(0f, 50f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐(샷건전용)
+    [field: SerializeField, Range(0f, 100f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐(샷건전용)
 
     [Header("Accuracy")]
-    [field: SerializeField, Range(0f, 10f)] public float BulletFireCount { get; private set; } = 1f; // 한번에 나가는 총 개수(샷건전용)
+    [field: SerializeField, Range(0f, 10f)] public int BulletFireCount { get; private set; } = 1; // 한번에 나가는 총 개수(샷건전용)
 
     [Header("UI")]
     [field: SerializeField] public Sprite CrossHairSprite { get; private set; } // 조준 이미지

@@ -1,108 +1,64 @@
-using JJH._02_Scripts_Systems.AnimationSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
     [Header("State")]
-    [field:SerializeField] public bool onAim { get; private set; }
-    [field:SerializeField] public bool onFire { get; private set; }
-    [field:SerializeField] public bool isAuto { get; private set; }
-
-    [Header("Anim")]
-    [field: SerializeField] AnimParamSO idleAnimParam;
-    [field: SerializeField] AnimParamSO AimAnimParam;
-    [field: SerializeField] AnimParamSO SingleFireAnimParam;
-    [field: SerializeField] AnimParamSO AutoFireAnimParam;
+    [field: SerializeField] public bool OnAim { get; private set; }
+    [field: SerializeField] public bool OnFire { get; private set; }
 
     [Header("Gun")]
     [field: SerializeField] public Gun CurrentGun { get; private set; }
 
     [Header("System")]
-    [SerializeField] private EventChannelSO SystemChannel;
-
-    private float _currentTime;
+    [SerializeField] private EventChannelSO systemChannel;
 
     public void Initialize(ModuleOwner owner)
     {
         Debug.Log("GunHandleModule Initialize");
-        SystemChannel.RaiseEvent(SystemEventChannel.WeaponEqnupEventChannel.Init(CurrentGun.GunDataSO));
-        Init();
-    }
 
-    [ContextMenu("Initialize")]
-    private void Init()
-    {
-        isAuto = CurrentGun.GunDataSO.FireMode == FireMode.Auto ? true : false;
+        Debug.Assert(CurrentGun != null, "CurrentGun이 할당되지 않았습니다.");
+        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO가 할당되지 않았습니다.");
+
+        systemChannel.RaiseEvent(SystemEventChannel.WeaponEqnupEventChannel.Init(CurrentGun.GunDataSO));
+        CurrentGun.Initialize();
     }
 
     private void Update()
     {
-        if (onFire && onAim && CurrentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        if (CurrentGun == null)
+            return;
+
+        if (OnAim && OnFire)
         {
-            _currentTime += Time.deltaTime;
-            if (_currentTime > CurrentGun.GunDataSO.FireInterval)
-            {
-                CurrentGun.Fire();
-                _currentTime = 0;
-            }
+            CurrentGun.TickFire();
         }
     }
 
-    public void Fire(bool v)
+    public void Fire(bool value)
     {
-        if (v)
-        {
-            onFire = true;
-            FireMode fireMode = CurrentGun.GunDataSO.FireMode;
-            if (onAim)
-            {
-                if (fireMode == FireMode.Single) // 단발일 경우 한번 쏘기
-                {
-                    CurrentGun.Renderer.PlayClip(SingleFireAnimParam.ParamHash, 0, 0.1f, 0);
-                    CurrentGun.Fire();
-                }
-                else if (fireMode == FireMode.Auto)
-                {
-                    float m_time = 0.083f / CurrentGun.GunDataSO.FireInterval;
+        OnFire = value;
 
-                    CurrentGun.Renderer.PlayClip(AutoFireAnimParam.ParamHash, 0, 0.1f, 0, m_time);
-                }
-                else if (fireMode == FireMode.Shotgun)
-                {
-                    CurrentGun.Renderer.PlayClip(SingleFireAnimParam.ParamHash, 0, 0.1f, 0);
-                    for (int i = 0; i < CurrentGun.GunDataSO.BulletFireCount; i++)
-                    {
-                        CurrentGun.Fire();
-                    }
-                }
-            }
+        if (CurrentGun == null)
+            return;
+
+        if (value)
+        {
+            CurrentGun.StartFire(OnAim);
         }
         else
         {
-            onFire = false;
-            if (onAim)
-            {
-                CurrentGun.Renderer.PlayClip(AimAnimParam.ParamHash, 0, 0.1f, 0);
-            }
-            else
-            {
-                CurrentGun.Renderer.PlayClip(idleAnimParam.ParamHash, 0, 0.1f, 0);
-            }
+            CurrentGun.StopFire(OnAim);
         }
     }
 
-    public void Aim(bool v)
+    public void Aim(bool value)
     {
-        if (v)
-        {
-            onAim = true;
-            CurrentGun.Renderer.PlayClip(AimAnimParam.ParamHash, 0, 0.1f, 0);
-        }
-        else
-        {
-            onAim = false;
-            CurrentGun.Renderer.PlayClip(idleAnimParam.ParamHash, 0, 0.1f, 0);
-        }
+        OnAim = value;
+
+        if (CurrentGun == null)
+            return;
+
+        CurrentGun.SetAim(value);
     }
 }

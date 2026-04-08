@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class NormalGrenade : GrenadeBehavior
 {
-    public GrenadeSO Grenade;
+    public GameObject Grenade;
     public float range;
     public float maxDamage;
 
     protected override void OnExplode()
     {
-        Instantiate(Grenade.particlePrefab, transform.position, Quaternion.identity);
+        Instantiate(Grenade, transform.position, Quaternion.identity);
         Collider[] hits = Physics.OverlapSphere(transform.position, range);
 
         foreach (var hit in hits)

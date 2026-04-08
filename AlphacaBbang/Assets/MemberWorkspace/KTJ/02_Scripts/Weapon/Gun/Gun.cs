@@ -70,7 +70,7 @@ public abstract class Gun : MonoBehaviour
         switch (GunDataSO.FireMode)
         {
             case FireMode.Single:
-            case FireMode.Spread: // 기능 없애더라도 enum이 남아있다면 일단 단발처럼 처리
+            case FireMode.Spread:
                 PlaySingleFire();
                 TryFire();
                 break;

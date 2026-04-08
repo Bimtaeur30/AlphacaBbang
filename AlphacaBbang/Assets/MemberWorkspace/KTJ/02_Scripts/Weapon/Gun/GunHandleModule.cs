@@ -1,7 +1,7 @@
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
-public class GunHandleModule : MonoBehaviour, IModule
+public class GunHandleModule : MonoBehaviour, IModule, IWeapon
 {
     [Header("State")]
     [field: SerializeField] public bool OnAim { get; private set; }
@@ -60,5 +60,10 @@ public class GunHandleModule : MonoBehaviour, IModule
             return;
 
         CurrentGun.SetAim(value);
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        CurrentGun.StartFire(val);
     }
 }

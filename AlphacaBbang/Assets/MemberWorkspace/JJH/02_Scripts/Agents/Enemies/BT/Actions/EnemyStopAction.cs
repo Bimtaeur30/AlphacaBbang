@@ -17,7 +17,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             if (Enemy.Value == null || Enemy.Value.Movement == null)
                 return Status.Failure;
 
-            Enemy.Value.Movement.SetMovementDirection(Vector2.zero);
+            Enemy.Value.Movement.SetMovementDirection(Vector3.zero);
             return Status.Success;
         }
     }

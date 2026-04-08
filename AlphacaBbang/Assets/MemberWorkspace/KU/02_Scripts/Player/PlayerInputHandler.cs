@@ -30,4 +30,12 @@ public class PlayerInputHandler : MonoBehaviour
         else if (context.canceled)
             _playerInput.SetAim(false);
     }
+
+    public void OnSprint(InputAction.CallbackContext context)
+    {
+        if(context.started)
+            _playerInput.SetSprint(true);
+        else if(context.canceled)
+            _playerInput.SetSprint(false);
+    }
 }

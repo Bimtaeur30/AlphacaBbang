@@ -1,7 +1,9 @@
+using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.AI;
 using Action = Unity.Behavior.Action;
 
 namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
@@ -13,39 +15,44 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
-        private IControllerMovement _movement;
-        private Transform _enemyTrans;
-        private Transform _targetTrans;
+        private INavMeshAgent _navMeshAgent;
+
+        private Vector3 _enemyPos;
+        private Vector3 _targetPos;
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.Movement == null || Target.Value == null)
+            if (Enemy.Value == null || Enemy.Value.NavMeshAgent == null || Enemy.Value.Sensor == null || Target.Value == null)
                 return Status.Failure;
 
-            _movement = Enemy.Value.Movement;
-            _enemyTrans = Enemy.Value.transform;
-            _targetTrans = Target.Value.transform;
+            _navMeshAgent = Enemy.Value.NavMeshAgent;
 
-            if (IsTargetInStoppingDistance())
-                return Status.Success;
+            _navMeshAgent.KeepChase(true);
 
             return Status.Running;
         }
 
         protected override Status OnUpdate()
         {
-            Vector2 direction = _targetTrans.position - _enemyTrans.position;
-            _movement.SetMovementDirection(direction.normalized);
+            if (Target.Value == null)
+                return Status.Failure;
 
-            if (IsTargetInStoppingDistance())
+            _enemyPos = Enemy.Value.transform.position;
+            _targetPos = Target.Value.transform.position;
+            if (NavMesh.SamplePosition(_targetPos, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                _targetPos = hit.position;
+            }
+
+            _navMeshAgent.MoveTo(_targetPos);
+
+            if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.AttackData.StoppingDistance)
+            {
+                _navMeshAgent.KeepChase(false);
                 return Status.Success;
+            }
 
             return Status.Running;
-        }
-
-        private bool IsTargetInStoppingDistance()
-        {
-            return Vector2.Distance(_enemyTrans.position, _targetTrans.position) < Enemy.Value.AttackData.StoppingDistance;
         }
     }
 }

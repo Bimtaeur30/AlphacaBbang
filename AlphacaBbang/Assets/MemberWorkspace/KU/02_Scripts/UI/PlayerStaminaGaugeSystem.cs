@@ -7,25 +7,29 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
     private bool _isAiming;
     private bool _canAim = true;
+    public bool CanAim => _canAim;
 
     [SerializeField] private Image _gaugeImage;
+    [SerializeField] private Image _parentGaugeImage;
 
     public float CurrentGauge { get; private set; }
+
     [SerializeField] private float _gaugeMaxTime = 10f;
-
-    private float _changeSpeed = 1f;
-
-    private float _aimCooldown = 2f;
+    [SerializeField] private float _minAimCooldown = 2f;
+    [SerializeField] private float _useSpeed = 1f;
+    [SerializeField] private float _chargeSpeed = 1f;
     private float _cooldownTimer = 0f;
+
+    Color _firstColor, _parentFirstColor;
+    Color _zeroColor = new Color(0, 0, 0, 0);
 
     private void Awake()
     {
-        if (TryGetComponent<PlayerController>(out PlayerController controller))
-        {
-            _playerInput = controller.PlayerInput;
-        }
+        _playerInput = GetComponentInParent<PlayerController>().PlayerInput;
 
         CurrentGauge = _gaugeMaxTime;
+        _firstColor = _gaugeImage.color;
+        _parentFirstColor = _parentGaugeImage.color;
     }
 
     private void OnEnable()
@@ -55,7 +59,7 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
     private void UpdateGauge()
     {
-        float delta = _changeSpeed * Time.deltaTime;
+        float delta = _useSpeed * Time.deltaTime;
 
         if (_isAiming)
         {
@@ -67,14 +71,14 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
                 _isAiming = false;
                 _canAim = false;
-                _cooldownTimer = _aimCooldown;
+                _cooldownTimer = _minAimCooldown;
 
                 _playerInput.SetAim(false);
             }
         }
         else
         {
-            CurrentGauge += delta;
+            CurrentGauge += _chargeSpeed * Time.deltaTime;
         }
 
         CurrentGauge = Mathf.Clamp(CurrentGauge, 0, _gaugeMaxTime);
@@ -93,6 +97,7 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
         }
     }
 
+
     private void UpdateUI()
     {
         float fill = CurrentGauge / _gaugeMaxTime;
@@ -101,5 +106,20 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
             _gaugeImage.fillAmount,
             fill,
             10f * Time.deltaTime);
+
+        if (fill >= 0.999f)
+        {
+            _gaugeImage.color = _zeroColor; // ¼û±è
+            _parentGaugeImage.color = _zeroColor;
+        }
+        else if (!_canAim)
+        {
+            _gaugeImage.color = Color.red; // ÄðÅ¸ÀÓ
+        }
+        else
+        {
+            _gaugeImage.color = _firstColor; // ±âº»
+            _parentGaugeImage.color = _parentFirstColor;
+        }
     }
 }

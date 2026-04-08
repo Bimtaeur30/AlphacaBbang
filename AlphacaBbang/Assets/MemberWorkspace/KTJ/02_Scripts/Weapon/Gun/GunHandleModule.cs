@@ -1,55 +1,69 @@
+using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
-public class GunHandleModule : MonoBehaviour, IModule
+public class GunHandleModule : MonoBehaviour, IModule, IWeapon
 {
-    [field:SerializeField] public bool onAim { get; private set; }
-    [field:SerializeField] public bool onFire { get; private set; }
-    [SerializeField] private Gun currentGun;
+    [Header("State")]
+    [field: SerializeField] public bool OnAim { get; private set; }
+    [field: SerializeField] public bool OnFire { get; private set; }
 
-    private float _currentTime;
+    [Header("Gun")]
+    [field: SerializeField] public Gun CurrentGun { get; private set; }
+
+    [Header("System")]
+    [SerializeField] private EventChannelSO systemChannel;
 
     public void Initialize(ModuleOwner owner)
     {
+        Debug.Log("GunHandleModule Initialize");
+
+        Debug.Assert(CurrentGun != null, "CurrentGun이 할당되지 않았습니다.");
+        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO가 할당되지 않았습니다.");
+
+        systemChannel.RaiseEvent(SystemEventChannel.WeaponEqnupEventChannel.Init(CurrentGun.GunDataSO));
+        CurrentGun.Initialize();
     }
 
     private void Update()
     {
-        if (onFire && onAim && currentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        if (CurrentGun == null)
+            return;
+
+        if (OnAim && OnFire)
         {
-            _currentTime += Time.deltaTime;
-            if (_currentTime > currentGun.GunDataSO.FireInterval)
-            {
-                currentGun.Fire();
-                _currentTime = 0;
-            }
+            CurrentGun.TickFire();
         }
     }
 
-    public void Fire(bool v)
+    public void Fire(bool value)
     {
-        if (v)
+        OnFire = value;
+
+        if (CurrentGun == null)
+            return;
+
+        if (value)
         {
-            onFire = true;
-            if (currentGun.GunDataSO.FireMode == FireMode.Single && onAim) // 단발일 경우 한번 쏘기
-            {
-                currentGun.Fire();
-            }
+            CurrentGun.StartFire(OnAim);
         }
         else
         {
-            onFire = false;
+            CurrentGun.StopFire(OnAim);
         }
     }
 
-    public void Aim(bool v)
+    public void Aim(bool value)
     {
-        if (v)
-        {
-            onAim = true;
-        }
-        else
-        {
-            onAim = false;
-        }
+        OnAim = value;
+
+        if (CurrentGun == null)
+            return;
+
+        CurrentGun.SetAim(value);
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        CurrentGun.StartFire(val);
     }
 }

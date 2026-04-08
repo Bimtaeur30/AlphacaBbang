@@ -21,14 +21,15 @@ public class RecoilController : MonoBehaviour
 
     public void AddRecoil()
     {
-        float x = Random.Range(_gunDataSO.RecoilForceX * -1, _gunDataSO.RecoilForceX);
-        float y = Random.Range(_gunDataSO.RecoilForceY * -1, _gunDataSO.RecoilForceY);
+        //float x = Random.Range(_gunDataSO.RecoilForceX * -1, _gunDataSO.RecoilForceX);
+        //float y = Random.Range(_gunDataSO.RecoilForceY * -1, _gunDataSO.RecoilForceY);
 
-        _targetRecoil += new Vector2(x, y);
+        //_targetRecoil += new Vector2(x, y);
     }
 
     public Vector3 ApplyRecoilToDirection(Vector3 baseDirection)
     {
+
         Quaternion recoilRotation = Quaternion.Euler(-_currentRecoil.y, _currentRecoil.x, 0f);
         return recoilRotation * baseDirection;
     }

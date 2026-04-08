@@ -22,6 +22,17 @@ namespace MemberWorkspace.CHG._02_Scripts
             this.angle = angle;
         }
     }
+
+    public struct Edge
+    {
+        public Vector3 PointA, PointB;
+
+        public Edge(Vector3 pointA, Vector3 pointB)
+        {
+            PointA = pointA;
+            PointB = pointB;
+        }
+    }
     
     public class PlayerVisibility : MonoBehaviour
     {
@@ -37,6 +48,9 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private Mesh viewMesh;
         public MeshFilter meshFilter;
+
+        public int adgeResolvelterations;
+        public float edgeDstThreshold;
         
         private void Start()
         {

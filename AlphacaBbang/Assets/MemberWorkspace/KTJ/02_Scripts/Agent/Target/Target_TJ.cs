@@ -10,6 +10,7 @@ public class Target_TJ : MonoBehaviour, IDamageable
     {
         healthTxt.text = Health.ToString();
     }
+
     public void TakeDamage(float damage)
     {
         Health -= damage;

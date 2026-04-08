@@ -1,4 +1,6 @@
+using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -11,7 +13,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     [SerializeField] private EventChannelSO systemChannel;
 
     [Header("CrossHair Settings")]
-    [SerializeField] private float followSpeed = 20f;
+    [SerializeField] private float defualtFollowSpeed = 20f;
     [SerializeField] private float recoilDistance = 60f;
     [SerializeField] private float recoilRecoverSpeed = 10f;
 
@@ -79,7 +81,7 @@ public class CrossHairModule : MonoBehaviour, IModule
         crossHairImg.rectTransform.position = Vector2.Lerp(
             crossHairImg.rectTransform.position,
             targetScreenPos,
-            Time.deltaTime * followSpeed
+            Time.deltaTime * defualtFollowSpeed
         );
 
         CHMousePos = crossHairImg.rectTransform.position;
@@ -151,6 +153,10 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         Vector2 recoilDir = RotateVector(aimDir, randomAngle);
         _recoilOffset += recoilDir * recoilDistance;
+
+        crossHairImg.rectTransform.DOShakeRotation(0.1f, new Vector3(0, 0, gunData.RecoilForceX), 10, 90);
+
+        PlayKick();
     }
 
     private Vector2 RotateVector(Vector2 dir, float degrees)
@@ -189,5 +195,33 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         _recoilOffset = Vector2.zero;
         _fireRecoilTimer = 0f;
+    }
+
+    private void PlayKick()
+    {
+        float randShake = (Random.Range(-45f, 45f));
+        crossHairImg.DOKill();
+
+        Sequence seq = DOTween.Sequence();
+
+        seq.Append(
+            crossHairImg.rectTransform.DORotate(new Vector3(0, 0, randShake), 0.1f)
+                  .SetEase(Ease.OutQuint)
+        );
+
+        seq.Join(
+            crossHairImg.rectTransform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.1f)
+                   .SetEase(Ease.InSine)
+        );
+
+        seq.Append(
+            crossHairImg.rectTransform.DORotate(Vector3.zero, 0.1f)
+                  .SetEase(Ease.OutQuint)
+        );
+
+        seq.Join(
+            crossHairImg.rectTransform.DOScale(new Vector3(1f, 1f, 1f), 0.1f)
+                .SetEase(Ease.InSine)
+        );
     }
 }

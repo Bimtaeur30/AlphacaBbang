@@ -10,6 +10,8 @@ public class PlayerController : Agent
     private IControllerMovement _movement;
     private PlayerStaminaGaugeSystem _stamina;
 
+    private PlayerStatSystem _stat;
+
     private Vector2 _lookInput;
     public bool IsAiming {get; private set;}
 
@@ -19,10 +21,12 @@ public class PlayerController : Agent
 
         _movement = GetModule<IControllerMovement>();
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
+        _stat = GetComponentInChildren<PlayerStatSystem>();
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnLookChange += HandleLook;
         PlayerInput.OnAim += HandleAim;
+        PlayerInput.OnSprint += HandleSprint;
     }
     private void Update()
     {
@@ -96,6 +100,21 @@ public class PlayerController : Agent
         var movement = _movement as AgentMovement;
         movement.SetSpeedMultiplier(isAiming ? 0.3f : 1f);
         movement.SetUseRotation(!isAiming);
+    }
+
+    private void HandleSprint(bool isSprinting)
+    {
+        if (_stat != null && !_stat.CanRun())
+            isSprinting = false;
+
+        _stat.SetRunning(isSprinting);
+
+        var movement = _movement as AgentMovement;
+
+        if (movement != null)
+        {
+            movement.SetSpeedMultiplier(isSprinting ? 1.5f : 1f);
+        }
     }
 
     private void OnDestroy()

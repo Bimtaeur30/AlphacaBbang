@@ -1,5 +1,13 @@
 using UnityEngine;
 
+public enum EquipItemType
+{
+    None,
+    MainWeapon,
+    SubWeapon,
+    Helmet
+};
+
 [CreateAssetMenu(fileName = "ItemData", menuName = "SO/ItemData")]
 public abstract class ItemData : ScriptableObject
 {

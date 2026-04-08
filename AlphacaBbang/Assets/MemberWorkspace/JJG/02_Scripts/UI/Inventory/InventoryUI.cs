@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,8 @@ public class InventoryUI : MonoBehaviour
     private List<ItemSlotUI> _slotUIList = new();
     private List<GameObject> _previewSlotGoList = new();
 
+    private Inventory _inventory;
+        
     private int _prevSlotCountPerLine;
     private int _prevSlotLineCount;
     private float _prevSlotSize;
@@ -39,6 +42,40 @@ public class InventoryUI : MonoBehaviour
 #if UNITY_EDITOR
     private bool _isRefreshingPreview;
 #endif
+
+    private void Awake()
+    {
+        _inventory = GetComponent<Inventory>();
+    }
+
+    private void OnEnable()
+    {
+        _inventory.OnInventoryChanged += RefreshUI;
+    }
+
+    private void OnDisable()
+    {
+        _inventory.OnInventoryChanged -= RefreshUI;
+    }
+
+    private void RefreshUI()
+    {
+        if (_inventory == null) return;
+
+        IReadOnlyList<InventoryItem> items = _inventory.Items;
+        
+        for (int i = 0; i < _slotUIList.Count; i++)
+        {
+            if (i < items.Count)
+            {
+                _slotUIList[i].SetSlot(items[i]);
+            }
+            else
+            {
+                _slotUIList[i].ClearSlot();
+            }
+        }
+    }
 
     [ContextMenu("Initialize Slots")]
     private void InitSlots()
@@ -110,11 +147,17 @@ public class InventoryUI : MonoBehaviour
             if (Unavailable())
             {
                 ClearPreviewSlots();
+                ClearRuntimeSlots();
                 CachePreviewValues();
                 return;
             }
 
-            if (_showPreview != _prevShow)
+            bool showChanged = _showPreview != _prevShow;
+            bool countChanged = CountChanged();
+            bool valueChanged = ValueChanged();
+            bool alphaChanged = AlphaChanged();
+
+            if (showChanged)
             {
                 ClearPreviewSlots();
 
@@ -122,35 +165,29 @@ public class InventoryUI : MonoBehaviour
                     CreateSlots();
 
                 _prevShow = _showPreview;
-                CachePreviewValues();
-                return;
+            }
+            else
+            {
+                if (_showPreview)
+                {
+                    if (countChanged)
+                    {
+                        ClearPreviewSlots();
+                        CreateSlots();
+                    }
+                    else if (valueChanged)
+                    {
+                        DrawGrid();
+                    }
+
+                    if (alphaChanged)
+                    {
+                        SetImageAlpha();
+                    }
+                }
             }
 
-            if (!_showPreview)
-            {
-                CachePreviewValues();
-                return;
-            }
-
-            if (CountChanged())
-            {
-                ClearPreviewSlots();
-                CreateSlots();
-                CachePreviewValues();
-                return;
-            }
-
-            if (ValueChanged())
-            {
-                DrawGrid();
-                CachePreviewValues();
-            }
-
-            if (AlphaChanged())
-            {
-                SetImageAlpha();
-                _prevAlpha = _previewAlpha;
-            }
+            CachePreviewValues();
         }
         finally
         {

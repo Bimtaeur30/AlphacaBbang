@@ -15,24 +15,6 @@ public class Inventory : MonoBehaviour
     {
         _inventoryUI = GetComponent<InventoryUI>();
     }
-
-    // public bool AddItem(ItemData itemData, int amount = 1)
-    // {
-    //     if (itemData == null)
-    //     {
-    //         Debug.LogWarning("itemData is null");
-    //         return false;
-    //     }
-    //
-    //     if (amount <= 0)
-    //     {
-    //         Debug.LogWarning("amount must be more than 0");
-    //         return false;
-    //     }
-    //     
-    //     OnInventoryChanged?.Invoke();
-    //     return amount <= 0;
-    // }
     
     public bool AddItem(ItemData itemData, int amount = 1)
     {
@@ -77,6 +59,7 @@ public class Inventory : MonoBehaviour
                 amount -= addCount;
             }
 
+            OnInventoryChanged?.Invoke();
             return true;
         }
         else
@@ -93,6 +76,7 @@ public class Inventory : MonoBehaviour
                 amount--;
             }
 
+            OnInventoryChanged?.Invoke();
             return true;
         }
     }
@@ -114,6 +98,7 @@ public class Inventory : MonoBehaviour
             return false;
         }
 
+        OnInventoryChanged?.Invoke();
         return true;
     }
 }

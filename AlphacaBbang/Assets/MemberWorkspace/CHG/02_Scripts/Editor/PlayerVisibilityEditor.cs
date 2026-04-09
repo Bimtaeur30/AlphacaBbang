@@ -8,7 +8,7 @@ namespace MemberWorkspace.CHG._02_Scripts.Editor
     [CustomEditor(typeof(PlayerVisibility))]
     public class PlayerVisibilityEditor : UnityEditor.Editor
     {
-        private void OnSceneGUI()
+        /*private void OnSceneGUI()
         {
             PlayerVisibility visibility = (PlayerVisibility)target;
             Handles.color = Color.white;
@@ -25,6 +25,6 @@ namespace MemberWorkspace.CHG._02_Scripts.Editor
             {
                 Handles.DrawLine(visibility.transform.position, visibility.transform.position);
             }
-        }
+        }*/
     }
 }

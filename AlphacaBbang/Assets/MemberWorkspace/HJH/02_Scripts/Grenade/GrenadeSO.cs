@@ -7,8 +7,7 @@ public class GrenadeSO : ScriptableObject
     public GameObject prefab;
     public int count;
     public float Duration;
+    public float damage;
 
     public float range;
-
-    public ParticleSystem particlePrefab;
 }

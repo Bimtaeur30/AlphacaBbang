@@ -1,3 +1,4 @@
+using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -13,23 +14,27 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
     {
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
 
-        private IControllerMovement _movement;
+        private INavMeshAgent _navMeshAgent;
 
         private float _moveDuration;
         private float _moveTime;
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.Movement == null)
+            if (Enemy.Value == null || Enemy.Value.NavMeshAgent == null)
                 return Status.Failure;
 
-            _movement = Enemy.Value.Movement;
+            _navMeshAgent = Enemy.Value.NavMeshAgent;
 
             _moveTime = 0;
             _moveDuration = Random.Range(1f, 2f);
 
-            Vector3 move = Random.insideUnitCircle.normalized;
-            _movement.SetMovementDirection(move);
+            Vector3 move = Random.insideUnitSphere;
+            move.y = 0f;
+            move.Normalize();
+
+            _navMeshAgent.KeepChase(true);
+            _navMeshAgent.MoveTo(Enemy.Value.transform.position + move * 10f);
 
             return Status.Running;
         }
@@ -39,7 +44,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _moveTime += Time.deltaTime;
             if (_moveTime > _moveDuration)
             {
-                _movement.SetMovementDirection(Vector3.zero);
+                _navMeshAgent.KeepChase(false);
                 return Status.Success;
             }
 

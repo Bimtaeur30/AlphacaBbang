@@ -1,31 +1,57 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [CreateAssetMenu(fileName = "PlayerInputSO", menuName = "Player/PlayerInputSO")]
-public class PlayerInputSO : ScriptableObject
+public class PlayerInputSO : ScriptableObject, PlayerInputSystem.IPlayerActions
 {
     public event Action<Vector2> OnMovementChange;
     public event Action<Vector2> OnLookChange;
-    public event Action<bool> OnAim;
-    public event Action<bool> OnSprint;
+    public event Action<bool> OnAimAction;
+    public event Action<bool> OnSprintAction;
 
-    public void SetMovement(Vector2 movement)
+    private PlayerInputSystem _controls;
+
+    private void OnEnable()
     {
+        if (_controls == null)
+        {
+            _controls = new PlayerInputSystem();
+            _controls.Player.SetCallbacks(this);
+        }
+
+        _controls.Player.Enable();
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        Vector2 movement = context.ReadValue<Vector2>();
         OnMovementChange?.Invoke(movement);
     }
 
-    public void SetLook(Vector2 look)
+    public void OnLook(InputAction.CallbackContext context)
     {
-        OnLookChange?.Invoke(look);
+        OnLookChange?.Invoke(context.ReadValue<Vector2>());
     }
 
-    public void SetAim(bool isAiming)
+    public void OnAim(InputAction.CallbackContext context)
     {
-        OnAim?.Invoke(isAiming);
+        if (context.started)
+            OnAimAction?.Invoke(true);
+        else if (context.canceled)
+            OnAimAction?.Invoke(false);
     }
 
-    public void SetSprint(bool isSprinting)
+    public void OnSprint(InputAction.CallbackContext context)
     {
-        OnSprint?.Invoke(isSprinting);
+        if (context.started)
+            OnSprintAction?.Invoke(true);
+        else if (context.canceled)
+            OnSprintAction?.Invoke(false);
+    }
+
+    private void OnDisable()
+    {
+        _controls.Player.Disable();
     }
 }

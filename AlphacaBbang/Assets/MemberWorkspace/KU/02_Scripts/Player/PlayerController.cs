@@ -1,3 +1,4 @@
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,72 +6,93 @@ public class PlayerController : Agent
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
 
-    [SerializeField] private float _rotationSpeed = 0;
+    [SerializeField] private AnimParamSO _speedParam;
+    [SerializeField] private float _rotationSpeed = 10f;
+
+    private IRenderer _renderer;
+    private AgentMovement _agentMovement;
 
     private IControllerMovement _movement;
     private PlayerStaminaGaugeSystem _stamina;
-
     private PlayerStatSystem _stat;
 
-    private Vector2 _lookInput;
-    public bool IsAiming {get; private set;}
+    public bool IsAiming { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
 
         _movement = GetModule<IControllerMovement>();
+        _agentMovement = _movement as AgentMovement;
+        _renderer = GetModule<IRenderer>();
+
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
 
         PlayerInput.OnMovementChange += HandleMovement;
-        PlayerInput.OnLookChange += HandleLook;
-        PlayerInput.OnAim += HandleAim;
-        PlayerInput.OnSprint += HandleSprint;
+        PlayerInput.OnAimAction += HandleAim;
+        PlayerInput.OnSprintAction += HandleSprint;
     }
+
     private void Update()
     {
         if (IsAiming)
             RotateToMouse();
         else
             RotateToMovement();
+
+        UpdateAnimation();
     }
+
+    private void UpdateAnimation()
+    {
+        float speed = _agentMovement.Velocity.magnitude;
+
+        float normalized = Mathf.Clamp01(speed / 8f);
+
+        if (normalized < 0.05f)
+            normalized = 0f;
+
+        _renderer.Animator.SetFloat(
+            _speedParam.ParamHash,
+            normalized,
+            0.1f,
+            Time.deltaTime);
+    }
+
     private void RotateToMovement()
     {
-        var movement = _movement as AgentMovement;
-        Vector3 velocity = movement.Velocity;
-
+        Vector3 velocity = _agentMovement.Velocity;
         velocity.y = 0;
 
         if (velocity.sqrMagnitude < 0.001f)
             return;
 
-        Quaternion targetRotation = Quaternion.LookRotation(velocity);
+        Quaternion target = Quaternion.LookRotation(velocity);
 
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
-            targetRotation,
+            target,
             8f * Time.deltaTime);
     }
+
     private void RotateToMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
-            Vector3 lookPoint = hit.point;
-            lookPoint.y = transform.position.y;
-
-            Vector3 dir = (lookPoint - transform.position).normalized;
+            Vector3 dir = (hit.point - transform.position);
+            dir.y = 0;
 
             if (dir.sqrMagnitude < 0.001f)
                 return;
 
-            Quaternion targetRotation = Quaternion.LookRotation(dir);
+            Quaternion target = Quaternion.LookRotation(dir);
 
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
-                targetRotation,
+                target,
                 _rotationSpeed * Time.deltaTime);
         }
     }
@@ -80,26 +102,18 @@ public class PlayerController : Agent
         _movement.SetMovementDirection(input);
     }
 
-    private void HandleLook(Vector2 input)
-    {
-        _lookInput = input;
-    }
-
     private void HandleAim(bool isAiming)
     {
-        if (_stamina != null)
-        {
-            if(!_stamina.CanAim)
-            {
-                isAiming = false;
-            }
-        }
+        bool finalAim = isAiming;
 
-        IsAiming = isAiming;
+        if (_stamina != null && !_stamina.CanAim)
+            finalAim = false;
 
-        var movement = _movement as AgentMovement;
-        movement.SetSpeedMultiplier(isAiming ? 0.3f : 1f);
-        movement.SetUseRotation(!isAiming);
+        IsAiming = finalAim;
+
+        _agentMovement.SetUseRotation(!finalAim);
+
+        UpdateSpeed();
     }
 
     private void HandleSprint(bool isSprinting)
@@ -109,18 +123,35 @@ public class PlayerController : Agent
 
         _stat.SetRunning(isSprinting);
 
-        var movement = _movement as AgentMovement;
+        UpdateSpeed();
+    }
 
-        if (movement != null)
-        {
-            movement.SetSpeedMultiplier(isSprinting ? 1.5f : 1f);
-        }
+    private void UpdateSpeed()
+    {
+        float multiplier = 1f;
+
+        if (IsAiming)
+            multiplier *= 0.3f;
+
+        if (_stat != null && _stat.IsRunning)
+            multiplier *= 1.5f;
+
+        _agentMovement.SetSpeedMultiplier(multiplier);
+    }
+
+    public void ForceStopAim()
+    {
+        IsAiming = false;
+
+        _agentMovement.SetUseRotation(true);
+
+        UpdateSpeed();
     }
 
     private void OnDestroy()
     {
         PlayerInput.OnMovementChange -= HandleMovement;
-        PlayerInput.OnLookChange -= HandleLook;
-        PlayerInput.OnAim -= HandleAim;
+        PlayerInput.OnAimAction -= HandleAim;
+        PlayerInput.OnSprintAction -= HandleSprint;
     }
 }

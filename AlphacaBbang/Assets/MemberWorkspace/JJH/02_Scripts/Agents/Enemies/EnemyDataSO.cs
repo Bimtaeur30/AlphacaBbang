@@ -7,6 +7,8 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [Header("Information")]
         [field: SerializeField] public string EnemyName { get; private set; }
+        [field: SerializeField] public int EnemyHealth { get; private set; }
+
 
         [Header("Attacl")]
         [field: SerializeField] public float Damage { get; private set; }

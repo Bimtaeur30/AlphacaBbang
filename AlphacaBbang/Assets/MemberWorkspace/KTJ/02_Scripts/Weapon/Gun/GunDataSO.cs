@@ -14,9 +14,12 @@ public enum BulletType
 [CreateAssetMenu(fileName = "Gun data", menuName = "KTJ/Gun/GunData")]
 public class GunDataSO : ScriptableObject
 {
+    [Header("FireMode")]
     [field: SerializeField] public FireMode FireMode { get; private set; }
 
-    [field:SerializeField] public BulletType BulletType { get; private set; }
+    [Header("Bullet")]
+    [field:SerializeField] public BulletType BulletType { get; private set; } // 총알 타입
+    [field:SerializeField] public int MagCapacity{ get; private set; } // 탄창 용량
 
     [Header("Fire")]
     [field: SerializeField, Range(0.05f, 1.0f)] public float FireInterval { get; private set; } = 0.1f; // 발사 간격 초

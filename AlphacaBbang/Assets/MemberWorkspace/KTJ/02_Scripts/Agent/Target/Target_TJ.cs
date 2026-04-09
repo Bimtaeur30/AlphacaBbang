@@ -1,17 +1,26 @@
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Target_TJ : ModuleOwner, IDamageable
 {
     [field: SerializeField] public float Health { get; private set; } = 100f;
     [SerializeField] private TextMeshPro healthTxt;
-    private GunHandleModule iweapon;
+    private EnemyGunHandleModule gunHandleModule;
+
+    protected override void InitializeComponents()
+    {
+        base.InitializeComponents();
+        gunHandleModule = GetModule<EnemyGunHandleModule>();
+        Debug.Assert(gunHandleModule != null, "EnemyGunHandleModule을 발견하지 못했습니다.");
+
+    }
 
     protected override void Awake()
     {
+        base.Awake();
         healthTxt.text = Health.ToString();
-        iweapon = GetComponentInChildren<GunHandleModule>();
     }
 
     private void Start()
@@ -40,10 +49,14 @@ public class Target_TJ : ModuleOwner, IDamageable
     {
         while (true)
         {
-            iweapon.Attack(Vector3.zero, true);
+            gunHandleModule.Attack(Vector3.zero, true);
             yield return new WaitForSeconds(3f);
-            iweapon.Attack(Vector3.zero, false);
+            gunHandleModule.Attack(Vector3.zero, false);
             yield return new WaitForSeconds(3f);
         }
     }
+
+    //============================= [TEST] ============================//
+    // _recoilOffset = Vector2.Lerp(_recoilOffset, Vector2.zero, Time.deltaTime* recoilRecoverSpeed);
+    // Vector2 targetScreenPos = _mousePos + _recoilOffset;
 }

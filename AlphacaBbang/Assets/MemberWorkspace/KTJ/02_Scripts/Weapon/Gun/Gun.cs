@@ -2,6 +2,7 @@ using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.AnimationSystems;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -31,6 +32,8 @@ public abstract class Gun : MonoBehaviour
     protected bool _isAiming;
     protected bool _isFiring;
 
+    protected GunHandleModule _gunHandleModule;
+
     protected virtual void Awake()
     {
         Renderer = GetComponentInChildren<GunRenderer>();
@@ -38,10 +41,12 @@ public abstract class Gun : MonoBehaviour
         Debug.Assert(firePos != null, "firePos가 할당되지 않았습니다.");
     }
 
-    public virtual void Initialize()
+    public virtual void Initialize(GunHandleModule module)
     {
         _isAiming = false;
         _isFiring = false;
+        _gunHandleModule = module;
+        Debug.Assert(_gunHandleModule != null, "건핸들러모듈을 받아오지 못했습니다.");
     }
 
     public virtual void SetAim(bool isAim)
@@ -148,6 +153,8 @@ public abstract class Gun : MonoBehaviour
         {
             DrawLine(origin, endPoint, 0.05f);
         }
+
+        _gunHandleModule.OnFire();
     }
 
     protected virtual Vector3 GetShootDirection()

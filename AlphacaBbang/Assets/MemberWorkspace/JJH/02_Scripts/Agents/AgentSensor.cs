@@ -24,7 +24,7 @@ namespace JJH._02_Scripts.Agents
             return hitCollider != null;
         }
 
-        public bool IsTargetInSight(Vector3 startPosition, float range, Collider target)
+        public bool IsTargetInSight(Vector3 startPosition, float range, Transform target)
         {
             Vector3 direction = target.transform.position - startPosition;
 

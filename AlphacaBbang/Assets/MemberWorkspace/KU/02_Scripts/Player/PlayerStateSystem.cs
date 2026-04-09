@@ -16,7 +16,7 @@ public class PlayerStatSystem : MonoBehaviour
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
 
-    private bool _isRunning;
+    public bool IsRunning { get; private set; }
 
     public event Action<float> OnHealthChanged;
     public event Action<float> OnStaminaChanged;
@@ -64,19 +64,19 @@ public class PlayerStatSystem : MonoBehaviour
 
     public void SetRunning(bool isRunning)
     {
-        _isRunning = isRunning;
+        IsRunning = isRunning;
     }
 
     private void UpdateStamina()
     {
-        if (_isRunning && CurrentStamina > 0f)
+        if (IsRunning && CurrentStamina > 0f)
         {
             CurrentStamina -= _staminaDrainSpeed * Time.deltaTime;
 
             if (CurrentStamina <= 0f)
             {
                 CurrentStamina = 0f;
-                _isRunning = false; // 강제 종료
+                IsRunning = false; // 강제 종료
             }
         }
         else

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class PlayerStaminaGaugeSystem : MonoBehaviour
 {
-    private PlayerInputSO _playerInput;
+    private PlayerController _controller;
 
     private bool _isAiming;
     private bool _canAim = true;
@@ -18,62 +18,53 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
     [SerializeField] private float _minAimCooldown = 2f;
     [SerializeField] private float _useSpeed = 1f;
     [SerializeField] private float _chargeSpeed = 1f;
+
     private float _cooldownTimer = 0f;
 
-    Color _firstColor, _parentFirstColor;
-    Color _zeroColor = new Color(0, 0, 0, 0);
+    private Color _firstColor;
+    private Color _parentFirstColor;
+    private readonly Color _zeroColor = new Color(0, 0, 0, 0);
+
 
     private void Awake()
     {
-        _playerInput = GetComponentInParent<PlayerController>().PlayerInput;
+        _controller = GetComponentInParent<PlayerController>();
 
         CurrentGauge = _gaugeMaxTime;
+
         _firstColor = _gaugeImage.color;
         _parentFirstColor = _parentGaugeImage.color;
     }
 
-    private void OnEnable()
-    {
-        _playerInput.OnAim += HandleAim;
-    }
-
-    private void OnDisable()
-    {
-        _playerInput.OnAim -= HandleAim;
-    }
-
-    private void HandleAim(bool isAiming)
-    {
-        if (!_canAim)
-            return;
-
-        _isAiming = isAiming;
-    }
-
     private void Update()
     {
+        SyncAimState();
         UpdateGauge();
         UpdateCooldown();
         UpdateUI();
     }
 
+    private void SyncAimState()
+    {
+        if (_controller != null)
+            _isAiming = _controller.IsAiming;
+    }
+
     private void UpdateGauge()
     {
-        float delta = _useSpeed * Time.deltaTime;
-
         if (_isAiming)
         {
-            CurrentGauge -= delta;
+            CurrentGauge -= _useSpeed * Time.deltaTime;
 
             if (CurrentGauge <= 0f)
             {
                 CurrentGauge = 0f;
 
-                _isAiming = false;
                 _canAim = false;
                 _cooldownTimer = _minAimCooldown;
 
-                _playerInput.SetAim(false);
+                if (_controller != null)
+                    _controller.ForceStopAim();
             }
         }
         else
@@ -97,7 +88,6 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
         }
     }
 
-
     private void UpdateUI()
     {
         float fill = CurrentGauge / _gaugeMaxTime;
@@ -109,16 +99,17 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
         if (fill >= 0.999f)
         {
-            _gaugeImage.color = _zeroColor; // ¼û±è
+            _gaugeImage.color = _zeroColor;
             _parentGaugeImage.color = _zeroColor;
         }
         else if (!_canAim)
         {
-            _gaugeImage.color = Color.red; // ÄðÅ¸ÀÓ
+            _gaugeImage.color = Color.red;
+            _parentGaugeImage.color = _parentFirstColor;
         }
         else
         {
-            _gaugeImage.color = _firstColor; // ±âº»
+            _gaugeImage.color = _firstColor;
             _parentGaugeImage.color = _parentFirstColor;
         }
     }

@@ -34,7 +34,7 @@ public class PlayerInputSO : ScriptableObject, PlayerInputSystem.IPlayerActions
         OnLookChange?.Invoke(context.ReadValue<Vector2>());
     }
 
-    public void OnAim(InputAction.CallbackContext context)
+    public void OnOnAim(InputAction.CallbackContext context)
     {
         if (context.started)
             OnAimAction?.Invoke(true);

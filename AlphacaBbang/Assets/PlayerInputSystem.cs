@@ -1086,9 +1086,9 @@ public partial class @PlayerInputSystem: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
-            @OnAim.started += instance.OnAim;
-            @OnAim.performed += instance.OnAim;
-            @OnAim.canceled += instance.OnAim;
+            @OnAim.started += instance.OnOnAim;
+            @OnAim.performed += instance.OnOnAim;
+            @OnAim.canceled += instance.OnOnAim;
         }
 
         /// <summary>
@@ -1109,9 +1109,9 @@ public partial class @PlayerInputSystem: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
-            @OnAim.started -= instance.OnAim;
-            @OnAim.performed -= instance.OnAim;
-            @OnAim.canceled -= instance.OnAim;
+            @OnAim.started -= instance.OnOnAim;
+            @OnAim.performed -= instance.OnOnAim;
+            @OnAim.canceled -= instance.OnOnAim;
         }
 
         /// <summary>
@@ -1439,7 +1439,7 @@ public partial class @PlayerInputSystem: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnAim(InputAction.CallbackContext context);
+        void OnOnAim(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

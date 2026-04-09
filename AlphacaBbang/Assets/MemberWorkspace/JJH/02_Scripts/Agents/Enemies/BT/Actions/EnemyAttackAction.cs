@@ -34,11 +34,13 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         protected override Status OnUpdate()
         {
             _time += Time.deltaTime;
+
             if (_time > Enemy.Value.EnemyData.AttackTime)
             {
                 _weapon.Attack(Target.Value.transform.position, false);
                 return Status.Success;
             }
+
             return Status.Running;
         }
     }

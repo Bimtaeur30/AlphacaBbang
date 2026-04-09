@@ -5,13 +5,14 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [field: SerializeField] public AttackDataSO AttackData { get; private set; }
+        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         public INavMeshAgent NavMeshAgent { get; private set; }
 
         protected override void InitializeComponents()
         {
             base.InitializeComponents();
             NavMeshAgent = GetModule<INavMeshAgent>();
+            Weapon.Init();
         }
 
         public void ApplyBurn(float dps, float duration)

@@ -46,7 +46,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
             _navMeshAgent.MoveTo(_targetPos);
 
-            if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.AttackData.StoppingDistance)
+            if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.EnemyData.StoppingDistance)
             {
                 _navMeshAgent.KeepChase(false);
                 return Status.Success;

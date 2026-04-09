@@ -1,7 +1,10 @@
 using JJH._02_Scripts_Systems.EventSystems;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
-public class GunHandleModule : MonoBehaviour, IModule
+public class GunHandleModule : MonoBehaviour, IModule, IWeapon
 {
     [Header("State")]
     [field: SerializeField] public bool OnAim { get; private set; }
@@ -61,4 +64,26 @@ public class GunHandleModule : MonoBehaviour, IModule
 
         CurrentGun.SetAim(value);
     }
+
+    // 이하 적들이 사용하는 코드
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        Debug.Assert(CurrentGun != null, "현재 장착중인 총이 없습니다.");
+        Fire(val);
+    }
+    public void SetAim(bool val)
+    {
+        Aim(val);
+    }
+    public void Init()
+    {
+        SetAim(true);
+    }
+
+    private void Start()
+    {
+        Init();
+    }
+
 }

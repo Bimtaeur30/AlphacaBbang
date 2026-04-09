@@ -5,14 +5,22 @@ using UnityEngine;
 public class FireZone : MonoBehaviour
 {
     public GrenadeSO Grenade;
-    public float damagePerSecond;
-    public float duration;
-    public float range;
+    private float damagePerSecond;
+    private float duration;
+    private float range;
+    private ParticleSystem fireParticle;
 
     private void Start()
     {
+        damagePerSecond = Grenade.damage;
         duration = Grenade.Duration;
+        range = Grenade.range;
 
+        fireParticle = GetComponentInChildren<ParticleSystem>();
+
+        var main = fireParticle.main;
+        main.startLifetime = duration;
+        
         StartCoroutine(Fire());
     }
 

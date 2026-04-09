@@ -61,7 +61,7 @@ public class CrossHairModule : MonoBehaviour, IModule
         Gun currentGun = gunHandle.CurrentGun;
         GunDataSO gunData = currentGun.GunDataSO;
 
-        bool isFiring = gunHandle.OnFire && gunHandle.OnAim;
+        bool isFiring = gunHandle.IsFire && gunHandle.IsAim;
 
         if (isFiring)
         {

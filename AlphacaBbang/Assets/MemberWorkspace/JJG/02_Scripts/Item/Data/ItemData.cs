@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum EquipItemType
+public enum EquipType
 {
     None,
     MainWeapon,
@@ -18,4 +18,7 @@ public abstract class ItemData : ScriptableObject
     public Sprite Icon { get; private set; }
     
     [TextArea] public string description;
+    
+    [field: SerializeField]
+    public EquipType EquipType { get; private set; }
 }

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using MemberWorkspace.JJG._02_Scripts.Item;
 
 public class ItemSlotUI : MonoBehaviour
 {
@@ -14,20 +15,20 @@ public class ItemSlotUI : MonoBehaviour
         _slotIndex = index;
     }
     
-    public void SetSlot(InventoryItem inventoryItem)
+    public void SetSlot(ItemSlot slot)
     {
-        if (inventoryItem == null || inventoryItem.itemData == null)
+        if (slot == null || slot.IsEmpty || slot.ItemData == null)
         {
             ClearSlot();
             return;
         }
 
-        _iconImage.sprite = inventoryItem.itemData.Icon;
-        _iconImage.enabled = inventoryItem.itemData.Icon != null;
+        _iconImage.sprite = slot.ItemData.Icon;
+        _iconImage.enabled = slot.ItemData.Icon != null;
 
-        if (inventoryItem.count > 1)
+        if (slot.Amount > 1)
         {
-            _amountText.text = inventoryItem.count.ToString();
+            _amountText.text = slot.Amount.ToString();
         }
         else
         {
@@ -45,5 +46,6 @@ public class ItemSlotUI : MonoBehaviour
     public void SetItem(Sprite itemSprite)
     {
         _iconImage.sprite = itemSprite;
+        _iconImage.enabled = itemSprite != null;
     }
 }

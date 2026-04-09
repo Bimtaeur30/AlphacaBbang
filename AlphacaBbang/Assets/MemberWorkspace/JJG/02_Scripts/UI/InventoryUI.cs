@@ -19,6 +19,7 @@ public class InventoryUI : MonoBehaviour
     [Header("Connected Objects")]
     [SerializeField] private RectTransform _contentAreaRT;
     [SerializeField] private GameObject _slotUIPrefab;
+    [SerializeField] private InventoryContainer inventory;
 
     [Header("Preview")]
     [SerializeField] private bool _showPreview = false;
@@ -29,8 +30,6 @@ public class InventoryUI : MonoBehaviour
     private List<ItemSlotUI> _slotUIList = new();
     private List<GameObject> _previewSlotGoList = new();
 
-    private Inventory _inventory;
-        
     private int _prevSlotCountPerLine;
     private int _prevSlotLineCount;
     private float _prevSlotSize;
@@ -45,30 +44,40 @@ public class InventoryUI : MonoBehaviour
 
     private void Awake()
     {
-        _inventory = GetComponent<Inventory>();
+        if (inventory == null)
+            inventory = GetComponent<InventoryContainer>();
+    }
+
+    private void Start()
+    {
+        InitSlots();
+        RefreshUI();
     }
 
     private void OnEnable()
     {
-        _inventory.OnInventoryChanged += RefreshUI;
+        if (inventory != null)
+            inventory.OnContainerChanged += RefreshUI;
     }
 
     private void OnDisable()
     {
-        _inventory.OnInventoryChanged -= RefreshUI;
+        if (inventory != null)
+            inventory.OnContainerChanged -= RefreshUI;
     }
 
     private void RefreshUI()
     {
-        if (_inventory == null) return;
+        if (inventory == null)
+            return;
 
-        IReadOnlyList<InventoryItem> items = _inventory.Items;
-        
         for (int i = 0; i < _slotUIList.Count; i++)
         {
-            if (i < items.Count)
+            ItemSlot slot = inventory.GetSlot(i);
+
+            if (slot != null && !slot.IsEmpty)
             {
-                _slotUIList[i].SetSlot(items[i]);
+                _slotUIList[i].SetSlot(slot);
             }
             else
             {
@@ -366,6 +375,7 @@ public class InventoryUI : MonoBehaviour
 
     private class PreviewItemSlot : MonoBehaviour { }
 
+#if UNITY_EDITOR
     [UnityEditor.InitializeOnLoad]
     private static class Destroyer
     {
@@ -390,4 +400,5 @@ public class InventoryUI : MonoBehaviour
                 targetQueue.Enqueue(go);
         }
     }
+#endif
 }

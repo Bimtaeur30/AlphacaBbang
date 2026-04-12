@@ -15,7 +15,6 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     private float _currentSpeedMultiplier = 1;
     private bool _useRotation = true;
 
-    private bool _useLocalMovement = false;
 
 
     public void SetMovementDirection(Vector2 movementInput)
@@ -38,16 +37,7 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 
     private void CalculateMovement()
     {
-        Vector3 dir = new Vector3(_movementDirection.x, 0, _movementDirection.z);
-
-        if (_useLocalMovement)
-        {
-            dir = _owner.transform.TransformDirection(dir);
-        }
-        else
-        {
-            dir = Quaternion.Euler(0, -45f, 0) * dir;
-        }
+        Vector3 dir = Quaternion.Euler(0, -45f, 0) * _movementDirection;
 
         _velocity = dir * _moveSpeed * _currentSpeedMultiplier;
 
@@ -96,10 +86,5 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     public void SetSpeedMultiplier(float multiplier)
     {
         _currentSpeedMultiplier = multiplier;
-    }
-
-    public void SetUseLocalMovement(bool value)
-    {
-        _useLocalMovement = value;
     }
 }

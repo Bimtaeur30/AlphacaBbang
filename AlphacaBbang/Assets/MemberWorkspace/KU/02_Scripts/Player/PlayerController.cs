@@ -73,21 +73,18 @@ public class PlayerController : Agent
         if (input.sqrMagnitude < 0.01f)
             return 0f; // Idle
 
-        Vector3 worldDir = new Vector3(input.x, 0, input.y);
-        Vector3 localDir = transform.InverseTransformDirection(worldDir);
+        input.Normalize();
 
-        localDir.Normalize();
-
-        if (localDir.z > 0.5f)
+        if (input.y > 0.5f)
             return 0.25f; // 앞
 
-        if (localDir.z < -0.5f)
+        if (input.y < -0.5f)
             return 0.5f; // 뒤
 
-        if (localDir.x < -0.5f)
+        if (input.x < -0.5f)
             return 0.75f; // 왼쪽
 
-        if (localDir.x > 0.5f)
+        if (input.x > 0.5f)
             return 1f; // 오른쪽
 
         return 0f;
@@ -148,8 +145,6 @@ public class PlayerController : Agent
         IsAiming = finalAim;
 
         _agentMovement.SetUseRotation(!finalAim);
-
-        _agentMovement.SetUseLocalMovement(isAiming);
 
         UpdateSpeed();
     }

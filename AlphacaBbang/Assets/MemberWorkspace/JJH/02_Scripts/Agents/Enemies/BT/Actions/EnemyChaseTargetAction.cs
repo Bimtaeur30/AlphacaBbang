@@ -16,6 +16,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
         private INavMeshAgent _navMeshAgent;
+        private ISensor _sensor;
 
         private Vector3 _enemyPos;
         private Vector3 _targetPos;
@@ -26,6 +27,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
                 return Status.Failure;
 
             _navMeshAgent = Enemy.Value.NavMeshAgent;
+            _sensor = Enemy.Value.Sensor;
 
             _navMeshAgent.KeepChase(true);
 
@@ -46,9 +48,14 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
             _navMeshAgent.MoveTo(_targetPos);
 
-            if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.AttackData.StoppingDistance)
+            if (_sensor.IsTargetInSight(Enemy.Value.transform.position, Enemy.Value.EnemyData.StoppingDistance, Target.Value.transform))
             {
-                _navMeshAgent.KeepChase(false);
+                if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.EnemyData.StoppingDistance)
+                {
+                    _navMeshAgent.KeepChase(false);
+                    return Status.Success;
+                }
+
                 return Status.Success;
             }
 

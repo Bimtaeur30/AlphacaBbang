@@ -12,6 +12,8 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh
         {
             _owner = owner;
             _navMeshAgent = GetComponentInParent<NavMeshAgent>();
+
+            _navMeshAgent.updateRotation = false;
         }
 
         public void MoveTo(Vector3 targetPosition)

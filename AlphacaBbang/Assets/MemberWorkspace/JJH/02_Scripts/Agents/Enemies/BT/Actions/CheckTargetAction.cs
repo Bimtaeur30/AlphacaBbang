@@ -17,11 +17,11 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.Sensor == null || Enemy.Value.AttackData == null || Target == null)
+            if (Enemy.Value == null || Enemy.Value.Sensor == null || Enemy.Value.EnemyData == null || Target == null)
                 return Status.Failure;
 
             _sensor = Enemy.Value.Sensor;
-            AttackDataSO attackData = Enemy.Value.AttackData;
+            EnemyDataSO attackData = Enemy.Value.EnemyData;
 
             if (_sensor.IsTargetInRange(attackData.DetectRange, out Collider hitCollider))
             {

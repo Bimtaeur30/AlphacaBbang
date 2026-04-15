@@ -13,4 +13,15 @@ public class AgentRenderer : MonoBehaviour, IRenderer, IModule
     {
         Animator.CrossFadeInFixedTime(clipHash, crossFadeDuration, layerIndex, normalizedTime);
     }
+
+    public void SetFloat(int hash, float value, float dampTime = 0, float deltaTime = 0)
+    {
+        Animator.SetFloat(hash, value, dampTime, deltaTime);
+    }
+
+    public void SetBool(int hash, bool value)
+    {
+        Animator.SetBool(hash, value);
+
+    }
 }

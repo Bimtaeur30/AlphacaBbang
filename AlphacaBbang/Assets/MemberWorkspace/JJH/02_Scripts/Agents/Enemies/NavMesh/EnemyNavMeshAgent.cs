@@ -12,6 +12,9 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh
         {
             _owner = owner;
             _navMeshAgent = GetComponentInParent<NavMeshAgent>();
+
+            _navMeshAgent.updateRotation = false;
+            _navMeshAgent.autoBraking = true;
         }
 
         public void MoveTo(Vector3 targetPosition)
@@ -22,6 +25,13 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh
         public void KeepChase(bool value)
         {
             _navMeshAgent.isStopped = !value;
+
+
+            if (!value)
+            {
+                _navMeshAgent.ResetPath();
+                _navMeshAgent.velocity = Vector3.zero;
+            }
         }
     }
 }

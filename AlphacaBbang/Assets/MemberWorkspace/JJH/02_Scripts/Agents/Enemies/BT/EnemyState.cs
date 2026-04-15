@@ -8,8 +8,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT
         IDLE = 0,
         MOVE = 1,
         COMBAT = 2,
-        HIT = 3,
-        STUNNED = 4,
-        DEAD = 5
+        STUNNED = 3,
+        DEAD = 4
     }
 }

@@ -8,7 +8,8 @@ public class PlayerController : Agent
 
     [SerializeField] private AnimParamSO _isGunParam;
     [SerializeField] private AnimParamSO _speedParam;
-    [SerializeField] private AnimParamSO _attackWalkParam;
+    [SerializeField] private AnimParamSO _attackXParam;
+    [SerializeField] private AnimParamSO _attackYParam;
     [SerializeField] private float _rotationSpeed = 10f;
 
     private IRenderer _renderer;
@@ -63,33 +64,27 @@ public class PlayerController : Agent
 
         if (IsAiming)
         {
-            float attackWalk = GetAttackWalkValue(_movementInput);
-
-            _renderer.SetFloat(_attackWalkParam.ParamHash, attackWalk, 0.1f, Time.deltaTime);
+            UpdateAttackAnimation(_movementInput);
         }
     }
-    private float GetAttackWalkValue(Vector2 input)
+    private void UpdateAttackAnimation(Vector2 input)
     {
         if (input.sqrMagnitude < 0.01f)
-            return 0f; // Idle
+        {
+            _renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            return;
+        }
 
-        input.Normalize();
+        Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
 
-        if (input.y > 0.5f)
-            return 0.25f; // 앞
+        Vector3 localDir = transform.InverseTransformDirection(worldDir);
 
-        if (input.y < -0.5f)
-            return 0.5f; // 뒤
+        localDir.Normalize();
 
-        if (input.x < -0.5f)
-            return 0.75f; // 왼쪽
-
-        if (input.x > 0.5f)
-            return 1f; // 오른쪽
-
-        return 0f;
+        _renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
+        _renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
     }
-
     private void RotateToMovement()
     {
         Vector3 velocity = _agentMovement.Velocity;

@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts_Systems.EventSystems;
+using TMPro;
 using UnityEngine;
 
 namespace MemberWorkspace.JJH._02_Scripts.Agents
@@ -6,6 +8,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
         [SerializeField] private TextMeshPro healthText;
+        private EventChannelSO _agentEventChannel;
 
         private Agent _owner;
 
@@ -15,6 +18,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         public void Initialize(ModuleOwner owner)
         {
             _owner = owner as Agent;
+            _agentEventChannel = _owner.AgentEventChannel;
         }
 
         public void InitHealth(float maxHealth)
@@ -27,6 +31,13 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         public void SetHealth(float health)
         {
             _health -= health;
+
+            if (_health <= 0)
+            {
+                _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent);
+                return;
+            }
+
             ChangeHealthText();
         }
 

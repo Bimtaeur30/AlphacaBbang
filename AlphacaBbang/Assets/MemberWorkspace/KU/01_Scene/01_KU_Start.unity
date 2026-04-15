@@ -280,10 +280,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4911744df7ee1b341b5636d6459f713b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  AgentEventChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}
   <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
   _isGunParam: {fileID: 11400000, guid: 1ed3e90167f86854aa8c0f6c47aa74bf, type: 2}
   _speedParam: {fileID: 11400000, guid: 5f18c7ef8293beb41ad821adf54e3f85, type: 2}
-  _attackWalkParam: {fileID: 11400000, guid: ad72093672090a5408bc97806b3764d1, type: 2}
+  _attackXParam: {fileID: 11400000, guid: 42cc18460e9f60e4296ddb7fa9460c4f, type: 2}
+  _attackYParam: {fileID: 11400000, guid: 22352690bc05fe84a84f73c31f50db02, type: 2}
   _rotationSpeed: 9
 --- !u!143 &141946312
 CharacterController:
@@ -304,12 +306,12 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 1.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.25, z: -0.15}
 --- !u!1 &199718287
 GameObject:
   m_ObjectHideFlags: 0
@@ -1938,10 +1940,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStaminaGaugeSystem
   _gaugeImage: {fileID: 1844120193}
   _parentGaugeImage: {fileID: 373375709}
-  _gaugeMaxTime: 10
+  _gaugeMaxTime: 5
   _minAimCooldown: 1
   _useSpeed: 1
-  _chargeSpeed: 5
+  _chargeSpeed: 1.5
+  _aimReleaseCooldown: 1
 --- !u!1 &1433965299
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,7 +11,6 @@ public class BillboardCanvas : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 dir = transform.position - cam.position;
-        transform.rotation = Quaternion.LookRotation(dir);
+        transform.rotation = Quaternion.LookRotation(cam.forward);
     }
 }

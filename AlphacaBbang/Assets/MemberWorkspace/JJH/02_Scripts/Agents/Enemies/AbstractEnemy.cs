@@ -1,3 +1,4 @@
+using JJH._02_Scripts.Systems.EventSystems;
 using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
 using TMPro;
 using UnityEngine;
@@ -19,6 +20,19 @@ namespace JJH._02_Scripts.Agents.Enemies
             HealthModule.InitHealth(EnemyData.EnemyHealth);
 
             nameText.text = EnemyData.EnemyName;
+
+            AgentEventChannel.AddListener<AgentDeadEvent>(HandkeAgentDeadEvent);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeAgentDeadEvent);
+        }
+
+        private void HandkeAgentDeadEvent(AgentDeadEvent evt)
+        {
+            Debug.Log("Àû »ç¸Á");
+            Destroy(gameObject);
         }
 
         public void ApplyBurn(float dps, float duration)

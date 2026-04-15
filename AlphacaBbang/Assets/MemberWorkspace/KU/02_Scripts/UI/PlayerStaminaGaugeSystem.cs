@@ -18,6 +18,8 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
     [SerializeField] private float _minAimCooldown = 2f;
     [SerializeField] private float _useSpeed = 1f;
     [SerializeField] private float _chargeSpeed = 1f;
+    [SerializeField] private float _aimReleaseCooldown = 1.5f;
+    private bool _prevAiming;
 
     private float _cooldownTimer = 0f;
 
@@ -46,8 +48,19 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
     private void SyncAimState()
     {
-        if (_controller != null)
-            _isAiming = _controller.IsAiming;
+        if (_controller == null)
+            return;
+
+        bool currentAiming = _controller.IsAiming;
+
+        if (_prevAiming && !currentAiming)
+        {
+            _canAim = false;
+            _cooldownTimer = _aimReleaseCooldown;
+        }
+
+        _isAiming = currentAiming;
+        _prevAiming = currentAiming;
     }
 
     private void UpdateGauge()

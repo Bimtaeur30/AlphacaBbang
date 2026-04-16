@@ -4,9 +4,9 @@ using UnityEngine.Rendering.Universal;
 namespace MemberWorkspace.CHG._02_Scripts
 {
 
-    /*public class FogRenderFeature : ScriptableRendererFeature
+    public class FogRenderFeature : ScriptableRendererFeature
     {
-        /*[System.Serializable]
+        [System.Serializable]
         public class Settings
         {
             public Material fogMaterial;
@@ -25,6 +25,6 @@ namespace MemberWorkspace.CHG._02_Scripts
         {
             if (settings.fogMaterial == null) return;
             renderer.EnqueuePass(fogPass);
-        }#1#
-    }*/
+        }
+    }
 }

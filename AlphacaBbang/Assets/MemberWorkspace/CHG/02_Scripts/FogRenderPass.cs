@@ -6,7 +6,7 @@ using MemberWorkspace.CHG._02_Scripts;
 
 public class FogRenderPass : ScriptableRenderPass
 {
-    /*private Material fogMaterial;
+    private Material fogMaterial;
     private static readonly int MaskTexID   = Shader.PropertyToID("_MaskTex");
     private static readonly int BlitScaleID = Shader.PropertyToID("_BlitScaleBias");
 
@@ -76,5 +76,5 @@ public class FogRenderPass : ScriptableRenderPass
                 Blitter.BlitTexture(ctx.cmd, data.src, new Vector4(1, 1, 0, 0), 0, false);
             });
         }
-    }*/
+    }
 }

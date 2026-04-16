@@ -1,6 +1,6 @@
 Shader "Custom/ViewMeshWhite"
 {
-    /*SubShader
+    SubShader
     {
         Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         ZWrite Off
@@ -29,5 +29,5 @@ Shader "Custom/ViewMeshWhite"
             }
             ENDHLSL
         }
-    }*/
+    }
 }

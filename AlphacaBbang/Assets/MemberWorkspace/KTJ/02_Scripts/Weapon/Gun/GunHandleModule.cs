@@ -8,13 +8,14 @@ public class GunHandleModule : MonoBehaviour, IModule
 {
     [Header("State")]
     [field: SerializeField] public bool IsAim { get; private set; }
-    [field: SerializeField] public bool IsFire { get; private set; }
+    [field: SerializeField] public bool IsFire { get; private set; } // 이거 False로 만들어야함 장전하는동안
 
     [Header("Gun")]
     [field: SerializeField] public Gun CurrentGun { get; private set; }
 
     [Header("System")]
     [SerializeField] private EventChannelSO systemChannel;
+
 
     public void Initialize(ModuleOwner owner)
     {
@@ -39,6 +40,11 @@ public class GunHandleModule : MonoBehaviour, IModule
         {
             CurrentGun.TickFire();
         }
+
+        //if (CurrentGun.Magazine.IsReloading)
+        //{
+        //    CurrentGun.StopFire(true);
+        //}
     }
 
     public virtual void Fire(bool value)

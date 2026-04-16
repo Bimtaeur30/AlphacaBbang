@@ -19,7 +19,7 @@ public class InventoryUI : MonoBehaviour
     [Header("Connected Objects")]
     [SerializeField] private RectTransform _contentAreaRT;
     [SerializeField] private GameObject _slotUIPrefab;
-    [SerializeField] private InventoryContainer inventory;
+    [SerializeField] private ItemContainer inventory;
 
     [Header("Preview")]
     [SerializeField] private bool _showPreview = false;
@@ -45,7 +45,7 @@ public class InventoryUI : MonoBehaviour
     private void Awake()
     {
         if (inventory == null)
-            inventory = GetComponent<InventoryContainer>();
+            inventory = GetComponent<ItemContainer>();
     }
 
     private void Start()

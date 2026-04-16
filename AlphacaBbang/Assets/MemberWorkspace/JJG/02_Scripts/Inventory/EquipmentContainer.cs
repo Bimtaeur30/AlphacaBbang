@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EquipmentContainer : MonoBehaviour
+public class EquipmentContainer : ItemContainer
 {
     [SerializeField] private List<EquipmentSlot> equipmentSlots = new();
 

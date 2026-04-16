@@ -6,7 +6,10 @@ public class PlayerController : Agent
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
 
+    [SerializeField] private AnimParamSO _isGunParam;
     [SerializeField] private AnimParamSO _speedParam;
+    [SerializeField] private AnimParamSO _attackXParam;
+    [SerializeField] private AnimParamSO _attackYParam;
     [SerializeField] private float _rotationSpeed = 10f;
 
     private IRenderer _renderer;
@@ -15,8 +18,12 @@ public class PlayerController : Agent
     private IControllerMovement _movement;
     private PlayerStaminaGaugeSystem _stamina;
     private PlayerStatSystem _stat;
+    
+    private PlayerEnumState _playerEnumState;
 
     public bool IsAiming { get; private set; }
+
+    private Vector2 _movementInput;
 
     protected override void Awake()
     {
@@ -47,19 +54,37 @@ public class PlayerController : Agent
     private void UpdateAnimation()
     {
         float speed = _agentMovement.Velocity.magnitude;
-
-        float normalized = Mathf.Clamp01(speed / 8f);
-
-        if (normalized < 0.05f)
+        float normalized = speed / 8f;
+        if (normalized < 0.5f)
             normalized = 0f;
 
-        _renderer.Animator.SetFloat(
-            _speedParam.ParamHash,
-            normalized,
-            0.1f,
-            Time.deltaTime);
-    }
+        _renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
 
+        _renderer.SetBool(_isGunParam.ParamHash, IsAiming);
+
+        if (IsAiming)
+        {
+            UpdateAttackAnimation(_movementInput);
+        }
+    }
+    private void UpdateAttackAnimation(Vector2 input)
+    {
+        if (input.sqrMagnitude < 0.01f)
+        {
+            _renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            return;
+        }
+
+        Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
+
+        Vector3 localDir = transform.InverseTransformDirection(worldDir);
+
+        localDir.Normalize();
+
+        _renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
+        _renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
+    }
     private void RotateToMovement()
     {
         Vector3 velocity = _agentMovement.Velocity;
@@ -74,6 +99,8 @@ public class PlayerController : Agent
             transform.rotation,
             target,
             8f * Time.deltaTime);
+
+        _renderer.Animator.SetBool(_isGunParam.ParamHash, IsAiming);
     }
 
     private void RotateToMouse()
@@ -99,6 +126,7 @@ public class PlayerController : Agent
 
     private void HandleMovement(Vector2 input)
     {
+        _movementInput = input;
         _movement.SetMovementDirection(input);
     }
 

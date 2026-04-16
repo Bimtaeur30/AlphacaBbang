@@ -29,8 +29,6 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _navMeshAgent = Enemy.Value.NavMeshAgent;
             _sensor = Enemy.Value.Sensor;
 
-            _navMeshAgent.KeepChase(true);
-
             return Status.Running;
         }
 
@@ -46,18 +44,17 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
                 _targetPos = hit.position;
             }
 
-            _navMeshAgent.MoveTo(_targetPos);
+            float distance = Vector3.Distance(_targetPos, _enemyPos);
 
-            if (_sensor.IsTargetInSight(Enemy.Value.transform.position, Enemy.Value.EnemyData.StoppingDistance, Target.Value.transform))
+            if (_sensor.IsTargetInSight(_enemyPos, Target.Value.transform) &&
+                distance <= Enemy.Value.EnemyData.AttackDistance)
             {
-                if (Vector3.Distance(_targetPos, _enemyPos) <= Enemy.Value.EnemyData.StoppingDistance)
-                {
-                    _navMeshAgent.KeepChase(false);
-                    return Status.Success;
-                }
-
+                _navMeshAgent.KeepChase(false);
                 return Status.Success;
             }
+
+            _navMeshAgent.KeepChase(true);
+            _navMeshAgent.MoveTo(_targetPos);
 
             return Status.Running;
         }

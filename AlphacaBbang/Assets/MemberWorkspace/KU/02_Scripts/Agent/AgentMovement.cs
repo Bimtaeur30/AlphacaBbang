@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 {
-    [SerializeField] private float _moveSpeed = 8f, gravity = -9.8f;
+    [field: SerializeField] public float _moveSpeed { get; private set; }
+    [SerializeField] private float gravity = -9.8f;
     private CharacterController _characterController;
 
     private Vector3 _velocity;
@@ -15,9 +16,10 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
     private bool _useRotation = true;
 
 
+
     public void SetMovementDirection(Vector2 movementInput)
     {
-        _movementDirection = Quaternion.Euler(0, -45f, 0) * new Vector3(movementInput.x, 0, movementInput.y).normalized;
+        _movementDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
     }
 
     public void SetMovementDirection(Vector3 direction)
@@ -35,34 +37,39 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 
     private void CalculateMovement()
     {
-        _velocity = _movementDirection;
-        _velocity *= _moveSpeed * _currentSpeedMultiplier * Time.deltaTime;
+        Vector3 dir = Quaternion.Euler(0, -45f, 0) * _movementDirection;
+
+        _velocity = dir * _moveSpeed * _currentSpeedMultiplier;
 
         if (_useRotation && _velocity.sqrMagnitude > 0)
         {
-            float rotationSpeed = 8f;
             Quaternion targetRotation = Quaternion.LookRotation(_velocity);
             _owner.transform.rotation = Quaternion.Lerp(
                 _owner.transform.rotation,
                 targetRotation,
-                rotationSpeed * Time.deltaTime);
+                8f * Time.deltaTime);
         }
     }
 
 
     private void ApplyGravity()
     {
-        if (_verticalVelocity < 0)
-            _verticalVelocity = -0.03f;
+        if (_characterController.isGrounded)
+        {
+            if (_verticalVelocity < 0)
+                _verticalVelocity = -2f;
+        }
         else
+        {
             _verticalVelocity += gravity * Time.deltaTime;
+        }
 
         _velocity.y = _verticalVelocity;
     }
 
     private void Move()
     {
-        _characterController.Move(_velocity);
+        _characterController.Move(_velocity * Time.deltaTime);
     }
 
     public void Initialize(ModuleOwner owner)

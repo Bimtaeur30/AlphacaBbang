@@ -1,10 +1,12 @@
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
+using Unity.Cinemachine;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(CinemachineImpulseSource))]
 public class CrossHairModule : MonoBehaviour, IModule
 {
     public Vector2 CHMousePos { get; private set; }
@@ -23,12 +25,16 @@ public class CrossHairModule : MonoBehaviour, IModule
     private Vector2 _mousePos;
     private Vector2 _recoilOffset;
 
+    private CinemachineImpulseSource _impulseSource;
+
     // 연사 중 FireInterval마다 반동 적용
     private float _fireRecoilTimer;
 
     public void Initialize(ModuleOwner owner)
     {
         _player = owner as Player_TJ;
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+        Debug.Assert( _impulseSource != null ,"Impulse Source Componenet is NULL");
 
         Debug.Assert(_player != null, "CrossHairModule : player is null");
         Debug.Assert(crossHairImg != null, "CrossHairModule : crossHairImg is null");
@@ -61,7 +67,7 @@ public class CrossHairModule : MonoBehaviour, IModule
         Gun currentGun = gunHandle.CurrentGun;
         GunDataSO gunData = currentGun.GunDataSO;
 
-        bool isFiring = gunHandle.OnFire && gunHandle.OnAim;
+        bool isFiring = gunHandle.IsFire && gunHandle.IsAim && gunHandle.CurrentGun.Magazine.IsReloading == false;
 
         if (isFiring)
         {
@@ -152,11 +158,21 @@ public class CrossHairModule : MonoBehaviour, IModule
         float randomAngle = Random.Range(-spreadAngle, spreadAngle);
 
         Vector2 recoilDir = RotateVector(aimDir, randomAngle);
-        _recoilOffset += recoilDir * recoilDistance;
+        _recoilOffset += recoilDir * Mathf.Sqrt(spreadAngle) * 60;
 
         crossHairImg.rectTransform.DOShakeRotation(0.1f, new Vector3(0, 0, gunData.RecoilForceX), 10, 90);
 
         PlayKick();
+        ImpulseShake(aimDir, spreadAngle);
+    }
+
+    private void ImpulseShake(Vector2 dir, float force)
+    {
+        float adjusted = Mathf.Sqrt(force);
+        Vector2 forceVector = dir * adjusted * 0.2f;
+
+        _impulseSource.DefaultVelocity = forceVector;
+        _impulseSource.GenerateImpulse();
     }
 
     private Vector2 RotateVector(Vector2 dir, float degrees)

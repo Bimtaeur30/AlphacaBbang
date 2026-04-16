@@ -1,6 +1,6 @@
 Shader "Custom/FogPostProcess"
 {
-    Properties
+    /*Properties
     {
         _BlitTexture ("Screen",    2D) = "white" {}
         _MaskTex     ("View Mask", 2D) = "black" {}
@@ -63,5 +63,5 @@ Shader "Custom/FogPostProcess"
             }
             ENDHLSL
         }
-    }
+    }*/
 }

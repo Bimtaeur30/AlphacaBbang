@@ -6,7 +6,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 {
     public class FogOfWarManager : MonoBehaviour
     {
-        [Header("마스크 카메라 (별도 카메라)")]
+        /*[Header("마스크 카메라 (별도 카메라)")]
         [SerializeField] private Camera maskCamera;
 
         [Header("안개 설정")]
@@ -45,6 +45,6 @@ namespace MemberWorkspace.CHG._02_Scripts
                 MaskTexture.Release();
                 MaskTexture = null;
             }
-        }
+        }*/
     }
 }

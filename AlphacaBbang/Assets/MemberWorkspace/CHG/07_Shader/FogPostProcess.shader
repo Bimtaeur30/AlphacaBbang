@@ -2,8 +2,9 @@ Shader "Custom/FogPostProcess"
 {
     Properties
     {
-        _MaskTex  ("View Mask", 2D) = "black" {}
-        _FogColor ("Fog Color", Color) = (0,0,0,0.7)
+        _BlitTexture ("Screen",    2D) = "white" {}
+        _MaskTex     ("View Mask", 2D) = "black" {}
+        _FogColor    ("Fog Color", Color) = (0,0,0,0.7)
     }
 
     SubShader
@@ -13,19 +14,33 @@ Shader "Custom/FogPostProcess"
 
         Pass
         {
-            CGPROGRAM
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc"
-            // Blitter가 자동으로 넣어주는 소스 텍스처
+            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            sampler2D _BlitTexture;  // ← _MainTex 아님
-            sampler2D _MaskTex;
-            float4    _FogColor;
+            TEXTURE2D(_BlitTexture);
+            SAMPLER(sampler_BlitTexture);
+            TEXTURE2D(_MaskTex);
+            SAMPLER(sampler_MaskTex);
 
-            struct Attributes { float4 positionOS : POSITION; float2 uv : TEXCOORD0; };
-            struct Varyings   { float4 positionCS : SV_POSITION; float2 uv : TEXCOORD0; };
+            CBUFFER_START(UnityPerMaterial)
+                float4 _FogColor;
+                float4 _BlitScaleBias;
+            CBUFFER_END
+
+            struct Attributes
+            {
+                float4 positionOS : POSITION;
+                float2 uv         : TEXCOORD0;
+            };
+
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
+                float2 uv         : TEXCOORD0;
+            };
 
             Varyings vert(Attributes IN)
             {
@@ -37,16 +52,16 @@ Shader "Custom/FogPostProcess"
 
             float4 frag(Varyings IN) : SV_Target
             {
-                float4 scene = tex2D(_BlitTexture, IN.uv);
-                float  mask  = tex2D(_MaskTex, IN.uv).r;
+                float4 scene = SAMPLE_TEXTURE2D(_BlitTexture, sampler_BlitTexture, IN.uv);
+                float  mask  = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, IN.uv).r;
 
                 float4 fogged = float4(
-                    scene.rgb * (1 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
+                    scene.rgb * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
                     1.0
                 );
                 return lerp(fogged, scene, mask);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }

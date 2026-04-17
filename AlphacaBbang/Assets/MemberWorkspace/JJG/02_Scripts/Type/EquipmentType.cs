@@ -6,6 +6,6 @@
         Helmet,
         MainWeapon,
         SubWeapon,
-        ThrowingWeapon
+        MeleeWeapon,
     }
 }

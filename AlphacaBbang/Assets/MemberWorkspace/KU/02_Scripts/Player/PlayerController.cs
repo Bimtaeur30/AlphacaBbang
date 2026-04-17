@@ -1,34 +1,185 @@
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerController : Agent
 {
-    [field: SerializeField] public PlayerInputSO playerInput { get; private set; }
+    [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
+
+    [SerializeField] private AnimParamSO _isGunParam;
+    [SerializeField] private AnimParamSO _speedParam;
+    [SerializeField] private AnimParamSO _attackXParam;
+    [SerializeField] private AnimParamSO _attackYParam;
+    [SerializeField] private float _rotationSpeed = 10f;
+
+    private IRenderer _renderer;
+    private AgentMovement _agentMovement;
 
     private IControllerMovement _movement;
+    private PlayerStaminaGaugeSystem _stamina;
+    private PlayerStatSystem _stat;
+    
+    private PlayerEnumState _playerEnumState;
 
-    protected override void Awake() 
+    public bool IsAiming { get; private set; }
+
+    private Vector2 _movementInput;
+
+    protected override void Awake()
     {
         base.Awake();
 
         _movement = GetModule<IControllerMovement>();
+        _agentMovement = _movement as AgentMovement;
+        _renderer = GetModule<IRenderer>();
 
-        playerInput.OnMovementChange += HandleMovement;
+        _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
+        _stat = GetComponentInChildren<PlayerStatSystem>();
+
+        PlayerInput.OnMovementChange += HandleMovement;
+        PlayerInput.OnAimAction += HandleAim;
+        PlayerInput.OnSprintAction += HandleSprint;
+    }
+
+    private void Update()
+    {
+        if (IsAiming)
+            RotateToMouse();
+        else
+            RotateToMovement();
+
+        UpdateAnimation();
+    }
+
+    private void UpdateAnimation()
+    {
+        float speed = _agentMovement.Velocity.magnitude;
+        float normalized = speed / 8f;
+        if (normalized < 0.5f)
+            normalized = 0f;
+
+        _renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
+
+        _renderer.SetBool(_isGunParam.ParamHash, IsAiming);
+
+        if (IsAiming)
+        {
+            UpdateAttackAnimation(_movementInput);
+        }
+    }
+    private void UpdateAttackAnimation(Vector2 input)
+    {
+        if (input.sqrMagnitude < 0.01f)
+        {
+            _renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            return;
+        }
+
+        Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
+
+        Vector3 localDir = transform.InverseTransformDirection(worldDir);
+
+        localDir.Normalize();
+
+        _renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
+        _renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
+    }
+    private void RotateToMovement()
+    {
+        Vector3 velocity = _agentMovement.Velocity;
+        velocity.y = 0;
+
+        if (velocity.sqrMagnitude < 0.001f)
+            return;
+
+        Quaternion target = Quaternion.LookRotation(velocity);
+
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            target,
+            8f * Time.deltaTime);
+
+        _renderer.Animator.SetBool(_isGunParam.ParamHash, IsAiming);
+    }
+
+    private void RotateToMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        {
+            Vector3 dir = (hit.point - transform.position);
+            dir.y = 0;
+
+            if (dir.sqrMagnitude < 0.001f)
+                return;
+
+            Quaternion target = Quaternion.LookRotation(dir);
+
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                target,
+                _rotationSpeed * Time.deltaTime);
+        }
     }
 
     private void HandleMovement(Vector2 input)
     {
+        _movementInput = input;
         _movement.SetMovementDirection(input);
     }
 
-    public void OnMove(InputAction.CallbackContext context)
+    private void HandleAim(bool isAiming)
     {
-        Vector2 input = context.ReadValue<Vector2>();
-        playerInput.SetMovement(input);
+        bool finalAim = isAiming;
+
+        if (_stamina != null && !_stamina.CanAim)
+            finalAim = false;
+
+        IsAiming = finalAim;
+
+        _agentMovement.SetUseRotation(!finalAim);
+
+        UpdateSpeed();
+    }
+
+    private void HandleSprint(bool isSprinting)
+    {
+        if (_stat != null && !_stat.CanRun())
+            isSprinting = false;
+
+        _stat.SetRunning(isSprinting);
+
+        UpdateSpeed();
+    }
+
+    private void UpdateSpeed()
+    {
+        float multiplier = 1f;
+
+        if (IsAiming)
+            multiplier *= 0.3f;
+
+        if (_stat != null && _stat.IsRunning)
+            multiplier *= 1.5f;
+
+        _agentMovement.SetSpeedMultiplier(multiplier);
+    }
+
+    public void ForceStopAim()
+    {
+        IsAiming = false;
+
+        _agentMovement.SetUseRotation(true);
+
+        UpdateSpeed();
     }
 
     private void OnDestroy()
     {
-        playerInput.OnMovementChange -= HandleMovement;
+        PlayerInput.OnMovementChange -= HandleMovement;
+        PlayerInput.OnAimAction -= HandleAim;
+        PlayerInput.OnSprintAction -= HandleSprint;
     }
 }

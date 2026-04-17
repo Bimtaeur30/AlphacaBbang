@@ -1,55 +1,77 @@
+using JJH._02_Scripts_Systems.EventSystems;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
-    [field:SerializeField] public bool onAim { get; private set; }
-    [field:SerializeField] public bool onFire { get; private set; }
-    [SerializeField] private Gun currentGun;
+    [Header("State")]
+    [field: SerializeField] public bool IsAim { get; private set; }
+    [field: SerializeField] public bool IsFire { get; private set; } // 이거 False로 만들어야함 장전하는동안
 
-    private float _currentTime;
+    [Header("Gun")]
+    [field: SerializeField] public Gun CurrentGun { get; private set; }
+
+    [Header("System")]
+    [SerializeField] private EventChannelSO systemChannel;
+
 
     public void Initialize(ModuleOwner owner)
     {
+        Debug.Log($"{gameObject.name} / {GetType().Name} Initialize");
+
+        Debug.Assert(CurrentGun != null, "CurrentGun이 할당되지 않았습니다.");
+        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO가 할당되지 않았습니다.");
+
+        systemChannel.RaiseEvent(SystemEventChannel.WeaponEqnupEventChannel.Init(CurrentGun.GunDataSO));
+        CurrentGun.Initialize(this);
+
+        Debug.Log($"{gameObject.name} / {GetType().Name} 초기화 완료");
     }
+
 
     private void Update()
     {
-        if (onFire && onAim && currentGun.GunDataSO.FireMode == FireMode.Auto) // 오토일 경우 여러발 발사
+        if (CurrentGun == null)
+            return;
+
+        if (IsAim && IsFire)
         {
-            _currentTime += Time.deltaTime;
-            if (_currentTime > currentGun.GunDataSO.FireInterval)
-            {
-                currentGun.Fire();
-                _currentTime = 0;
-            }
+            CurrentGun.TickFire();
         }
+
+        //if (CurrentGun.Magazine.IsReloading)
+        //{
+        //    CurrentGun.StopFire(true);
+        //}
     }
 
-    public void Fire(bool v)
+    public virtual void Fire(bool value)
     {
-        if (v)
+        IsFire = value;
+
+        if (CurrentGun == null)
+            return;
+
+        if (value)
         {
-            onFire = true;
-            if (currentGun.GunDataSO.FireMode == FireMode.Single && onAim) // 단발일 경우 한번 쏘기
-            {
-                currentGun.Fire();
-            }
+            CurrentGun.StartFire(IsAim);
         }
         else
         {
-            onFire = false;
+            CurrentGun.StopFire(IsAim);
         }
     }
+    public virtual void OnFire() { }
 
-    public void Aim(bool v)
+    public void Aim(bool value)
     {
-        if (v)
-        {
-            onAim = true;
-        }
-        else
-        {
-            onAim = false;
-        }
+        IsAim = value;
+
+        if (CurrentGun == null)
+            return;
+
+        CurrentGun.SetAim(value);
     }
 }

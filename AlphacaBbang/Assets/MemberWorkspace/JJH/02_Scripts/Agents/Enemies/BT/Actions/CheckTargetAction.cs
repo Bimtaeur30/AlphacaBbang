@@ -13,19 +13,19 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
+        private ISensor _sensor;
+
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Target.Value == null)
+            if (Enemy.Value == null || Enemy.Value.Sensor == null || Enemy.Value.EnemyData == null || Target == null)
                 return Status.Failure;
 
-            AgentSensor sensor = Enemy.Value.Sensor;
-            AttackDataSO attackConfig = Enemy.Value.AttackData;
+            _sensor = Enemy.Value.Sensor;
+            EnemyDataSO attackData = Enemy.Value.EnemyData;
 
-            if (sensor.IsTargetInRange(attackConfig.DetectRange, out Collider hitCollider)
-                && sensor.IsTargetInSight(Enemy.Value.transform.position, attackConfig.DetectRange, hitCollider))
+            if (_sensor.IsTargetInRange(attackData.DetectRange, out Collider hitCollider))
             {
                 Target.Value = hitCollider.gameObject;
-                Debug.Log("Target set");
                 return Status.Success;
             }
 

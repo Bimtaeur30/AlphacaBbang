@@ -71,7 +71,7 @@ public class Player_TJ : ModuleOwner
 
     private void RotateToCrosshair()
     {
-        if (GunHandleModule == null || !GunHandleModule.IsAim)
+        if (GunHandleModule == null || !GunHandleModule.IsInputAim)
             return;
 
         if (MainCam == null || CrossHairModule == null)

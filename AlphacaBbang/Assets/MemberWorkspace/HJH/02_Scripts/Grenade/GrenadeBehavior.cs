@@ -3,9 +3,7 @@ using UnityEngine;
 
 public abstract class GrenadeBehavior : MonoBehaviour
 {
-    public float boomTime = 2f;
-
-    public IEnumerator Boom(GameObject projectile)
+    public IEnumerator Boom(GameObject projectile, float boomTime)
     {
         yield return new WaitForSeconds(boomTime);
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -46,10 +44,10 @@ namespace MemberWorkspace.CHG._02_Scripts
         //[SerializeField] private LayerMask targetLayerMask;
         
         //public List<Transform> visibleTargets = new List<Transform>();
-        public float meshResolution; //1 angle in ray count
+        [SerializeField] private float meshResolution; //1 angle in ray count
+        [SerializeField] private MeshFilter meshFilter;
 
         private Mesh viewMesh;  
-        [SerializeField] private MeshFilter meshFilter;
 
         
         public int edgeResolveIterations; //
@@ -122,7 +120,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 
                 if (i != 0)
                 {
-                    // new ray and old ray distans > edgeDstThreshold = find edge
+                    // new ray and old ray distance > edgeDstThreshold = find edge
                     bool edgeDstThresholdExceed = Mathf.Abs(prevViewCast.dst - newViewCast.dst) > edgeDstThreshold;
 
                     // find edge condition
@@ -148,14 +146,19 @@ namespace MemberWorkspace.CHG._02_Scripts
             int vertexCount = viewPoints.Count +1;
             Vector3[] vertices = new Vector3[vertexCount];
             int[] triangles = new int[(vertexCount-2) * 3];
-            vertices[0] = Vector3.zero; // player position
-            
+            Vector2[] uvs = new Vector2[vertexCount]; 
+
+            vertices[0] = Vector3.zero;
+            uvs[0] = new Vector2(0.5f, 0.5f);
+
             for (int i = 0; i < vertexCount-1; i++)
             {
-                //world(viewPoint) to local(player)
                 vertices[i +1] = transform.InverseTransformPoint(viewPoints[i]);
                 
-                //set triangleIndex
+                float magnitude = vertices[i + 1].magnitude;
+                Vector2 uvDir = new Vector2(vertices[i + 1].x, vertices[i + 1].z).normalized;
+                uvs[i + 1] = new Vector2(0.5f, 0.5f) + uvDir * (magnitude / viewRadius) * 0.5f;
+
                 if (i < vertexCount - 2)
                 {
                     triangles[i * 3] = 0;
@@ -163,10 +166,10 @@ namespace MemberWorkspace.CHG._02_Scripts
                     triangles[i * 3 + 2] = i + 2;
                 }
             }
-            
             viewMesh.Clear();
             viewMesh.vertices = vertices;
             viewMesh.triangles = triangles; 
+            viewMesh.uv = uvs; // 계산한 UV 적용
             viewMesh.RecalculateNormals();
         }
         
@@ -207,7 +210,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius, globalAngle);
         }
         
-        public Vector3 DirFromAngle(float angleDegrees, bool angleGlobal)
+        private Vector3 DirFromAngle(float angleDegrees, bool angleGlobal)
         {
             if (!angleGlobal)
             {

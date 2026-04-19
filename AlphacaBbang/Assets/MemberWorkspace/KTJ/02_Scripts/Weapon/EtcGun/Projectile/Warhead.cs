@@ -7,6 +7,8 @@ using UnityEngine;
 public class Warhead : PoolableMono, IProjectile // 바주카 탄두
 {
     [SerializeField] private PoolManagerSO poolManager;
+    [SerializeField] private PoolItemSO explosionPref;
+    [SerializeField] private LayerMask layerMask;
     private Rigidbody body;
     private Collider collider;
 
@@ -27,7 +29,13 @@ public class Warhead : PoolableMono, IProjectile // 바주카 탄두
     private void OnHit() // 여기서 폭발 처리
     {
         body.linearVelocity = Vector3.zero;
+
+        ExplosionPrefab effect = poolManager.Pop<ExplosionPrefab>(explosionPref);
+        effect.transform.position = transform.position;
+        effect.Active(5f, 50f, layerMask);
+
         poolManager.Push(this);
+
     }
 
     private void OnTriggerEnter(Collider other)

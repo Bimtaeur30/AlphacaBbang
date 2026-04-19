@@ -251,7 +251,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1851480900713374380}
-  - component: {fileID: 5279768721753161468}
+  - component: {fileID: 6483571397414771499}
   m_Layer: 0
   m_Name: AutoGun
   m_TagString: Untagged
@@ -278,7 +278,7 @@ Transform:
   - {fileID: 8174654941145039653}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5279768721753161468
+--- !u!114 &6483571397414771499
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -287,10 +287,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6496809216987912972}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf2673d588389e54c8093c7be936074d, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bazooka
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 77ce65765152f2e4f8cb3a884ebf06d3, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
+  <GunDataSO>k__BackingField: {fileID: 11400000, guid: fde92b37c2bd6e948af289f0400fe48e, type: 2}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -305,7 +305,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
-  warHeadSO: {fileID: 11400000, guid: 99214a693e2c2dc49afed85a8abdc7b7, type: 2}
+  BulletShellParticle: {fileID: 8373713849012598950}
 --- !u!1 &7684876147914719305
 GameObject:
   m_ObjectHideFlags: 0
@@ -5338,10 +5338,6 @@ PrefabInstance:
       propertyPath: bulletCountTxt
       value: 
       objectReference: {fileID: 2374469581756013973}
-    - target: {fileID: 5664735427390796397, guid: 17484c9059be8974bbb24f82fa0c23bf, type: 3}
-      propertyPath: <MaxBulletCount>k__BackingField
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

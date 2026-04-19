@@ -1,15 +1,20 @@
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.AnimationSystems;
+using System;
 using System.Collections;
+using System.Security.Claims;
 using UnityEngine;
 using UnityEngine.Events;
 
 public abstract class Gun : MonoBehaviour
 {
     public GunRenderer Renderer { get; private set; }
+    public bool IsAiming { get; private set; }
+    public bool IsFiring { get; private set; }
 
     [field: SerializeField] public GunDataSO GunDataSO { get; private set; }
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
+    [field: SerializeField] public Magazine Magazine { get; private set; }
 
     [Header("Fire")]
     [SerializeField] protected Transform firePos;
@@ -29,37 +34,41 @@ public abstract class Gun : MonoBehaviour
     [SerializeField] protected PoolItemSO bulletParticle;
 
     protected float _lastFireTime = -999f;
-    protected bool _isAiming;
-    protected bool _isFiring;
 
     protected GunHandleModule _gunHandleModule;
 
     protected virtual void Awake()
     {
         Renderer = GetComponentInChildren<GunRenderer>();
+
+
         Debug.Assert(Renderer != null, "GunRenderer가 자식으로 붙어있지 않습니다.");
         Debug.Assert(firePos != null, "firePos가 할당되지 않았습니다.");
     }
 
     public virtual void Initialize(GunHandleModule module)
     {
-        _isAiming = false;
-        _isFiring = false;
+        IsAiming = false;
+        IsFiring = false;
         _gunHandleModule = module;
         Debug.Assert(_gunHandleModule != null, "건핸들러모듈을 받아오지 못했습니다.");
+
+        Magazine = GetComponentInChildren<Magazine>();
+        Magazine.Initialize(this);
+        Debug.Assert(Magazine != null, "Magazine.cs가 자식으로 붙어있지 않습니다.");
     }
 
     public virtual void SetAim(bool isAim)
     {
-        _isAiming = isAim;
+        IsAiming = isAim;
 
-        if (_isFiring && GunDataSO.FireMode == FireMode.Auto && _isAiming)
+        if (IsFiring && GunDataSO.FireMode == FireMode.Auto && IsAiming)
         {
             PlayAutoFire();
             return;
         }
 
-        if (_isAiming)
+        if (IsAiming)
             PlayAim();
         else
             PlayIdle();
@@ -67,7 +76,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void StartFire(bool isAim)
     {
-        _isFiring = true;
+        IsFiring = true;
 
         if (!isAim)
             return;
@@ -89,7 +98,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void StopFire(bool isAim)
     {
-        _isFiring = false;
+        IsFiring = false;
 
         if (isAim)
             PlayAim();
@@ -99,7 +108,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void TickFire()
     {
-        if (!_isAiming || !_isFiring)
+        if (!IsAiming || !IsFiring)
             return;
 
         if (GunDataSO.FireMode == FireMode.Auto)
@@ -114,7 +123,21 @@ public abstract class Gun : MonoBehaviour
             return;
 
         _lastFireTime = Time.time;
-        FireInternal();
+        if (Magazine.TryUseBullet())
+        {
+            FireInternal();
+        }
+        else
+        {
+            Action onReloadEnd = new Action(OnReloadEnd);
+            Magazine.TryReload(onReloadEnd);
+            StopFire(IsAiming);
+        }
+    }
+
+    private void OnReloadEnd()
+    {
+        //StartFire(_isFiring && _isAiming);
     }
 
     protected virtual bool CanFire()

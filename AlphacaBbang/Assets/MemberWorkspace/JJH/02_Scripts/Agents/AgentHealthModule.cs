@@ -31,6 +31,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         public void SetHealth(float health)
         {
             _health -= health;
+            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent);
 
             if (_health <= 0)
             {

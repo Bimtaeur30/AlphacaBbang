@@ -15,11 +15,6 @@ public class FireZone : MonoBehaviour
         damagePerSecond = Grenade.damage;
         duration = Grenade.Duration;
         range = Grenade.range;
-
-        fireParticle = GetComponentInChildren<ParticleSystem>();
-
-        var main = fireParticle.main;
-        main.startLifetime = duration;
         
         StartCoroutine(Fire());
     }

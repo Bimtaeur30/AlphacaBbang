@@ -3,13 +3,15 @@ using UnityEngine;
 
 public class ExampleGun : Gun
 {
-
+    [Header("Etc")]
+    [SerializeField] private ParticleSystem BulletShellParticle;
     protected override void OnFire(Vector3 origin, Vector3 direction)
     {
         // 필요하면 여기서 총구 화염, 탄피 배출, 사운드 같은 거 처리
         // 예:
         // PlayMuzzleFlash();
         // PlayFireSound();
+        BulletShellParticle.Play();
     }
 
     protected override void OnHit(RaycastHit hit)

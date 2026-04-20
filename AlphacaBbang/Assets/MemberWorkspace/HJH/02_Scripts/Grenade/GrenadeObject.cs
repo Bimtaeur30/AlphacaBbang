@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class GrenadeObject : MonoBehaviour
 {
+    [SerializeField] private float boomTime;
     private GrenadeBehavior behavior;
     private bool isTriggered = false;
 
@@ -19,7 +20,7 @@ public class GrenadeObject : MonoBehaviour
         {
             isTriggered = true;
 
-            StartCoroutine(behavior.Boom(gameObject));
+            StartCoroutine(behavior.Boom(gameObject,boomTime));
         }
     }
 }

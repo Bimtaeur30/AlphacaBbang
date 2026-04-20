@@ -9,6 +9,8 @@ using UnityEngine.Events;
 public abstract class Gun : MonoBehaviour
 {
     public GunRenderer Renderer { get; private set; }
+    public bool IsAiming { get; private set; }
+    public bool IsFiring { get; private set; }
 
     [field: SerializeField] public GunDataSO GunDataSO { get; private set; }
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
@@ -32,8 +34,6 @@ public abstract class Gun : MonoBehaviour
     [SerializeField] protected PoolItemSO bulletParticle;
 
     protected float _lastFireTime = -999f;
-    protected bool _isAiming;
-    protected bool _isFiring;
 
     protected GunHandleModule _gunHandleModule;
 
@@ -48,8 +48,8 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void Initialize(GunHandleModule module)
     {
-        _isAiming = false;
-        _isFiring = false;
+        IsAiming = false;
+        IsFiring = false;
         _gunHandleModule = module;
         Debug.Assert(_gunHandleModule != null, "건핸들러모듈을 받아오지 못했습니다.");
 
@@ -60,15 +60,15 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void SetAim(bool isAim)
     {
-        _isAiming = isAim;
+        IsAiming = isAim;
 
-        if (_isFiring && GunDataSO.FireMode == FireMode.Auto && _isAiming)
+        if (IsFiring && GunDataSO.FireMode == FireMode.Auto && IsAiming)
         {
             PlayAutoFire();
             return;
         }
 
-        if (_isAiming)
+        if (IsAiming)
             PlayAim();
         else
             PlayIdle();
@@ -76,7 +76,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void StartFire(bool isAim)
     {
-        _isFiring = true;
+        IsFiring = true;
 
         if (!isAim)
             return;
@@ -98,7 +98,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void StopFire(bool isAim)
     {
-        _isFiring = false;
+        IsFiring = false;
 
         if (isAim)
             PlayAim();
@@ -108,7 +108,7 @@ public abstract class Gun : MonoBehaviour
 
     public virtual void TickFire()
     {
-        if (!_isAiming || !_isFiring)
+        if (!IsAiming || !IsFiring)
             return;
 
         if (GunDataSO.FireMode == FireMode.Auto)
@@ -131,13 +131,13 @@ public abstract class Gun : MonoBehaviour
         {
             Action onReloadEnd = new Action(OnReloadEnd);
             Magazine.TryReload(onReloadEnd);
-            StopFire(_isAiming);
+            StopFire(IsAiming);
         }
     }
 
     private void OnReloadEnd()
     {
-        StartFire(_isFiring && _isAiming);
+        //StartFire(_isFiring && _isAiming);
     }
 
     protected virtual bool CanFire()

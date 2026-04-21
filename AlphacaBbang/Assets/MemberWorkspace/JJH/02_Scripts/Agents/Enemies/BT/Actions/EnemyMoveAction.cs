@@ -33,6 +33,9 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             move.y = 0f;
             move.Normalize();
 
+            Vector3 direction = move;
+            Enemy.Value.transform.rotation = Quaternion.LookRotation(direction);
+
             _navMeshAgent.KeepChase(true);
             _navMeshAgent.MoveTo(Enemy.Value.transform.position + move * 10f);
 

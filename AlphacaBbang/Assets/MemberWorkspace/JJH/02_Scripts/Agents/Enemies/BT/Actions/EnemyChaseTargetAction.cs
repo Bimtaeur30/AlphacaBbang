@@ -47,7 +47,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             float distance = Vector3.Distance(_targetPos, _enemyPos);
 
             if (_sensor.IsTargetInSight(_enemyPos, Target.Value.transform) &&
-                distance <= Enemy.Value.EnemyData.AttackDistance)
+                distance <= Enemy.Value.EnemyData.AttackRange)
             {
                 _navMeshAgent.KeepChase(false);
                 return Status.Success;

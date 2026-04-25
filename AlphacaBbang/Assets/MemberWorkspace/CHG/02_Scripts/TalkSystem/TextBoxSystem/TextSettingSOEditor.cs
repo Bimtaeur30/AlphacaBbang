@@ -17,8 +17,9 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
         private ColorField _textColorField;
         private Button _effectSetButton;
         private EnumField _textEffectTypeField;
-        private EnumFlagsField _textEffectSettingTypeField;
-        private IntegerField _textEffectSettingValueField;
+        private EnumFlagsField _textEffectSettingValueTypeField;
+        private IntegerField _textEffectSettingFieldA;
+        private IntegerField _textEffectSettingFieldS;
         private TextEffectType _textEffectType;
         private TextEffectSettingType _textEffectSettingType;
     
@@ -42,8 +43,9 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
             _effectSetButton = root.Q<Button>("EffectSetButton");
             _textColorField = root.Q<ColorField>("TextColor");
             _textEffectTypeField = root.Q<EnumField>("TextEffectType");
-            _textEffectSettingTypeField = root.Q<EnumFlagsField>("TextEffectSettingType");
-            _textEffectSettingValueField = root.Q<IntegerField>("_textEffectSettingValue");
+            _textEffectSettingValueTypeField = root.Q<EnumFlagsField>("TextEffectSettingType");
+            _textEffectSettingFieldA = root.Q<IntegerField>("TextEffectSettingValueA");
+            _textEffectSettingFieldS = root.Q<IntegerField>("TextEffectSettingValueS");
 
             _colorSetButton.clicked += HandleColorBtnClick;
             _effectSetButton.clicked += HandleEffectBtnClick; 
@@ -56,7 +58,7 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
         
             #region ValueChageCallBack
         
-            _textEffectSettingTypeField.RegisterValueChangedCallback(evt =>
+            _textEffectSettingValueTypeField.RegisterValueChangedCallback(evt =>
             {
                 _textEffectSettingType = (TextEffectSettingType)evt.newValue;
             });
@@ -136,22 +138,32 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
         {
             if (GetSelectText(out var start, out var end, out var originText)) return;
 
-            //string targetTag = _textEffectType.ToString();
 
             string effectString = _textEffectType.ToString();
             string selectedText = originText.Substring(start, end - start);
-        
-            /*switch (_textEffectSettingType)
+            string effectSettingString = "";
+            if (_textEffectSettingType != TextEffectSettingType.none)
             {
-                case TextEffectSettingType.none:
-                    break;
-                case TextEffectSettingType.a:
-                    effectString.Insert(effectString.Length, "");
-                
-            }*/
-        
+                if (_textEffectSettingType == TextEffectSettingType.everything)
+                {
+                    effectSettingString = effectSettingString.Insert(0,$" a={_textEffectSettingFieldA.value}");
+                    effectSettingString = effectSettingString.Insert(0,$" s={_textEffectSettingFieldS.value}");
+                }
+                else
+                {
+                    Debug.Log(_textEffectSettingFieldA.value);
+                    Debug.Log(_textEffectSettingFieldS.value);
+                    
+                    if ((_textEffectSettingType & TextEffectSettingType.a) != 0)
+                        effectSettingString = effectSettingString.Insert(0,$" a={_textEffectSettingFieldA.value}");
+
+                    if ((_textEffectSettingType & TextEffectSettingType.s) != 0)
+                        effectSettingString = effectSettingString.Insert(0,$" s={_textEffectSettingFieldS.value}");
+                }
+            }
+            
             string newText = originText.Remove(start, end - start);
-            newText = newText.Insert(start, $"<{effectString}>{selectedText}</{effectString}>");
+            newText = newText.Insert(start, $"<{effectString}{(string.IsNullOrEmpty(effectSettingString) ? "" : effectSettingString)}>{selectedText}</{effectString}>");
         
             _lastUsingTextField.value = newText;
             EditorUtility.SetDirty(textSettingSO);

@@ -10,8 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 49ded32ea4844ca1b0a307e09deb4d4d, type: 3}
-  m_Name: TextSettingSO
+  m_Name: DialogueNode 2
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.TextBoxSystem.TextSettingSO
-  Text:
-  - <rainb s=27 a=11>qwertyuiop</rainb>
-  - <rainb a=11>qAWSED</rainb>RFTHQAETGW<rainb>SDRFBXC</rainb>
+  DialogueNodeType: 1
+  Text: <wave s=58 a=29>Hello</wave>, <color=#0C00FF>this is secend text</color>
+  NextNode: {fileID: 0}
+  Choices:
+  - ChoiceText: Choice 111
+    NextNode: {fileID: 11400000, guid: 2c37ac83e8a0bff4db9c8aef1457cc66, type: 2}
+  - ChoiceText: Please Choce 22
+    NextNode: {fileID: 11400000, guid: 9777c17b68a4b6940adb1025541f99fe, type: 2}

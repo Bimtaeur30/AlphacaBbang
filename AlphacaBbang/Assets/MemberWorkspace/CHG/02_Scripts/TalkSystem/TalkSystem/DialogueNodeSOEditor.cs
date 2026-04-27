@@ -6,10 +6,10 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using ColorUtility = UnityEngine.ColorUtility;
 
-namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
+namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TalkSystem
 {
-    [CustomEditor(typeof(TextSettingSO))]
-    public class TextSettingSOEditor : UnityEditor.Editor
+    [CustomEditor(typeof(DialogueNodeSO))]
+    public class DialogueNodeSOEditor : UnityEditor.Editor
     {
         [SerializeField] private VisualTreeAsset editorView = default;
 
@@ -18,12 +18,12 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
         private Button _effectSetButton;
         private EnumField _textEffectTypeField;
         private EnumFlagsField _textEffectSettingValueTypeField;
-        private IntegerField _textEffectSettingFieldA;
-        private IntegerField _textEffectSettingFieldS;
+        private FloatField _textEffectSettingFieldA;
+        private FloatField _textEffectSettingFieldS;
         private TextEffectType _textEffectType;
         private TextEffectSettingType _textEffectSettingType;
     
-        private TextSettingSO textSettingSO;
+        private DialogueNodeSO _dialogueNodeSO;
         private TextField _lastUsingTextField;
 
         private Dictionary<TextEffectSettingType, int> _effectSettingValues = new();
@@ -33,7 +33,7 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
         public override VisualElement CreateInspectorGUI()
         {
             //TextSettingSO Inspector Draw
-            textSettingSO = (TextSettingSO)target;
+            _dialogueNodeSO = (DialogueNodeSO)target;
             VisualElement root = new VisualElement();
             InspectorElement.FillDefaultInspector(root, serializedObject, this);
             editorView.CloneTree(root);
@@ -44,8 +44,8 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
             _textColorField = root.Q<ColorField>("TextColor");
             _textEffectTypeField = root.Q<EnumField>("TextEffectType");
             _textEffectSettingValueTypeField = root.Q<EnumFlagsField>("TextEffectSettingType");
-            _textEffectSettingFieldA = root.Q<IntegerField>("TextEffectSettingValueA");
-            _textEffectSettingFieldS = root.Q<IntegerField>("TextEffectSettingValueS");
+            _textEffectSettingFieldA = root.Q<FloatField>("TextEffectSettingValueA");
+            _textEffectSettingFieldS = root.Q<FloatField>("TextEffectSettingValueS");
 
             _colorSetButton.clicked += HandleColorBtnClick;
             _effectSetButton.clicked += HandleEffectBtnClick; 
@@ -129,7 +129,7 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
             newText = newText.Insert(start, $"<color=#{hex}>{selectedText}</color>");
 
             _lastUsingTextField.value = newText;
-            EditorUtility.SetDirty(textSettingSO);
+            EditorUtility.SetDirty(_dialogueNodeSO);
 
             _lastUsingTextField.Focus();
         }
@@ -166,7 +166,7 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
             newText = newText.Insert(start, $"<{effectString}{(string.IsNullOrEmpty(effectSettingString) ? "" : effectSettingString)}>{selectedText}</{effectString}>");
         
             _lastUsingTextField.value = newText;
-            EditorUtility.SetDirty(textSettingSO);
+            EditorUtility.SetDirty(_dialogueNodeSO);
         
             _lastUsingTextField.Focus();
         }
@@ -191,6 +191,34 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TextBoxSystem
             if (string.IsNullOrEmpty(originText)) return true;
             if (start == end) return true;
             return false;
+        }
+        
+        //Setting Value Save
+        private void SaveEditorPrefs()
+        {
+            EditorPrefs.SetInt("DialogueNodeSOEditor_EffectType", (int)_textEffectType);
+            EditorPrefs.SetInt("DialogueNodeSOEditor_EffectSettingType", (int)_textEffectSettingType);
+            EditorPrefs.SetFloat("DialogueNodeSOEditor_FieldA", _textEffectSettingFieldA.value);
+            EditorPrefs.SetFloat("DialogueNodeSOEditor_FieldS", _textEffectSettingFieldS.value);
+
+            EditorPrefs.SetString("DialogueNodeSOEditor_Color", 
+                ColorUtility.ToHtmlStringRGBA(_textColorField.value));
+        }
+
+        // Load
+        private void LoadEditorPrefs()
+        {
+            _textEffectType = (TextEffectType)EditorPrefs.GetInt("DialogueNodeSOEditor_EffectType", 0);
+            _textEffectSettingType = (TextEffectSettingType)EditorPrefs.GetInt("DialogueNodeSOEditor_EffectSettingType", 0);
+    
+            _textEffectTypeField.value = _textEffectType;
+            _textEffectSettingValueTypeField.value = _textEffectSettingType;
+            _textEffectSettingFieldA.value = EditorPrefs.GetFloat("DialogueNodeSOEditor_FieldA", 1f);
+            _textEffectSettingFieldS.value = EditorPrefs.GetFloat("DialogueNodeSOEditor_FieldS", 1f);
+    
+            if (ColorUtility.TryParseHtmlString(
+                    "#" + EditorPrefs.GetString("DialogueNodeSOEditor_Color", "FFFFFFFF"), out Color c))
+                _textColorField.value = c;
         }
     }
 }

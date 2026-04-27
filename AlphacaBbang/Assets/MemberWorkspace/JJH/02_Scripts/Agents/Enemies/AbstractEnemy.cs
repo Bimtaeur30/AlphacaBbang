@@ -1,7 +1,7 @@
 using JJH._02_Scripts.Agents.Enemies.BT;
 using JJH._02_Scripts.Agents.Enemies.BT.Channels;
+using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Systems.EventSystems;
-using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
 using System.Collections;
 using TMPro;
 using Unity.Behavior;
@@ -28,29 +28,31 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
             NavMeshAgent = GetModule<INavMeshAgent>();
-            Weapon.Init();
+            if (Weapon != null)
+                Weapon.Init();
             HealthModule.InitHealth(EnemyData.EnemyHealth);
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
+            _btAgent.SetVariableValue("Enemy", this);
 
             _nameText.text = EnemyData.EnemyName;
-            AgentEventChannel.AddListener<AgentDeadEvent>(HandkeAgentDeadEvent);
-            AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeAgentHealthChangeEvent);
+            AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
+            AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
         }
 
         protected virtual void OnDestroy()
         {
-            AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeAgentDeadEvent);
-            AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeAgentHealthChangeEvent);
+            AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
+            AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
         }
 
-        private void HandkeAgentDeadEvent(AgentDeadEvent evt)
+        private void HandkeEnemyDeadEvent(AgentDeadEvent evt)
         {
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
         }
 
-        private void HandkeAgentHealthChangeEvent(AgentHealthChangeEvent evt)
+        private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
         {
             if (_hitCoroutine != null)
                 StopCoroutine(_hitCoroutine);
@@ -71,6 +73,13 @@ namespace JJH._02_Scripts.Agents.Enemies
             }
 
             Renderer.Renderer.material.color = _originColor;
+        }
+
+        public void Suicide()
+        {
+
+            _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+            OnDead();
         }
 
         public void OnDead()

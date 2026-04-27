@@ -1,4 +1,4 @@
-using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
+using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using System;
 using Unity.Behavior;
 using Unity.Properties;

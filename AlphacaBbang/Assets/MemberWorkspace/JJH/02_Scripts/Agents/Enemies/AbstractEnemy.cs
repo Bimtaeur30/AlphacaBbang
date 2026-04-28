@@ -1,6 +1,7 @@
 using JJH._02_Scripts.Agents.Enemies.BT;
 using JJH._02_Scripts.Agents.Enemies.BT.Channels;
 using JJH._02_Scripts.Agents.Enemies.NavMeshs;
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using System.Collections;
 using TMPro;
@@ -13,6 +14,8 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] protected TextMeshPro _nameText;
+
+        public ISkillModule EnemySkill { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -28,28 +31,34 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
             NavMeshAgent = GetModule<INavMeshAgent>();
+            EnemySkill = GetModule<ISkillModule>();
+            HealthModule.InitHealth(EnemyData.EnemyHealth);
             if (Weapon != null)
                 Weapon.Init();
-            HealthModule.InitHealth(EnemyData.EnemyHealth);
+
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
             _btAgent.SetVariableValue("Enemy", this);
 
+            _nameText.gameObject.SetActive(true);
             _nameText.text = EnemyData.EnemyName;
             AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
+            AgentEventChannel.AddListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
         protected virtual void OnDestroy()
         {
             AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
+            AgentEventChannel.RemoveListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
         private void HandkeEnemyDeadEvent(AgentDeadEvent evt)
         {
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+            _nameText.gameObject.SetActive(false);
         }
 
         private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
@@ -58,6 +67,11 @@ namespace JJH._02_Scripts.Agents.Enemies
                 StopCoroutine(_hitCoroutine);
 
             _hitCoroutine = StartCoroutine(HitCoroutine());
+        }
+
+        private void HandkeEnemyInventoryDropEvent(AgentInventoryDropEvent evt)
+        {
+            OnDead();
         }
 
         private IEnumerator HitCoroutine()
@@ -77,7 +91,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void Suicide()
         {
-
+            EnemySkill.UseSkill<EnemyBombSkill>();
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
             OnDead();
         }

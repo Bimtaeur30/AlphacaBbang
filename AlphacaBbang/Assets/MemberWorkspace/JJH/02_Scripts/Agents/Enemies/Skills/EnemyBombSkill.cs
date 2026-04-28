@@ -17,6 +17,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         public void UseSkill()
         {
             ExplosionPrefab effect = poolManager.Pop<ExplosionPrefab>(explosionPref);
+            effect.transform.position = _owner.transform.position;
             effect.Active(5f, _owner.EnemyData.Damage, _owner.Sensor.TargetLayer);
         }
     }

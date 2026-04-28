@@ -2,6 +2,6 @@
 {
     public enum DialogueNodeType
     {
-        Normal, Choice
+        Normal, Choice, End
     }
 }

@@ -1,10 +1,7 @@
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.AnimationSystems;
 using System;
-using System.Collections;
-using System.Security.Claims;
 using UnityEngine;
-using UnityEngine.Events;
 
 public abstract class Gun : MonoBehaviour
 {

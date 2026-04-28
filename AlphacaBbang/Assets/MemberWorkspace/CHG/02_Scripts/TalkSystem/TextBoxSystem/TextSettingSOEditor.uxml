@@ -1,0 +1,14 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/MemberWorkspace/CHG/02_Scripts/TalkSystem/TextBoxSystem/TextSettingSOEditor.uss?fileID=7433441132597879392&amp;guid=38ab51678ee2d024b8eb5c53d612b8e8&amp;type=3#TextSettingSOEditor"/>
+    <ui:VisualElement name="Container" style="flex-grow: 1;">
+        <ui:Label text="ColorSetting" name="ColorSetting"/>
+        <uie:ColorField label="TextColor" value="rgb(0, 255, 255)" name="TextColor" binding-path="TextColor"/>
+        <ui:Button text="Set Color" name="ColorSetButton" binding-path="ColorSetButton"/>
+        <ui:Label text="EffectSetting" name="EffectSetting"/>
+        <ui:EnumField label="EffectType" value="Center" type="MemberWorkspace.CHG._02_Scripts.TextBoxSystem.TextEffectType, Assembly-CSharp" name="TextEffectType" binding-path="TextEffectType"/>
+        <uie:EnumFlagsField label="EffectSetting" value="none" type="MemberWorkspace.CHG._02_Scripts.TextBoxSystem.TextEffectSettingType, Assembly-CSharp" binding-path="TextEffectSettingType" name="TextEffectSettingType"/>
+        <ui:IntegerField label="SettingValue A" value="0" name="TextEffectSettingValueA" binding-path="TextEffectSettingValueA"/>
+        <ui:IntegerField label="SettingValue S" value="0" name="TextEffectSettingValueS" binding-path="TextEffectSettingValueS"/>
+        <ui:Button text="Set Effect" name="EffectSetButton" binding-path="EffectSetButton"/>
+    </ui:VisualElement>
+</ui:UXML>

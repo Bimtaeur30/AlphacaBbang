@@ -10,26 +10,25 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         [SerializeField] private float paddingY = 0.2f;
         
         [SerializeField] private TextMeshPro text;
-        [SerializeField] private Transform backGround;
+        [SerializeField] private SpriteRenderer backGround;
+        
 
-        private void LateUpdate()
+        public void SetBackGroundSize()
         {
             if (text == null || backGround == null) return;
-            UpdateBackGround();
-        }
-
-        private void UpdateBackGround()
-        {
             text.ForceMeshUpdate();
             Bounds bounds = text.textBounds;
             
             float width = bounds.size.x + paddingX * 2f;
             float height = bounds.size.y + paddingY * 2f;
-            backGround.localScale = new Vector3(width, height, 1f);
-            
+            if (width < 0 || height < 0)
+            {
+                width = 0;
+                height = 0;
+            }
             Vector3 center = bounds.center;
-            
-            backGround.localPosition = new Vector3(center.x, center.y, -0.01f);
+            backGround.size = new Vector2(width, height);
+            backGround.transform.localPosition = new Vector3(center.x, center.y, -0.01f);
         }
     }
 }

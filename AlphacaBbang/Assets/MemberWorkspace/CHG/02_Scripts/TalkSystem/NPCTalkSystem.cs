@@ -15,51 +15,54 @@ public class NPCTalkSystem : MonoBehaviour
     [SerializeField] private string defaultText;
     
     [Header("Objects")]
-    [SerializeField] private GameObject talkBox;
+    [SerializeField] private GameObject mainTalkBox;
     [SerializeField] private List<GameObject> choiceTalkBoxes;
-    [SerializeField] private List<TextMeshPro> _choiceTextMeshes = new();
     
-    [Header("TextAnimator")]
-    [SerializeField] private TypewriterByCharacter typewriter;         
-    [SerializeField] private List<TypewriterByCharacter> choiceTypewriters = new(); 
+    private TypewriterByCharacter _typewriter;
+
+    private TypewriterByCharacter[] _choiceTypewriters; 
     [SerializeField] private float typewriterSpeed = 0.1f;                
     
-    private TextMeshPro _DialogueMesh;
     private DialogueNodeSO _currentNode;
     private DialogueNodeSO _lastNode;
-    private bool _isTalking = false;
+    private bool _isTalking;
     private bool _waitingForInput;
     private bool _isTextTyping;
     private int _choiceResult = -1;
     
     private void Awake()
     {
-        _DialogueMesh = GetComponentInChildren<TextMeshPro>();
-        typewriter.SetTypewriterSpeed(typewriterSpeed);
-        typewriter.onTextShowed.AddListener(OnMainTextShowed);
+        _typewriter = mainTalkBox.GetComponentInChildren<TypewriterByCharacter>();
+        Debug.Assert(_typewriter != null, $"{gameObject.name}: TypewriterByCharacter not found");
+        
+        _typewriter.SetTypewriterSpeed(typewriterSpeed);
+        _typewriter.onTextShowed.AddListener(OnMainTextShowed);
+        
+        _choiceTypewriters = new TypewriterByCharacter[choiceTalkBoxes.Count];
         
         for (int i = 0; i < choiceTalkBoxes.Count; i++)
         {
-            //_choiceTextMeshes[i] = choiceTalkBoxes[i].GetComponentInChildren<TextMeshPro>();
+            _choiceTypewriters[i] = choiceTalkBoxes[i].GetComponentInChildren<TypewriterByCharacter>();
             choiceTalkBoxes[i].SetActive(false);
             
-            if (i < choiceTypewriters.Count)
-                choiceTypewriters[i].SetTypewriterSpeed(typewriterSpeed);
+            if (i < _choiceTypewriters.Length)
+                _choiceTypewriters[i].SetTypewriterSpeed(0);
         }
 
         if (!wantTalk)
-            talkBox.SetActive(false);
+            mainTalkBox.SetActive(false);
         else
-            typewriter.ShowText(defaultText);
+            _typewriter.ShowText(defaultText);
     }
     
     private void OnDestroy()
     {
-        typewriter.onTextShowed.RemoveListener(OnMainTextShowed);
+        _typewriter.onTextShowed.RemoveListener(OnMainTextShowed);
     }
 
     
 
+    //Change -> player Script
     private void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -71,7 +74,7 @@ public class NPCTalkSystem : MonoBehaviour
             }
             else if (_isTextTyping)
             {
-                typewriter.SkipTypewriter();
+                _typewriter.SkipTypewriter();
             }
             else if (_waitingForInput)
             {
@@ -99,14 +102,14 @@ public class NPCTalkSystem : MonoBehaviour
     private IEnumerator Talk()
     { 
         _isTalking = true;
-        talkBox.SetActive(true);
+        mainTalkBox.SetActive(true);
         _currentNode = _lastNode ?? firstDialogueNodeSO;
         while (_currentNode != null)
         {
             _lastNode = _currentNode;
             
             _isTextTyping = true;
-            typewriter.ShowText(_currentNode.Text);
+            _typewriter.ShowText(_currentNode.Text);
             yield return new WaitUntil(() => !_isTextTyping);
             
             if (_currentNode.DialogueNodeType == DialogueNodeType.Normal)
@@ -124,7 +127,7 @@ public class NPCTalkSystem : MonoBehaviour
         }
         
         _isTalking = false;
-        talkBox.SetActive(false);
+        mainTalkBox.SetActive(false);
         Debug.Log("Talk End");
     }
     private IEnumerator ShowNormalCoroutine(DialogueNodeSO node)
@@ -146,7 +149,7 @@ public class NPCTalkSystem : MonoBehaviour
             if (i < node.Choices.Count)
             {
                 choiceTalkBoxes[i].SetActive(true);
-                _choiceTextMeshes[i].text = $"{i + 1}. {node.Choices[i].ChoiceText}";
+                _choiceTypewriters[i].ShowText(node.Choices[i].ChoiceText);
             }
             else
             {

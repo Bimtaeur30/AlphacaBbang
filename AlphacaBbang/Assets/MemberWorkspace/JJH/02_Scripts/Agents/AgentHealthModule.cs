@@ -19,6 +19,18 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         {
             _owner = owner as Agent;
             _agentEventChannel = _owner.AgentEventChannel;
+            healthText.gameObject.SetActive(true);
+            _owner.AgentEventChannel.AddListener<AgentDeadEvent>(OnAgentDeadEvent);
+        }
+
+        private void OnDestroy()
+        {
+            _owner.AgentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
+        }
+
+        private void OnAgentDeadEvent(AgentDeadEvent evt)
+        {
+            healthText.gameObject.SetActive(false);
         }
 
         public void InitHealth(float maxHealth)

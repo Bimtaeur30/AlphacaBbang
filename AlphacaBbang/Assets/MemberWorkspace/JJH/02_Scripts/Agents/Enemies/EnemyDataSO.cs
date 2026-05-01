@@ -12,7 +12,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         [Header("Attack")]
         [field: SerializeField] public float Damage { get; private set; }
-        [field: SerializeField] public float AttackDistance { get; private set; }
+        [field: SerializeField] public float AttackRange { get; private set; }
         [field: SerializeField] public float DetectRange { get; private set; }
         [field: SerializeField] public float AttackTime { get; private set; }
         [field: SerializeField] public float AttackInterval { get; private set; }

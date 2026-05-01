@@ -4,6 +4,8 @@ namespace JJH._02_Scripts.Agents
 {
     public interface ISensor
     {
+        LayerMask ObstacleLayer { get; }
+        LayerMask TargetLayer { get; }
         public bool IsTargetInRange(float range, out Collider hitCollider);
         public bool IsTargetInSight(Vector3 startPosition, Transform target);
     }

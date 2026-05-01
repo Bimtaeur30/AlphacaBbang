@@ -22,8 +22,10 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         private Coroutine _hitCoroutine;
         private Color _originColor;
-        private Color _hitColor = new Color32(255, 50, 50, 255);
-        private float _hitDuration = 0.3f;
+        private Color _hitColor = new Color32(255, 255, 255, 255);
+        private Color _hitEmissionColor = new Color(100f, 100f, 100f);
+        private float _hitEmissionIntensity = 3f;
+        private float _hitDuration = 0.15f;
 
         public INavMeshAgent NavMeshAgent { get; private set; }
 
@@ -82,6 +84,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             {
                 time += Time.deltaTime;
                 float t = Mathf.Sin(time / _hitDuration * Mathf.PI);
+
                 Renderer.Renderer.material.color = Color.Lerp(_originColor, _hitColor, t);
                 yield return null;
             }

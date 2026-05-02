@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using ColorUtility = UnityEngine.ColorUtility;
 
-namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TalkSystem
+namespace MemberWorkspace.CHG._02_Scripts.TalkSystem.TalkSystem.Editor
 {
     [CustomEditor(typeof(DialogueNodeSO))]
     public class DialogueNodeSOEditor : UnityEditor.Editor

@@ -1,13 +1,23 @@
-﻿namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
+﻿using System;
+using System.Collections.Generic;
+
+namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 {
-    [System.Serializable]
+    [Serializable]
     public class QuestData
     {
         public string Id;
         public string Name;
-        public string Type; // Collect, Visited, Kill
-        public string Importance; // Main, Sub
+        public QuestImportanceType Importance;
+        public List<ConditionData> Conditions;
     }
-    
+
+    [Serializable]
+    public class ConditionData
+    {
+        public QuestType Type;
+        public string TargetId;
+        public int Required;
+    }
     
 }

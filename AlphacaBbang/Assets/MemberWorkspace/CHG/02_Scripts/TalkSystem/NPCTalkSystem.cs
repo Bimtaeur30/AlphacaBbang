@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Febucci.UI;
+using MemberWorkspace.CHG._02_Scripts.QuestSystem;
 using MemberWorkspace.CHG._02_Scripts.TalkSystem.TalkSystem;
 using MemberWorkspace.CHG._02_Scripts.TextBoxSystem;
 using TMPro;
@@ -90,7 +91,6 @@ public class NPCTalkSystem : MonoBehaviour
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SetChoiceResult(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame) SetChoiceResult(1);
             else if (Keyboard.current.digit3Key.wasPressedThisFrame) SetChoiceResult(2);
-            
         }
     }
     
@@ -132,8 +132,6 @@ public class NPCTalkSystem : MonoBehaviour
     }
     private IEnumerator ShowNormalCoroutine(DialogueNodeSO node)
     {
-        
-        
         _waitingForInput = true;
         yield return new WaitUntil(() => !_waitingForInput);
         
@@ -142,8 +140,6 @@ public class NPCTalkSystem : MonoBehaviour
 
     private IEnumerator ShowChoiceCoroutine(DialogueNodeSO node)
     {
-        
-        
         for (int i = 0; i < choiceTalkBoxes.Count; i++)
         {
             if (i < node.Choices.Count)
@@ -160,7 +156,8 @@ public class NPCTalkSystem : MonoBehaviour
         _choiceResult = -1;
         _waitingForInput = true;
         yield return new WaitUntil(() => _choiceResult != -1 && !_waitingForInput);
-
+        Debug.Log($"Choice: {node.DialogueNodeType}");
+        
         foreach (GameObject obj in choiceTalkBoxes)
             obj.SetActive(false);
         _currentNode = node.Choices[_choiceResult].NextNode;
@@ -172,6 +169,7 @@ public class NPCTalkSystem : MonoBehaviour
         _waitingForInput = true;
         yield return new WaitUntil(() => !_waitingForInput);
 
+        QuestManager.Instance.QuestAccept(node.QuestId);
         _lastNode = node.NextNode ?? node;
         _currentNode = null;
     }

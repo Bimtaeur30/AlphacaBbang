@@ -36,7 +36,14 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                 else if (data.Importance == QuestImportanceType.Sub)
                     SubQuests[data.Id] = data;
             }
+
+            foreach (var v in MainQuests)
+            {
+                Debug.Log(v.Key + " : " + v.Value);
+            }
         }
+        
+        
 
         public void SaveQuestData()
         {

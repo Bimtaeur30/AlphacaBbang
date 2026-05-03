@@ -21,5 +21,6 @@ namespace MemberWorkspace.CHG._02_Scripts.TextBoxSystem
         
         public DialogueNodeSO NextNode;
         public List<DialogueChoice> Choices = new();
+        public string QuestId;
     }
 }

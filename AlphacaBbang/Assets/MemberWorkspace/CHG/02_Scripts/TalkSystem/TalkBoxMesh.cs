@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using TMPro;
+using Febucci.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
 {
@@ -13,24 +14,35 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         [SerializeField] private SpriteRenderer backGround;
         
 
-        public void SetBackGroundSize()
+        private int shownCharCount = 0;
+
+        public void ResetCount()
         {
+            shownCharCount = 0;
+        }
+
+        public void SetBackGroundSize(char _)
+        {
+            shownCharCount++;
             if (text == null || backGround == null) return;
             text.ForceMeshUpdate();
             Bounds bounds = text.textBounds;
-            Debug.Log(bounds.size);
-            
-            float width = bounds.size.x + paddingX * 2f;
+
+            int totalCount = text.textInfo.characterCount;
+            if (totalCount == 0) return;
+
+            float charWidthAvg = bounds.size.x / totalCount;
+            float currentWidth = charWidthAvg * shownCharCount + paddingX * 2f;
+            float fullWidth = bounds.size.x + paddingX * 2f;
             float height = bounds.size.y + paddingY * 2f;
-            if (width < 0 || height < 0)
-            {
-                width = 0;
-                height = 0;
-            }
-            Vector3 center = bounds.center;
+
+            float leftEdge = bounds.center.x - fullWidth * 0.5f;
+            float centerX = leftEdge + currentWidth * 0.5f;
+
+            backGround.size = new Vector2(currentWidth, height);
+            backGround.transform.localPosition = new Vector3(centerX, bounds.center.y, -0.01f);
+
             
-            backGround.size = new Vector2(width, height);
-            backGround.transform.localPosition = new Vector3(center.x, center.y, -0.01f);
         }
     }
 }

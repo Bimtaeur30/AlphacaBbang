@@ -21,6 +21,10 @@ public class Warhead : PoolableMono, IProjectile // 바주카 탄두
     public void Fire(Vector3 dir, float speed)
     {
         dir.Normalize();
+
+        body.linearVelocity = Vector3.zero;
+        body.angularVelocity = Vector3.zero;
+
         body.linearVelocity = dir * speed;
 
         Debug.Log("발사 시작");

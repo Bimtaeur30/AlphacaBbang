@@ -2782,7 +2782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: Gun SubGraph Blackboard
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.RuntimeBlackboardAsset
-  VersionTimestamp: 639130803541508229
+  VersionTimestamp: 639113603768765405
   AssetID:
     m_Value0: 9533637958669902698
     m_Value1: 8546930321189820297
@@ -2792,7 +2792,9 @@ MonoBehaviour:
     - rid: 879783057508008829
     - rid: 879783057508008462
     - rid: 879783216681583417
-    - rid: 879783689828434655
+    - rid: 879783057508008928
+    - rid: 879783057606574151
+    - rid: 879783078266405376
   m_SharedBlackboardVariableGuids: []
   references:
     version: 2
@@ -2821,6 +2823,30 @@ MonoBehaviour:
           m_Value1: 16524256540540754420
         Name: Enemy
         m_Value: {fileID: 0}
+    - rid: 879783057508008928
+      type: {class: 'BlackboardVariable`1[[JJH._02_Scripts.Agents.Enemies.BT.Channels.AnimationChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 17102079206241791662
+          m_Value1: 6962613732774162248
+        Name: AnimationChannel
+        m_Value: {fileID: 0}
+    - rid: 879783057606574151
+      type: {class: 'BlackboardVariable`1[[JJH._02_Scripts_Systems.AnimationSystems.AnimParamSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 8338988931481686713
+          m_Value1: 14690080933217820662
+        Name: AnimationClip
+        m_Value: {fileID: 0}
+    - rid: 879783078266405376
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 7557153046038555348
+          m_Value1: 4130683029614135867
+        Name: IsCombat
+        m_Value: 0
     - rid: 879783216681583417
       type: {class: 'BlackboardVariable`1[[JJH._02_Scripts.Agents.Enemies.BT.Channels.StateChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2828,14 +2854,6 @@ MonoBehaviour:
           m_Value0: 6022016716858468257
           m_Value1: 7079953919933752846
         Name: StateChannel
-        m_Value: {fileID: 0}
-    - rid: 879783689828434655
-      type: {class: 'BlackboardVariable`1[[JJH._02_Scripts.Agents.Enemies.BT.Channels.AnimationChannel, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 17102079206241791662
-          m_Value1: 6962613732774162248
-        Name: AnimationChannel
         m_Value: {fileID: 0}
 --- !u!114 &8574138739782153109
 MonoBehaviour:

@@ -15,6 +15,8 @@ public class PlayerController : Agent
     [SerializeField] private float _releaseDuration = 1.1f;
     [SerializeField] private float _shortClickThreshold = 0.65f;
 
+    public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
+
     private IRenderer _renderer;
     private AgentMovement _agentMovement;
     private IControllerMovement _movement;
@@ -240,17 +242,16 @@ public class PlayerController : Agent
     private void RotateToMouse()
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Plane plane = new Plane(Vector3.up, transform.position);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
+        if (plane.Raycast(ray, out float enter))
         {
-            Vector3 dir = hit.point - transform.position;
+            Vector3 hitPoint = ray.GetPoint(enter);
+            Vector3 dir = hitPoint - transform.position;
             dir.y = 0;
-
             if (dir.sqrMagnitude < 0.001f)
                 return;
-
             Quaternion target = Quaternion.LookRotation(dir);
-
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 target,
@@ -264,12 +265,80 @@ public class PlayerController : Agent
 
         _agentMovement.SetUseRotation(true);
         UpdateSpeed();
+
+        // 총 모듈에도 조준 해제 전달
+        //HandleAimKey(false);
     }
     private void OnDestroy()
     {
         PlayerInput.OnMovementChange -= HandleMovement;
         PlayerInput.OnSprintAction -= HandleSprint;
     }
+
+    #region 총 관련 코드
+    #region 직렬화
+    [SerializeField] private PlayerInputSO_KTJ playerInputSO;
+    #endregion
+
+    #region 모듈
+    public GunHandleModule GunHandleModule { get; private set; }
+    public CrossHairModule CrossHairModule { get; private set; }
+    #endregion
+
+    #region 퍼블릭 변수
+    public Camera MainCam { get; private set; }
+    public Vector2 Forward { get; private set; }
+    #endregion
+
+    protected override void InitializeComponents()
+    {
+        base.InitializeComponents();
+
+        GunHandleModule = GetModule<GunHandleModule>();
+        Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
+
+        CrossHairModule = GetModule<CrossHairModule>();
+        Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
+
+        MainCam = Camera.main;
+        Debug.Assert(MainCam != null, "MainCam is null");
+    }
+
+    private void OnEnable()
+    {
+        if (playerInputSO == null)
+            return;
+
+        playerInputSO.OnAimEvent += HandleAimKey;
+        playerInputSO.OnFireEvent += HandleFireKey;
+    }
+
+    private void OnDisable()
+    {
+        if (playerInputSO == null)
+            return;
+
+        playerInputSO.OnAimEvent -= HandleAimKey;
+        playerInputSO.OnFireEvent -= HandleFireKey;
+    }
+
+    private void HandleAimKey(bool isPressed)
+    {
+        if (GunHandleModule == null)
+            return;
+
+
+        GunHandleModule.Aim(isPressed);
+    }
+
+    private void HandleFireKey(bool isPressed)
+    {
+        if (GunHandleModule == null)
+            return;
+
+        GunHandleModule.Fire(isPressed);
+    }
+    #endregion
 }
 
 public enum PlayerAimState

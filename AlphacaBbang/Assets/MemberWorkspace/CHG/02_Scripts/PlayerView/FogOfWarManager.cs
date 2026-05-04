@@ -4,6 +4,9 @@ using UnityEngine.Experimental.Rendering;
 
 namespace MemberWorkspace.CHG._02_Scripts
 {
+    /// <summary>
+    /// This is Test Script
+    /// </summary>
     public class FogOfWarManager : MonoBehaviour
     {
         [SerializeField] private Camera maskCamera;

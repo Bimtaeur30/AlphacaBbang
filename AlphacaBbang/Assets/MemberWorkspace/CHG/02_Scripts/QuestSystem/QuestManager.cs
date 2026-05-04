@@ -10,13 +10,17 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     
     public class QuestManager : MonoSingleton<QuestManager>
     {
+        
         //in game all quest
         public Dictionary<string, QuestData> MainQuests = new Dictionary<string, QuestData>();
         public Dictionary<string, QuestData> SubQuests = new Dictionary<string, QuestData>();
         
+        public event Action<Quest> OnQuestAccepted;
+        
         // now active/completed quest
         private List<Quest> _activeQuests = new List<Quest>();
         private List<string> _completedQuestIds = new List<string>();
+        
         
         public string SavePath => Application.persistentDataPath + "/QuestsSave.json"; 
         
@@ -88,8 +92,10 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             
             var data = FindQuestData(questId);
             if (data == null) return;
-            
-            _activeQuests.Add(QuestFactory.Create(data));
+
+            Quest newQuest = QuestFactory.Create(data);
+            _activeQuests.Add(newQuest);
+            OnQuestAccepted?.Invoke(newQuest);
         }
         
         public bool IsCompleted(string questId)

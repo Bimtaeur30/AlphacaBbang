@@ -77,7 +77,7 @@ public class NPCTalkSystem : MonoBehaviour
             {
                 _typewriter.SkipTypewriter();
             }
-            else if (_waitingForInput)
+            else if (_waitingForInput && _currentNode.DialogueNodeType != DialogueNodeType.Choice)
             {
                 _waitingForInput = false;
             }

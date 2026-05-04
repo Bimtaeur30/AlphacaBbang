@@ -12,10 +12,12 @@ public class GunHandleModule : MonoBehaviour, IModule
 
     [Header("Gun")]
     [field: SerializeField] public Gun CurrentGun { get; private set; }
+    [SerializeField] private Transform gunHoldParent;
 
     [Header("System")]
     [SerializeField] private EventChannelSO systemChannel;
 
+    public PlayerController PlayerController { get; private set; }
 
     public void Initialize(ModuleOwner owner)
     {
@@ -28,6 +30,8 @@ public class GunHandleModule : MonoBehaviour, IModule
         CurrentGun.Initialize(this);
 
         Debug.Log($"{gameObject.name} / {GetType().Name} 초기화 완료");
+
+        PlayerController = owner as PlayerController;
     }
 
 

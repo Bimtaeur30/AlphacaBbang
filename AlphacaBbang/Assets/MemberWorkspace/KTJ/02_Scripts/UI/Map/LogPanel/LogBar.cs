@@ -5,13 +5,11 @@ using UnityEngine.UI;
 public class LogBar : MonoBehaviour
 {
     [SerializeField] private Image FirstIconImage;
-    [SerializeField] private Image SecondIconImage;
     [SerializeField] private TextMeshProUGUI MessagTxt;
     
-    public void SetLogBar(Sprite firstIcon, Sprite secondIcon, string message)
+    public void Init(Sprite Icon, string message)
     {
-        FirstIconImage.sprite = firstIcon;
-        SecondIconImage.sprite = secondIcon;
+        FirstIconImage.sprite = Icon;
         MessagTxt.text = message;
     }
 }

@@ -1,39 +1,32 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Test_EnemyAttack : MonoBehaviour
+public class Test_EnemyAttack : MonoBehaviour, IWeapon
 {
     [SerializeField] private MeleeWeaponBase weapon;
-    [SerializeField] private Camera mainCamera;
-
+    
     private void Start()
     {
         weapon.Init();
-
-        if (mainCamera == null)
-            mainCamera = Camera.main;
     }
 
-    private void Update()
+    public void EnemyAttack()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            Vector3 targetPos = GetMouseWorldPoint();
-            weapon.Attack(targetPos, true);
-        }
+        Vector3 targetPos = transform.position;
+        weapon.Attack(targetPos, true);
     }
 
-    private Vector3 GetMouseWorldPoint()
+    public void Init()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        Plane plane = new Plane(Vector3.up, transform.position);
+    }
 
-        if (plane.Raycast(ray, out float enter))
-        {
-            return ray.GetPoint(enter);
-        }
+    public void SetAim(bool val)
+    {
 
-        return transform.position + transform.forward;
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
     }
 }

@@ -36,4 +36,9 @@ public class EnemyGunHandleModule : GunHandleModule, IWeapon
         base.OnFire();
         BodyRecoilController.ApplyRecoil(CurrentGun.GunDataSO.SpreadAngle);
     }
+
+    protected override bool CanFire()
+    {
+        return true;
+    }
 }

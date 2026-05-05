@@ -139,7 +139,7 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual bool CanFire()
     {
-        return Time.time >= _lastFireTime + GunDataSO.FireInterval && (_gunHandleModule.PlayerController.IsPureAiming);
+        return Time.time >= _lastFireTime + GunDataSO.FireInterval;
         ;
     }
 

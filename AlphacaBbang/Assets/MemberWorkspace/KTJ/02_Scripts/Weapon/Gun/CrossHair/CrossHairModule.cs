@@ -43,13 +43,13 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     private void OnEnable()
     {
-        systemChannel.AddListener<WeaponEquipEvent>(OnWeaponEquip);
+        systemChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
         systemChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void OnDisable()
     {
-        systemChannel.RemoveListener<WeaponEquipEvent>(OnWeaponEquip);
+        systemChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
         systemChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
@@ -187,7 +187,7 @@ public class CrossHairModule : MonoBehaviour, IModule
         );
     }
 
-    private void OnWeaponEquip(WeaponEquipEvent @event)
+    private void OnWeaponEquip(WeaponEquipDataEvent @event)
     {
         _isCrossHairActive = true;
         crossHairImg.enabled = true;

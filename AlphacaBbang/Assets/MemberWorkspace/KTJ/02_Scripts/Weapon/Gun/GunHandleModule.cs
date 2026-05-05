@@ -26,7 +26,7 @@ public class GunHandleModule : MonoBehaviour, IModule
         Debug.Assert(CurrentGun != null, "CurrentGun이 할당되지 않았습니다.");
         Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO가 할당되지 않았습니다.");
 
-        systemChannel.RaiseEvent(SystemEventChannel.WeaponEqnupEventChannel.Init(CurrentGun.GunDataSO));
+        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponEqnupDataEvent.Init(CurrentGun.GunDataSO));
         CurrentGun.Initialize(this);
 
         Debug.Log($"{gameObject.name} / {GetType().Name} 초기화 완료");
@@ -37,6 +37,8 @@ public class GunHandleModule : MonoBehaviour, IModule
 
     private void Update()
     {
+        if (CanFire() == false)
+            return;
         if (CurrentGun == null)
             return;
 
@@ -55,6 +57,8 @@ public class GunHandleModule : MonoBehaviour, IModule
     {
         IsInputFire = value;
 
+        if (CanFire() == false)
+            return;
         if (CurrentGun == null)
             return;
 
@@ -77,5 +81,10 @@ public class GunHandleModule : MonoBehaviour, IModule
             return;
 
         CurrentGun.SetAim(value);
+    }
+
+    protected virtual bool CanFire()
+    {
+        return PlayerController.IsPureAiming;
     }
 }

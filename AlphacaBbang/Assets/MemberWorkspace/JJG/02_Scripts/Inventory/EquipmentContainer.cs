@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class EquipmentContainer : ItemContainer
     [SerializeField] private List<EquipmentSlot> equipmentSlots = new();
 
     public int SlotCount => equipmentSlots.Count;
+    
+    public event Action OnEquipmentChanged;
 
     public EquipmentSlot GetEquipmentSlot(int index)
     {

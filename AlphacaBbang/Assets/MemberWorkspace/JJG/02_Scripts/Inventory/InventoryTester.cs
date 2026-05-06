@@ -98,7 +98,7 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.digit8Key.wasPressedThisFrame)
         {
-            int count = GetItemCount(inventoryContainer, countableItem);
+            int count = inventoryContainer.GetItemCount(countableItem);
             Debug.Log($"[TEST] Inventory 안의 {countableItem.name} 총 개수: {count}");
         }
 
@@ -119,29 +119,6 @@ public class InventoryTest : MonoBehaviour
             Debug.Log("[TEST] 인벤토리 전체 비움");
             PrintContainerState(inventoryContainer, "Inventory");
         }
-    }
-
-    private int GetItemCount(ItemContainer container, ItemData itemData)
-    {
-        if (container == null || itemData == null)
-            return 0;
-
-        int total = 0;
-
-        for (int i = 0; i < container.SlotCount; i++)
-        {
-            ItemSlot slot = container.GetSlot(i);
-
-            if (slot == null || slot.IsEmpty)
-                continue;
-
-            if (slot.ItemData != itemData)
-                continue;
-
-            total += slot.Amount;
-        }
-
-        return total;
     }
 
     private void ClearAllSlots(ItemContainer container)

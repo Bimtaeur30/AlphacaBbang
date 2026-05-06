@@ -1,13 +1,19 @@
+using System;
+using MemberWorkspace.JJG._02_Scripts;
 using UnityEngine;
 
+[Serializable]
 public class ItemSlot
 {
-    public ItemData ItemData;
-    public int Amount;
+    [field: SerializeField]
+    public ItemData ItemData { get; set; }
 
-    public bool IsEmpty => ItemData == null;
-    public bool CanStack => !IsEmpty;
-    
+    [field: SerializeField]
+    public int Amount { get; set; }
+
+    public bool IsEmpty =>
+        ItemData == null || Amount <= 0;
+
     public void Clear()
     {
         ItemData = null;

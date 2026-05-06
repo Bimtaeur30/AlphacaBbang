@@ -1,3 +1,4 @@
+using MemberWorkspace.JJG._02_Scripts;
 using UnityEngine;
 
 public enum EquipType
@@ -15,10 +16,13 @@ public abstract class ItemData : ScriptableObject
     public string ItemName { get; private set; }
     
     [field: SerializeField] 
-    public Sprite Icon { get; private set; }
+    public Sprite Icon { get; private set; } 
     
     [TextArea] public string description;
     
     [field: SerializeField]
     public EquipType EquipType { get; private set; }
+    
+    [field: SerializeField]
+    public GradeType GradeType { get; private set; }
 }

@@ -324,10 +324,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer
         {
             ItemSlot slot = slots[i];
 
-            if (slot == null || slot.IsEmpty)
-                continue;
-
-            if (slot.ItemData != itemData)
+            if (slot == null || slot.IsEmpty || slot.ItemData != itemData)
                 continue;
 
             totalCount += slot.Amount;

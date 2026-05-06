@@ -5,8 +5,9 @@ namespace JJH._02_Scripts.Agents
 {
     public class AgentSensor : MonoBehaviour, IModule, ISensor
     {
-        [SerializeField] private LayerMask obstacleLayer;
-        [SerializeField] private LayerMask targetLayer;
+        [field: SerializeField] public LayerMask ObstacleLayer { get; private set; }
+        [field: SerializeField] public LayerMask TargetLayer { get; private set; }
+
 
         private Agent _owner;
 
@@ -19,7 +20,7 @@ namespace JJH._02_Scripts.Agents
 
         public bool IsTargetInRange(float range, out Collider hitCollider)
         {
-            hitCollider = Physics.OverlapSphere(transform.position, range, targetLayer).FirstOrDefault();
+            hitCollider = Physics.OverlapSphere(transform.position, range, TargetLayer).FirstOrDefault();
             _debugRange = range;
             return hitCollider != null;
         }
@@ -30,7 +31,7 @@ namespace JJH._02_Scripts.Agents
 
             RaycastHit hit;
             bool isHit = Physics.Raycast(startPosition, direction.normalized,
-                                                         out hit, direction.magnitude, obstacleLayer);
+                                                         out hit, direction.magnitude, ObstacleLayer);
 
             Debug.DrawLine(startPosition, target.transform.position, Color.red, 0.1f);
 

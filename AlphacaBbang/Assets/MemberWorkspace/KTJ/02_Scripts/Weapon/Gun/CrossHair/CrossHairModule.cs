@@ -1,7 +1,6 @@
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using Unity.Cinemachine;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -20,7 +19,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     [SerializeField] private float recoilRecoverSpeed = 10f;
 
     private bool _isCrossHairActive;
-    private Player_TJ _player;
+    private PlayerController _player;
 
     private Vector2 _mousePos;
     private Vector2 _recoilOffset;
@@ -32,7 +31,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     public void Initialize(ModuleOwner owner)
     {
-        _player = owner as Player_TJ;
+        _player = owner as PlayerController;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         Debug.Assert( _impulseSource != null ,"Impulse Source Componenet is NULL");
 
@@ -43,13 +42,13 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     private void OnEnable()
     {
-        systemChannel.AddListener<WeaponEquipEvent>(OnWeaponEquip);
+        systemChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
         systemChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void OnDisable()
     {
-        systemChannel.RemoveListener<WeaponEquipEvent>(OnWeaponEquip);
+        systemChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
         systemChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
@@ -63,7 +62,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         _mousePos = Mouse.current.position.ReadValue();
 
-        GunHandleModule gunHandle = _player.GunHandleModule;
+        PlayerGunHandleModule gunHandle = _player.GunHandleModule;
         Gun currentGun = gunHandle.CurrentGun;
         GunDataSO gunData = currentGun.GunDataSO;
 
@@ -187,7 +186,7 @@ public class CrossHairModule : MonoBehaviour, IModule
         );
     }
 
-    private void OnWeaponEquip(WeaponEquipEvent @event)
+    private void OnWeaponEquip(WeaponEquipDataEvent @event)
     {
         _isCrossHairActive = true;
         crossHairImg.enabled = true;

@@ -1,7 +1,8 @@
 using JJH._02_Scripts.Agents.Enemies.BT;
 using JJH._02_Scripts.Agents.Enemies.BT.Channels;
+using JJH._02_Scripts.Agents.Enemies.NavMeshs;
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
-using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
 using System.Collections;
 using TMPro;
 using Unity.Behavior;
@@ -14,13 +15,17 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] protected TextMeshPro _nameText;
 
+        public ISkillModule EnemySkill { get; private set; }
+
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
 
         private Coroutine _hitCoroutine;
         private Color _originColor;
-        private Color _hitColor = new Color32(255, 50, 50, 255);
-        private float _hitDuration = 0.3f;
+        private Color _hitColor = new Color32(255, 255, 255, 255);
+        private Color _hitEmissionColor = new Color(100f, 100f, 100f);
+        private float _hitEmissionIntensity = 3f;
+        private float _hitDuration = 0.15f;
 
         public INavMeshAgent NavMeshAgent { get; private set; }
 
@@ -28,34 +33,53 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
             NavMeshAgent = GetModule<INavMeshAgent>();
-            Weapon.Init();
+            EnemySkill = GetModule<ISkillModule>();
             HealthModule.InitHealth(EnemyData.EnemyHealth);
+            if (Weapon != null)
+                Weapon.Init();
+
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
+            _btAgent.SetVariableValue("Enemy", this);
 
+            _nameText.gameObject.SetActive(true);
             _nameText.text = EnemyData.EnemyName;
-            AgentEventChannel.AddListener<AgentDeadEvent>(HandkeAgentDeadEvent);
-            AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeAgentHealthChangeEvent);
+            AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
+            AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
+            AgentEventChannel.AddListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
         protected virtual void OnDestroy()
         {
-            AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeAgentDeadEvent);
-            AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeAgentHealthChangeEvent);
+            AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
+            AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
+            AgentEventChannel.RemoveListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
-        private void HandkeAgentDeadEvent(AgentDeadEvent evt)
+        private void HandkeEnemyDeadEvent(AgentDeadEvent evt)
         {
-            _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+            if (evt.Agent == this)
+            {
+                _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+                _nameText.gameObject.SetActive(false);
+            }
         }
 
-        private void HandkeAgentHealthChangeEvent(AgentHealthChangeEvent evt)
+        private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
         {
             if (_hitCoroutine != null)
                 StopCoroutine(_hitCoroutine);
 
             _hitCoroutine = StartCoroutine(HitCoroutine());
+        }
+
+        private void HandkeEnemyInventoryDropEvent(AgentInventoryDropEvent evt)
+        {
+            if (evt.Agent == this)
+            {
+                OnDead();
+            }
         }
 
         private IEnumerator HitCoroutine()
@@ -66,11 +90,19 @@ namespace JJH._02_Scripts.Agents.Enemies
             {
                 time += Time.deltaTime;
                 float t = Mathf.Sin(time / _hitDuration * Mathf.PI);
+
                 Renderer.Renderer.material.color = Color.Lerp(_originColor, _hitColor, t);
                 yield return null;
             }
 
             Renderer.Renderer.material.color = _originColor;
+        }
+
+        public void Suicide()
+        {
+            EnemySkill.UseSkill<EnemyBombSkill>();
+            _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+            OnDead();
         }
 
         public void OnDead()

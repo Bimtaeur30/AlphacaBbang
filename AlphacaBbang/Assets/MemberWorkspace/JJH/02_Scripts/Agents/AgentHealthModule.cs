@@ -19,13 +19,13 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         {
             _owner = owner as Agent;
             _agentEventChannel = _owner.AgentEventChannel;
+            _agentEventChannel.AddListener<AgentDeadEvent>(OnAgentDeadEvent);
             slider.gameObject.SetActive(true);
-            _owner.AgentEventChannel.AddListener<AgentDeadEvent>(OnAgentDeadEvent);
         }
 
         private void OnDestroy()
         {
-            _owner.AgentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
+            _agentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
         }
 
         private void OnAgentDeadEvent(AgentDeadEvent evt)

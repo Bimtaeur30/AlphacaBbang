@@ -1,39 +1,25 @@
-using JJH._02_Scripts_Systems.EventSystems;
-using System.Collections;
-using Unity.VisualScripting;
+ï»¿using JJH._02_Scripts_Systems.EventSystems;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
     [Header("State")]
     [field: SerializeField] public bool IsInputAim { get; private set; }
-    [field: SerializeField] public bool IsInputFire { get; private set; } // ÀÌ°Å False·Î ¸¸µé¾î¾ßÇÔ ÀåÀüÇÏ´Âµ¿¾È
+    [field: SerializeField] public bool IsInputFire { get; private set; }
 
     [Header("Gun")]
     [field: SerializeField] public Gun CurrentGun { get; private set; }
-    [SerializeField] private Transform gunHoldParent;
 
-    [Header("System")]
-    [SerializeField] private EventChannelSO systemChannel;
+    public virtual void Initialize(ModuleOwner owner) { }
 
-    public PlayerController PlayerController { get; private set; }
-
-    public void Initialize(ModuleOwner owner)
+    protected virtual void SetCurrentGun(Gun gun)
     {
-        Debug.Log($"{gameObject.name} / {GetType().Name} Initialize");
-
-        Debug.Assert(CurrentGun != null, "CurrentGunÀÌ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
-        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO°¡ ÇÒ´çµÇÁö ¾Ê¾Ò½À´Ï´Ù.");
-
-        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponEqnupDataEvent.Init(CurrentGun.GunDataSO));
+        CurrentGun = gun;
         CurrentGun.Initialize(this);
-
-        Debug.Log($"{gameObject.name} / {GetType().Name} ÃÊ±âÈ­ ¿Ï·á");
-
-        PlayerController = owner as PlayerController;
+        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSOê°€ í• ë‹¹ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.");
     }
-
 
     private void Update()
     {
@@ -46,11 +32,6 @@ public class GunHandleModule : MonoBehaviour, IModule
         {
             CurrentGun.TickFire();
         }
-
-        //if (CurrentGun.Magazine.IsReloading)
-        //{
-        //    CurrentGun.StopFire(true);
-        //}
     }
 
     public virtual void Fire(bool value)
@@ -63,15 +44,15 @@ public class GunHandleModule : MonoBehaviour, IModule
             return;
 
         if (value)
-        {
             CurrentGun.StartFire(IsInputAim);
-        }
         else
-        {
             CurrentGun.StopFire(IsInputAim);
-        }
     }
+
     public virtual void OnFire() { }
+
+    // ì¥ì „ ì™„ë£Œ ì½œë°± â€” ê¸°ë³¸ì€ ì•„ë¬´ê²ƒë„ ì•ˆ í•¨ (í”Œë ˆì´ì–´: ë‹¤ì‹œ ì…ë ¥í•´ì•¼ ë°œì‚¬)
+    public virtual void OnReloadEnd() { }
 
     public void Aim(bool value)
     {
@@ -80,11 +61,18 @@ public class GunHandleModule : MonoBehaviour, IModule
         if (CurrentGun == null)
             return;
 
+        if (!value && IsInputFire)
+        {
+            IsInputFire = false;
+            CurrentGun.StopFire(false);
+            return;
+        }
+
         CurrentGun.SetAim(value);
     }
 
     protected virtual bool CanFire()
     {
-        return PlayerController.IsPureAiming;
+        return true;
     }
 }

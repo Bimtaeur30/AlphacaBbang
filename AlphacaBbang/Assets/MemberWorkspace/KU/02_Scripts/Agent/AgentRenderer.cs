@@ -32,6 +32,6 @@ public class AgentRenderer : MonoBehaviour, IRenderer, IModule
 
     public void AgentDead()
     {
-        _owner.AgentEventChannel.RaiseEvent(AgentEvents.AgentInventoryDropEvent);
+        _owner.AgentEventChannel.RaiseEvent(AgentEvents.AgentInventoryDropEvent.Init(_owner));
     }
 }

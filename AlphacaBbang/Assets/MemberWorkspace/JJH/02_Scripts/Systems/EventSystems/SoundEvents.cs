@@ -12,9 +12,9 @@ namespace JJH._02_Scripts.Systems.EventSystems
 
     public class PlaySoundEvent : GameEvent
     {
-        public Vector3 Position;
-        public SoundClipSO ClipData;
-        public int ChannelNumber;
+        public Vector3 Position { get; private set; }
+        public SoundClipSO ClipData { get; private set; }
+        public int ChannelNumber { get; private set; }
 
         public PlaySoundEvent Init(Vector3 position, SoundClipSO clipData, int channelNumber = 0)
         {
@@ -27,7 +27,7 @@ namespace JJH._02_Scripts.Systems.EventSystems
 
     public class StopSoundEvent : GameEvent
     {
-        public int ChannelNumber;
+        public int ChannelNumber { get; private set; }
 
         public StopSoundEvent Init(int channelNumber = 0)
         {

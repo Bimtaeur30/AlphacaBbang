@@ -1,7 +1,6 @@
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using Unity.Cinemachine;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -63,7 +62,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         _mousePos = Mouse.current.position.ReadValue();
 
-        GunHandleModule gunHandle = _player.GunHandleModule;
+        PlayerGunHandleModule gunHandle = _player.GunHandleModule;
         Gun currentGun = gunHandle.CurrentGun;
         GunDataSO gunData = currentGun.GunDataSO;
 

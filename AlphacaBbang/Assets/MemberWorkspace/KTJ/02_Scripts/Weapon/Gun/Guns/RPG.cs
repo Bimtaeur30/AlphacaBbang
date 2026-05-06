@@ -2,10 +2,11 @@ using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using UnityEngine;
 using static UnityEngine.UI.Image;
 
-public class Bazooka : Gun
+public class RPG : Gun
 {
     [SerializeField] private PoolItemSO warHeadSO;
     [SerializeField] private ParticleSystem smokeParticle;
+    [SerializeField] private GameObject toggleWarHeadObj;
 
     protected override void FireInternal()
     {
@@ -25,8 +26,20 @@ public class Bazooka : Gun
         OnFire(origin, direction);
     }
 
+    protected override void OnReloadStart()
+    {
+        base.OnReloadStart();
+    }
+
+    protected override void OnReloadEnd()
+    {
+        base.OnReloadEnd();
+        toggleWarHeadObj.SetActive(true);
+    }
+
     protected override void OnFire(Vector3 origin, Vector3 direction)
     {
+        toggleWarHeadObj.SetActive(false);
         smokeParticle.Play();
     }
 

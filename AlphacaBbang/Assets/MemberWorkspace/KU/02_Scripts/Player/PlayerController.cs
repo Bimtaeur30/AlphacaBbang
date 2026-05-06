@@ -87,6 +87,9 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Aiming;
                 _agentMovement.SetUseRotation(false);
                 UpdateSpeed();
+
+                // [버그 3 수정] GunHandleModule에 조준 시작 동기화
+                GunHandleModule?.Aim(true);
             }
         }
         else
@@ -101,6 +104,9 @@ public class PlayerController : Agent
                         _releaseTimer = _releaseDuration;
                     else
                         _releaseTimer = 0f;
+
+                    // [버그 3 수정] GunHandleModule에 조준 해제 동기화
+                    GunHandleModule?.Aim(false);
                 }
 
                 _pressTimer = 0f;
@@ -258,6 +264,7 @@ public class PlayerController : Agent
                 _rotationSpeed * Time.deltaTime);
         }
     }
+
     public void ForceStopAim()
     {
         _aimState = PlayerAimState.Releasing;
@@ -266,9 +273,10 @@ public class PlayerController : Agent
         _agentMovement.SetUseRotation(true);
         UpdateSpeed();
 
-        // 총 모듈에도 조준 해제 전달
-        //HandleAimKey(false);
+        // [버그 4 수정] GunHandleModule에 조준 해제 동기화 (주석 제거 및 직접 호출)
+        GunHandleModule?.Aim(false);
     }
+
     private void OnDestroy()
     {
         PlayerInput.OnMovementChange -= HandleMovement;
@@ -281,7 +289,7 @@ public class PlayerController : Agent
     #endregion
 
     #region 모듈
-    public GunHandleModule GunHandleModule { get; private set; }
+    public PlayerGunHandleModule GunHandleModule { get; private set; }
     public CrossHairModule CrossHairModule { get; private set; }
     #endregion
 
@@ -294,7 +302,7 @@ public class PlayerController : Agent
     {
         base.InitializeComponents();
 
-        GunHandleModule = GetModule<GunHandleModule>();
+        GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
         CrossHairModule = GetModule<CrossHairModule>();
@@ -326,7 +334,6 @@ public class PlayerController : Agent
     {
         if (GunHandleModule == null)
             return;
-
 
         GunHandleModule.Aim(isPressed);
     }

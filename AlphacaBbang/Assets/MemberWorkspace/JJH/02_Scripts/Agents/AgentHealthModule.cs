@@ -1,13 +1,13 @@
 ﻿using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts_Systems.EventSystems;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MemberWorkspace.JJH._02_Scripts.Agents
 {
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
-        [SerializeField] private TextMeshPro healthText;
+        [SerializeField] private Slider slider;
         private EventChannelSO _agentEventChannel;
 
         private Agent _owner;
@@ -19,7 +19,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
         {
             _owner = owner as Agent;
             _agentEventChannel = _owner.AgentEventChannel;
-            healthText.gameObject.SetActive(true);
+            slider.gameObject.SetActive(true);
             _owner.AgentEventChannel.AddListener<AgentDeadEvent>(OnAgentDeadEvent);
         }
 
@@ -30,7 +30,8 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
 
         private void OnAgentDeadEvent(AgentDeadEvent evt)
         {
-            healthText.gameObject.SetActive(false);
+            if (evt.Agent == _owner)
+                slider.gameObject.SetActive(false);
         }
 
         public void InitHealth(float maxHealth)
@@ -47,7 +48,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
 
             if (_health <= 0)
             {
-                _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent);
+                _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent.Init(_owner));
                 return;
             }
 
@@ -56,7 +57,7 @@ namespace MemberWorkspace.JJH._02_Scripts.Agents
 
         private void ChangeHealthText()
         {
-            healthText.text = $"{_health}/{_maxHealth}";
+            slider.value = _health / _maxHealth;
         }
     }
 }

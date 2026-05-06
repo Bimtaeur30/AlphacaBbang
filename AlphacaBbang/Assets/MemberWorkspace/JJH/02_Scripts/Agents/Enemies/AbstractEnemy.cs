@@ -59,8 +59,11 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         private void HandkeEnemyDeadEvent(AgentDeadEvent evt)
         {
-            _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-            _nameText.gameObject.SetActive(false);
+            if (evt.Agent == this)
+            {
+                _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+                _nameText.gameObject.SetActive(false);
+            }
         }
 
         private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
@@ -73,7 +76,10 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         private void HandkeEnemyInventoryDropEvent(AgentInventoryDropEvent evt)
         {
-            OnDead();
+            if (evt.Agent == this)
+            {
+                OnDead();
+            }
         }
 
         private IEnumerator HitCoroutine()

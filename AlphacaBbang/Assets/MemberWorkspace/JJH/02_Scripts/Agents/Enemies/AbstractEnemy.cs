@@ -106,19 +106,16 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void OnDead()
         {
-            Debug.Log("적 사망");
             Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
 
         public void ApplyBurn(float dps, float duration)
         {
-            Debug.Log("적 불탐");
         }
 
         public void TakeDamage(float damage)
         {
-            Debug.Log($"적 데미지 받음 : {damage}");
             HealthModule.SetHealth(damage);
         }
     }

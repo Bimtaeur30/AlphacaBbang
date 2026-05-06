@@ -47,24 +47,9 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private void CreateFogMaterial()
         {
-
-            _fogMaterial = new Material(Shader.Find("Universal Render Pipeline/Lit"));
-
+            _fogMaterial = new Material(Shader.Find("Custom/FogOverlay"));
             fogColor.a = fogAlpha;
-            _fogMaterial.color = fogColor;
-
-            _fogMaterial.SetFloat("_Surface", 1);          
-            _fogMaterial.SetFloat("_Blend", 0);            
-            _fogMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            _fogMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            _fogMaterial.SetInt("_ZWrite", 0);
-            _fogMaterial.renderQueue = 3001;           
-
-            _fogMaterial.SetInt("_StencilComp", (int)UnityEngine.Rendering.CompareFunction.NotEqual);
-            _fogMaterial.SetInt("_Stencil", 1);
-            _fogMaterial.SetInt("_StencilOp", (int)UnityEngine.Rendering.StencilOp.Keep);
-
-            _fogMaterial.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            _fogMaterial.SetColor("_FogColor", fogColor);
             _renderer.material = _fogMaterial;
         }
 

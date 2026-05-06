@@ -22,10 +22,11 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         private List<string> _completedQuestIds = new List<string>();
         
         
-        public string SavePath => Application.persistentDataPath + "/QuestsSave.json"; 
-        
-        private void Awake()
+        public string SavePath => Application.persistentDataPath + "/QuestsSave.json";
+
+        protected override void Awake()
         {
+            base.Awake();
             LoadQuestDB();
         }
 

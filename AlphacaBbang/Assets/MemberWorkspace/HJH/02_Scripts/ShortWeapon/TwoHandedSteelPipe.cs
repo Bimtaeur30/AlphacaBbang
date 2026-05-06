@@ -1,37 +1,40 @@
 using UnityEngine;
 
-public class ToyHammer : MeleeWeaponBase
+public class TwoHandedSteelPipe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
-    public int ComboCounter { get; private set; } = 0;
+    public int ComboCounter = 0;
     protected override void PerformAttack(Vector3 targetPos)
     {
-        PlayAttackParticle(targetPos);
-
-        bool comboCounterOver = ComboCounter >= data.Length;
-        bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
-
-        Debug.Log($"ComboCounter: {ComboCounter}");
-
-        if (comboCounterOver || comboWindowExhausted)
+        if (data[ComboCounter].attackDelay > comboWindow)
         {
-            Debug.Log("Combo reset");
-            if (data == null || data.Length == 0) return;
-            lastUseTime = Time.time;
-
-            if (ComboCounter < data.Length - 1)
-            {
-                ComboCounter++;
-            }
-            else
-            {
-                ComboCounter = 0;
-            }
+            Debug.Assert(false, "Attack delay is bigger than lastUseTime");
         }
 
 
+        Debug.Log($"ComboCounter: {ComboCounter}");
+        Debug.Log($"comboWindow{comboWindow}, lastUseTime{lastUseTime}, ComboCounter{ComboCounter}");
+
+        bool resetCombo = Time.time > lastUseTime + comboWindow;
+
+        if (resetCombo)
+        {
+            ComboCounter = 0;
+        }
+        else
+        {
+            if (ComboCounter < data.Length - 1)
+                ComboCounter++;
+            else
+                ComboCounter = 0;
+        }
+
+        lastUseTime = Time.time;
+
         Vector3 origin = transform.position;
         Vector3 dir = (targetPos - origin).normalized;
+
+        PlayAttackParticle(targetPos);
 
         Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
 
@@ -49,6 +52,8 @@ public class ToyHammer : MeleeWeaponBase
                 }
             }
         }
+
+        currentTime = 0;
     }
 
     private void OnDrawGizmosSelected()
@@ -81,7 +86,8 @@ public class ToyHammer : MeleeWeaponBase
         dir.y = 0f;
 
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
-                       * Quaternion.Euler(-90f, 180f, 0f);
+            * data[ComboCounter].attackParticlePrefab.transform.rotation
+            * Quaternion.Euler(0f, 0f, 180f);
 
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }

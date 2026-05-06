@@ -20,8 +20,8 @@ public abstract class Gun : MonoBehaviour
     //[SerializeField] protected LineRenderer lineRenderer;
 
     [Header("Anim")]
-    [SerializeField] private AnimParamSO idleAnimParam;
-    [SerializeField] private AnimParamSO aimAnimParam;
+    //[SerializeField] private AnimParamSO idleAnimParam;
+    //[SerializeField] private AnimParamSO aimAnimParam;
     [SerializeField] private AnimParamSO singleFireAnimParam;
     [SerializeField] private AnimParamSO autoFireAnimParam;
 
@@ -140,6 +140,7 @@ public abstract class Gun : MonoBehaviour
     protected virtual bool CanFire()
     {
         return Time.time >= _lastFireTime + GunDataSO.FireInterval;
+        ;
     }
 
 
@@ -191,13 +192,13 @@ public abstract class Gun : MonoBehaviour
 
     protected void PlayIdle()
     {
-        if (idleAnimParam != null && Renderer != null)
-            Renderer.PlayClip(idleAnimParam.ParamHash, 0, 0.1f, 0);
+        //if (idleAnimParam != null && Renderer != null)
+        //    Renderer.PlayClip(idleAnimParam.ParamHash, 0, 0.1f, 0);
     }
     protected void PlayAim()
     {
-        if (aimAnimParam != null && Renderer != null)
-            Renderer.PlayClip(aimAnimParam.ParamHash, 0, 0.1f, 0);
+        //if (aimAnimParam != null && Renderer != null)
+        //    Renderer.PlayClip(aimAnimParam.ParamHash, 0, 0.1f, 0);
     }
     protected virtual void PlaySingleFire()
     {

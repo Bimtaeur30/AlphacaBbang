@@ -187,10 +187,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
         }
-
-        // ─────────────────────────────────────────
-        // 헬퍼
-        // ─────────────────────────────────────────
+        
         private Edge FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
         {
             float minAngle = minViewCast.angle;

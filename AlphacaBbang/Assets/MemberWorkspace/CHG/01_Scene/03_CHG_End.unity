@@ -1059,6 +1059,7 @@ GameObject:
   - component: {fileID: 1328792444}
   - component: {fileID: 1328792446}
   - component: {fileID: 1328792445}
+  - component: {fileID: 1328792447}
   m_Layer: 13
   m_Name: CircleViewVisual
   m_TagString: Untagged
@@ -1138,6 +1139,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1328792447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328792443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa49cc1d9de14564b2d42753da568ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.FovStencilWriter
+  visibleAreaAlpha: 0.24
 --- !u!1 &1376315746
 GameObject:
   m_ObjectHideFlags: 0
@@ -1555,7 +1569,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa49cc1d9de14564b2d42753da568ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.FovStencilWriter
-  visibleAreaAlpha: 0.508
+  visibleAreaAlpha: 0.94
 --- !u!1 &1693974896
 GameObject:
   m_ObjectHideFlags: 0
@@ -1569,7 +1583,7 @@ GameObject:
   - component: {fileID: 1693974899}
   - component: {fileID: 1693974898}
   m_Layer: 0
-  m_Name: FOgOfWar Ovelay
+  m_Name: FogOfWar Ovelay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1603,7 +1617,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.FogOfWarOverlay
   overlaySize: 100
-  fogAlpha: 0.85
+  y: 0.1
+  fogAlpha: 0.737
   fogColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
 --- !u!23 &1693974899
 MeshRenderer:

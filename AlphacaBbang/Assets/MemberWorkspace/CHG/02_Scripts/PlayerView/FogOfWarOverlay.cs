@@ -6,9 +6,9 @@ namespace MemberWorkspace.CHG._02_Scripts
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class FogOfWarOverlay : MonoBehaviour
     {
-        [Tooltip("맵 전체를 덮을 크기 (맵보다 크게)")]
         [SerializeField] private float overlaySize = 100f;
-
+        [SerializeField] private float y = 0.1f;
+        
         [SerializeField, Range(0f, 1f)] private float fogAlpha = 0.85f;
         [SerializeField] private Color fogColor = new Color(0.2f, 0.2f, 0.2f, 1f);
 
@@ -73,7 +73,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             if (Camera.main != null)
             {
                 Vector3 pos = Camera.main.transform.position;
-                pos.y = 0f;
+                pos.y = y;
                 transform.position = pos;
             }
         }

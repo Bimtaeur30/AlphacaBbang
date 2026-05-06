@@ -4,7 +4,6 @@ using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using System.Collections;
-using TMPro;
 using Unity.Behavior;
 using UnityEngine;
 
@@ -13,9 +12,9 @@ namespace JJH._02_Scripts.Agents.Enemies
     public abstract class AbstractEnemy : Agent, IDamageable
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
-        [SerializeField] protected TextMeshPro _nameText;
 
         public ISkillModule EnemySkill { get; private set; }
+        public IEnemyInterface EnemyInterface { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -34,6 +33,8 @@ namespace JJH._02_Scripts.Agents.Enemies
             base.InitializeComponents();
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();
+            EnemyInterface = GetModule<IEnemyInterface>();
+
             HealthModule.InitHealth(EnemyData.EnemyHealth);
             if (Weapon != null)
                 Weapon.Init();
@@ -43,8 +44,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
             _btAgent.SetVariableValue("Enemy", this);
 
-            _nameText.gameObject.SetActive(true);
-            _nameText.text = EnemyData.EnemyName;
             AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
             AgentEventChannel.AddListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
@@ -62,7 +61,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (evt.Agent == this)
             {
                 _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-                _nameText.gameObject.SetActive(false);
+                EnemyInterface.SetInterfaceShow(false);
             }
         }
 

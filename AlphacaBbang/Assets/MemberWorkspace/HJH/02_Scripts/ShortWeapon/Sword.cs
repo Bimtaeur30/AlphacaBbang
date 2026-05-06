@@ -5,7 +5,9 @@ using UnityEngine;
 public class Sword : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.75f;
+    [SerializeField] private Transform visual;
     public int ComboCounter = 0;//{ get; private set; } = 0;
+    
 
     protected override void PerformAttack(Vector3 targetPos)
     {
@@ -70,7 +72,7 @@ public class Sword : MeleeWeaponBase
     {
         Debug.Log("µ¹Áø");
 
-        Vector3 dashDir = (targetPos - transform.parent.position).normalized;
+        Vector3 dashDir = (targetPos - visual.position).normalized;
         dashDir.y = 0f;
 
         float duration = 0.15f;
@@ -79,7 +81,7 @@ public class Sword : MeleeWeaponBase
 
         while (timer < duration)
         {
-            transform.parent.position += dashDir * speed * Time.deltaTime;
+            visual.position += dashDir * speed * Time.deltaTime;
 
             timer += Time.deltaTime;
 

@@ -1,4 +1,4 @@
-using MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMesh;
+using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -32,6 +32,9 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             Vector3 move = Random.insideUnitSphere;
             move.y = 0f;
             move.Normalize();
+
+            Vector3 direction = move;
+            Enemy.Value.transform.rotation = Quaternion.LookRotation(direction);
 
             _navMeshAgent.KeepChase(true);
             _navMeshAgent.MoveTo(Enemy.Value.transform.position + move * 10f);

@@ -57,6 +57,11 @@ namespace JJH._02_Scripts_Systems.EventSystems
             _events.Clear();
             _lookup.Clear();
         }
+
+        internal void AddListener(PlayerPointEvent playerPointEvent, object onPlayerPoint)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

@@ -7,7 +7,7 @@ public class Player_TJ : ModuleOwner
     #endregion
 
     #region ¸ðµâ
-    public GunHandleModule GunHandleModule { get; private set; }
+    public PlayerGunHandleModule GunHandleModule { get; private set; }
     public CrossHairModule CrossHairModule { get; private set; }
     #endregion
 
@@ -20,7 +20,7 @@ public class Player_TJ : ModuleOwner
     {
         base.InitializeComponents();
 
-        GunHandleModule = GetModule<GunHandleModule>();
+        GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
         CrossHairModule = GetModule<CrossHairModule>();
@@ -71,7 +71,7 @@ public class Player_TJ : ModuleOwner
 
     private void RotateToCrosshair()
     {
-        if (GunHandleModule == null || !GunHandleModule.IsAim)
+        if (GunHandleModule == null || !GunHandleModule.IsInputAim)
             return;
 
         if (MainCam == null || CrossHairModule == null)

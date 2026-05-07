@@ -9,6 +9,7 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public string EnemyName { get; private set; }
         [field: SerializeField] public bool IsBoss { get; private set; }
         [field: SerializeField] public float EnemyHealth { get; private set; }
+        [field: SerializeField] public EnemyWeaponEnum EnemyWeapon { get; private set; }
         [field: SerializeField] public GameObject EnemyInventoryPrefab { get; private set; }
 
         [Header("Attack")]
@@ -17,5 +18,22 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public float DetectRange { get; private set; }
         [field: SerializeField] public float AttackTime { get; private set; }
         [field: SerializeField] public float AttackInterval { get; private set; }
+    }
+
+    public enum EnemyWeaponEnum
+    {
+        AutoGun,
+        KRISS_VECTOR,
+        BT_APC,
+        MP40,
+        VZ61,
+        UZI,
+        MAC,
+        MP5K,
+        ShotGun,
+
+        Axe,
+        BaseballBat,
+        PipeWrench
     }
 }

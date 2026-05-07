@@ -3,6 +3,7 @@ using JJH._02_Scripts.Agents.Enemies.BT.Channels;
 using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
+using System;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -11,7 +12,8 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
+        [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }

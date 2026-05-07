@@ -312,8 +312,8 @@ public class PlayerController : Agent
     #endregion
 
     #region 모듈
-    public GunHandleModule GunHandleModule { get; private set; }
-    public CrossHairModule CrossHairModule { get; private set; }
+    public PlayerGunHandleModule GunHandleModule { get; private set; }
+    public PlayerGunHandleModule CrossHairModule { get; private set; }
     #endregion
 
     #region 퍼블릭 변수
@@ -325,10 +325,10 @@ public class PlayerController : Agent
     {
         base.InitializeComponents();
 
-        GunHandleModule = GetModule<GunHandleModule>();
+        GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
-        CrossHairModule = GetModule<CrossHairModule>();
+        CrossHairModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
 
         MainCam = Camera.main;

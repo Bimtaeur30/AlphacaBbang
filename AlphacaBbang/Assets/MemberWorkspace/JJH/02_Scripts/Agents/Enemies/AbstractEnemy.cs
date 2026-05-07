@@ -15,6 +15,7 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [SerializeField] private EnemyDataSO[] EnemyDatas;
         [SerializeField] private Gun[] Guns;
+        [SerializeField] private MeleeWeaponBase[] MeleeWeapons;
         [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
@@ -45,6 +46,14 @@ namespace JJH._02_Scripts.Agents.Enemies
                 EnemyData = EnemyDatas[rand];
                 Guns[rand].gameObject.SetActive(true);
                 gunHandleModule.SetCurrentGun(Guns[rand]);
+            }
+            else if (Weapon is AgentAttack)
+            {
+                AgentAttack gunHandleModule = (AgentAttack)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                MeleeWeapons[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentWeapon(MeleeWeapons[rand]);
             }
 
             NavMeshAgent = GetModule<INavMeshAgent>();

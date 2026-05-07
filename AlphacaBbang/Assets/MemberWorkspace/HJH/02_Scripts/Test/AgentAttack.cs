@@ -62,6 +62,11 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon
 
     }
 
+    public void SetCurrentWeapon(MeleeWeaponBase meleeWeaponBase)
+    {
+        weapon = meleeWeaponBase;
+    }
+
     public void Init()
     {
         weapon.Init();

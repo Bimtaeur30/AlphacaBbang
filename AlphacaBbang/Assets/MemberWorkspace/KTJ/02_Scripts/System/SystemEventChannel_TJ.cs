@@ -3,31 +3,33 @@ using UnityEngine;
 
 public static class SystemEventChannel_TJ
 {
-    public static readonly WeaponEquipDataEvent WeaponEqnupDataEvent = new WeaponEquipDataEvent();
+    public static readonly WeaponEquipDataEvent WeaponEquipDataEvent = new WeaponEquipDataEvent();
+    public static readonly WeaponEquipEvent WeaponEquipEvent = new WeaponEquipEvent();
+    public static readonly WeaponSlotEquipEvent WeaponSlotEquipEvent = new WeaponSlotEquipEvent();
     public static readonly WeaponDropEvent WeaponDropEvent = new WeaponDropEvent();
 }
 
-public class WeaponEquipEvent : GameEvent // CurrentGun에 장착
+public class WeaponEquipEvent : GameEvent // CurrentGun에 장착(1,2번 중 선택)
 {
-    public Gun Gun { get; private set; }
-    public WeaponEquipEvent Init(Gun gun)
+    public WeaponSlotIndex SlotIndex { get; private set; }
+    public WeaponEquipEvent Init(WeaponSlotIndex index)
     {
-        Gun = gun;
+        this.SlotIndex = index;
         return this;
     }
 }
 
 
-public enum WeaponSlotType
+public enum WeaponSlotIndex
 {
     First,
     Second
 }
-public class WeaponSlotEquipEvent : GameEvent // WeaponSlot에 장착
+public class WeaponSlotEquipEvent : GameEvent // WeaponSlot에 장착(1,2번 중 선택)
 {
     public Gun Gun { get; private set; }
-    public int SlotIndex { get; private set; }
-    public WeaponSlotEquipEvent Init(Gun gun, int slotIndex)
+    public WeaponSlotIndex SlotIndex { get; private set; }
+    public WeaponSlotEquipEvent Init(Gun gun, WeaponSlotIndex slotIndex)
     {
         Gun = gun;
         SlotIndex = slotIndex;

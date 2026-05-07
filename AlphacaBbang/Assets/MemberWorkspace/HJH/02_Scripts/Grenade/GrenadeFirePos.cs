@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GrenadeFirePos : MonoBehaviour
+public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 {
+    [SerializeField] private CharaterState charaterState;
+
     [Header("발사 설정")]
     [SerializeField] private float firingAngle = 45.0f;
     [SerializeField] private float gravity = 9.8f;
@@ -39,20 +41,31 @@ public class GrenadeFirePos : MonoBehaviour
 
     void Update()
     {
-        if (Mouse.current.rightButton.isPressed)
+        switch (charaterState)
         {
-            MousePosition();
-            DrawTrajectory();
+            case CharaterState.None:
+                Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
+                break;
+            case CharaterState.Player:
+                if (Mouse.current.rightButton.isPressed)
+                {
+                    MousePosition();
+                    DrawTrajectory();
 
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                StartCoroutine(SimulateProjectile());
-            }
-        }
-        else
-        {
-            lineRenderer.positionCount = 0;
-            ClearTargetPoint();
+                    if (Mouse.current.leftButton.wasPressedThisFrame)
+                    {
+                        StartCoroutine(SimulateProjectile());
+                    }
+                }
+                else
+                {
+                    lineRenderer.positionCount = 0;
+                    ClearTargetPoint();
+                }
+                ;
+                break;
+            case CharaterState.Enemy:
+                break;
         }
     }
 
@@ -186,5 +199,25 @@ public class GrenadeFirePos : MonoBehaviour
 
             lineRenderer.SetPosition(i, point);
         }
+    }
+
+    public void Initialize(ModuleOwner owner)
+    {
+
+    }
+
+    public void Init()
+    {
+
+    }
+
+    public void SetAim(bool val)
+    {
+        // 애니메이션 추가 예정
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        StartCoroutine(SimulateProjectile());
     }
 }

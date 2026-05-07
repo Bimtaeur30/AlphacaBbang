@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class MeleeWeaponBase : MonoBehaviour, IWeapon
+public abstract class MeleeWeaponBase : MonoBehaviour
 {
     [SerializeField] protected ShortWeaponSO[] data;
     protected int currentLevel = 0;
@@ -10,17 +10,20 @@ public abstract class MeleeWeaponBase : MonoBehaviour, IWeapon
 
     public virtual void Init() { }
 
-    public virtual void SetAim(bool val) { }
+    public virtual void SetAim(bool val) 
+    {
+
+    }
     void Update()
     {
         currentTime += Time.deltaTime;
     }
     public virtual void Attack(Vector3 targetPos, bool isAttack)
     {
-        Debug.Log($"Attack called with isAttack: {isAttack}");
+        Debug.Log($"Attack is : {isAttack}");
         if (!isAttack) return;
 
-        Debug.Log($"Current Time: {currentTime}, Attack Delay: {data[currentLevel].attackDelay}");
+        Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
 
         if (currentTime < data[currentLevel].attackDelay) return;
 

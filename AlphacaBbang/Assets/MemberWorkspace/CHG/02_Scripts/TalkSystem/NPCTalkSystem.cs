@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Febucci.UI;
+using MemberWorkspace.CHG._02_Scripts.QuestSystem;
 using MemberWorkspace.CHG._02_Scripts.TalkSystem.TalkSystem;
 using MemberWorkspace.CHG._02_Scripts.TextBoxSystem;
 using TMPro;
@@ -15,51 +16,54 @@ public class NPCTalkSystem : MonoBehaviour
     [SerializeField] private string defaultText;
     
     [Header("Objects")]
-    [SerializeField] private GameObject talkBox;
+    [SerializeField] private GameObject mainTalkBox;
     [SerializeField] private List<GameObject> choiceTalkBoxes;
-    [SerializeField] private List<TextMeshPro> _choiceTextMeshes = new();
     
-    [Header("TextAnimator")]
-    [SerializeField] private TypewriterByCharacter typewriter;         
-    [SerializeField] private List<TypewriterByCharacter> choiceTypewriters = new(); 
+    private TypewriterByCharacter _typewriter;
+
+    private TypewriterByCharacter[] _choiceTypewriters; 
     [SerializeField] private float typewriterSpeed = 0.1f;                
     
-    private TextMeshPro _DialogueMesh;
     private DialogueNodeSO _currentNode;
     private DialogueNodeSO _lastNode;
-    private bool _isTalking = false;
+    private bool _isTalking;
     private bool _waitingForInput;
     private bool _isTextTyping;
     private int _choiceResult = -1;
     
     private void Awake()
     {
-        _DialogueMesh = GetComponentInChildren<TextMeshPro>();
-        typewriter.SetTypewriterSpeed(typewriterSpeed);
-        typewriter.onTextShowed.AddListener(OnMainTextShowed);
+        _typewriter = mainTalkBox.GetComponentInChildren<TypewriterByCharacter>();
+        Debug.Assert(_typewriter != null, $"{gameObject.name}: TypewriterByCharacter not found");
+        
+        _typewriter.SetTypewriterSpeed(typewriterSpeed);
+        _typewriter.onTextShowed.AddListener(OnMainTextShowed);
+        
+        _choiceTypewriters = new TypewriterByCharacter[choiceTalkBoxes.Count];
         
         for (int i = 0; i < choiceTalkBoxes.Count; i++)
         {
-            //_choiceTextMeshes[i] = choiceTalkBoxes[i].GetComponentInChildren<TextMeshPro>();
+            _choiceTypewriters[i] = choiceTalkBoxes[i].GetComponentInChildren<TypewriterByCharacter>();
             choiceTalkBoxes[i].SetActive(false);
             
-            if (i < choiceTypewriters.Count)
-                choiceTypewriters[i].SetTypewriterSpeed(typewriterSpeed);
+            if (i < _choiceTypewriters.Length)
+                _choiceTypewriters[i].SetTypewriterSpeed(0);
         }
 
         if (!wantTalk)
-            talkBox.SetActive(false);
+            mainTalkBox.SetActive(false);
         else
-            typewriter.ShowText(defaultText);
+            _typewriter.ShowText(defaultText);
     }
     
     private void OnDestroy()
     {
-        typewriter.onTextShowed.RemoveListener(OnMainTextShowed);
+        _typewriter.onTextShowed.RemoveListener(OnMainTextShowed);
     }
 
     
 
+    //Change -> player Script
     private void Update()
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -71,9 +75,9 @@ public class NPCTalkSystem : MonoBehaviour
             }
             else if (_isTextTyping)
             {
-                typewriter.SkipTypewriter();
+                _typewriter.SkipTypewriter();
             }
-            else if (_waitingForInput)
+            else if (_waitingForInput && _currentNode.DialogueNodeType != DialogueNodeType.Choice)
             {
                 _waitingForInput = false;
             }
@@ -87,7 +91,6 @@ public class NPCTalkSystem : MonoBehaviour
             if (Keyboard.current.digit1Key.wasPressedThisFrame) SetChoiceResult(0);
             else if (Keyboard.current.digit2Key.wasPressedThisFrame) SetChoiceResult(1);
             else if (Keyboard.current.digit3Key.wasPressedThisFrame) SetChoiceResult(2);
-            
         }
     }
     
@@ -99,14 +102,14 @@ public class NPCTalkSystem : MonoBehaviour
     private IEnumerator Talk()
     { 
         _isTalking = true;
-        talkBox.SetActive(true);
+        mainTalkBox.SetActive(true);
         _currentNode = _lastNode ?? firstDialogueNodeSO;
         while (_currentNode != null)
         {
             _lastNode = _currentNode;
             
             _isTextTyping = true;
-            typewriter.ShowText(_currentNode.Text);
+            _typewriter.ShowText(_currentNode.Text);
             yield return new WaitUntil(() => !_isTextTyping);
             
             if (_currentNode.DialogueNodeType == DialogueNodeType.Normal)
@@ -124,13 +127,11 @@ public class NPCTalkSystem : MonoBehaviour
         }
         
         _isTalking = false;
-        talkBox.SetActive(false);
+        mainTalkBox.SetActive(false);
         Debug.Log("Talk End");
     }
     private IEnumerator ShowNormalCoroutine(DialogueNodeSO node)
     {
-        
-        
         _waitingForInput = true;
         yield return new WaitUntil(() => !_waitingForInput);
         
@@ -139,14 +140,12 @@ public class NPCTalkSystem : MonoBehaviour
 
     private IEnumerator ShowChoiceCoroutine(DialogueNodeSO node)
     {
-        
-        
         for (int i = 0; i < choiceTalkBoxes.Count; i++)
         {
             if (i < node.Choices.Count)
             {
                 choiceTalkBoxes[i].SetActive(true);
-                _choiceTextMeshes[i].text = $"{i + 1}. {node.Choices[i].ChoiceText}";
+                _choiceTypewriters[i].ShowText(node.Choices[i].ChoiceText);
             }
             else
             {
@@ -157,7 +156,8 @@ public class NPCTalkSystem : MonoBehaviour
         _choiceResult = -1;
         _waitingForInput = true;
         yield return new WaitUntil(() => _choiceResult != -1 && !_waitingForInput);
-
+        Debug.Log($"Choice: {node.DialogueNodeType}");
+        
         foreach (GameObject obj in choiceTalkBoxes)
             obj.SetActive(false);
         _currentNode = node.Choices[_choiceResult].NextNode;
@@ -169,6 +169,7 @@ public class NPCTalkSystem : MonoBehaviour
         _waitingForInput = true;
         yield return new WaitUntil(() => !_waitingForInput);
 
+        QuestManager.Instance.QuestAccept(node.QuestId);
         _lastNode = node.NextNode ?? node;
         _currentNode = null;
     }

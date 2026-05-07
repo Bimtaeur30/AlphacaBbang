@@ -1,0 +1,21 @@
+{
+    "Id": "????_001", //???는 
+    "Name": "Test QuestName", //그냥 퀘스트 이름
+    "Importance": 0, //매인 퀘스트면 0, 서브 퀘스트면 1
+    "Conditions": [
+        { "Type": 0, "TargetId": "goblin", "Required": 5 } //타입 0=Kill, 1=Collect, 2=Visit, TargetId는 아이템이든 적이든 장소든 고유 ID, Required는 목표치, Visit이면 1로
+    ]
+}
+
+
+//퀘스트 조건 여러개 넣을 때는 이렇게
+{ 
+    "Id": ""????__001",
+    "Name": "Test QuestName",
+    "Importance": 0,
+    "Conditions": [
+        { "Type": 0, "TargetId": "enemy_01", "Required": 5 },
+        { "Type": 1, "TargetId": "Item_01",   "Required": 3 },
+        { "Type": 2, "TargetId": "Place_01", "Required": 1 }
+    ]
+}

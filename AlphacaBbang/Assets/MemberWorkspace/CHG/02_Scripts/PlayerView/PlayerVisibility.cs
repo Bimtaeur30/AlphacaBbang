@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using MemberWorkspace.CHG._02_Scripts.PlayerView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,9 +58,10 @@ namespace MemberWorkspace.CHG._02_Scripts
         private Mesh circleMesh;
 
         public float ViewRadius => viewRadius;
-        public float ViewAngle => viewAngle;
         public float CloseViewRadius => closeViewRadius;
+        public float ViewAngle => viewAngle;
 
+        
         private void Start()
         {
             viewMesh = new Mesh { name = "View Cone Mesh" };
@@ -80,20 +82,28 @@ namespace MemberWorkspace.CHG._02_Scripts
             DrawCloseCircle();
         }
         
+        
         public bool IsVisible(Vector3 worldPosition)
         {
             Vector3 toTarget = worldPosition - transform.position;
             float distance = toTarget.magnitude;
-
-            //closeView
+            
+            // close mesh
             if (distance <= closeViewRadius)
-                return true;
-
-            // Con
-            if (distance <= viewRadius)
+            {
+                bool blocked = Physics.Raycast(
+                    transform.position,
+                    toTarget.normalized,
+                    distance,
+                    obstacleLayerMask
+                );
+                if (!blocked) return true;
+            }
+            // con mesh
+            if (distance <= ViewRadius)
             {
                 float angle = Vector3.Angle(transform.forward, toTarget);
-                if (angle <= viewAngle / 2f)
+                if (angle <= ViewAngle / 2f)
                 {
                     bool blocked = Physics.Raycast(
                         transform.position,
@@ -107,20 +117,17 @@ namespace MemberWorkspace.CHG._02_Scripts
 
             return false;
         }
-
-        // ─────────────────────────────────────────
-        // 시야 콘 메쉬
-        // ─────────────────────────────────────────
+        
         private void DrawViewCone()
         {
-            int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
-            float stepAngleSize = viewAngle / stepCount;
+            int stepCount = Mathf.RoundToInt(ViewAngle * meshResolution);
+            float stepAngleSize = ViewAngle / stepCount;
             List<Vector3> viewPoints = new List<Vector3>();
             ViewCastInfo prevViewCast = new ViewCastInfo();
 
             for (int i = 0; i <= stepCount; i++)
             {
-                float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
+                float angle = transform.eulerAngles.y - ViewAngle / 2 + stepAngleSize * i;
                 ViewCastInfo newViewCast = ViewCast(angle);
 
                 if (i != 0)
@@ -143,10 +150,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 
             BuildMesh(viewMesh, viewPoints);
         }
-
-        // ─────────────────────────────────────────
-        // 근거리 원형 메쉬
-        // ─────────────────────────────────────────
+        
         private void DrawCloseCircle()
         {
             List<Vector3> circlePoints = new List<Vector3>();
@@ -156,9 +160,12 @@ namespace MemberWorkspace.CHG._02_Scripts
             {
                 float angle = i * angleStep;
                 Vector3 dir = DirFromAngle(angle + transform.eulerAngles.y, true);
-                circlePoints.Add(transform.position + dir * closeViewRadius);
-            }
 
+                if (Physics.Raycast(transform.position, dir, out RaycastHit hit, closeViewRadius, obstacleLayerMask))
+                    circlePoints.Add(hit.point);
+                else
+                    circlePoints.Add(transform.position + dir * closeViewRadius);
+            }
             BuildMesh(circleMesh, circlePoints);
         }
 
@@ -187,10 +194,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             mesh.triangles = triangles;
             mesh.RecalculateNormals();
         }
-
-        // ─────────────────────────────────────────
-        // 헬퍼
-        // ─────────────────────────────────────────
+        
         private Edge FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
         {
             float minAngle = minViewCast.angle;
@@ -225,10 +229,10 @@ namespace MemberWorkspace.CHG._02_Scripts
         {
             Vector3 dir = DirFromAngle(globalAngle, true);
 
-            if (Physics.Raycast(transform.position, dir, out RaycastHit hit, viewRadius, obstacleLayerMask))
+            if (Physics.Raycast(transform.position, dir, out RaycastHit hit, ViewRadius, obstacleLayerMask))
                 return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
             else
-                return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius, globalAngle);
+                return new ViewCastInfo(false, transform.position + dir * ViewRadius, ViewRadius, globalAngle);
         }
 
         public Vector3 DirFromAngle(float angleDegrees, bool angleIsGlobal)

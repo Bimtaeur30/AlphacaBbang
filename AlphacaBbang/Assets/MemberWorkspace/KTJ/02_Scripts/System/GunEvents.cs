@@ -1,7 +1,7 @@
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
-public static class SystemEventChannel_TJ
+public static class GunEvents
 {
     public static readonly WeaponEquipDataEvent WeaponEquipDataEvent = new WeaponEquipDataEvent();
     public static readonly WeaponEquipEvent WeaponEquipEvent = new WeaponEquipEvent();

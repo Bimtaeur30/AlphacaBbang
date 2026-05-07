@@ -3,11 +3,16 @@ using UnityEngine;
 
 public class LootBoxContainer : ItemContainer
 {
-    [Header("Loot Open Time")]
+    [SerializeField] private LootTable lootTable;
     [SerializeField] private float baseOpenTime = 1.5f;
-
-    [Header("High Grade Effect")]
     [SerializeField] private GradeType highGradeStandard = GradeType.Rare;
+
+    [Header("Open time by grade")] 
+    [SerializeField] private float commonOpenTime = 0.2f;
+    [SerializeField] private float unCommonOpenTime = 0.5f;
+    [SerializeField] private float rareOpenTime = 1.0f;
+    [SerializeField] private float epicOpenTime = 1.5f;
+    [SerializeField] private float legendaryOpenTime = 2.5f;
 
     public float RequiredOpenTime { get; private set; }
 
@@ -21,9 +26,13 @@ public class LootBoxContainer : ItemContainer
 
     private void GenerateLoot()
     {
-        // 임시 예시
-        // AddItem(itemData, amount);
-        // 나중에 LootTable에서 랜덤으로 채우면 됨
+        if (lootTable == null)
+        {
+            Debug.LogWarning($"{name}에 LootTable이 없습니다.");
+            return;
+        }
+
+        lootTable.GenerateLoot(this);
     }
 
     private float CalculateOpenTime()
@@ -52,11 +61,11 @@ public class LootBoxContainer : ItemContainer
 
         float gradeValue = itemData.GradeType switch
         {
-            GradeType.Common => 0.2f,
-            GradeType.UnCommon => 0.5f,
-            GradeType.Rare => 1.0f,
-            GradeType.Epic => 2.0f,
-            GradeType.Legendary => 4.0f,
+            GradeType.Common => commonOpenTime,
+            GradeType.UnCommon => unCommonOpenTime,
+            GradeType.Rare => rareOpenTime,
+            GradeType.Epic => epicOpenTime,
+            GradeType.Legendary => legendaryOpenTime,
             _ => 0f
         };
 

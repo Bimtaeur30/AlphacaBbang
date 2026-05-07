@@ -280,7 +280,7 @@ public class PlayerController : Agent
         UpdateSpeed();
         UpdateColliderState();
 
-        // ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+        // ÃÑ ¸ðµâ¿¡µµ Á¶ÁØ ÇØÁ¦ Àü´Þ
         //HandleAimKey(false);
     }
 
@@ -306,17 +306,17 @@ public class PlayerController : Agent
         PlayerInput.OnSprintAction -= HandleSprint;
     }
 
-    #region ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
-    #region ï¿½ï¿½ï¿½ï¿½È­
+    #region ÃÑ °ü·Ã ÄÚµå
+    #region Á÷·ÄÈ­
     [SerializeField] private PlayerInputSO_KTJ playerInputSO;
     #endregion
 
-    #region ï¿½ï¿½ï¿½
-    public GunHandleModule GunHandleModule { get; private set; }
-    public CrossHairModule CrossHairModule { get; private set; }
+    #region ¸ðµâ
+    public PlayerGunHandleModule GunHandleModule { get; private set; }
+    public PlayerGunHandleModule CrossHairModule { get; private set; }
     #endregion
 
-    #region ï¿½Ûºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    #region ÆÛºí¸¯ º¯¼ö
     public Camera MainCam { get; private set; }
     public Vector2 Forward { get; private set; }
     #endregion
@@ -325,10 +325,10 @@ public class PlayerController : Agent
     {
         base.InitializeComponents();
 
-        GunHandleModule = GetModule<GunHandleModule>();
+        GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
-        CrossHairModule = GetModule<CrossHairModule>();
+        CrossHairModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
 
         MainCam = Camera.main;

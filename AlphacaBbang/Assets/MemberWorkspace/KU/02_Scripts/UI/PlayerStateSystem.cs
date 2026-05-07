@@ -16,6 +16,7 @@ public class PlayerStatSystem : MonoBehaviour
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
 
+    private PlayerController _controller;
     public bool IsRunning { get; private set; }
 
     public event Action<float> OnHealthChanged;
@@ -23,6 +24,8 @@ public class PlayerStatSystem : MonoBehaviour
 
     private void Awake()
     {
+        _controller = GetComponentInParent<PlayerController>();
+
         CurrentHealth = MaxHealth;
         CurrentStamina = MaxStamina;
 
@@ -34,7 +37,6 @@ public class PlayerStatSystem : MonoBehaviour
     {
         UpdateStamina();
     }
-
 
     public void TakeDamage(float damage)
     {
@@ -76,7 +78,10 @@ public class PlayerStatSystem : MonoBehaviour
             if (CurrentStamina <= 0f)
             {
                 CurrentStamina = 0f;
-                IsRunning = false; // 강제 종료
+                IsRunning = false;
+
+                if (_controller != null)
+                    _controller.RefreshMovementSpeed();
             }
         }
         else

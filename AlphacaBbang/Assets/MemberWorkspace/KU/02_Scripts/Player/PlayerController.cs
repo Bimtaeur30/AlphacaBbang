@@ -35,6 +35,9 @@ public class PlayerController : Agent
     private float _prevYaw;
     private bool _forceBlockAim = false;
 
+    private CapsuleCollider _aimCollider;
+    private CapsuleCollider _playerCollider;
+
     public bool IsAiming =>
         _aimState == PlayerAimState.Aiming ||
         _aimState == PlayerAimState.Releasing;
@@ -49,6 +52,12 @@ public class PlayerController : Agent
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
+
+        _aimCollider = _renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
+
+        _playerCollider = GetComponent<CapsuleCollider>();
+
+        UpdateColliderState();
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;
@@ -87,6 +96,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Aiming;
                 _agentMovement.SetUseRotation(false);
                 UpdateSpeed();
+                UpdateColliderState();
             }
         }
         else
@@ -118,6 +128,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
+                UpdateColliderState();
                 return;
             }
 
@@ -128,6 +139,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
+                UpdateColliderState();
             }
         }
     }
@@ -156,7 +168,7 @@ public class PlayerController : Agent
 
         if (_stat != null && _stat.IsRunning)
             multiplier *= 1.5f;
-
+        
         _agentMovement.SetSpeedMultiplier(multiplier);
     }
 
@@ -264,11 +276,30 @@ public class PlayerController : Agent
         _releaseTimer = 0f;
 
         _agentMovement.SetUseRotation(true);
+
         UpdateSpeed();
+        UpdateColliderState();
 
         // 총 모듈에도 조준 해제 전달
         //HandleAimKey(false);
     }
+
+    public void RefreshMovementSpeed()
+    {
+        UpdateSpeed();
+    }
+
+    private void UpdateColliderState()
+    {
+        bool isAim = IsAiming;
+
+        if (_playerCollider != null)
+            _playerCollider.enabled = !isAim;
+
+        if (_aimCollider != null)
+            _aimCollider.enabled = isAim;
+    }
+
     private void OnDestroy()
     {
         PlayerInput.OnMovementChange -= HandleMovement;

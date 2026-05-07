@@ -17,7 +17,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Conditions
                Enemy == null || Enemy.Value == null || Enemy.Value.EnemyData == null || Enemy.Value.Sensor == null)
                 return false;
 
-            return !Enemy.Value.Sensor.IsTargetInRange(Enemy.Value.EnemyData.AttackRange, out Collider hitCollider);
+            return Enemy.Value.Sensor.IsTargetInRange(Enemy.Value.EnemyData.AttackRange, out Collider hitCollider);
         }
     }
 }

@@ -1,7 +1,6 @@
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using Unity.Cinemachine;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -12,7 +11,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     public Vector2 CHMousePos { get; private set; }
 
     [SerializeField] private Image crossHairImg;
-    [SerializeField] private EventChannelSO systemChannel;
+    [SerializeField] private EventChannelSO gunChannel;
 
     [Header("CrossHair Settings")]
     [SerializeField] private float defualtFollowSpeed = 20f;
@@ -38,19 +37,19 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         Debug.Assert(_player != null, "CrossHairModule : player is null");
         Debug.Assert(crossHairImg != null, "CrossHairModule : crossHairImg is null");
-        Debug.Assert(systemChannel != null, "CrossHairModule : systemChannel is null");
+        Debug.Assert(gunChannel != null, "CrossHairModule : systemChannel is null");
     }
 
     private void OnEnable()
     {
-        systemChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
-        systemChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
+        gunChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
+        gunChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void OnDisable()
     {
-        systemChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
-        systemChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
+        gunChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
+        gunChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void Update()
@@ -63,7 +62,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         _mousePos = Mouse.current.position.ReadValue();
 
-        GunHandleModule gunHandle = _player.GunHandleModule;
+        PlayerGunHandleModule gunHandle = _player.GunHandleModule;
         Gun currentGun = gunHandle.CurrentGun;
         GunDataSO gunData = currentGun.GunDataSO;
 

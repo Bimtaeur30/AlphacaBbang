@@ -3,19 +3,17 @@ using UnityEngine;
 public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 {
     [field: SerializeField] public float _moveSpeed { get; private set; }
-    [SerializeField] private float gravity = -9.8f;
-    private CharacterController _characterController;
+
+    private Rigidbody _rigidbody;
 
     private Vector3 _velocity;
     public Vector3 Velocity => _velocity;
-    private float _verticalVelocity;
+
     private Vector3 _movementDirection;
     private ModuleOwner _owner;
 
     private float _currentSpeedMultiplier = 1;
     private bool _useRotation = true;
-
-
 
     public void SetMovementDirection(Vector2 movementInput)
     {
@@ -28,10 +26,9 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
         _movementDirection = direction.normalized;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         CalculateMovement();
-        ApplyGravity();
         Move();
     }
 
@@ -41,48 +38,35 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 
         _velocity = dir * _moveSpeed * _currentSpeedMultiplier;
 
-        if (_useRotation && _velocity.sqrMagnitude > 0)
+        if (_useRotation && _velocity.sqrMagnitude > 0.001f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(_velocity);
             _owner.transform.rotation = Quaternion.Lerp(
                 _owner.transform.rotation,
                 targetRotation,
-                8f * Time.deltaTime);
+                10f * Time.fixedDeltaTime);
         }
-    }
-
-
-    private void ApplyGravity()
-    {
-        if (_characterController.isGrounded)
-        {
-            if (_verticalVelocity < 0)
-                _verticalVelocity = -2f;
-        }
-        else
-        {
-            _verticalVelocity += gravity * Time.deltaTime;
-        }
-
-        _velocity.y = _verticalVelocity;
     }
 
     private void Move()
     {
-        _characterController.Move(_velocity * Time.deltaTime);
+        Vector3 move = _velocity * Time.fixedDeltaTime;
+        _rigidbody.MovePosition(_rigidbody.position + move);
     }
 
     public void Initialize(ModuleOwner owner)
     {
         _owner = owner;
-        _characterController = owner.GetComponent<CharacterController>();
-    }
+        _rigidbody = owner.GetComponent<Rigidbody>();
 
+        _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+    }
 
     public void SetUseRotation(bool useRotation)
     {
         _useRotation = useRotation;
     }
+
     public void SetSpeedMultiplier(float multiplier)
     {
         _currentSpeedMultiplier = multiplier;

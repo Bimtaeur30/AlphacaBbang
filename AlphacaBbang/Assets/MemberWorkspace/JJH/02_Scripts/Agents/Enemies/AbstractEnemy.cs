@@ -7,12 +7,14 @@ using System;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
         [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [SerializeField] private Gun[] Guns;
         [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
@@ -33,13 +35,23 @@ namespace JJH._02_Scripts.Agents.Enemies
         protected override void InitializeComponents()
         {
             base.InitializeComponents();
+
+            if (Weapon != null)
+                Weapon.Init();
+            if (Weapon is EnemyGunHandleModule)
+            {
+                EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                Guns[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentGun(Guns[rand]);
+            }
+
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
-            if (Weapon != null)
-                Weapon.Init();
 
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;

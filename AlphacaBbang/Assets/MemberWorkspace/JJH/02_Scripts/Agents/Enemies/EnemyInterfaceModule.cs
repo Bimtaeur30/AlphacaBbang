@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
-    public class EnemyInterfaceModule : MonoBehaviour, IModule, IEnemyInterface
+    public class EnemyInterfaceModule : MonoBehaviour, IModule, IEnemyInterface, IAfterInitModule
     {
         [SerializeField] private Image _enemyIcon;
         [SerializeField] private TextMeshPro _nameText;
@@ -14,7 +14,10 @@ namespace JJH._02_Scripts.Agents.Enemies
         public void Initialize(ModuleOwner owner)
         {
             _owner = (AbstractEnemy)owner;
+        }
 
+        public void AfterInitalize()
+        {
             SetInterfaceShow(true);
             _nameText.text = _owner.EnemyData.EnemyName;
         }

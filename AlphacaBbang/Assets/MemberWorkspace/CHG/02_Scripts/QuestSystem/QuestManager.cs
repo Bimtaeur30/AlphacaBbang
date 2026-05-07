@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.Behavior;
 using UnityEditor.Overlays;
 using UnityEngine;
 
@@ -16,6 +17,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public Dictionary<string, QuestData> SubQuests = new Dictionary<string, QuestData>();
         
         public event Action<Quest> OnQuestAccepted;
+        public event Action<Quest> OnUpdateQuestProgress;
         
         // now active/completed quest
         private List<Quest> _activeQuests = new List<Quest>();
@@ -26,8 +28,12 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
         protected override void Awake()
         {
-            base.Awake();
             LoadQuestDB();
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log("OnDestroy");
         }
 
         private void LoadQuestDB()
@@ -60,7 +66,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                     QuestId = q.Data.Id,
                     ConditionProgress = q.Conditions.Select(c => new ConditionProgress
                     {
-                        Current = c.Current
+                        Current = c.Progress
                     }).ToList()
                 }).ToList(),
 
@@ -88,12 +94,25 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
         public void QuestAccept(string questId)
         {
-            if (_completedQuestIds.Contains(questId)) return;
-            if (_activeQuests.Any(q => q.Data.Id == questId)) return;
+            if (_completedQuestIds.Contains(questId)) 
+            {
+                Debug.LogError($"Quest {questId} is completed");
+                return;
+            }
+            if (_activeQuests.Any(q => q.Data.Id == questId))
+            {
+                Debug.LogError($"Quest {questId} is active");
+                return;
+            };
             
             var data = FindQuestData(questId);
-            if (data == null) return;
+            if (data == null)
+            {
+                Debug.LogError($"Quest {questId} not found");
+                return;
+            }
 
+            Debug.Log(data.Name + " : " + data.Id);
             Quest newQuest = QuestFactory.Create(data);
             _activeQuests.Add(newQuest);
             OnQuestAccepted?.Invoke(newQuest);
@@ -108,5 +127,39 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             if (SubQuests.TryGetValue(questId, out var sub)) return sub;
             return null;
         }
+
+#region QuestDataUpdateTest
+
+        [ContextMenu("AcceptQuestTest")]
+        private void AcceptQuestTest()
+        {
+            QuestAccept("quest_002");
+            QuestAccept("quest_001");
+        }
+
+        [ContextMenu("EnemyKillTest")]
+        private void QuestProgressUpdate()
+        {
+            foreach (Quest quest in _activeQuests)
+                foreach (QuestCondition condition in quest.Conditions)
+                    if (condition.TargetId == "Zombie")
+                    {
+                        condition.Progress++;
+                        OnUpdateQuestProgress?.Invoke(quest);
+                    }
+        }
+        
+        private void QuestProgressUpdate(string targetId, int value)
+        {
+            foreach (Quest quest in _activeQuests)
+            foreach (QuestCondition condition in quest.Conditions)
+                if (condition.TargetId == targetId)
+                {
+                    condition.Progress += value;
+                    OnUpdateQuestProgress?.Invoke(quest);
+                }
+        }
+
+#endregion
     }
 }

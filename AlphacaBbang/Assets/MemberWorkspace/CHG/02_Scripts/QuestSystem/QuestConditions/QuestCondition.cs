@@ -3,8 +3,8 @@
     public abstract class QuestCondition
     {
         public string TargetId { get; protected set; }
-        public int Current {get; set;}
+        public int Progress {get; set;}
         public int Required {get; protected set;}
-        public bool IsCompleted => Current >= Required;
+        public bool IsCompleted => Progress >= Required;
     }
 }

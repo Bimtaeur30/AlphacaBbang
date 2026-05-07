@@ -64,6 +64,7 @@ public class Test_PlayerAttack : MonoBehaviour, IModule, IWeapon
     public void Init()
     {
         weapon.Init();
+        weapon.charaterState = charaterState;
     }
 
     public void SetAim(bool val)

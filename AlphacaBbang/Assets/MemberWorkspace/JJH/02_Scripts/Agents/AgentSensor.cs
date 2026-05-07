@@ -8,7 +8,6 @@ namespace JJH._02_Scripts.Agents
         [field: SerializeField] public LayerMask ObstacleLayer { get; private set; }
         [field: SerializeField] public LayerMask TargetLayer { get; private set; }
 
-
         private Agent _owner;
 
         private float _debugRange = 0;

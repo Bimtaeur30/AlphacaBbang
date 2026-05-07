@@ -34,7 +34,8 @@ public class Test_PlayerAttack : MonoBehaviour, IModule, IWeapon
                 {
                     Vector3 targetPos = GetMouseWorldPoint();
                     weapon.Attack(targetPos, true);
-                };
+                }
+                ;
                 break;
             case CharaterState.Enemy:
                 break;

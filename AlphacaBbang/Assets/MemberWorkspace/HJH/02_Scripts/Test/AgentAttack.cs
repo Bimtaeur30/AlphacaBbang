@@ -1,3 +1,4 @@
+using Reflex.Attributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,10 +8,10 @@ public enum CharaterState
     Player,
     Enemy
 }
-public class Test_PlayerAttack : MonoBehaviour, IModule, IWeapon
+public class AgentAttack : MonoBehaviour, IModule, IWeapon
 {
     [SerializeField] private MeleeWeaponBase weapon;
-    [SerializeField] private Camera mainCamera;
+    [Inject][SerializeField] private Camera mainCamera;
 
     [SerializeField] private CharaterState charaterState;
 
@@ -34,7 +35,8 @@ public class Test_PlayerAttack : MonoBehaviour, IModule, IWeapon
                 {
                     Vector3 targetPos = GetMouseWorldPoint();
                     weapon.Attack(targetPos, true);
-                };
+                }
+                ;
                 break;
             case CharaterState.Enemy:
                 break;
@@ -63,6 +65,7 @@ public class Test_PlayerAttack : MonoBehaviour, IModule, IWeapon
     public void Init()
     {
         weapon.Init();
+        weapon.charaterState = charaterState;
     }
 
     public void SetAim(bool val)

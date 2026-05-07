@@ -62,17 +62,17 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         _mousePos = Mouse.current.position.ReadValue();
 
-        //PlayerGunHandleModule gunHandle = _player.GunHandleModule;
-        //Gun currentGun = gunHandle.CurrentGun;
-        //GunDataSO gunData = currentGun.GunDataSO;
+        PlayerGunHandleModule gunHandle = _player.GunHandleModule;
+        Gun currentGun = gunHandle.CurrentGun;
+        GunDataSO gunData = currentGun.GunDataSO;
 
-        //bool isFiring = gunHandle.CurrentGun.IsFiring && gunHandle.CurrentGun.IsAiming && gunHandle.CurrentGun.Magazine.IsReloading == false;
+        bool isFiring = gunHandle.CurrentGun.IsFiring && gunHandle.CurrentGun.IsAiming && gunHandle.CurrentGun.Magazine.IsReloading == false;
 
-        //if (isFiring)
+        if (isFiring)
         {
-            //HandleFireRecoil(gunData);
+            HandleFireRecoil(gunData);
         }
-        //else
+        else
         {
             // �߻� ���߸� ���� �߻� �� ��� �ݵ� ���� �����ϵ��� �ʱ�ȭ
             _fireRecoilTimer = 0f;

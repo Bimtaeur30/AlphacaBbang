@@ -28,12 +28,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
         protected override void Awake()
         {
+            //base.Awake();
             LoadQuestDB();
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log("OnDestroy");
         }
 
         private void LoadQuestDB()

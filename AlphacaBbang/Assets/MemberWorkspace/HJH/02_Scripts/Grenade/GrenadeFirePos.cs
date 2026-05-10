@@ -54,7 +54,9 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
                     if (Mouse.current.leftButton.wasPressedThisFrame)
                     {
-                        StartCoroutine(SimulateProjectile());
+                        Vector3 direction = (targetPoint.position - startPoint.position).normalized;
+                        bool canAttack = true; // 임시로 박아둠
+                        StartCoroutine(SimulateProjectile(direction, canAttack));
                     }
                 }
                 else

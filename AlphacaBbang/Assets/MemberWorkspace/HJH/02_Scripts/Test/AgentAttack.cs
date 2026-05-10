@@ -11,16 +11,15 @@ public enum CharaterState
 public class AgentAttack : MonoBehaviour, IModule, IWeapon
 {
     [SerializeField] private MeleeWeaponBase weapon;
-    [Inject][SerializeField] private Camera mainCamera;
+    [SerializeField] private Camera mainCamera;
 
     [SerializeField] private CharaterState charaterState;
 
-    private void Start()
+
+    private void Awake()
     {
         weapon.Init();
-
-        if (mainCamera == null)
-            mainCamera = Camera.main;
+        mainCamera = Camera.main;
     }
 
     private void Update()

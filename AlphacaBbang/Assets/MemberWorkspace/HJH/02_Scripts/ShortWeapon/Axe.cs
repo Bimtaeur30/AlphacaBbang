@@ -83,6 +83,7 @@ public class Axe : MeleeWeaponBase
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
                        * Quaternion.Euler(-90f, 180f, 0f);
 
+        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

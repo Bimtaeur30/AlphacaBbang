@@ -100,15 +100,20 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
         }
     }
 
-    public IEnumerator SimulateProjectile()
+    public IEnumerator SimulateProjectile(Vector3 direction, bool val)
     {
         if (currentGrenade == null || currentGrenade.count <= 0)
         {
             Debug.Log("사용할 수 있는 폭탄 없음");
             yield break;
         }
+        else if(!val)
+        {
+            Debug.Log("공격 못함");
+            yield break;
+        }
 
-        GameObject projectile = Instantiate(currentGrenade.prefab, startPoint.position, Quaternion.identity);
+            GameObject projectile = Instantiate(currentGrenade.prefab, startPoint.position, Quaternion.identity);
 
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
@@ -130,8 +135,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
         float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
         float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
-
-        Vector3 direction = (targetPoint.position - startPoint.position).normalized;
 
         projectile.transform.rotation = Quaternion.LookRotation(direction);
 
@@ -218,6 +221,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
     public void Attack(Vector3 vector, bool val)
     {
-        StartCoroutine(SimulateProjectile());
+        StartCoroutine(SimulateProjectile(vector,val));
     }
 }

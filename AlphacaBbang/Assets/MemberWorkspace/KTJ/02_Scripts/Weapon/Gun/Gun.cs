@@ -30,11 +30,15 @@ public abstract class Gun : WeaponBase
 
     protected float _lastFireTime = -999f;
     protected GunHandleModule _gunHandleModule;
+    protected GunSoundPlayer _gunSoundPlayuer;
 
     protected virtual void Awake()
     {
         Renderer = GetComponentInChildren<GunRenderer>();
+        _gunSoundPlayuer = GetComponentInChildren<GunSoundPlayer>();
         Debug.Assert(Renderer != null, "GunRenderer가 자식으로 붙어있지 않습니다.");
+        Debug.Assert(_gunSoundPlayuer != null, "GunSoundPlayer가 자식으로 붙어있지 않습니다.");
+
         Debug.Assert(firePos != null, "firePos가 할당되지 않았습니다.");
     }
 
@@ -117,12 +121,16 @@ public abstract class Gun : WeaponBase
     public bool TryFire()
     {
         if (!CanFire())
+        {
+            //_gunSoundPlayuer.PlaySound(GunDataSO.DryFireClip);
             return false;
+        }
 
         _lastFireTime = Time.time;
         if (Magazine.TryUseBullet())
         {
             FireInternal();
+            _gunSoundPlayuer.PlaySound(GunDataSO.FireClip);
             return true;
         }
         else
@@ -137,6 +145,7 @@ public abstract class Gun : WeaponBase
     // 장전 시작 시 호출 (서브클래스 확장용)
     protected virtual void OnReloadStart()
     {
+        _gunSoundPlayuer.PlaySound(GunDataSO.UnLoadClip);
     }
 
     // 장전 완료 시 호출 — 기본은 아무것도 안 함 (플레이어는 다시 입력해야 발사)
@@ -144,6 +153,8 @@ public abstract class Gun : WeaponBase
     protected virtual void OnReloadEnd()
     {
         _gunHandleModule.OnReloadEnd();
+        _gunSoundPlayuer.PlaySound(GunDataSO.LoadClip);
+        _gunSoundPlayuer.PlaySound(GunDataSO.CookClip);
     }
 
     protected virtual bool CanFire()

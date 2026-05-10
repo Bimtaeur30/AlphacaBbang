@@ -10,7 +10,6 @@ public class CrossHairModule : MonoBehaviour, IModule
 {
     public Vector2 CHMousePos { get; private set; }
 
-    [SerializeField] private Image crossHairImg;
     [SerializeField] private EventChannelSO gunChannel;
 
     [Header("CrossHair Settings")]
@@ -18,8 +17,10 @@ public class CrossHairModule : MonoBehaviour, IModule
     [SerializeField] private float recoilDistance = 60f;
     [SerializeField] private float recoilRecoverSpeed = 10f;
 
+    private Image crossHairImg;
     private bool _isCrossHairActive;
     private PlayerController _player;
+    [Reflex.Attributes.Inject] private CursorController _cursorController;
 
     private Vector2 _mousePos;
     private Vector2 _recoilOffset;
@@ -33,7 +34,10 @@ public class CrossHairModule : MonoBehaviour, IModule
     {
         _player = owner as PlayerController;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        crossHairImg = _cursorController.GetGunCursor();
         Debug.Assert( _impulseSource != null ,"Impulse Source Componenet is NULL");
+        Debug.Assert(_cursorController != null ,"커서 컨트롤러를 가져오지 못했습니다.");
+        Debug.Assert(crossHairImg != null ,"크로스 헤어 이미지를 정상적으로 가져오지 못했습니다. 커서 컨트롤러가 정상적으로 작동하는지 확인하세요.");
 
         Debug.Assert(_player != null, "CrossHairModule : player is null");
         Debug.Assert(crossHairImg != null, "CrossHairModule : crossHairImg is null");

@@ -11,7 +11,7 @@ public enum CharaterState
 public class AgentAttack : MonoBehaviour, IModule, IWeapon
 {
     [SerializeField] private MeleeWeaponBase weapon;
-    [SerializeField] private Camera mainCamera;
+    [Inject][SerializeField] private Camera mainCamera;
 
     [SerializeField] private CharaterState charaterState;
 

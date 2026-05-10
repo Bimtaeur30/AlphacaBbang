@@ -1,9 +1,9 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
+using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.AnimationSystems;
-using System;
 using UnityEngine;
 
-public abstract class Gun : MonoBehaviour
+public abstract class Gun : WeaponBase
 {
     public GunRenderer Renderer { get; private set; }
     public bool IsAiming { get; private set; }

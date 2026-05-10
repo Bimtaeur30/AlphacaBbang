@@ -54,7 +54,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.Enemies.GoatEnemy
   AgentEventChannel: {fileID: 11400000, guid: 64ebf60eac750d34e8aaef41faaa83bd, type: 2}
-  <EnemyData>k__BackingField: {fileID: 11400000, guid: f6fff6371ca96154b8d4b71b341bf7ec, type: 2}
+  EnemyDatas:
+  - {fileID: 11400000, guid: f6fff6371ca96154b8d4b71b341bf7ec, type: 2}
+  - {fileID: 11400000, guid: 4646ff13c8e6d2d458551802b1d19bc7, type: 2}
+  - {fileID: 11400000, guid: 9f3f7ee0eda3c4244b33808f9b52dee9, type: 2}
+  Weapons:
+  - {fileID: 6200463345942779241}
+  - {fileID: 2457548389262635057}
+  - {fileID: 2725096781436393692}
 --- !u!114 &2512365734380539821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -482,6 +489,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1753904951248827785, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+      propertyPath: comboWindow
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1753904951248827785, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+      propertyPath: charaterState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2064917090631825798, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0171
@@ -526,6 +541,10 @@ PrefabInstance:
       propertyPath: comboWindow
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2277859795530325348, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+      propertyPath: charaterState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2396642763735155207, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -536,7 +555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7184759546967036906, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7325589388077010443, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_Name
@@ -546,11 +565,38 @@ PrefabInstance:
       propertyPath: comboWindow
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7800675390939648209, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+      propertyPath: charaterState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4753809096553972330, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+--- !u!114 &2457548389262635057 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1753904951248827785, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+  m_PrefabInstance: {fileID: 4201269663803966904}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e6cad1c3071f504e9c2b3abea100040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BaseballBat
+--- !u!114 &2725096781436393692 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2277859795530325348, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+  m_PrefabInstance: {fileID: 4201269663803966904}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e25db63ef1790dc43aef5f8326947105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TwoHandedSteelPipe
 --- !u!4 &2802900711222230078 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2064917090631825798, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}

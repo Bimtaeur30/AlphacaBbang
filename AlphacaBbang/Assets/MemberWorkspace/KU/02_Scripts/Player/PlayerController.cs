@@ -35,14 +35,16 @@ public class PlayerController : Agent
         set
         {
             if (_aimState == value) return;
-            _aimState = value;
+
+            var prev = _aimState;  // 이전 상태 저장
+            _aimState = value;     // 상태 변경
 
             switch (value)
             {
                 case PlayerAimState.Aiming:
                     OnStartAiming();
                     break;
-                case PlayerAimState.Idle:
+                case PlayerAimState.Idle when prev == PlayerAimState.Releasing:
                     OnStopAiming();
                     break;
             }

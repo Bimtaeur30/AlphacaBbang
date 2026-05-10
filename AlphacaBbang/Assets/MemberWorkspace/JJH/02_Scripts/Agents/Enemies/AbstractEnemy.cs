@@ -39,18 +39,17 @@ namespace JJH._02_Scripts.Agents.Enemies
 
             if (Weapon != null)
                 Weapon.Init();
+
+            int rand = Random.Range(0, EnemyDatas.Length);
+            EnemyData = EnemyDatas[rand];
             if (Weapon is EnemyGunHandleModule)
             {
-                int rand = Random.Range(0, EnemyDatas.Length);
-                EnemyData = EnemyDatas[rand];
                 Weapons[rand].gameObject.SetActive(true);
                 EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
                 gunHandleModule.SetCurrentGun((Gun)Weapons[rand]);
             }
             else if (Weapon is AgentAttack)
             {
-                int rand = Random.Range(0, EnemyDatas.Length);
-                EnemyData = EnemyDatas[rand];
                 Weapons[rand].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
                 gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);

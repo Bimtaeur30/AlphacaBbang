@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3903864071289508235}
-  - component: {fileID: 3052227819428638896}
+  - component: {fileID: 960392384913228165}
   - component: {fileID: 1880102334118768284}
   - component: {fileID: 7038113307402372150}
   - component: {fileID: 6459626037424560846}
@@ -41,7 +41,7 @@ Transform:
   - {fileID: 4759381823835368789}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3052227819428638896
+--- !u!114 &960392384913228165
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -50,9 +50,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 431057124142401684}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5dfea658659dd442950d97ad5ee5f0a, type: 3}
+  m_Script: {fileID: 11500000, guid: 5b318be906984934db25d03f66d49880, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.Enemies.GoatEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.Enemies.GrenadeEnemy
   AgentEventChannel: {fileID: 11400000, guid: 64ebf60eac750d34e8aaef41faaa83bd, type: 2}
   EnemyDatas:
   - {fileID: 11400000, guid: c0663654afc371b47a6df7b600d654a9, type: 2}
@@ -69,10 +69,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Behavior::Unity.Behavior.BehaviorGraphAgent
-  m_Graph: {fileID: 4812682332670016504, guid: e8e32e6876b19c642819b211f5bbffbb, type: 2}
+  m_Graph: {fileID: 4812682332670016504, guid: 0f2028dcb33e52a4d8ec79d2badc194f, type: 2}
   m_BlackboardVariableOverridesList:
   - rid: 5459183580635202484
-  m_OriginalGraph: {fileID: 4812682332670016504, guid: e8e32e6876b19c642819b211f5bbffbb, type: 2}
+  m_OriginalGraph: {fileID: 4812682332670016504, guid: 0f2028dcb33e52a4d8ec79d2badc194f, type: 2}
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
@@ -351,7 +351,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 162707906571835435, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
       propertyPath: m_Name
-      value: MeleeWeaponModule
+      value: GrenadeWeaponModule
       objectReference: {fileID: 0}
     - target: {fileID: 1464863944936567385, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
       propertyPath: weapon
@@ -413,15 +413,58 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1464863944936567385, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
     m_RemovedGameObjects:
     - {fileID: 6139591316485646569, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 162707906571835435, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7197639196190816580}
   m_SourcePrefab: {fileID: 100100000, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
 --- !u!4 &1714561824666421501 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4540296133959149688, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
+  m_PrefabInstance: {fileID: 2938888624319946885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3065555347018774702 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 162707906571835435, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
+  m_PrefabInstance: {fileID: 2938888624319946885}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7197639196190816580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3065555347018774702}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef8bede99f7e804ca85806643120eab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrenadeFirePos
+  charaterState: 2
+  firingAngle: 45
+  gravity: 9.8
+  throwingDistance: 10
+  startPoint: {fileID: 2031743767996417436}
+  targetMark: {fileID: 1264165220301592963, guid: 4a32aa4d8eef8a2449ea0f126159e446, type: 3}
+  layermask:
+    serializedVersion: 2
+    m_Bits: 1024
+  grenadeList:
+  - {fileID: 11400000, guid: 810b1a9f4886baa4799bc48d137512fc, type: 2}
+  - {fileID: 11400000, guid: 851a5370675e748449c478979a37c68b, type: 2}
+  - {fileID: 11400000, guid: 5ebf21aef3b91004dbf3363c9354ee37, type: 2}
+  currentGrenade: {fileID: 11400000, guid: f5ff75a0dc4b8454e8473da7a789cabe, type: 2}
+  lineRenderer: {fileID: 5904735866752069804}
+  lineSegmentCount: 30
+  lineTimeStep: 0.0375
+--- !u!120 &5904735866752069804 stripped
+LineRenderer:
+  m_CorrespondingSourceObject: {fileID: 8734962780354187305, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
   m_PrefabInstance: {fileID: 2938888624319946885}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4044726039401127196

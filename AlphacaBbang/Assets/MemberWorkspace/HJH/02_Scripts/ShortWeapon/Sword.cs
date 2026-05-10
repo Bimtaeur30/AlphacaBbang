@@ -141,6 +141,10 @@ public class Sword : MeleeWeaponBase
                        * data[ComboCounter].attackParticlePrefab.transform.rotation
                        * Quaternion.Euler(0f, 0f, 180f);
 
+        Vector3 parentRotation = gameObject.transform.parent.rotation.eulerAngles;
+        parentRotation.y = rot.eulerAngles.y;
+        gameObject.transform.parent.rotation = Quaternion.Euler(parentRotation);
+
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

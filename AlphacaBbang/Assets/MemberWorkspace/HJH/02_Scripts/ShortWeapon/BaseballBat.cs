@@ -135,6 +135,7 @@ public class BaseballBat : MeleeWeaponBase
             * data[ComboCounter].attackParticlePrefab.transform.rotation
             * Quaternion.Euler(0f, 0f, 180f);
 
+        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

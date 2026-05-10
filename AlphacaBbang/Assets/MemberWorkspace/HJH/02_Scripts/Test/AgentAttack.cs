@@ -15,12 +15,11 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon
 
     [SerializeField] private CharaterState charaterState;
 
-    private void Start()
+
+    private void Awake()
     {
         weapon.Init();
-
-        if (mainCamera == null)
-            mainCamera = Camera.main;
+        mainCamera = Camera.main;
     }
 
     private void Update()

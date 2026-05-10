@@ -2,11 +2,14 @@ using UnityEngine;
 
 public abstract class MeleeWeaponBase : MonoBehaviour
 {
+    public CharaterState charaterState;
+
     [SerializeField] protected ShortWeaponSO[] data;
     protected int currentLevel = 0;
 
     protected float lastUseTime;
     protected float currentTime = 0;
+
 
     public virtual void Init() { }
 

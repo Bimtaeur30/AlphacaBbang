@@ -1,9 +1,5 @@
 using JJH._02_Scripts_Systems.EventSystems;
-using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 {
@@ -18,7 +14,7 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
     [SerializeField] private Transform gunHoldParent_2;
 
     [Header("System")]
-    [SerializeField] private EventChannelSO systemChannel;
+    [SerializeField] private EventChannelSO gunChannel;
 
     public PlayerController PlayerController { get; private set; }
 
@@ -30,23 +26,29 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 
     public void AfterInitalize()
     {
-        systemChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
-        systemChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+        gunChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
+        gunChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+    }
+
+    private void OnDestroy()
+    {
+        gunChannel.RemoveListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
+        gunChannel.RemoveListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
     }
 
     private void Start()
     {
         // 테스트 코드
-        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponSlotEquipEvent.Init(TEST_GUN1, WeaponSlotIndex.First));
-        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
-        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponEquipEvent.Init(WeaponSlotIndex.First));
+        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN1, WeaponSlotIndex.First));
+        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
+        gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
         // 여기까지
     }
 
-    protected override void SetCurrentGun(Gun gun)
+    public override void SetCurrentGun(Gun gun)
     {
         base.SetCurrentGun(gun);
-        systemChannel.RaiseEvent(SystemEventChannel_TJ.WeaponEquipDataEvent.Init(CurrentGun.GunDataSO));
+        gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentGun.GunDataSO));
     }
 
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)

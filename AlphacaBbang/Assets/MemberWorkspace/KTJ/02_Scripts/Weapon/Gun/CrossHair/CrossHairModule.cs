@@ -11,7 +11,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     public Vector2 CHMousePos { get; private set; }
 
     [SerializeField] private Image crossHairImg;
-    [SerializeField] private EventChannelSO systemChannel;
+    [SerializeField] private EventChannelSO gunChannel;
 
     [Header("CrossHair Settings")]
     [SerializeField] private float defualtFollowSpeed = 20f;
@@ -26,7 +26,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     private CinemachineImpulseSource _impulseSource;
 
-    // ¿¬»ç Áß FireInterval¸¶´Ù ¹Ýµ¿ Àû¿ë
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ FireIntervalï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½
     private float _fireRecoilTimer;
 
     public void Initialize(ModuleOwner owner)
@@ -37,19 +37,19 @@ public class CrossHairModule : MonoBehaviour, IModule
 
         Debug.Assert(_player != null, "CrossHairModule : player is null");
         Debug.Assert(crossHairImg != null, "CrossHairModule : crossHairImg is null");
-        Debug.Assert(systemChannel != null, "CrossHairModule : systemChannel is null");
+        Debug.Assert(gunChannel != null, "CrossHairModule : systemChannel is null");
     }
 
     private void OnEnable()
     {
-        systemChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
-        systemChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
+        gunChannel.AddListener<WeaponEquipDataEvent>(OnWeaponEquip);
+        gunChannel.AddListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void OnDisable()
     {
-        systemChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
-        systemChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
+        gunChannel.RemoveListener<WeaponEquipDataEvent>(OnWeaponEquip);
+        gunChannel.RemoveListener<WeaponDropEvent>(OnWeaponDrop);
     }
 
     private void Update()
@@ -74,11 +74,11 @@ public class CrossHairModule : MonoBehaviour, IModule
         }
         else
         {
-            // ¹ß»ç ¸ØÃß¸é ´ÙÀ½ ¹ß»ç ¶§ Áï½Ã ¹Ýµ¿ Àû¿ë °¡´ÉÇÏµµ·Ï ÃÊ±âÈ­
+            // ï¿½ß»ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
             _fireRecoilTimer = 0f;
         }
 
-        // ¹Ýµ¿ ¿ÀÇÁ¼Â º¹±¸
+        // ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         _recoilOffset = Vector2.Lerp(_recoilOffset, Vector2.zero, Time.deltaTime * recoilRecoverSpeed);
 
         Vector2 targetScreenPos = _mousePos + _recoilOffset;
@@ -131,7 +131,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     private void HandleSingleLikeFireRecoil(GunDataSO gunData)
     {
-        // ´©¸£°í ÀÖ´Â µ¿¾È ÇÑ ¹ø¸¸ ¹Ýµ¿ Àû¿ë
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½
         if (_fireRecoilTimer > 0f)
             return;
 

@@ -3,19 +3,23 @@ using JJH._02_Scripts.Agents.Enemies.BT.Channels;
 using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
+using System;
 using System.Collections;
-using TMPro;
 using Unity.Behavior;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
-        [SerializeField] protected TextMeshPro _nameText;
+        [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [SerializeField] private Gun[] Guns;
+        [SerializeField] private MeleeWeaponBase[] MeleeWeapons;
+        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
+        public IEnemyInterface EnemyInterface { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -32,19 +36,37 @@ namespace JJH._02_Scripts.Agents.Enemies
         protected override void InitializeComponents()
         {
             base.InitializeComponents();
-            NavMeshAgent = GetModule<INavMeshAgent>();
-            EnemySkill = GetModule<ISkillModule>();
-            HealthModule.InitHealth(EnemyData.EnemyHealth);
+
             if (Weapon != null)
                 Weapon.Init();
+            if (Weapon is EnemyGunHandleModule)
+            {
+                EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                Guns[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentGun(Guns[rand]);
+            }
+            else if (Weapon is AgentAttack)
+            {
+                AgentAttack gunHandleModule = (AgentAttack)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                MeleeWeapons[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentWeapon(MeleeWeapons[rand]);
+            }
+
+            NavMeshAgent = GetModule<INavMeshAgent>();
+            EnemySkill = GetModule<ISkillModule>();
+            EnemyInterface = GetModule<IEnemyInterface>();
+
+            HealthModule.InitHealth(EnemyData.EnemyHealth);
 
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
             _btAgent.SetVariableValue("Enemy", this);
 
-            _nameText.gameObject.SetActive(true);
-            _nameText.text = EnemyData.EnemyName;
             AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
             AgentEventChannel.AddListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
@@ -62,7 +84,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (evt.Agent == this)
             {
                 _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-                _nameText.gameObject.SetActive(false);
+                EnemyInterface.SetInterfaceShow(false);
             }
         }
 
@@ -107,19 +129,16 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void OnDead()
         {
-            Debug.Log("적 사망");
             Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
 
         public void ApplyBurn(float dps, float duration)
         {
-            Debug.Log("적 불탐");
         }
 
         public void TakeDamage(float damage)
         {
-            Debug.Log($"적 데미지 받음 : {damage}");
             HealthModule.SetHealth(damage);
         }
     }

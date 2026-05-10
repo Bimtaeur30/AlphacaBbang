@@ -35,6 +35,9 @@ public class PlayerController : Agent
     private float _prevYaw;
     private bool _forceBlockAim = false;
 
+    private CapsuleCollider _aimCollider;
+    private CapsuleCollider _playerCollider;
+
     public bool IsAiming =>
         _aimState == PlayerAimState.Aiming ||
         _aimState == PlayerAimState.Releasing;
@@ -49,6 +52,12 @@ public class PlayerController : Agent
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
+
+        _aimCollider = _renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
+
+        _playerCollider = GetComponent<CapsuleCollider>();
+
+        UpdateColliderState();
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;
@@ -87,9 +96,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Aiming;
                 _agentMovement.SetUseRotation(false);
                 UpdateSpeed();
-
-                // [버그 3 수정] GunHandleModule에 조준 시작 동기화
-                GunHandleModule?.Aim(true);
+                UpdateColliderState();
             }
         }
         else
@@ -104,9 +111,6 @@ public class PlayerController : Agent
                         _releaseTimer = _releaseDuration;
                     else
                         _releaseTimer = 0f;
-
-                    // [버그 3 수정] GunHandleModule에 조준 해제 동기화
-                    GunHandleModule?.Aim(false);
                 }
 
                 _pressTimer = 0f;
@@ -124,6 +128,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
+                UpdateColliderState();
                 return;
             }
 
@@ -134,6 +139,7 @@ public class PlayerController : Agent
                 _aimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
+                UpdateColliderState();
             }
         }
     }
@@ -162,7 +168,7 @@ public class PlayerController : Agent
 
         if (_stat != null && _stat.IsRunning)
             multiplier *= 1.5f;
-
+        
         _agentMovement.SetSpeedMultiplier(multiplier);
     }
 
@@ -264,17 +270,34 @@ public class PlayerController : Agent
                 _rotationSpeed * Time.deltaTime);
         }
     }
-
     public void ForceStopAim()
     {
         _aimState = PlayerAimState.Releasing;
         _releaseTimer = 0f;
 
         _agentMovement.SetUseRotation(true);
-        UpdateSpeed();
 
-        // [버그 4 수정] GunHandleModule에 조준 해제 동기화 (주석 제거 및 직접 호출)
-        GunHandleModule?.Aim(false);
+        UpdateSpeed();
+        UpdateColliderState();
+
+        // 총 모듈에도 조준 해제 전달
+        //HandleAimKey(false);
+    }
+
+    public void RefreshMovementSpeed()
+    {
+        UpdateSpeed();
+    }
+
+    private void UpdateColliderState()
+    {
+        bool isAim = IsAiming;
+
+        if (_playerCollider != null)
+            _playerCollider.enabled = !isAim;
+
+        if (_aimCollider != null)
+            _aimCollider.enabled = isAim;
     }
 
     private void OnDestroy()
@@ -290,7 +313,7 @@ public class PlayerController : Agent
 
     #region 모듈
     public PlayerGunHandleModule GunHandleModule { get; private set; }
-    public CrossHairModule CrossHairModule { get; private set; }
+    public PlayerGunHandleModule CrossHairModule { get; private set; }
     #endregion
 
     #region 퍼블릭 변수
@@ -305,7 +328,7 @@ public class PlayerController : Agent
         GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
-        CrossHairModule = GetModule<CrossHairModule>();
+        CrossHairModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
 
         MainCam = Camera.main;
@@ -334,6 +357,7 @@ public class PlayerController : Agent
     {
         if (GunHandleModule == null)
             return;
+
 
         GunHandleModule.Aim(isPressed);
     }

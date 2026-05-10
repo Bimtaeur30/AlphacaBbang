@@ -59,7 +59,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4646ff13c8e6d2d458551802b1d19bc7, type: 2}
   - {fileID: 11400000, guid: 9f3f7ee0eda3c4244b33808f9b52dee9, type: 2}
   Weapons:
-  - {fileID: 6200463345942779241}
+  - {fileID: 0}
   - {fileID: 2457548389262635057}
   - {fileID: 2725096781436393692}
 --- !u!114 &2512365734380539821
@@ -339,7 +339,7 @@ PrefabInstance:
     - target: {fileID: 1464863944936567385, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
       propertyPath: weapon
       value: 
-      objectReference: {fileID: 6200463345942779241}
+      objectReference: {fileID: 0}
     - target: {fileID: 1464863944936567385, guid: 94bb2cc31dfb55f48b8c98ab3d39760b, type: 3}
       propertyPath: mainCamera
       value: 
@@ -487,7 +487,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 265076364471977599, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1753904951248827785, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: comboWindow
@@ -547,7 +547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2396642763735155207, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4753809096553972330, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
@@ -555,7 +555,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7184759546967036906, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7325589388077010443, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
       propertyPath: m_Name
@@ -569,11 +569,15 @@ PrefabInstance:
       propertyPath: charaterState
       value: 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7800675390939648209, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
     m_RemovedGameObjects:
     - {fileID: 4753809096553972330, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7184759546967036906, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3201471833714905978}
   m_SourcePrefab: {fileID: 100100000, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
 --- !u!114 &2457548389262635057 stripped
 MonoBehaviour:
@@ -602,17 +606,27 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2064917090631825798, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
   m_PrefabInstance: {fileID: 4201269663803966904}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6200463345942779241 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7800675390939648209, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
+--- !u!1 &6483086429210023506 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7184759546967036906, guid: 12721f14a6b118c46bc44534261ba19f, type: 3}
   m_PrefabInstance: {fileID: 4201269663803966904}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+--- !u!114 &3201471833714905978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6483086429210023506}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e6cad1c3071f504e9c2b3abea100040, type: 3}
+  m_Script: {fileID: 11500000, guid: e376cd5e6e15cae478a3e16b76cdc884, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BaseballBat
+  m_EditorClassIdentifier: Assembly-CSharp::Axe
+  charaterState: 2
+  data:
+  - {fileID: 11400000, guid: cab7e58a9da45aa4d92180201832954d, type: 2}
+  comboWindow: 0.4
 --- !u!1001 &8322200593402571338
 PrefabInstance:
   m_ObjectHideFlags: 0

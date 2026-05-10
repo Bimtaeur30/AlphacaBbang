@@ -1,6 +1,7 @@
+using JJH._02_Scripts.Weapons;
 using UnityEngine;
 
-public abstract class MeleeWeaponBase : MonoBehaviour
+public abstract class MeleeWeaponBase : WeaponBase
 {
     public CharaterState charaterState;
 
@@ -13,7 +14,7 @@ public abstract class MeleeWeaponBase : MonoBehaviour
 
     public virtual void Init() { }
 
-    public virtual void SetAim(bool val) 
+    public virtual void SetAim(bool val)
     {
 
     }

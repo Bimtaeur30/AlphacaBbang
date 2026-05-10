@@ -1,7 +1,4 @@
-﻿using JJH._02_Scripts_Systems.EventSystems;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GunHandleModule : MonoBehaviour, IModule
 {
@@ -14,7 +11,7 @@ public class GunHandleModule : MonoBehaviour, IModule
 
     public virtual void Initialize(ModuleOwner owner) { }
 
-    protected virtual void SetCurrentGun(Gun gun)
+    public virtual void SetCurrentGun(Gun gun)
     {
         CurrentGun = gun;
         CurrentGun.Initialize(this);

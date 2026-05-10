@@ -3,15 +3,20 @@ using JJH._02_Scripts.Agents.Enemies.BT.Channels;
 using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
+using System;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
+        [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [SerializeField] private Gun[] Guns;
+        [SerializeField] private MeleeWeaponBase[] MeleeWeapons;
+        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -31,13 +36,31 @@ namespace JJH._02_Scripts.Agents.Enemies
         protected override void InitializeComponents()
         {
             base.InitializeComponents();
+
+            if (Weapon != null)
+                Weapon.Init();
+            if (Weapon is EnemyGunHandleModule)
+            {
+                EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                Guns[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentGun(Guns[rand]);
+            }
+            else if (Weapon is AgentAttack)
+            {
+                AgentAttack gunHandleModule = (AgentAttack)Weapon;
+                int rand = Random.Range(0, EnemyDatas.Length);
+                EnemyData = EnemyDatas[rand];
+                MeleeWeapons[rand].gameObject.SetActive(true);
+                gunHandleModule.SetCurrentWeapon(MeleeWeapons[rand]);
+            }
+
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
-            if (Weapon != null)
-                Weapon.Init();
 
             _btAgent = GetComponent<BehaviorGraphAgent>();
             _originColor = Renderer.Renderer.material.color;

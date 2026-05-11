@@ -540,6 +540,7 @@ GameObject:
   - component: {fileID: 1136668171}
   - component: {fileID: 1136668173}
   - component: {fileID: 1136668172}
+  - component: {fileID: 1136668174}
   m_Layer: 0
   m_Name: SettingUI
   m_TagString: Untagged
@@ -574,9 +575,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42c63268a1a23544e9a62d9574621985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenSetting
-  IsFullScreen: 1
-  SetWidth: 1920
-  SetHeight: 1080
 --- !u!114 &1136668173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -600,6 +598,21 @@ MonoBehaviour:
   m_PivotReferenceSize: 0
   m_Pivot: 0
   m_WorldSpaceCollider: {fileID: 0}
+--- !u!114 &1136668174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136668169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1eff032bb2a94e549a3af688db54f593, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.SettingUI.SettingPanel
+  settingsPanel: {fileID: 1136668173}
+  screenSetting: {fileID: 1136668172}
+  _audioMixer: {fileID: 24100000, guid: 83f226b1180560c458864949ce489390, type: 2}
 --- !u!1 &1781624592
 GameObject:
   m_ObjectHideFlags: 0

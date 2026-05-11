@@ -1,16 +1,23 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <ui:Template name="AudioSetting" src="project://database/Assets/MemberWorkspace/CHG/02_Scripts/SettingUI/AudioSetting.uxml?fileID=9197481963319205126&amp;guid=63fbda7bd4100ae49a995c4ac6d3a519&amp;type=3#AudioSetting"/>
     <ui:VisualElement name="SettingPanel" style="flex-grow: 1; background-color: rgb(0, 0, 0); margin-top: 10%; margin-right: 20%; margin-left: 20%; margin-bottom: 10%; visibility: visible;">
-        <ui:TabView name="TabView">
-            <ui:Tab label="화면" name="Screen">
-                <ui:DropdownField label="Dropdown" choices="4:3,16:9,16:10,21:9" enabled="true" index="1" style="background-image: none;"/>
+        <ui:TabView name="TabView" style="flex-grow: 1;">
+            <ui:Tab label="화면" name="Screen" style="flex-grow: 0;">
+                <ui:DropdownField label="화면 해상도" choices="" enabled="true" index="1" name="ScreenResolution" binding-path="ScreenResolution" style="background-image: none; color: rgb(255, 255, 255);"/>
+                <ui:DropdownField label="창 모드" name="ScreenMode" binding-path="ScreenMode" choices="전체화면,테두리 없는 창 ,창" index="-1"/>
             </ui:Tab>
-            <ui:Tab label="Tab" style="height: 143px; background-color: rgba(0, 0, 0, 0.32);">
-                <ui:Instance template="AudioSetting" name="TemplateContainer" style="flex-grow: 1;"/>
-            </ui:Tab>
+            <ui:Tab label="Tab" style="height: 143px; background-color: rgba(0, 0, 0, 0.32);"/>
             <ui:Tab label="오디오" name="Sound" style="background-color: rgba(0, 0, 0, 0.98); flex-grow: 1;">
-                <ui:Instance template="AudioSetting" name="TemplateContainer"/>
+                <ui:SliderInt label="Master" value="100" high-value="100" name="MasterVolume" binding-path="MasterVolume">
+                    <ui:Label text="Label"/>
+                </ui:SliderInt>
+                <ui:SliderInt label="BGM" value="100" high-value="100" name="BGMVolume" binding-path="BGMVolume">
+                    <ui:Label text="Label"/>
+                </ui:SliderInt>
+                <ui:SliderInt label="SFX" value="100" high-value="100" name="SFXVolume" binding-path="SFXVolume">
+                    <ui:Label text="Label"/>
+                </ui:SliderInt>
             </ui:Tab>
         </ui:TabView>
+        <ui:Button text="Save" name="Save" binding-path="Save" style="flex-direction: row-reverse;"/>
     </ui:VisualElement>
 </ui:UXML>

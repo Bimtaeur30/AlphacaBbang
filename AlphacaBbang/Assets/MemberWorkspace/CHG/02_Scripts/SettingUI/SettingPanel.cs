@@ -23,7 +23,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         
         private Resolution[] _resolutions;
         private Resolution _currentResolution;  
-        private int _currentResolutionIndex;
+        private int _currentResolutionIndex = -1;
         
         private FullScreenMode _screenMode;
         private int _masterVolume;

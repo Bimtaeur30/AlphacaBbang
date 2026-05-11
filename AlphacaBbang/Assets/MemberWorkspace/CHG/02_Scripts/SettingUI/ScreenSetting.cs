@@ -84,7 +84,7 @@ public class ScreenSetting : MonoBehaviour
             _root.style.paddingTop    = new StyleLength((1f - camRect.height - camRect.y) * deviceHeight);
         }
 
-        Debug.Log($"SetResolution: {deviceWidth}x{deviceHeight}, CameraRect: {camRect}");
+
     }
     
     

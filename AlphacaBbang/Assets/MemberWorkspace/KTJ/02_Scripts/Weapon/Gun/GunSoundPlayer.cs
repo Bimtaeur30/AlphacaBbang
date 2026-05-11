@@ -15,7 +15,8 @@ public class GunSoundPlayer : MonoBehaviour
 
     public void PlaySound(SoundClipSO audio)
     {
-        Debug.Assert(audio != null, "오디오가 널입니다.");
+        if (audio == null) return;
+        //Debug.Assert(audio != null, "오디오가 널입니다.");
         SoundPlayer sp = poolManagerSO.Pop<SoundPlayer>(soundPoolSO);
         sp.PlaySound(audio);
     }

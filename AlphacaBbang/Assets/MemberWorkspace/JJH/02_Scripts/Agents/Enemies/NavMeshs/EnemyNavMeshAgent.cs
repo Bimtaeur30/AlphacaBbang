@@ -1,8 +1,7 @@
-﻿using JJH._02_Scripts.Agents.Enemies.NavMeshs;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMeshs
+namespace JJH._02_Scripts.Agents.Enemies.NavMeshs
 {
     public class EnemyNavMeshAgent : MonoBehaviour, IModule, INavMeshAgent
     {

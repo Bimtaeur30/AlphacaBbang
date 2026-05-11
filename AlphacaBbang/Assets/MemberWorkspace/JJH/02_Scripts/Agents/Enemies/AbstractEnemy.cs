@@ -4,7 +4,6 @@ using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Weapons;
-using System;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -14,9 +13,8 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
-        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -40,8 +38,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (Weapon != null)
                 Weapon.Init();
 
-            int rand = Random.Range(0, EnemyDatas.Length);
-            EnemyData = EnemyDatas[rand];
+            int rand = Random.Range(0, Weapons.Length);
             if (Weapon is EnemyGunHandleModule)
             {
                 Weapons[rand].gameObject.SetActive(true);

@@ -14,7 +14,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy == null || Enemy.Value == null)
+            if (Enemy.Value == null)
                 return Status.Failure;
 
             Enemy.Value.Suicide();

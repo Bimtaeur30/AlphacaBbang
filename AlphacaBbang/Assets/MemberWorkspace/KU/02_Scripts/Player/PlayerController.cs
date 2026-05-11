@@ -276,9 +276,10 @@ public class PlayerController : Agent
 
     private void RotateToMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane plane = new Plane(Vector3.up, transform.position);
+        Vector2 mousePos = CrossHairModule.CHMousePos;
 
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Plane plane = new Plane(Vector3.up, transform.position);
         if (plane.Raycast(ray, out float enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
@@ -337,7 +338,7 @@ public class PlayerController : Agent
 
     #region 모듈
     public PlayerGunHandleModule GunHandleModule { get; private set; }
-    public PlayerGunHandleModule CrossHairModule { get; private set; }
+    public CrossHairModule CrossHairModule { get; private set; }
     #endregion
 
     #region 퍼블릭 변수
@@ -352,7 +353,7 @@ public class PlayerController : Agent
         GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
-        CrossHairModule = GetModule<PlayerGunHandleModule>();
+        CrossHairModule = GetModule<CrossHairModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
 
         MainCam = Camera.main;

@@ -3,7 +3,7 @@ using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MemberWorkspace.JJH._02_Scripts.Agents
+namespace JJH._02_Scripts.Agents
 {
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {

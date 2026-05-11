@@ -1,15 +1,12 @@
-using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
 public class EnemyGunHandleModule : GunHandleModule, IWeapon
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
 
-    public override void Initialize(ModuleOwner owner)
+    public override void SetCurrentGun(Gun gun)
     {
-        base.Initialize(owner);
-        SetCurrentGun(CurrentGun);
-        Debug.Assert(BodyRecoilController != null, "에너미 건 모듈에는 BodyRecoilRotation 컴포넌트가 붙은 오브젝트가 존재해야합니다.");
+        base.SetCurrentGun(gun);
     }
 
     private void Start()

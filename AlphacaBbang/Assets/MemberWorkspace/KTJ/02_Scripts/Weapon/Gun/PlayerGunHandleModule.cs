@@ -1,9 +1,5 @@
 using JJH._02_Scripts_Systems.EventSystems;
-using System;
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 {
@@ -49,7 +45,7 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
         // 여기까지
     }
 
-    protected override void SetCurrentGun(Gun gun)
+    public override void SetCurrentGun(Gun gun)
     {
         base.SetCurrentGun(gun);
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentGun.GunDataSO));

@@ -10,7 +10,6 @@ public class CrossHairModule : MonoBehaviour, IModule
 {
     public Vector2 CHMousePos { get; private set; }
 
-    [SerializeField] private Image crossHairImg;
     [SerializeField] private EventChannelSO gunChannel;
 
     [Header("CrossHair Settings")]
@@ -18,22 +17,27 @@ public class CrossHairModule : MonoBehaviour, IModule
     [SerializeField] private float recoilDistance = 60f;
     [SerializeField] private float recoilRecoverSpeed = 10f;
 
+    private Image crossHairImg;
     private bool _isCrossHairActive;
     private PlayerController _player;
+    [Reflex.Attributes.Inject] private CursorController _cursorController;
 
     private Vector2 _mousePos;
     private Vector2 _recoilOffset;
 
     private CinemachineImpulseSource _impulseSource;
 
-    // ¿¬»ç Áß FireInterval¸¶´Ù ¹Ýµ¿ Àû¿ë
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ FireIntervalï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½
     private float _fireRecoilTimer;
 
     public void Initialize(ModuleOwner owner)
     {
         _player = owner as PlayerController;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
+        crossHairImg = _cursorController.GetGunCursor();
         Debug.Assert( _impulseSource != null ,"Impulse Source Componenet is NULL");
+        Debug.Assert(_cursorController != null ,"ì»¤ì„œ ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ê°€ì ¸ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.");
+        Debug.Assert(crossHairImg != null ,"í¬ë¡œìŠ¤ í—¤ì–´ ì´ë¯¸ì§€ë¥¼ ì •ìƒì ìœ¼ë¡œ ê°€ì ¸ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. ì»¤ì„œ ì»¨íŠ¸ë¡¤ëŸ¬ê°€ ì •ìƒì ìœ¼ë¡œ ìž‘ë™í•˜ëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.");
 
         Debug.Assert(_player != null, "CrossHairModule : player is null");
         Debug.Assert(crossHairImg != null, "CrossHairModule : crossHairImg is null");
@@ -74,11 +78,11 @@ public class CrossHairModule : MonoBehaviour, IModule
         }
         else
         {
-            // ¹ß»ç ¸ØÃß¸é ´ÙÀ½ ¹ß»ç ¶§ Áï½Ã ¹Ýµ¿ Àû¿ë °¡´ÉÇÏµµ·Ï ÃÊ±âÈ­
+            // ï¿½ß»ï¿½ ï¿½ï¿½ï¿½ß¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
             _fireRecoilTimer = 0f;
         }
 
-        // ¹Ýµ¿ ¿ÀÇÁ¼Â º¹±¸
+        // ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         _recoilOffset = Vector2.Lerp(_recoilOffset, Vector2.zero, Time.deltaTime * recoilRecoverSpeed);
 
         Vector2 targetScreenPos = _mousePos + _recoilOffset;
@@ -131,7 +135,7 @@ public class CrossHairModule : MonoBehaviour, IModule
 
     private void HandleSingleLikeFireRecoil(GunDataSO gunData)
     {
-        // ´©¸£°í ÀÖ´Â µ¿¾È ÇÑ ¹ø¸¸ ¹Ýµ¿ Àû¿ë
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ýµï¿½ ï¿½ï¿½ï¿½ï¿½
         if (_fireRecoilTimer > 0f)
             return;
 

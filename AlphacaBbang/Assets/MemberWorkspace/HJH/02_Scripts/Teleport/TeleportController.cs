@@ -14,7 +14,11 @@ public class TeleportController : MonoSingleton<TeleportController>
 
     protected override void Awake()
     {
+        base.Awake();
         _fadeStrategy = GetComponent<IFadeConversion>();
+
+        if (_fadeStrategy == null)
+            Debug.LogError("IFadeConversion 구현체가 이 GameObject에 없습니다!");
     }
 
     public void TeleportTo(int index)

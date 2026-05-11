@@ -82,12 +82,16 @@ public class BaseballBat : MeleeWeaponBase
 
         foreach (Collider hit in hits)
         {
+            
             Vector3 toTarget = (hit.transform.position - origin).normalized;
             float angle = Vector3.Angle(dir, toTarget);
 
             if (angle <= data[ComboCounter].angle * 0.5f)
             {
                 IDamageable damageable = hit.GetComponent<IDamageable>();
+                CharaterState state = hit.GetComponent<CharaterState>();
+                if (charaterState == state) return;
+
                 if (damageable != null)
                 {
                     damageable.TakeDamage(data[ComboCounter].damage);
@@ -131,6 +135,7 @@ public class BaseballBat : MeleeWeaponBase
             * data[ComboCounter].attackParticlePrefab.transform.rotation
             * Quaternion.Euler(0f, 0f, 180f);
 
+        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

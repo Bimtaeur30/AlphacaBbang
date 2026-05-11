@@ -2,6 +2,7 @@ using JJH._02_Scripts_Systems.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,9 +15,17 @@ public class RoutPlayer : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI recordTimeTxt;
     [SerializeField] private Button playButton;
+    [SerializeField] private Button zoomInButton;
+    [SerializeField] private Button zoomOutButton;
     [SerializeField] private LogBar logBar;
     [SerializeField] private RectTransform logBarParent;
     [SerializeField] private Sprite a;
+
+    [Header("Camera")]
+    [SerializeField] private Camera cam;
+    [SerializeField] private float minFov = 30;
+    [SerializeField] private float maxFov = 150;
+    [SerializeField] private float zoomAmount = 10;
 
     private float _recordTime = 0f;
     private Coroutine _playCoroutine;
@@ -29,6 +38,15 @@ public class RoutPlayer : MonoBehaviour
             if (_playCoroutine != null)
                 StopAllCoroutines();
             _playCoroutine = StartCoroutine(PlayRout());
+        });
+        zoomInButton.onClick.AddListener(() =>
+        {
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize - zoomAmount, minFov, maxFov);
+        });
+        zoomOutButton.onClick.AddListener(() =>
+        {
+            cam.orthographicSize = Mathf.Clamp(cam.orthographicSize + zoomAmount, minFov, maxFov);
+
         });
     }
 

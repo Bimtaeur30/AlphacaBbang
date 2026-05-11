@@ -28,6 +28,8 @@ public class Magazine : MonoBehaviour
     public void Initialize(Gun gun)
     {
         _gun = gun;
+        _reloadDuration = gun.GunDataSO.ReloadDuration;
+        MaxBulletCount = gun.GunDataSO.MagCapacity;
         Debug.Assert(_gun != null, "Gun을 가져오지 못했습니다.");
 
         if (reloadUI != null)

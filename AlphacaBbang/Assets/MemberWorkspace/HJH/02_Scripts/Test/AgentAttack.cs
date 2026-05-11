@@ -15,13 +15,6 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon
 
     [SerializeField] private CharaterState charaterState;
 
-
-    private void Awake()
-    {
-        weapon.Init();
-        mainCamera = Camera.main;
-    }
-
     private void Update()
     {
         switch (charaterState)

@@ -35,9 +35,6 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            if (Weapon != null)
-                Weapon.Init();
-
             int rand = Random.Range(0, Weapons.Length);
             if (Weapon is EnemyGunHandleModule)
             {
@@ -51,6 +48,8 @@ namespace JJH._02_Scripts.Agents.Enemies
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
                 gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
             }
+            if (Weapon != null)
+                Weapon.Init();
 
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();

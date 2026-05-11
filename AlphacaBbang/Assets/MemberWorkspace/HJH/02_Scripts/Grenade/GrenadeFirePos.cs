@@ -33,7 +33,10 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
     private void Start()
     {
-        layermask = 1 << LayerMask.NameToLayer("Floor");
+        //if(layermask == 0)
+        //{
+        //    layermask = 1 << LayerMask.NameToLayer("Obstacle");
+        //}
 
         if (grenadeList.Count > 0)
             currentGrenade = grenadeList[0];

@@ -90,20 +90,6 @@ public class Sword : MeleeWeaponBase
         PlayAttackParticle(targetPos);
     }
 
-    int count = 0;
-    public IEnumerator A()
-    {
-        if(count > 5)
-        {
-            yield break;
-        }
-        Debug.Log("内风凭 1");
-        Debug.Log("内风凭 2");
-        yield return new WaitForSeconds(1f);
-        Debug.Log("内风凭 3");
-        StartCoroutine(A());
-        count++;
-    }
 
     private void OnDrawGizmosSelected()
     {
@@ -141,8 +127,11 @@ public class Sword : MeleeWeaponBase
                        * data[ComboCounter].attackParticlePrefab.transform.rotation
                        * Quaternion.Euler(0f, 0f, 180f);
 
+        Quaternion pRot = Quaternion.LookRotation(dir.normalized)
+                       * Quaternion.Euler(0f, 0f, 180f);
+
         Vector3 parentRotation = gameObject.transform.parent.rotation.eulerAngles;
-        parentRotation.y = rot.eulerAngles.y;
+        parentRotation.y = pRot.eulerAngles.y;
         gameObject.transform.parent.rotation = Quaternion.Euler(parentRotation);
 
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);

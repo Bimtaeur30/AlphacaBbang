@@ -1,7 +1,10 @@
+using JJH._02_Scripts_Systems.EventSystems;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class PlayerStaminaGaugeSystem : MonoBehaviour
+public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 {
     private PlayerController _controller;
 
@@ -11,14 +14,22 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
 
     [SerializeField] private Image _gaugeImage;
     [SerializeField] private Image _parentGaugeImage;
-
+    [field: SerializeField] public float GaugeMaxTime { get; private set; } = 10f;
     public float CurrentGauge { get; private set; }
 
-    [SerializeField] private float _gaugeMaxTime = 10f;
+
     [SerializeField] private float _minAimCooldown = 2f;
     [SerializeField] private float _useSpeed = 1f;
     [SerializeField] private float _chargeSpeed = 1f;
     [SerializeField] private float _aimReleaseCooldown = 1.5f;
+
+    [field: SerializeField] public SaveIdData SaveId { get; private set; }
+
+    [field: SerializeField] public EventChannelSO playerStatChannel;
+
+    public event Action<float> OnAimStaminaChanged;
+
+
     private bool _prevAiming;
 
     private float _cooldownTimer = 0f;
@@ -28,22 +39,29 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
     private readonly Color _zeroColor = new Color(0, 0, 0, 0);
 
 
-    private void Awake()
+    protected override void Awake()
     {
         _controller = GetComponentInParent<PlayerController>();
 
-        CurrentGauge = _gaugeMaxTime;
+        CurrentGauge = GaugeMaxTime;
 
         _firstColor = _gaugeImage.color;
         _parentFirstColor = _parentGaugeImage.color;
+
+        OnAimStaminaChanged += UpdateUI;
     }
+
+
 
     private void Update()
     {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxAimStamina.Init(5));
         SyncAimState();
         UpdateGauge();
         UpdateCooldown();
-        UpdateUI();
+        UpdateUI(GaugeMaxTime);
+
     }
 
     private void SyncAimState()
@@ -85,7 +103,7 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
             CurrentGauge += _chargeSpeed * Time.deltaTime;
         }
 
-        CurrentGauge = Mathf.Clamp(CurrentGauge, 0, _gaugeMaxTime);
+        CurrentGauge = Mathf.Clamp(CurrentGauge, 0, GaugeMaxTime);
     }
 
     private void UpdateCooldown()
@@ -101,9 +119,9 @@ public class PlayerStaminaGaugeSystem : MonoBehaviour
         }
     }
 
-    private void UpdateUI()
+    private void UpdateUI(float value)
     {
-        float fill = CurrentGauge / _gaugeMaxTime;
+        float fill = CurrentGauge / GaugeMaxTime;
 
         _gaugeImage.fillAmount = Mathf.Lerp(
             _gaugeImage.fillAmount,

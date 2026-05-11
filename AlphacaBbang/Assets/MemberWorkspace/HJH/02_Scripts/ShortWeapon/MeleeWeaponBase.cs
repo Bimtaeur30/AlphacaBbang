@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class MeleeWeaponBase : WeaponBase
 {
-    public CharaterState charaterState;
+    public CharacterState characterState;
 
     [SerializeField] protected ShortWeaponSO[] data;
     protected int currentLevel = 0;

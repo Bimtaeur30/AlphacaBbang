@@ -2,27 +2,28 @@ using Reflex.Attributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum CharaterState
+public enum CharacterState
 {
     None,
     Player,
     Enemy
 }
-public class AgentAttack : MonoBehaviour, IModule, IWeapon
+public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
 {
     [SerializeField] private MeleeWeaponBase weapon;
     [Inject][SerializeField] private Camera mainCamera;
 
-    [SerializeField] private CharaterState charaterState;
+    [SerializeField] private CharacterState characterState;
+    public CharacterState CharacterState => characterState;
 
     private void Update()
     {
-        switch (charaterState)
+        switch (characterState)
         {
-            case CharaterState.None:
+            case CharacterState.None:
                 Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
                 break;
-            case CharaterState.Player:
+            case CharacterState.Player:
                 if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
                     Vector3 targetPos = GetMouseWorldPoint();
@@ -30,7 +31,7 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon
                 }
                 ;
                 break;
-            case CharaterState.Enemy:
+            case CharacterState.Enemy:
                 break;
         }
     }
@@ -62,7 +63,7 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon
     public void Init()
     {
         weapon.Init();
-        weapon.charaterState = charaterState;
+        weapon.characterState = characterState;
     }
 
     public void SetAim(bool val)

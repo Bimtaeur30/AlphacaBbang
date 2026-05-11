@@ -57,6 +57,11 @@ public class Sword : MeleeWeaponBase
 
             if (angle <= data[ComboCounter].angle * 0.5f)
             {
+                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
+                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
+
+                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
+
                 IDamageable damageable = hit.GetComponent<IDamageable>();
                 if (damageable != null)
                 {

@@ -113,11 +113,3 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 
 
 }
-
-[Serializable]
-public struct PlayerStateSaveData
-{
-    public float playerMaxHpSave;
-    public float playerMaxRunStaminaSave;
-    public float playerMaxAimStaminaSave;
-}

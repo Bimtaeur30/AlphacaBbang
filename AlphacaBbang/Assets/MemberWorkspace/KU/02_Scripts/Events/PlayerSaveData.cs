@@ -1,8 +1,10 @@
 using JJH._02_Scripts_Systems.EventSystems;
+using NUnit.Framework.Internal;
+using Reflex.Core;
 using System;
 using UnityEngine;
 
-public class PlayerSaveData : MonoBehaviour, ISaveable
+public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
 {
     [field: SerializeField] public EventChannelSO playerStatChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
@@ -68,6 +70,11 @@ public class PlayerSaveData : MonoBehaviour, ISaveable
         systemChannel.RemoveListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.RemoveListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
 
+    }
+
+    public void InstallBindings(ContainerBuilder containerBuilder)
+    {
+        containerBuilder.RegisterValue(this);
     }
 }
 

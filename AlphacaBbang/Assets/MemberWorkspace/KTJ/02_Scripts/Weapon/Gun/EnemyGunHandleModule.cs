@@ -4,13 +4,6 @@ public class EnemyGunHandleModule : GunHandleModule, IWeapon
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
 
-    public override void Initialize(ModuleOwner owner)
-    {
-        base.Initialize(owner);
-        SetCurrentGun(CurrentGun);
-        Debug.Assert(BodyRecoilController != null, "에너미 건 모듈에는 BodyRecoilRotation 컴포넌트가 붙은 오브젝트가 존재해야합니다.");
-    }
-
     public override void SetCurrentGun(Gun gun)
     {
         base.SetCurrentGun(gun);

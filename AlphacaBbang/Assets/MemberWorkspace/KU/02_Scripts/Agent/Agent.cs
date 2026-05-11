@@ -1,6 +1,5 @@
 using JJH._02_Scripts.Agents;
 using JJH._02_Scripts_Systems.EventSystems;
-using MemberWorkspace.JJH._02_Scripts.Agents;
 using UnityEngine;
 
 public class Agent : ModuleOwner

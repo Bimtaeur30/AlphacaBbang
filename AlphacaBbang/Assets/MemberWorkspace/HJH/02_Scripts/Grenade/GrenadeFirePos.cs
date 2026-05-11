@@ -33,7 +33,10 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
     private void Start()
     {
-        layermask = 1 << LayerMask.NameToLayer("Floor");
+        //if(layermask == 0)
+        //{
+        //    layermask = 1 << LayerMask.NameToLayer("Obstacle");
+        //}
 
         if (grenadeList.Count > 0)
             currentGrenade = grenadeList[0];
@@ -49,12 +52,14 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
             case CharaterState.Player:
                 if (Mouse.current.rightButton.isPressed)
                 {
+                    Vector3 direction = targetPoint.position;
                     MousePosition();
-                    DrawTrajectory();
+                    DrawTrajectory(direction);
 
                     if (Mouse.current.leftButton.wasPressedThisFrame)
                     {
-                        StartCoroutine(SimulateProjectile());
+                        bool canAttack = true; // 임시로 박아둠
+                        StartCoroutine(SimulateProjectile(direction, canAttack));
                     }
                 }
                 else
@@ -62,7 +67,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
                     lineRenderer.positionCount = 0;
                     ClearTargetPoint();
                 }
-                ;
                 break;
             case CharaterState.Enemy:
                 break;
@@ -100,11 +104,16 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
         }
     }
 
-    public IEnumerator SimulateProjectile()
+    public IEnumerator SimulateProjectile(Vector3 direction, bool val)
     {
         if (currentGrenade == null || currentGrenade.count <= 0)
         {
             Debug.Log("사용할 수 있는 폭탄 없음");
+            yield break;
+        }
+        else if (!val)
+        {
+            Debug.Log("공격 못함");
             yield break;
         }
 
@@ -119,7 +128,9 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
             ChangeNextGrenade();
         }
 
-        float distance = Vector3.Distance(startPoint.position, targetPoint.position);
+        direction = (direction - startPoint.position).normalized;
+
+        float distance = Vector3.Distance(startPoint.position, direction);
 
         float angleRad = firingAngle * Mathf.Deg2Rad;
         float sinValue = Mathf.Sin(2 * angleRad);
@@ -130,8 +141,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
         float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
         float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
-
-        Vector3 direction = (targetPoint.position - startPoint.position).normalized;
 
         projectile.transform.rotation = Quaternion.LookRotation(direction);
 
@@ -168,11 +177,12 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
         Gizmos.DrawWireSphere(startPoint.position, range);
     }
 
-    void DrawTrajectory()
+    void DrawTrajectory(Vector3 direction)
     {
         if (targetPoint == null) return;
+        direction = (direction - startPoint.position).normalized;
 
-        float distance = Vector3.Distance(startPoint.position, targetPoint.position);
+        float distance = Vector3.Distance(startPoint.position, direction);
 
         float angleRad = firingAngle * Mathf.Deg2Rad;
         float sinValue = Mathf.Sin(2 * angleRad);
@@ -184,7 +194,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
         float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
         float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
 
-        Vector3 direction = (targetPoint.position - startPoint.position).normalized;
         Vector3 velocityVector = new Vector3(direction.x * Vx, Vy - 0.5f, direction.z * Vx);
 
         lineRenderer.positionCount = lineSegmentCount;
@@ -218,6 +227,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
     public void Attack(Vector3 vector, bool val)
     {
-        StartCoroutine(SimulateProjectile());
+        StartCoroutine(SimulateProjectile(vector, val));
     }
 }

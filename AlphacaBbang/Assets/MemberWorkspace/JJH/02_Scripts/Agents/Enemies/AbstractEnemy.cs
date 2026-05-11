@@ -3,7 +3,7 @@ using JJH._02_Scripts.Agents.Enemies.BT.Channels;
 using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
-using System;
+using JJH._02_Scripts.Weapons;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -13,10 +13,8 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [SerializeField] private EnemyDataSO[] EnemyDatas;
-        [SerializeField] private Gun[] Guns;
-        [SerializeField] private MeleeWeaponBase[] MeleeWeapons;
-        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
+        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
+        [SerializeField] private WeaponBase[] Weapons;
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -37,24 +35,21 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            if (Weapon != null)
-                Weapon.Init();
+            int rand = Random.Range(0, Weapons.Length);
             if (Weapon is EnemyGunHandleModule)
             {
+                Weapons[rand].gameObject.SetActive(true);
                 EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
-                int rand = Random.Range(0, EnemyDatas.Length);
-                EnemyData = EnemyDatas[rand];
-                Guns[rand].gameObject.SetActive(true);
-                gunHandleModule.SetCurrentGun(Guns[rand]);
+                gunHandleModule.SetCurrentGun((Gun)Weapons[rand]);
             }
             else if (Weapon is AgentAttack)
             {
+                Weapons[rand].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
-                int rand = Random.Range(0, EnemyDatas.Length);
-                EnemyData = EnemyDatas[rand];
-                MeleeWeapons[rand].gameObject.SetActive(true);
-                gunHandleModule.SetCurrentWeapon(MeleeWeapons[rand]);
+                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
             }
+            if (Weapon != null)
+                Weapon.Init();
 
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();
@@ -102,6 +97,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             {
                 OnDead();
             }
+        }
+
+        private void SetWeapon()
+        {
+
         }
 
         private IEnumerator HitCoroutine()

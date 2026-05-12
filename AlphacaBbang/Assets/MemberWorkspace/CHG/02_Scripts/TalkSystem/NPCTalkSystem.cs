@@ -12,14 +12,12 @@ public class NPCTalkSystem : MonoBehaviour
 {
     
     [SerializeField] private DialogueNodeSO firstDialogueNodeSO;
-    [SerializeField] private bool wantTalk;
-    [SerializeField] private string defaultText;
     
     [Header("Objects")]
     [SerializeField] private GameObject mainTalkBox;
     [SerializeField] private List<GameObject> choiceTalkBoxes;
     
-    private TypewriterByCharacter _typewriter;
+    private TypewriterByCharacter _mainTypewriter;
 
     private TypewriterByCharacter[] _choiceTypewriters; 
     [SerializeField] private float typewriterSpeed = 0.1f;                
@@ -33,11 +31,11 @@ public class NPCTalkSystem : MonoBehaviour
     
     private void Awake()
     {
-        _typewriter = mainTalkBox.GetComponentInChildren<TypewriterByCharacter>();
-        Debug.Assert(_typewriter != null, $"{gameObject.name}: TypewriterByCharacter not found");
-        
-        _typewriter.SetTypewriterSpeed(typewriterSpeed);
-        _typewriter.onTextShowed.AddListener(OnMainTextShowed);
+        _mainTypewriter = mainTalkBox.GetComponentInChildren<TypewriterByCharacter>();
+        Debug.Assert(_mainTypewriter != null, $"{gameObject.name}: TypewriterByCharacter not found");
+        mainTalkBox.SetActive(false);
+        _mainTypewriter.SetTypewriterSpeed(typewriterSpeed);
+        _mainTypewriter.onTextShowed.AddListener(OnMainTextShowed);
         
         _choiceTypewriters = new TypewriterByCharacter[choiceTalkBoxes.Count];
         
@@ -49,16 +47,11 @@ public class NPCTalkSystem : MonoBehaviour
             if (i < _choiceTypewriters.Length)
                 _choiceTypewriters[i].SetTypewriterSpeed(0);
         }
-
-        if (!wantTalk)
-            mainTalkBox.SetActive(false);
-        else
-            _typewriter.ShowText(defaultText);
     }
     
     private void OnDestroy()
     {
-        _typewriter.onTextShowed.RemoveListener(OnMainTextShowed);
+        _mainTypewriter.onTextShowed.RemoveListener(OnMainTextShowed);
     }
 
     
@@ -68,19 +61,7 @@ public class NPCTalkSystem : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            //player move stop
-            if (!_isTalking)
-            {
-                StartCoroutine(Talk());
-            }
-            else if (_isTextTyping)
-            {
-                _typewriter.SkipTypewriter();
-            }
-            else if (_waitingForInput && _currentNode.DialogueNodeType != DialogueNodeType.Choice)
-            {
-                _waitingForInput = false;
-            }
+            TalkStart();
         }
 
         if (Keyboard.current.enterKey.wasPressedThisFrame)
@@ -93,7 +74,25 @@ public class NPCTalkSystem : MonoBehaviour
             else if (Keyboard.current.digit3Key.wasPressedThisFrame) SetChoiceResult(2);
         }
     }
-    
+
+    private void TalkStart()
+    {
+        //player move stop
+        if (!_isTalking)
+        {
+            StartCoroutine(Talk());
+        }
+        else if (_isTextTyping)
+        {
+            _mainTypewriter.SkipTypewriter();
+        }
+        else if (_waitingForInput && _currentNode.DialogueNodeType != DialogueNodeType.Choice)
+        {
+            _waitingForInput = false;
+        }
+    }
+
+
     private void OnMainTextShowed()
     {
         _isTextTyping = false;
@@ -109,7 +108,7 @@ public class NPCTalkSystem : MonoBehaviour
             _lastNode = _currentNode;
             
             _isTextTyping = true;
-            _typewriter.ShowText(_currentNode.Text);
+            _mainTypewriter.ShowText(_currentNode.Text);
             yield return new WaitUntil(() => !_isTextTyping);
             
             if (_currentNode.DialogueNodeType == DialogueNodeType.Normal)

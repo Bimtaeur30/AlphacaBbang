@@ -4,7 +4,6 @@ using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Weapons;
-using System;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -14,12 +13,12 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public abstract class AbstractEnemy : Agent, IDamageable
     {
-        [SerializeField] private EnemyDataSO[] EnemyDatas;
+        [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
-        [field: NonSerialized] public EnemyDataSO EnemyData { get; private set; }
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
+        public INavMeshAgent NavMeshAgent { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -31,17 +30,11 @@ namespace JJH._02_Scripts.Agents.Enemies
         private float _hitEmissionIntensity = 3f;
         private float _hitDuration = 0.15f;
 
-        public INavMeshAgent NavMeshAgent { get; private set; }
-
         protected override void InitializeComponents()
         {
             base.InitializeComponents();
 
-            if (Weapon != null)
-                Weapon.Init();
-
-            int rand = Random.Range(0, EnemyDatas.Length);
-            EnemyData = EnemyDatas[rand];
+            int rand = Random.Range(0, Weapons.Length);
             if (Weapon is EnemyGunHandleModule)
             {
                 Weapons[rand].gameObject.SetActive(true);
@@ -54,6 +47,8 @@ namespace JJH._02_Scripts.Agents.Enemies
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
                 gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
             }
+            if (Weapon != null)
+                Weapon.Init();
 
             NavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<ISkillModule>();

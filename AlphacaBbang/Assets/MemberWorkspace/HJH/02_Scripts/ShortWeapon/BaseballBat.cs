@@ -3,7 +3,7 @@ using UnityEngine;
 public class BaseballBat : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
-    public int ComboCounter = 0;  
+    public int ComboCounter = 0;
     protected override void PerformAttack(Vector3 targetPos)
     {
         //PlayAttackParticle(targetPos);
@@ -82,16 +82,17 @@ public class BaseballBat : MeleeWeaponBase
 
         foreach (Collider hit in hits)
         {
-            
             Vector3 toTarget = (hit.transform.position - origin).normalized;
             float angle = Vector3.Angle(dir, toTarget);
 
             if (angle <= data[ComboCounter].angle * 0.5f)
             {
-                IDamageable damageable = hit.GetComponent<IDamageable>();
-                CharaterState state = hit.GetComponent<CharaterState>();
-                if (charaterState == state) return;
+                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
+                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
 
+                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
+
+                IDamageable damageable = hit.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
                     damageable.TakeDamage(data[ComboCounter].damage);

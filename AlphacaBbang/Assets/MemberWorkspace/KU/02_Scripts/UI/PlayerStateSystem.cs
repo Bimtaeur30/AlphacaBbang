@@ -1,8 +1,10 @@
-﻿using System;
+﻿using JJH._02_Scripts_Systems.EventSystems;
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class PlayerStatSystem : MonoBehaviour
+public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 {
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
@@ -16,34 +18,34 @@ public class PlayerStatSystem : MonoBehaviour
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
 
+
     private PlayerController _controller;
     public bool IsRunning { get; private set; }
 
-    public event Action<float> OnHealthChanged;
-    public event Action<float> OnStaminaChanged;
+    [field: SerializeField] public SaveIdData SaveId { get; private set; }
 
-    private void Awake()
+
+    protected override void Awake()
     {
         _controller = GetComponentInParent<PlayerController>();
 
         CurrentHealth = MaxHealth;
         CurrentStamina = MaxStamina;
 
-        OnHealthChanged += UpdateHealthUI;
-        OnStaminaChanged += UpdateStaminaUI;
     }
+
+
 
     private void Update()
     {
         UpdateStamina();
-    }
 
+    }
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
 
-        OnHealthChanged?.Invoke(CurrentHealth);
 
         if (CurrentHealth <= 0)
         {
@@ -56,7 +58,6 @@ public class PlayerStatSystem : MonoBehaviour
         CurrentHealth += amount;
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
 
-        OnHealthChanged?.Invoke(CurrentHealth);
     }
 
     private void Die()
@@ -91,7 +92,6 @@ public class PlayerStatSystem : MonoBehaviour
 
         CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina);
 
-        OnStaminaChanged?.Invoke(CurrentStamina);
     }
 
     private void UpdateHealthUI(float value)
@@ -110,4 +110,6 @@ public class PlayerStatSystem : MonoBehaviour
     {
         return CurrentStamina > 0f;
     }
+
+
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
+public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
 {
-    [SerializeField] private CharaterState charaterState;
+    [SerializeField] private CharacterState characterState;
+    public CharacterState CharacterState => characterState;
 
     [Header("발사 설정")]
     [SerializeField] private float firingAngle = 45.0f;
@@ -44,15 +45,15 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
 
     void Update()
     {
-        switch (charaterState)
+        switch (characterState)
         {
-            case CharaterState.None:
+            case CharacterState.None:
                 Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
                 break;
-            case CharaterState.Player:
+            case CharacterState.Player:
                 if (Mouse.current.rightButton.isPressed)
                 {
-                    Vector3 direction = targetPoint.position;
+                    Vector3 direction = targetMark.transform.position;
                     MousePosition();
                     DrawTrajectory(direction);
 
@@ -68,7 +69,7 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon
                     ClearTargetPoint();
                 }
                 break;
-            case CharaterState.Enemy:
+            case CharacterState.Enemy:
                 break;
         }
     }

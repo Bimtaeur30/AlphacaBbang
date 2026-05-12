@@ -7,6 +7,8 @@ public class GrenadeObject : MonoBehaviour
     private GrenadeBehavior behavior;
     private bool isTriggered = false;
 
+    [SerializeField] private LayerMask triggerLayer;
+
     private void Awake()
     {
         behavior = GetComponent<GrenadeBehavior>();
@@ -16,11 +18,10 @@ public class GrenadeObject : MonoBehaviour
     {
         if (isTriggered) return;
 
-        if (collision.collider.CompareTag("Floor"))
+        if (((1 << collision.gameObject.layer) & triggerLayer) != 0)
         {
             isTriggered = true;
-
-            StartCoroutine(behavior.Boom(gameObject,boomTime));
+            StartCoroutine(behavior.Boom(gameObject, boomTime));
         }
     }
 }

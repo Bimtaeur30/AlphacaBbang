@@ -16,7 +16,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy == null || Enemy.Value == null || Enemy.Value.EnemyData == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyData == null)
                 return Status.Failure;
 
             _time = 0;

@@ -13,8 +13,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Conditions
 
         public override bool IsTrue()
         {
-            if (Target == null || Target.Value == null ||
-                Enemy == null || Enemy.Value == null || Enemy.Value.Sensor == null)
+            if (Target.Value == null || Enemy.Value == null || Enemy.Value.Sensor == null)
                 return false;
 
             return Enemy.Value.Sensor.IsTargetInSight(Enemy.Value.transform.position, Target.Value.transform);

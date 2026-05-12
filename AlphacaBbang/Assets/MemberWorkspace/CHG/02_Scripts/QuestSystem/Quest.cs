@@ -27,7 +27,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                 .Select((conData, n) => 
                 {
                     var cond = QuestFactory.CreateCondition(conData); 
-                    cond.Current = save.ConditionProgress[n].Current;
+                    cond.Progress = save.ConditionProgress[n].Current;
                     return cond;
                 }).ToList();
         }   

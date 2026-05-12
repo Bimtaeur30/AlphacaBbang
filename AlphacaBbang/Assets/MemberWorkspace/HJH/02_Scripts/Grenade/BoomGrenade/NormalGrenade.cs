@@ -33,6 +33,7 @@ public class NormalGrenade : GrenadeBehavior
         }
 
         effect.Active(range, maxDamage, enemyLayer);
+        effect.gameObject.transform.position = transform.position;
     }
 
     private void OnDrawGizmos()

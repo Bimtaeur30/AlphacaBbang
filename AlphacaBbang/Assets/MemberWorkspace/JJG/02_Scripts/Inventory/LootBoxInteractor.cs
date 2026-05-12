@@ -6,6 +6,7 @@ public class LootBoxInteractor : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     //[SerializeField] private PlayerCombat playerCombat;
     [SerializeField] private InventoryUI lootBoxUI;
+    [SerializeField] private LootBoxOpeningUI openingUI;
 
     private bool _isOpening;
 
@@ -19,17 +20,22 @@ public class LootBoxInteractor : MonoBehaviour
     private IEnumerator OpenRoutine(LootBoxContainer lootBox)
     {
         _isOpening = true;
+        openingUI?.Show();
 
-        //playerController.SetMoveable(false); //이동 막기
-        //playerCombat.SetAttackable(false); //공격 막기
+        //playerController.SetMoveable(false);
+        //playerCombat.SetAttackable(false);
 
         float timer = 0f;
+        float totalTime = lootBox.RequiredOpenTime;
 
-        while (timer < lootBox.RequiredOpenTime)
+        while (timer < totalTime)
         {
             timer += Time.deltaTime;
+            openingUI?.SetProgress(timer, totalTime);
             yield return null;
         }
+
+        openingUI?.Hide();
 
         //lootBoxUI.Bind(lootBox);
         //lootBoxUI.Open();

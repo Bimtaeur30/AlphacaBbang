@@ -7,8 +7,7 @@ using UnityEngine.UIElements;
 public class ScreenSetting : MonoBehaviour
 {
     private FullScreenMode _fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-    private int _setWidth = 1920;
-    private int _setHeight = 1080;
+    private Resolution _resolution;
  
     private UIDocument _document;
     private VisualElement _root;
@@ -18,13 +17,11 @@ public class ScreenSetting : MonoBehaviour
         _document = GetComponent<UIDocument>();
         _root = _document.rootVisualElement;
         
-        StartCoroutine(SetResolutionCoroutine());
     }
 
-    public void ChangeResolution(int width, int height, FullScreenMode fullScreenMode)
+    public void ChangeResolution(Resolution resolution, FullScreenMode fullScreenMode)
     {
-        _setWidth = width;
-        _setHeight = height;
+        _resolution = resolution;
         _fullScreenMode = fullScreenMode;
         StartCoroutine(SetResolutionCoroutine());
     }
@@ -37,14 +34,14 @@ public class ScreenSetting : MonoBehaviour
 
     private IEnumerator SetResolutionCoroutine()
     {
-        Screen.SetResolution(_setWidth, _setHeight, _fullScreenMode);
+        Screen.SetResolution(_resolution.width, _resolution.height, _fullScreenMode);
 
         yield return new WaitForEndOfFrame(); 
 
         int deviceWidth = Screen.width;
         int deviceHeight = Screen.height;
 
-        float targetAspect = (float)_setWidth / _setHeight;
+        float targetAspect = (float)_resolution.width / _resolution.height;
         float deviceAspect = (float)deviceWidth / deviceHeight;
 
         Rect camRect = new Rect(0f, 0f, 1f, 1f);
@@ -65,12 +62,14 @@ public class ScreenSetting : MonoBehaviour
             cam.rect = camRect;
         }
 
+        Debug.Log("resolution: " + _resolution);
+        
         foreach (CanvasScaler canvasScaler in FindObjectsOfType<CanvasScaler>())
         {
             if (canvasScaler.uiScaleMode != CanvasScaler.ScaleMode.ScaleWithScreenSize)
             {
                 canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                canvasScaler.referenceResolution = new Vector2(_setWidth, _setHeight); 
+                canvasScaler.referenceResolution = new Vector2(_resolution.width, _resolution.height); 
                 canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
                 canvasScaler.matchWidthOrHeight = 0.5f;
             }
@@ -84,7 +83,7 @@ public class ScreenSetting : MonoBehaviour
             _root.style.paddingTop    = new StyleLength((1f - camRect.height - camRect.y) * deviceHeight);
         }
 
-        Debug.Log($"SetResolution: {deviceWidth}x{deviceHeight}, CameraRect: {camRect}");
+
     }
     
     

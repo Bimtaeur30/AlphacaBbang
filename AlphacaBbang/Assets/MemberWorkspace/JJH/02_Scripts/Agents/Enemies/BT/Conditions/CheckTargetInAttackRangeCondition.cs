@@ -13,8 +13,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Conditions
 
         public override bool IsTrue()
         {
-            if (Target == null || Target.Value == null ||
-               Enemy == null || Enemy.Value == null || Enemy.Value.EnemyData == null || Enemy.Value.Sensor == null)
+            if (Target.Value == null || Enemy.Value == null || Enemy.Value.EnemyData == null || Enemy.Value.Sensor == null)
                 return false;
 
             return Enemy.Value.Sensor.IsTargetInRange(Enemy.Value.EnemyData.AttackRange, out Collider hitCollider);

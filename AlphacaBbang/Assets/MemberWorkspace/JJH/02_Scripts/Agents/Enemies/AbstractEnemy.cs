@@ -18,6 +18,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public ISkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
+        public INavMeshAgent NavMeshAgent { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -28,8 +29,6 @@ namespace JJH._02_Scripts.Agents.Enemies
         private Color _hitEmissionColor = new Color(100f, 100f, 100f);
         private float _hitEmissionIntensity = 3f;
         private float _hitDuration = 0.15f;
-
-        public INavMeshAgent NavMeshAgent { get; private set; }
 
         protected override void InitializeComponents()
         {

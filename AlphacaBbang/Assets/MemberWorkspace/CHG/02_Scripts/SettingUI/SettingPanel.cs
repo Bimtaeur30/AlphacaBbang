@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using MemberWorkspace.CHG._02_Scripts.TextBoxSystem;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UIElements;
@@ -13,17 +11,18 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         [SerializeField] private ScreenSetting screenSetting;
         [SerializeField] private AudioMixer _audioMixer;
         
+        private VisualElement _root;
         private DropdownField _resolutionField;
         private TabView _tabView;
         private DropdownField _screenModeField;
         private Button _saveButton;
+        private Button _exitButton;
         private SliderInt _masterVolumeSlider;
         private SliderInt _bGMVolumeSlider;
         private SliderInt _sFXVolumeSlider;
         
         private Resolution[] _resolutions;
         private Resolution _currentResolution;  
-        private int _currentResolutionIndex = -1;
         
         private FullScreenMode _screenMode;
         private int _masterVolume;
@@ -31,20 +30,21 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         private int _sFXVolume;
         private void Awake()
         {
-            var root = settingsPanel.rootVisualElement;
-            
-            _tabView = root.Q<TabView>("TabView");
-            _saveButton = root.Q<Button>("Save");
+            _root = settingsPanel.rootVisualElement;
+            _root.style.display  = DisplayStyle.None;
+            _tabView = _root.Q<TabView>("TabView");
+            _saveButton = _root.Q<Button>("Save");
+            _exitButton = _root.Q<Button>("Exit");
             // Screen
-            _resolutionField = root.Q<DropdownField>("ScreenResolution");
-            _screenModeField = root.Q<DropdownField>("ScreenMode");
+            _resolutionField = _root.Q<DropdownField>("ScreenResolution");
+            _screenModeField = _root.Q<DropdownField>("ScreenMode");
             Debug.Assert(_resolutionField != null, $"ResolutionField was null in inspector: {gameObject.name}");
             Debug.Assert(_screenModeField != null, $"ScreenModeField was null in inspector: {gameObject.name}");
             Debug.Assert(_saveButton != null, $"SaveButton was null in inspector: {gameObject.name}");
             // Sound 
-            _masterVolumeSlider = root.Q<SliderInt>("MasterVolume");
-            _bGMVolumeSlider = root.Q<SliderInt>("BGMVolume");
-            _sFXVolumeSlider = root.Q<SliderInt>("SFXVolume");
+            _masterVolumeSlider = _root.Q<SliderInt>("MasterVolume");
+            _bGMVolumeSlider = _root.Q<SliderInt>("BGMVolume");
+            _sFXVolumeSlider = _root.Q<SliderInt>("SFXVolume");
             Debug.Assert(_masterVolumeSlider != null, $"masterVolumeSlider was null in inspector: {gameObject.name}");
             Debug.Assert(_bGMVolumeSlider  != null, $"bgmVolumeSlider was null in inspector: {gameObject.name}");
             Debug.Assert(_sFXVolumeSlider != null, $"sfxVolumeSlider was null in inspector: {gameObject.name}");
@@ -56,20 +56,47 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
                 .OrderBy(r => r.width)
                 .ThenBy(r => r.height)
                 .ToArray();
+            
+            _resolutionField.index =  _resolutions.Length - 1;
 
             foreach (var resolution in _resolutions)
-            {
-                Debug.Log($"{resolution.width}x{resolution.height} : {resolution.refreshRate}");
                 _resolutionField.choices.Add(resolution.width + "x" + resolution.height);
-            }
 
-#region Screen
+            ScreenSetting();
+
+            SoundSetting();
+
+            _saveButton.clicked += () =>
+            {
+                Tab curTab = _tabView.activeTab;
+                if (curTab.name == "Screen")
+                    screenSetting.ChangeResolution(_currentResolution, _screenMode);
+                else if (curTab.name == "Sound")
+                {
+                    _audioMixer.SetFloat("Master", _masterVolume);
+                    _audioMixer.SetFloat("Bgm", _bGMVolume);
+                    _audioMixer.SetFloat("Sfx", _sFXVolume);
+                }
+            };
+            _exitButton.clicked += () => UIShowHide();
+        }
+
+        [ContextMenu("UIShowHide")]
+        public void UIShowHide()
+        {
+            if (_root.style.display == DisplayStyle.Flex)
+                _root.style.display = DisplayStyle.None;
+            else 
+                _root.style.display = DisplayStyle.Flex;
+        }
+
+        private void ScreenSetting()
+        {
             _resolutionField.RegisterValueChangedCallback(evt =>
             {
                 var value = evt.newValue.Split('x');
                 _currentResolution.width = int.Parse(value[0]);
                 _currentResolution.height = int.Parse(value[1]);
-                _currentResolutionIndex = _resolutionField.index;
             });
 
             _screenModeField.RegisterValueChangedCallback(evt =>
@@ -81,26 +108,13 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
                 else if (evt.newValue == "테두리 없는 창")
                     _screenMode = FullScreenMode.FullScreenWindow;
             });
-#endregion
-
-#region Sound
+        }
+        
+        private void SoundSetting()
+        {
             _masterVolumeSlider.RegisterValueChangedCallback(evt => _masterVolume = (int)evt.newValue);
             _bGMVolumeSlider.RegisterValueChangedCallback(evt => _bGMVolume = (int)evt.newValue);
             _sFXVolumeSlider.RegisterValueChangedCallback(evt => _sFXVolume = (int)evt.newValue);
-#endregion            
-
-            _saveButton.clicked += () =>
-            {
-                Tab curTab = _tabView.activeTab;
-                if (curTab.name == "Screen")
-                    screenSetting.ChangeResolution(_currentResolution.width,_currentResolution.height, _screenMode);
-                else if (curTab.name == "Sound")
-                {
-                    _audioMixer.SetFloat("Master", _masterVolume);
-                    _audioMixer.SetFloat("Bgm", _bGMVolume);
-                    _audioMixer.SetFloat("Sfx", _sFXVolume);
-                }
-            };
         }
     }
 }

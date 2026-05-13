@@ -14,6 +14,7 @@ public class PlayerController : Agent
 
     [SerializeField] private float _releaseDuration = 1.1f;
     [SerializeField] private float _shortClickThreshold = 0.65f;
+    [Reflex.Attributes.Inject] private CursorController _cursorController;
 
     public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
 
@@ -27,6 +28,28 @@ public class PlayerController : Agent
     private Vector2 _movementInput;
 
     private PlayerAimState _aimState = PlayerAimState.Idle;
+
+    private PlayerAimState AimState
+    {
+        get => _aimState;
+        set
+        {
+            if (_aimState == value) return;
+
+            var prev = _aimState;  // 이전 상태 저장
+            _aimState = value;     // 상태 변경
+
+            switch (value)
+            {
+                case PlayerAimState.Aiming:
+                    OnStartAiming();
+                    break;
+                case PlayerAimState.Idle when prev == PlayerAimState.Releasing:
+                    OnStopAiming();
+                    break;
+            }
+        }
+    }
 
     private float _releaseTimer;
     private float _pressTimer;
@@ -88,12 +111,12 @@ public class PlayerController : Agent
             _pressTimer += Time.deltaTime;
             _wasPressed = true;
 
-            if (_aimState == PlayerAimState.Idle)
+            if (AimState == PlayerAimState.Idle)
             {
                 if (_stamina != null && !_stamina.CanAim)
                     return;
 
-                _aimState = PlayerAimState.Aiming;
+                AimState = PlayerAimState.Aiming;
                 _agentMovement.SetUseRotation(false);
                 UpdateSpeed();
                 UpdateColliderState();
@@ -103,9 +126,9 @@ public class PlayerController : Agent
         {
             if (_wasPressed)
             {
-                if (_aimState == PlayerAimState.Aiming)
+                if (AimState == PlayerAimState.Aiming)
                 {
-                    _aimState = PlayerAimState.Releasing;
+                    AimState = PlayerAimState.Releasing;
 
                     if (_pressTimer < _shortClickThreshold)
                         _releaseTimer = _releaseDuration;
@@ -121,11 +144,11 @@ public class PlayerController : Agent
 
     private void UpdateAimState()
     {
-        if (_aimState == PlayerAimState.Releasing)
+        if (AimState == PlayerAimState.Releasing)
         {
             if (_releaseTimer <= 0f)
             {
-                _aimState = PlayerAimState.Idle;
+                AimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
                 UpdateColliderState();
@@ -136,7 +159,7 @@ public class PlayerController : Agent
 
             if (_releaseTimer <= 0f)
             {
-                _aimState = PlayerAimState.Idle;
+                AimState = PlayerAimState.Idle;
                 _agentMovement.SetUseRotation(true);
                 UpdateSpeed();
                 UpdateColliderState();
@@ -168,7 +191,7 @@ public class PlayerController : Agent
 
         if (_stat != null && _stat.IsRunning)
             multiplier *= 1.5f;
-        
+
         _agentMovement.SetSpeedMultiplier(multiplier);
     }
 
@@ -253,9 +276,10 @@ public class PlayerController : Agent
 
     private void RotateToMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane plane = new Plane(Vector3.up, transform.position);
+        Vector2 mousePos = CrossHairModule.CHMousePos;
 
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        Plane plane = new Plane(Vector3.up, transform.position);
         if (plane.Raycast(ray, out float enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
@@ -270,9 +294,10 @@ public class PlayerController : Agent
                 _rotationSpeed * Time.deltaTime);
         }
     }
+
     public void ForceStopAim()
     {
-        _aimState = PlayerAimState.Releasing;
+        AimState = PlayerAimState.Releasing;
         _releaseTimer = 0f;
 
         _agentMovement.SetUseRotation(true);
@@ -313,7 +338,7 @@ public class PlayerController : Agent
 
     #region 모듈
     public PlayerGunHandleModule GunHandleModule { get; private set; }
-    public PlayerGunHandleModule CrossHairModule { get; private set; }
+    public CrossHairModule CrossHairModule { get; private set; }
     #endregion
 
     #region 퍼블릭 변수
@@ -328,7 +353,7 @@ public class PlayerController : Agent
         GunHandleModule = GetModule<PlayerGunHandleModule>();
         Debug.Assert(GunHandleModule != null, "GunHandleModule is null");
 
-        CrossHairModule = GetModule<PlayerGunHandleModule>();
+        CrossHairModule = GetModule<CrossHairModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
 
         MainCam = Camera.main;
@@ -358,8 +383,7 @@ public class PlayerController : Agent
         if (GunHandleModule == null)
             return;
 
-
-        GunHandleModule.Aim(isPressed);
+        //GunHandleModule.Aim(isPressed);
     }
 
     private void HandleFireKey(bool isPressed)
@@ -368,6 +392,19 @@ public class PlayerController : Agent
             return;
 
         GunHandleModule.Fire(isPressed);
+    }
+
+    private void OnStartAiming()
+    {
+        _cursorController.ChangeCursorMode(CursorMode.Gun);
+        GunHandleModule.Aim(true);
+    }
+
+    private void OnStopAiming()
+    {
+        _cursorController.ChangeCursorMode(CursorMode.Default);
+        GunHandleModule.Aim(false);
+        GunHandleModule.Fire(false);
     }
     #endregion
 }

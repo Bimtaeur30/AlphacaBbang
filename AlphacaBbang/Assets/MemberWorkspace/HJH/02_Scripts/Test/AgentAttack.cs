@@ -1,0 +1,78 @@
+using Reflex.Attributes;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public enum CharacterState
+{
+    None,
+    Player,
+    Enemy
+}
+public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
+{
+    [SerializeField] private MeleeWeaponBase weapon;
+    [Inject][SerializeField] private Camera mainCamera;
+
+    [SerializeField] private CharacterState characterState;
+    public CharacterState CharacterState => characterState;
+
+    private void Update()
+    {
+        switch (characterState)
+        {
+            case CharacterState.None:
+                Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
+                break;
+            case CharacterState.Player:
+                if (Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    Vector3 targetPos = GetMouseWorldPoint();
+                    weapon.Attack(targetPos, true);
+                }
+                ;
+                break;
+            case CharacterState.Enemy:
+                break;
+        }
+    }
+
+    private Vector3 GetMouseWorldPoint()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+        Plane plane = new Plane(Vector3.up, transform.position);
+
+        if (plane.Raycast(ray, out float enter))
+        {
+            return ray.GetPoint(enter);
+        }
+
+        return transform.position + transform.forward;
+    }
+
+    public void Initialize(ModuleOwner owner)
+    {
+
+    }
+
+    public void SetCurrentWeapon(MeleeWeaponBase meleeWeaponBase)
+    {
+        weapon = meleeWeaponBase;
+    }
+
+    public void Init()
+    {
+        weapon.Init();
+        weapon.characterState = characterState;
+    }
+
+    public void SetAim(bool val)
+    {
+        weapon.SetAim(val);
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        weapon.Attack(vector, val);
+    }
+}

@@ -1,19 +1,19 @@
-﻿using JJH._02_Scripts.Agents.Enemies.NavMeshs;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-namespace MemberWorkspace.JJH._02_Scripts.Agents.Enemies.NavMeshs
+namespace JJH._02_Scripts.Agents.Enemies.NavMeshs
 {
     public class EnemyNavMeshAgent : MonoBehaviour, IModule, INavMeshAgent
     {
-        private ModuleOwner _owner;
+        private AbstractEnemy _enemy;
         private NavMeshAgent _navMeshAgent;
 
         public void Initialize(ModuleOwner owner)
         {
-            _owner = owner;
+            _enemy = owner as AbstractEnemy;
             _navMeshAgent = GetComponentInParent<NavMeshAgent>();
 
+            _navMeshAgent.speed = _enemy.EnemyData.EnemySpeed;
             _navMeshAgent.updateRotation = false;
             _navMeshAgent.autoBraking = true;
         }

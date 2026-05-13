@@ -1,16 +1,20 @@
+using JJH._02_Scripts.Weapons;
 using UnityEngine;
 
-public abstract class MeleeWeaponBase : MonoBehaviour
+public abstract class MeleeWeaponBase : WeaponBase
 {
+    public CharacterState characterState;
+
     [SerializeField] protected ShortWeaponSO[] data;
     protected int currentLevel = 0;
 
     protected float lastUseTime;
     protected float currentTime = 0;
 
+
     public virtual void Init() { }
 
-    public virtual void SetAim(bool val) 
+    public virtual void SetAim(bool val)
     {
 
     }

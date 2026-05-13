@@ -1,10 +1,23 @@
+using Reflex.Core;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
-public class CursorController : MonoBehaviour
+public enum CursorMode
 {
-    private bool _isCaptured;
+    Default = 0, Gun = 1
+}
 
+public class CursorController : MonoBehaviour, IInstaller
+{
+    [SerializeField] private Image defaultCursor;
+    [SerializeField] private Image gunCursor;
+    private bool _isCaptured;
+    private void Awake()
+    {
+        ChangeCursorMode(CursorMode.Default);
+    }
     private void Update()
     {
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
@@ -16,16 +29,19 @@ public class CursorController : MonoBehaviour
         {
             ReleaseCursor();
         }
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        defaultCursor.rectTransform.position = mousePos;
     }
 
-    public void CaptureCursor()
+    private void CaptureCursor()
     {
         _isCaptured = true;
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
     }
 
-    public void ReleaseCursor()
+    private void ReleaseCursor()
     {
         _isCaptured = false;
         Cursor.lockState = CursorLockMode.None;
@@ -44,6 +60,31 @@ public class CursorController : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
+        }
+    }
+
+    public void InstallBindings(ContainerBuilder containerBuilder)
+    {
+        containerBuilder.RegisterValue(this);
+    }
+
+    public Image GetGunCursor()
+    {
+        return gunCursor;
+    }
+
+    public void ChangeCursorMode(CursorMode mode)
+    {
+        int m = (int)mode;
+        if (m == 0)
+        {
+            defaultCursor.gameObject.SetActive(true);
+            gunCursor.gameObject.SetActive(false);
+        }
+        else
+        {
+            defaultCursor.gameObject.SetActive(false);
+            gunCursor.gameObject.SetActive(true);
         }
     }
 }

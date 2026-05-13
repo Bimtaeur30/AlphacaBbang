@@ -42,6 +42,11 @@ public class Axe : MeleeWeaponBase
 
             if (angle <= data[ComboCounter].angle * 0.5f)
             {
+                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
+                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
+
+                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
+
                 IDamageable damageable = hit.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
@@ -83,6 +88,7 @@ public class Axe : MeleeWeaponBase
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
                        * Quaternion.Euler(-90f, 180f, 0f);
 
+        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

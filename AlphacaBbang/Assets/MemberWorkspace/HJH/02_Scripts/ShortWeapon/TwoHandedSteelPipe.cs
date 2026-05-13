@@ -89,6 +89,7 @@ public class TwoHandedSteelPipe : MeleeWeaponBase
             * data[ComboCounter].attackParticlePrefab.transform.rotation
             * Quaternion.Euler(0f, 0f, 180f);
 
+        gameObject.transform.parent.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

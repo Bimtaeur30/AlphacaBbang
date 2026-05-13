@@ -144,7 +144,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &6350540245620240915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +158,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrenadeObject
   boomTime: 2.5
+  triggerLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!114 &2625992425715187470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,6 +177,6 @@ MonoBehaviour:
   explosionPref: {fileID: 11400000, guid: 74002f5c784bf0a45bdc5d575c99edfd, type: 2}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 320
   range: 3
   maxDamage: 15

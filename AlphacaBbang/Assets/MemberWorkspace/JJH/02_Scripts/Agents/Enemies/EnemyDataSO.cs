@@ -9,10 +9,10 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public string EnemyName { get; private set; }
         [field: SerializeField] public bool IsBoss { get; private set; }
         [field: SerializeField] public float EnemyHealth { get; private set; }
+        [field: SerializeField] public float EnemySpeed { get; private set; }
         [field: SerializeField] public GameObject EnemyInventoryPrefab { get; private set; }
 
         [Header("Attack")]
-        [field: SerializeField] public float Damage { get; private set; }
         [field: SerializeField] public float AttackRange { get; private set; }
         [field: SerializeField] public float DetectRange { get; private set; }
         [field: SerializeField] public float AttackTime { get; private set; }

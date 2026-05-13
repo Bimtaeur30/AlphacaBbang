@@ -1,14 +1,13 @@
-﻿    using System;
-using System.Collections;
-using Febucci.UI;
+﻿using Febucci.UI;
 using MemberWorkspace.CHG._02_Scripts.TextBoxSystem;
+using System.Collections;
 using UnityEngine;
 
 namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
 {
     public class EnemyTalkSystem : MonoBehaviour
     {
-        [SerializeField] private DialogueNodeSO battleText;
+        [SerializeField] private DialogueNodeSO[] battleTexts;
         [SerializeField] private float showTime = 1.5f;
         [SerializeField] private float writeTime = 0.8f;
         [SerializeField] private GameObject mainTalkBox;
@@ -17,9 +16,9 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         private void Awake()
         {
             _mainTypewriter = mainTalkBox.GetComponentInChildren<TypewriterByCharacter>();
-    
+
             Debug.Assert(_mainTypewriter != null, $"{gameObject.name}: TypewriterByCharacter not found");
-    
+
             _mainTypewriter.waitForNormalChars = writeTime;
         }
 
@@ -28,16 +27,17 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         {
             StartCoroutine(BattleTalk());
         }
-        
+
         private IEnumerator BattleTalk()
         {
             mainTalkBox.SetActive(true);
-            _mainTypewriter.ShowText(battleText.Text);
+
+            int rand = Random.Range(0, battleTexts.Length);
+
+            _mainTypewriter.ShowText(battleTexts[rand].Text);
 
             yield return new WaitForSeconds(showTime);
             mainTalkBox.SetActive(false);
         }
-
-        
     }
 }

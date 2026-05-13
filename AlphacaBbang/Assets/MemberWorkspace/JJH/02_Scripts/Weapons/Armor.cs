@@ -9,7 +9,7 @@ namespace JJH._02_Scripts.Weapons
 
         private void Awake()
         {
-            Instantiate(ArmorSO.ArmorModel, armorModelTrans);
+            //Instantiate(ArmorSO.ArmorModel, armorModelTrans);
         }
     }
 }

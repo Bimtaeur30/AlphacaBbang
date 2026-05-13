@@ -1,4 +1,5 @@
 ﻿using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ namespace JJH._02_Scripts.Agents
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
         [SerializeField] private Slider slider;
+        [SerializeField] private Armor[] armor;
         private EventChannelSO _agentEventChannel;
 
         private Agent _owner;
@@ -41,9 +43,13 @@ namespace JJH._02_Scripts.Agents
             ChangeHealthText();
         }
 
-        public void SetHealth(float health)
+        public void SetHealth(float value)
         {
-            _health -= health;
+            float damage = value;
+            foreach (Armor item in armor)
+            {
+                damage *= 1f - item.ArmorSO.DamageReductionRate;
+            }
             _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent);
 
             if (_health <= 0)

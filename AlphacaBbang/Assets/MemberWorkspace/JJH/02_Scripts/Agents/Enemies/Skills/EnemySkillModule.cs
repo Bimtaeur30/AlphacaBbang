@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies.Skills
 {
-    public class EnemySkillModule : MonoBehaviour, IModule, ISkillModule
+    public class EnemySkillModule : MonoBehaviour, IModule, IEnemySkillModule
     {
         protected Dictionary<Type, IEnemySkill> _skillDict = new Dictionary<Type, IEnemySkill>();
 

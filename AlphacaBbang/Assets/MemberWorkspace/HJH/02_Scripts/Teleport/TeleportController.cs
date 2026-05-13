@@ -25,21 +25,20 @@ public class TeleportController : MonoSingleton<TeleportController>
     {
         if (_state != TeleportState.Idle) return;
         if (index < 0 || index >= teleportPositions.Length) return;
-
         StartCoroutine(TeleportSequence(index));
     }
 
     private IEnumerator TeleportSequence(int index)
     {
+        Debug.Log($"TeleportTo called with index: {1}");
         _state = TeleportState.FadingOut;
         yield return StartCoroutine(_fadeStrategy.FadeOut(fadeDuration));
-
+        Debug.Log($"TeleportTo called with index: {2}");
         _state = TeleportState.Teleporting;
         MovePlayer(teleportPositions[index]);
-
         _state = TeleportState.FadingIn;
         yield return StartCoroutine(_fadeStrategy.FadeIn(fadeDuration));
-
+        Debug.Log($"TeleportTo called with index: {3}");
         _state = TeleportState.Idle;
     }
 

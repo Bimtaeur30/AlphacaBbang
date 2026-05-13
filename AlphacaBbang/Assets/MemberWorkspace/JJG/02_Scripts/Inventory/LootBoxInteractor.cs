@@ -4,9 +4,11 @@ using UnityEngine;
 public class LootBoxInteractor : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
-    //[SerializeField] private PlayerCombat playerCombat;
-    [SerializeField] private InventoryUI lootBoxUI;
     [SerializeField] private LootBoxOpeningUI openingUI;
+
+    [Header("Post-Open UI")]
+    [SerializeField] private GameObject inventoryUIRoot;
+    [SerializeField] private LootBoxRevealUI lootBoxRevealUI;
 
     private bool _isOpening;
 
@@ -22,9 +24,6 @@ public class LootBoxInteractor : MonoBehaviour
         _isOpening = true;
         openingUI?.Show();
 
-        //playerController.SetMoveable(false);
-        //playerCombat.SetAttackable(false);
-
         float timer = 0f;
         float totalTime = lootBox.RequiredOpenTime;
 
@@ -37,11 +36,8 @@ public class LootBoxInteractor : MonoBehaviour
 
         openingUI?.Hide();
 
-        //lootBoxUI.Bind(lootBox);
-        //lootBoxUI.Open();
-
-        //playerController.SetMoveable(true);
-        //playerCombat.SetAttackable(true);
+        inventoryUIRoot?.SetActive(true);
+        lootBoxRevealUI?.Show(lootBox);
 
         _isOpening = false;
     }

@@ -1,19 +1,17 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 namespace JJH._02_Scripts.Agents.Enemies.NavMeshs
 {
     public class EnemyNavMeshAgent : MonoBehaviour, IModule, INavMeshAgent
     {
-        [field: NonSerialized] public NavMeshAgent NavMeshAgent { get; private set; }
+        [field: SerializeField] public NavMeshAgent NavMeshAgent { get; private set; }
         private AbstractEnemy _enemy;
 
         public void Initialize(ModuleOwner owner)
         {
             _enemy = owner as AbstractEnemy;
             NavMeshAgent = GetComponentInParent<NavMeshAgent>();
-
             NavMeshAgent.speed = _enemy.EnemyData.EnemySpeed;
             NavMeshAgent.updateRotation = false;
             NavMeshAgent.autoBraking = true;

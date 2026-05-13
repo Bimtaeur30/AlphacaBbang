@@ -27,7 +27,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             if (Enemy.Value == null)
                 return Status.Failure;
 
-            _navMeshAgent = Enemy.Value.NavMeshAgent;
+            _navMeshAgent = Enemy.Value.EnemyNavMeshAgent;
             _enemyTrans = Enemy.Value.transform;
 
             if (!TryGetSideStepPosition(out _targetPosition))

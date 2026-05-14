@@ -27,8 +27,16 @@ namespace JJH._02_Scripts.Systems.EventSystems
             return this;
         }
     }
+    public class AgentHealthChangeEvent : GameEvent 
+    {
+        public float Damage { get; private set; }
 
-    public class AgentHealthChangeEvent : GameEvent { }
+        public AgentHealthChangeEvent Init(float damage)
+        {
+            Damage = damage;
+            return this;
+        }
+    }
 
     public class AgentInventoryDropEvent : GameEvent
     {

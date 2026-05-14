@@ -31,7 +31,7 @@ public class PlayerData : MonoBehaviour, IModule, ISaveable
         if (Keyboard.current.tKey.wasPressedThisFrame)
             saveChannel.RaiseEvent(SaveEvents.AddTestValue.Init(1));
         if (Keyboard.current.yKey.wasPressedThisFrame)
-            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent.Init(0, 0));
+            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
 
     }
 

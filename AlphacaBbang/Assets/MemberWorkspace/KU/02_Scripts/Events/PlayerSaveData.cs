@@ -14,7 +14,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     [field: SerializeField] public float MaxStamina { get; private set; }
     [field: SerializeField] public float GaugeMaxTime { get; private set; }
 
-
     private void OnEnable()
     {
         playerStatChannel.AddListener<AddMaxHealth>(HandleAddMaxHealth);
@@ -26,6 +25,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         if (Keyboard.current.tKey.wasPressedThisFrame)
             playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
         if (Keyboard.current.yKey.wasPressedThisFrame)
+            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
             systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
     }
     public string GetSaveData()

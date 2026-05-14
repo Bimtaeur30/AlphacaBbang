@@ -1,19 +1,29 @@
 using System;
 using System.Collections.Generic;
+using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 
-public class ItemContainer : MonoBehaviour, IItemContainer
+public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 {
     [SerializeField] protected ContainerType containerType;
     [SerializeField] protected int slotCount = 20;
     [SerializeField] protected List<ItemSlot> slots = new();
+    [SerializeField] private ItemDatabase itemDatabase;
+    [field: SerializeField] public EventChannelSO playerStateChannel;
+    [field: SerializeField] public EventChannelSO systemChannel;
 
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
     public event Action OnContainerChanged;
+
+    private void OnEnable()
+    {
+        playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
+    }
 
     protected virtual void Awake()
     {
@@ -31,6 +41,11 @@ public class ItemContainer : MonoBehaviour, IItemContainer
         {
             slots.Add(new ItemSlot());
         }
+    }
+    
+    private void HandlePlayerHpHeal(PlayerHpHeal evt)
+    {
+        
     }
 
     public ItemSlot GetSlot(int index)
@@ -216,6 +231,27 @@ public class ItemContainer : MonoBehaviour, IItemContainer
             return false;
         }
 
+        if (user != null)
+        {
+            // var healable = user.GetComponent<IHealable>();
+            // if (healable != null)
+            // {
+            //     float healAmount = 0f;
+            //     if (itemData is FoodItemData foodData) healAmount = foodData.HealAmount;
+            //     else if (itemData is MedicineItemData medData) healAmount = medData.HealAmount;
+            //
+            //     if (healAmount > 0f)
+            //         healable.Heal(healAmount);
+            // }
+            int healAmount = 0;
+            if (itemData is MedicineItemData foodData) 
+                healAmount = foodData.HealAmount;
+
+            if (healAmount > 0f)
+                playerStateChannel.RaiseEvent((PlayerStateEvents.PlayerHpHeal.Init(healAmount)));
+
+        }
+
         if (itemData is CountableItemData)
             RemoveAmount(index, 1);
         else
@@ -336,5 +372,82 @@ public class ItemContainer : MonoBehaviour, IItemContainer
     protected void NotifyContainerChanged()
     {
         OnContainerChanged?.Invoke();
+    }
+
+    public SaveIdData SaveId { get; }
+    
+    [Serializable]
+    private struct InventorySaveData
+    {
+        public SlotSaveData[] slots;
+    }
+
+    [Serializable]
+    private struct SlotSaveData
+    {
+        public string itemId;
+        public int amount;
+    }
+    public string GetSaveData()
+    {
+        InventorySaveData saveData = new InventorySaveData
+        {
+            slots = new SlotSaveData[SlotCount]
+        };
+
+        for (int i = 0; i < SlotCount; i++)
+        {
+            ItemSlot slot = GetSlot(i);
+
+            if (slot == null || slot.IsEmpty)
+            {
+                saveData.slots[i] = new SlotSaveData
+                {
+                    itemId = "",
+                    amount = 0
+                };
+
+                continue;
+            }
+
+            saveData.slots[i] = new SlotSaveData
+            {
+                itemId = slot.ItemData.Id,
+                amount = slot.Amount
+            };
+        }
+
+        return JsonUtility.ToJson(saveData);
+    }
+
+    public void RestoreData(string data)
+    {
+        InventorySaveData saveData = JsonUtility.FromJson<InventorySaveData>(data);
+
+        for (int i = 0; i < SlotCount; i++)
+        {
+            ClearSlot(i);
+        }
+
+        if (saveData.slots == null)
+            return;
+
+        int count = Mathf.Min(saveData.slots.Length, SlotCount);
+
+        for (int i = 0; i < count; i++)
+        {
+            SlotSaveData slotData = saveData.slots[i];
+
+            if (string.IsNullOrEmpty(slotData.itemId) || slotData.amount <= 0)
+                continue;
+
+            if (!itemDatabase.TryGetItem(slotData.itemId, out ItemData itemData))
+            {
+                Debug.LogWarning($"ItemDatabase에서 아이템을 찾을 수 없음: {slotData.itemId}");
+                continue;
+            }
+
+            SetSlot(i, itemData, slotData.amount);
+        }
     }
 }

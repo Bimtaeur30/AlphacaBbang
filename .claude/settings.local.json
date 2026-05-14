@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Mygames\\\\AlphacaBbang\\\\AlphacaBbang\\\\Assets\\\\MemberWorkspace\\\\JJG\\\\02_Scripts\" -Recurse -Filter \"*.cs\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Mygames\\\\AlphacaBbang\\\\AlphacaBbang\\\\Assets\\\\MemberWorkspace\\\\JJG\\\\02_Scripts\" -Recurse | Where-Object { $_.PSIsContainer } | Select-Object -ExpandProperty FullName | Sort-Object)",
+      "PowerShell(New-Item *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Mygames\\\\AlphacaBbang\\\\AlphacaBbang\\\\Assets\\\\MemberWorkspace\\\\JJG\" -Recurse -Filter \"*.cs\")",
+      "Bash(Select-String -Pattern \"\\(health|HP|stat|Health|Stat\\)\" -List)",
+      "Bash(Select-Object Path)",
+      "Bash(Get-Unique)"
+    ]
+  }
+}

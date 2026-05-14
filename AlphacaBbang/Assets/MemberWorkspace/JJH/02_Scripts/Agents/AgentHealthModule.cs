@@ -58,14 +58,13 @@ namespace JJH._02_Scripts.Agents
             {
                 damage *= 1f - armor.DamageReductionRate;
             }
-            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent);
+            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(damage));
 
             if (_health <= 0)
             {
                 _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent.Init(_owner));
                 return;
             }
-
             ChangeHealthText();
         }
 

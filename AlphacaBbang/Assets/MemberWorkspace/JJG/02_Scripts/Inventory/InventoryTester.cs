@@ -45,42 +45,42 @@ public class InventoryTest : MonoBehaviour
         if (_keyboard == null)
             return;
 
-        if (_keyboard.digit1Key.wasPressedThisFrame)
+        if (_keyboard.f1Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.AddItem(normalItem, 1);
             Debug.Log($"[TEST] 일반 아이템 1개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
-        if (_keyboard.digit2Key.wasPressedThisFrame)
+        if (_keyboard.f2Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.AddItem(countableItem, 5);
             Debug.Log($"[TEST] 스택 아이템 5개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
-        if (_keyboard.digit3Key.wasPressedThisFrame)
+        if (_keyboard.f3Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.AddItem(foodItem, 3);
             Debug.Log($"[TEST] 음식 아이템 3개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
-        if (_keyboard.digit4Key.wasPressedThisFrame)
+        if (_keyboard.f4Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.AddItem(medicineItem, 2);
             Debug.Log($"[TEST] 약 아이템 2개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
-        if (_keyboard.digit5Key.wasPressedThisFrame)
+        if (_keyboard.f5Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.UseItem(0, gameObject);
             Debug.Log($"[TEST] 0번 슬롯 아이템 사용: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
-        if (_keyboard.digit6Key.wasPressedThisFrame)
+        if (_keyboard.f6Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.MoveItemTo(0, storageContainer, 0);
             Debug.Log($"[TEST] Inventory[0] -> Storage[0] 이동: {result}");
@@ -88,7 +88,7 @@ public class InventoryTest : MonoBehaviour
             PrintContainerState(storageContainer, "Storage");
         }
 
-        if (_keyboard.digit7Key.wasPressedThisFrame)
+        if (_keyboard.f7Key.wasPressedThisFrame)
         {
             bool result = inventoryContainer.MoveItemTo(1, quickSlotContainer, 0);
             Debug.Log($"[TEST] Inventory[1] -> QuickSlot[0] 이동: {result}");
@@ -96,13 +96,13 @@ public class InventoryTest : MonoBehaviour
             PrintContainerState(quickSlotContainer, "QuickSlot");
         }
 
-        if (_keyboard.digit8Key.wasPressedThisFrame)
+        if (_keyboard.f8Key.wasPressedThisFrame)
         {
             int count = inventoryContainer.GetItemCount(countableItem);
             Debug.Log($"[TEST] Inventory 안의 {countableItem.name} 총 개수: {count}");
         }
 
-        if (_keyboard.digit9Key.wasPressedThisFrame)
+        if (_keyboard.f9Key.wasPressedThisFrame)
         {
             PrintContainerState(inventoryContainer, "Inventory");
 
@@ -113,7 +113,7 @@ public class InventoryTest : MonoBehaviour
                 PrintContainerState(quickSlotContainer, "QuickSlot");
         }
 
-        if (_keyboard.digit0Key.wasPressedThisFrame)
+        if (_keyboard.f10Key.wasPressedThisFrame)
         {
             ClearAllSlots(inventoryContainer);
             Debug.Log("[TEST] 인벤토리 전체 비움");

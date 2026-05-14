@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponItemData", menuName = "SO/WeaponItemData")]
+[CreateAssetMenu(fileName = "WeaponItemData", menuName = "JJK/WeaponItemData")]
 public class WeaponItemData : ItemData
 {
     [field: SerializeField]

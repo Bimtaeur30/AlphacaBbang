@@ -55,7 +55,7 @@ public class LootBoxContainer : ItemContainer
     private float CalculateSlotOpenTime(ItemSlot slot)
     {
         ItemData itemData = slot.ItemData;
-
+        
         if (itemData == null)
             return 0f;
 

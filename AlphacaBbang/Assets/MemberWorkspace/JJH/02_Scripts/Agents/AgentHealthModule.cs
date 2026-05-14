@@ -9,10 +9,10 @@ namespace JJH._02_Scripts.Agents
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
         [SerializeField] private Slider slider;
-        [SerializeField] private Armor[] armor;
         private EventChannelSO _agentEventChannel;
 
         private Agent _owner;
+        private ArmorSO[] armors;
 
         private float _maxHealth;
         private float _health;
@@ -22,12 +22,20 @@ namespace JJH._02_Scripts.Agents
             _owner = owner as Agent;
             _agentEventChannel = _owner.AgentEventChannel;
             _agentEventChannel.AddListener<AgentDeadEvent>(OnAgentDeadEvent);
+            _agentEventChannel.AddListener<AgentArmorEquip>(OnAgentArmorEquip);
             slider.gameObject.SetActive(true);
         }
 
         private void OnDestroy()
         {
             _agentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
+            _agentEventChannel.RemoveListener<AgentArmorEquip>(OnAgentArmorEquip);
+        }
+
+        private void OnAgentArmorEquip(AgentArmorEquip evt)
+        {
+            if (evt.Agent == _owner)
+                armors = evt.Armors;
         }
 
         private void OnAgentDeadEvent(AgentDeadEvent evt)
@@ -46,9 +54,9 @@ namespace JJH._02_Scripts.Agents
         public void SetHealth(float value)
         {
             float damage = value;
-            foreach (Armor item in armor)
+            foreach (ArmorSO armor in armors)
             {
-                damage *= 1f - item.ArmorSO.DamageReductionRate;
+                damage *= 1f - armor.DamageReductionRate;
             }
             _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent);
 

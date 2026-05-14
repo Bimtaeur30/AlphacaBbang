@@ -7,9 +7,7 @@ public class InventoryManager : MonoBehaviour
     //[field: SerializeField] public StorageContainer Storage { get; private set; }
     [field: SerializeField] public EquipmentContainer Equipment { get; private set; }
     [field: SerializeField] public QuickSlotContainer QuickSlot { get; private set; }
-
-    //public ItemMoveService ItemMoveService { get; private set; }
-    //public EquipmentMoveService EquipmentMoveService { get; private set; }
+    
 
     private void Awake()
     {

@@ -83,7 +83,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             if (slot == null || slot.IsEmpty)
                 return;
 
-            InventoryContextMenu.Instance.Open(
+            InventoryContextMenu.Open(
                 _container,
                 _slotIndex,
                 transform.position

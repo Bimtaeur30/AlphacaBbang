@@ -233,6 +233,22 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public void PrepareForReveal()
+    {
+        foreach (var slotUI in _slotUIList)
+            slotUI.ClearSlot();
+    }
+
+    public void RevealSlot(int index)
+    {
+        if (index < 0 || index >= _slotUIList.Count || inventory == null)
+            return;
+
+        ItemSlot slot = inventory.GetSlot(index);
+        if (slot != null && !slot.IsEmpty)
+            _slotUIList[index].SetSlot(slot);
+    }
+
     private void ClearGeneratedSlots()
     {
         if (_contentAreaRT == null)

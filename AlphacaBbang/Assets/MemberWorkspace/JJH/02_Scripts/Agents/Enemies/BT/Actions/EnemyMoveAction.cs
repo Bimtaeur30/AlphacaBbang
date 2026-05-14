@@ -21,10 +21,10 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.NavMeshAgent == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyNavMeshAgent == null)
                 return Status.Failure;
 
-            _navMeshAgent = Enemy.Value.NavMeshAgent;
+            _navMeshAgent = Enemy.Value.EnemyNavMeshAgent;
 
             _moveTime = 0;
             _moveDuration = Random.Range(1f, 2f);

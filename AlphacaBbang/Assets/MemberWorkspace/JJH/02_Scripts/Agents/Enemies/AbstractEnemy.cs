@@ -18,7 +18,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
-        public INavMeshAgent NavMeshAgent { get; private set; }
+        public INavMeshAgent EnemyNavMeshAgent { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -48,7 +48,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (Weapon != null)
                 Weapon.Init();
 
-            NavMeshAgent = GetModule<INavMeshAgent>();
+            EnemyNavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<IEnemySkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
 
@@ -96,11 +96,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             }
         }
 
-        private void SetWeapon()
-        {
-
-        }
-
         private IEnumerator HitCoroutine()
         {
             float time = 0f;
@@ -126,7 +121,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void DashAttack()
         {
-            EnemySkill.UseSkill<EnemyBombSkill>();
+            EnemySkill.UseSkill<EnemyDashAttackSkill>();
         }
 
         public void OnDead()

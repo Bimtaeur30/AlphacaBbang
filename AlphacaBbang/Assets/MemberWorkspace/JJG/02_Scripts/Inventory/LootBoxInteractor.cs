@@ -4,8 +4,11 @@ using UnityEngine;
 public class LootBoxInteractor : MonoBehaviour
 {
     [SerializeField] private PlayerController playerController;
-    //[SerializeField] private PlayerCombat playerCombat;
-    [SerializeField] private InventoryUI lootBoxUI;
+    [SerializeField] private LootBoxOpeningUI openingUI;
+
+    [Header("Post-Open UI")]
+    [SerializeField] private GameObject inventoryUIRoot;
+    [SerializeField] private LootBoxRevealUI lootBoxRevealUI;
 
     private bool _isOpening;
 
@@ -19,23 +22,22 @@ public class LootBoxInteractor : MonoBehaviour
     private IEnumerator OpenRoutine(LootBoxContainer lootBox)
     {
         _isOpening = true;
-
-        //playerController.SetMoveable(false); //이동 막기
-        //playerCombat.SetAttackable(false); //공격 막기
+        openingUI?.Show();
 
         float timer = 0f;
+        float totalTime = lootBox.RequiredOpenTime;
 
-        while (timer < lootBox.RequiredOpenTime)
+        while (timer < totalTime)
         {
             timer += Time.deltaTime;
+            openingUI?.SetProgress(timer, totalTime);
             yield return null;
         }
 
-        //lootBoxUI.Bind(lootBox);
-        //lootBoxUI.Open();
+        openingUI?.Hide();
 
-        //playerController.SetMoveable(true);
-        //playerCombat.SetAttackable(true);
+        inventoryUIRoot?.SetActive(true);
+        lootBoxRevealUI?.Show(lootBox);
 
         _isOpening = false;
     }

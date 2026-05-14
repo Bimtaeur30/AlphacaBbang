@@ -16,6 +16,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     [SerializeField] private float defualtFollowSpeed = 20f;
     [SerializeField] private float recoilDistance = 60f;
     [SerializeField] private float recoilRecoverSpeed = 10f;
+    [SerializeField] private float impulseShakeForceMultiply = 0.2f;
 
     private Image crossHairImg;
     private bool _isCrossHairActive;
@@ -172,7 +173,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     private void ImpulseShake(Vector2 dir, float force)
     {
         float adjusted = Mathf.Sqrt(force);
-        Vector2 forceVector = dir * adjusted * 0.2f;
+        Vector2 forceVector = dir * adjusted * impulseShakeForceMultiply;
 
         _impulseSource.DefaultVelocity = forceVector;
         _impulseSource.GenerateImpulse();

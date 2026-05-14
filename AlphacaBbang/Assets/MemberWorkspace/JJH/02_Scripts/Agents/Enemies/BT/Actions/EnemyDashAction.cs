@@ -23,10 +23,10 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.NavMeshAgent == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyNavMeshAgent == null)
                 return Status.Failure;
 
-            _navMeshAgent = Enemy.Value.NavMeshAgent;
+            _navMeshAgent = Enemy.Value.EnemyNavMeshAgent;
             _enemyTrans = Enemy.Value.transform;
 
             Vector3 dashDirection = _enemyTrans.forward;

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 
 public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
@@ -10,11 +12,18 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [SerializeField] protected int slotCount = 20;
     [SerializeField] protected List<ItemSlot> slots = new();
     [SerializeField] private ItemDatabase itemDatabase;
+    [field: SerializeField] public EventChannelSO playerStateChannel;
+    [field: SerializeField] public EventChannelSO systemChannel;
 
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
     public event Action OnContainerChanged;
+
+    private void OnEnable()
+    {
+        playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
+    }
 
     protected virtual void Awake()
     {
@@ -32,6 +41,11 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         {
             slots.Add(new ItemSlot());
         }
+    }
+    
+    private void HandlePlayerHpHeal(PlayerHpHeal evt)
+    {
+        
     }
 
     public ItemSlot GetSlot(int index)
@@ -215,6 +229,27 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         {
             Debug.LogWarning("itemData is null");
             return false;
+        }
+
+        if (user != null)
+        {
+            // var healable = user.GetComponent<IHealable>();
+            // if (healable != null)
+            // {
+            //     float healAmount = 0f;
+            //     if (itemData is FoodItemData foodData) healAmount = foodData.HealAmount;
+            //     else if (itemData is MedicineItemData medData) healAmount = medData.HealAmount;
+            //
+            //     if (healAmount > 0f)
+            //         healable.Heal(healAmount);
+            // }
+            int healAmount = 0;
+            if (itemData is MedicineItemData foodData) 
+                healAmount = foodData.HealAmount;
+
+            if (healAmount > 0f)
+                playerStateChannel.RaiseEvent((PlayerStateEvents.PlayerHpHeal.Init(healAmount)));
+
         }
 
         if (itemData is CountableItemData)

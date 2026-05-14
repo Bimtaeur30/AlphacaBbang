@@ -6,6 +6,7 @@ public static class PlayerStateEvents
     public static readonly AddMaxHealth AddMaxHealth = new AddMaxHealth();
     public static readonly AddMaxStamina AddMaxStamina = new AddMaxStamina();
     public static readonly AddMaxStamina AddMaxAimStamina = new AddMaxStamina();
+    public static readonly PlayerHpHeal PlayerHpHeal = new PlayerHpHeal();
 
 }
 
@@ -32,7 +33,18 @@ public class AddMaxStamina : GameEvent
 public class AddMaxAimStamina : GameEvent
 {
     public int val { get; private set; }
+
     public AddMaxAimStamina Init(int val)
+    {
+        this.val = val;
+        return this;
+    }
+}
+
+public class PlayerHpHeal : GameEvent
+{
+    public int val { get; private set; }
+    public PlayerHpHeal Init(int val)
     {
         this.val = val;
         return this;

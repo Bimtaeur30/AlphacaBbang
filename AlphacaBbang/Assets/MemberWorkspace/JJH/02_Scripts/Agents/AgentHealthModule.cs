@@ -51,13 +51,15 @@ namespace JJH._02_Scripts.Agents
             ChangeHealthText();
         }
 
-        public void SetHealth(float value)
+        public void MinusHealth(float value)
         {
             float damage = value;
-            foreach (ArmorSO armor in armors)
-            {
-                damage *= 1f - armor.DamageReductionRate;
-            }
+            if (armors != null)
+                foreach (ArmorSO armor in armors)
+                {
+                    damage *= 1f - armor.DamageReductionRate;
+                }
+            _health -= damage;
             _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(damage));
 
             if (_health <= 0)

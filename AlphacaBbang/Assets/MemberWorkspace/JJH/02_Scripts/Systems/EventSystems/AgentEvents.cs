@@ -1,4 +1,5 @@
 ﻿using JJH._02_Scripts.Agents.Enemies;
+using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.EventSystems;
 
 namespace JJH._02_Scripts.Systems.EventSystems
@@ -8,6 +9,7 @@ namespace JJH._02_Scripts.Systems.EventSystems
         public static readonly AgentDeadEvent AgentDeadEvent = new AgentDeadEvent();
         public static readonly AgentHealthChangeEvent AgentHealthChangeEvent = new AgentHealthChangeEvent();
         public static readonly AgentInventoryDropEvent AgentInventoryDropEvent = new AgentInventoryDropEvent();
+        public static readonly AgentArmorEquip AgentArmorEquip = new AgentArmorEquip();
     }
 
     public class AgentDeadEvent : GameEvent
@@ -35,6 +37,19 @@ namespace JJH._02_Scripts.Systems.EventSystems
         public AgentInventoryDropEvent Init(Agent agent)
         {
             Agent = agent;
+            return this;
+        }
+    }
+
+    public class AgentArmorEquip : GameEvent
+    {
+        public Agent Agent { get; private set; }
+        public ArmorSO[] Armors { get; private set; }
+
+        public AgentArmorEquip Init(Agent agent, ArmorSO[] armors)
+        {
+            Agent = agent;
+            Armors = armors;
             return this;
         }
     }

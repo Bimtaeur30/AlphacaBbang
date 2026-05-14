@@ -68,6 +68,12 @@ namespace JJH._02_Scripts.Agents
             ChangeHealthText();
         }
 
+        public void Heal(float amount)
+        {
+            _health = Mathf.Min(_health + amount, _maxHealth);
+            ChangeHealthText();
+        }
+
         private void ChangeHealthText()
         {
             slider.value = _health / _maxHealth;

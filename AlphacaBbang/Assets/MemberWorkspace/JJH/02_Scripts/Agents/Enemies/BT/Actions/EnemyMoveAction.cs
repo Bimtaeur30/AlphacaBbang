@@ -16,6 +16,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         private INavMeshAgent _navMeshAgent;
 
+        private Vector3 _direction;
         private float _moveDuration;
         private float _moveTime;
 
@@ -32,9 +33,8 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             Vector3 move = Random.insideUnitSphere;
             move.y = 0f;
             move.Normalize();
+            _direction = move;
 
-            Vector3 direction = move;
-            Enemy.Value.transform.rotation = Quaternion.LookRotation(direction);
 
             _navMeshAgent.KeepChase(true);
             _navMeshAgent.MoveTo(Enemy.Value.transform.position + move * 10f);
@@ -45,6 +45,9 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         protected override Status OnUpdate()
         {
             _moveTime += Time.deltaTime;
+            Quaternion targetRotation = Quaternion.LookRotation(_direction);
+            Enemy.Value.transform.rotation =
+                Quaternion.Slerp(Enemy.Value.transform.rotation, targetRotation, 5f * Time.deltaTime);
             if (_moveTime > _moveDuration)
             {
                 _navMeshAgent.KeepChase(false);

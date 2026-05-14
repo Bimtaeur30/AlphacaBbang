@@ -15,18 +15,7 @@ public class SavePrefEvent : GameEvent { }
 
 public class LoadPrefEvent : GameEvent { }
 
-public class SaveFileEvent : GameEvent  
-{
-    public int SavePointId;
-    public int SceneNumberId;
-
-    public SaveFileEvent Init(int savePointId, int sceneNumberId)
-    {
-        SavePointId = savePointId;
-        SceneNumberId = sceneNumberId;
-        return this;
-    }
-}
+public class SaveFileEvent : GameEvent { }
 
 public class LoadFileEvent : GameEvent
 { }

@@ -18,9 +18,7 @@ public class PlayerController : Agent
 
     public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
 
-    private IRenderer _renderer;
     private AgentMovement _agentMovement;
-    private IControllerMovement _movement;
 
     private PlayerStaminaGaugeSystem _stamina;
     private PlayerStatSystem _stat;
@@ -69,14 +67,12 @@ public class PlayerController : Agent
     {
         base.Awake();
 
-        _movement = GetModule<IControllerMovement>();
-        _agentMovement = _movement as AgentMovement;
-        _renderer = GetModule<IRenderer>();
+        _agentMovement = Movement as AgentMovement;
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
 
-        _aimCollider = _renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
+        _aimCollider = Renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
 
         _playerCollider = GetComponent<CapsuleCollider>();
 
@@ -170,7 +166,7 @@ public class PlayerController : Agent
     private void HandleMovement(Vector2 input)
     {
         _movementInput = input;
-        _movement.SetMovementDirection(input);
+        Movement.SetMovementDirection(input);
     }
 
     private void HandleSprint(bool isSprinting)
@@ -203,13 +199,13 @@ public class PlayerController : Agent
         if (normalized < 0.5f)
             normalized = 0f;
 
-        _renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
-        _renderer.SetBool(_isGunParam.ParamHash, IsAiming);
+        Renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
+        Renderer.SetBool(_isGunParam.ParamHash, IsAiming);
 
         if (!IsAiming)
         {
-            _renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
-            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
 
             _prevYaw = transform.eulerAngles.y;
             return;
@@ -229,8 +225,8 @@ public class PlayerController : Agent
 
             float fakeX = Mathf.Clamp(turnSpeed * 0.02f, -1f, 1f);
 
-            _renderer.SetFloat(_attackXParam.ParamHash, fakeX, 0.1f, Time.deltaTime);
-            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackXParam.ParamHash, fakeX, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
 
             _prevYaw = currentYaw;
         }
@@ -245,8 +241,8 @@ public class PlayerController : Agent
     {
         if (input.sqrMagnitude < 0.01f)
         {
-            _renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
-            _renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
             return;
         }
 
@@ -254,8 +250,8 @@ public class PlayerController : Agent
         Vector3 localDir = transform.InverseTransformDirection(worldDir);
         localDir.Normalize();
 
-        _renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
-        _renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
+        Renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
+        Renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
     }
 
     private void RotateToMovement()

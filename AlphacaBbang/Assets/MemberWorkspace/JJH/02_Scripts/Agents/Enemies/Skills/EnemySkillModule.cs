@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies.Skills
 {
-    public class EnemySkillModule : MonoBehaviour, IModule, ISkillModule
+    public class EnemySkillModule : MonoBehaviour, IModule, IEnemySkillModule, IAfterInitModule
     {
         protected Dictionary<Type, IEnemySkill> _skillDict = new Dictionary<Type, IEnemySkill>();
 
@@ -16,6 +16,10 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             _owner = (AbstractEnemy)owner;
 
             _skillDict = GetComponentsInChildren<IEnemySkill>().ToDictionary(module => module.GetType());
+        }
+
+        public void AfterInitalize()
+        {
             InitializeComponents();
             AfterInitializeComponents();
         }
@@ -34,6 +38,12 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             {
                 module.AfterInitalize();
             }
+        }
+
+        public IEnemySkill GetSkill<T>() where T : IEnemySkill
+        {
+            _skillDict.TryGetValue(typeof(T), out IEnemySkill skill);
+            return skill;
         }
 
         public void UseSkill<T>() where T : IEnemySkill

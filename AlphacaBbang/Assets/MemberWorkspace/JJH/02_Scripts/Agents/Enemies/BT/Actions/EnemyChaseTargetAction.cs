@@ -23,10 +23,10 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.NavMeshAgent == null || Enemy.Value.Sensor == null || Target.Value == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyNavMeshAgent == null || Enemy.Value.Sensor == null || Target.Value == null)
                 return Status.Failure;
 
-            _navMeshAgent = Enemy.Value.NavMeshAgent;
+            _navMeshAgent = Enemy.Value.EnemyNavMeshAgent;
             _sensor = Enemy.Value.Sensor;
 
             return Status.Running;

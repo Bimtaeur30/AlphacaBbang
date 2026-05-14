@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using MemberWorkspace.CHG._02_Scripts.TalkSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 {
     public class EnemyInterfaceModule : MonoBehaviour, IModule, IEnemyInterface, IAfterInitModule
     {
+        [field: SerializeField] public EnemyTalkSystem EnemyTalk { get; private set; }
         [SerializeField] private Image _enemyIcon;
         [SerializeField] private TextMeshPro _nameText;
 

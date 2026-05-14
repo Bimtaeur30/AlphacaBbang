@@ -7,7 +7,7 @@ public class EquipmentContainer : ItemContainer
     [SerializeField] private List<EquipmentSlot> equipmentSlots = new();
 
     public int SlotCount => equipmentSlots.Count;
-    
+
     public event Action OnEquipmentChanged;
 
     public EquipmentSlot GetEquipmentSlot(int index)
@@ -49,5 +49,31 @@ public class EquipmentContainer : ItemContainer
         equipmentSlot.slot.ItemData = null;
         equipmentSlot.slot.Amount = 0;
         return true;
+    }
+
+    public bool TryEquipFromContainer(ItemContainer sourceContainer, int sourceIndex)
+    {
+        ItemSlot sourceSlot = sourceContainer.GetSlot(sourceIndex);
+        if (sourceSlot == null || sourceSlot.IsEmpty)
+            return false;
+
+        ItemData itemData = sourceSlot.ItemData;
+
+        for (int i = 0; i < equipmentSlots.Count; i++)
+        {
+            if (!CanEquip(i, itemData))
+                continue;
+
+            if (!equipmentSlots[i].slot.IsEmpty)
+                continue;
+
+            Equip(i, itemData);
+            sourceContainer.ClearSlot(sourceIndex);
+            OnEquipmentChanged?.Invoke();
+            return true;
+        }
+
+        Debug.LogWarning("장착 가능한 빈 슬롯이 없습니다.");
+        return false;
     }
 }

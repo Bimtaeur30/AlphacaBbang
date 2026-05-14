@@ -4,6 +4,7 @@ using JJH._02_Scripts_Systems.EventSystems;
 using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class HitDamageUI : MonoBehaviour
 {
@@ -18,6 +19,14 @@ public class HitDamageUI : MonoBehaviour
     private void Awake()
     {
         InitPool();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.mKey.wasPressedThisFrame)
+        {
+            ShowDamage(Random.Range(10f, 999f));
+        }
     }
 
     private void InitPool()

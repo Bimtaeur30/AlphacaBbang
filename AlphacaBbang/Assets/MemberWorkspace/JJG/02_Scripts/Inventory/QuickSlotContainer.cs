@@ -1,5 +1,3 @@
-﻿using System.Collections.Generic;
-using MemberWorkspace.JJG._02_Scripts.Item;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 
@@ -15,7 +13,13 @@ namespace MemberWorkspace.JJG._02_Scripts
             if (itemData == null)
                 return false;
 
-            return itemData is FoodItemData || itemData is MedicineItemData;
+            if (itemData is WeaponItemData)
+                return index < 3;
+
+            if (itemData is FoodItemData || itemData is MedicineItemData)
+                return index >= 3;
+
+            return false;
         }
     }
 }

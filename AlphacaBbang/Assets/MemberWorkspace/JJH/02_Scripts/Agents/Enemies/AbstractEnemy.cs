@@ -16,9 +16,9 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
 
-        public ISkillModule EnemySkill { get; private set; }
+        public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
-        public INavMeshAgent NavMeshAgent { get; private set; }
+        public INavMeshAgent EnemyNavMeshAgent { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         private BlackboardVariable<StateChannel> _stateChannel;
@@ -26,8 +26,6 @@ namespace JJH._02_Scripts.Agents.Enemies
         private Coroutine _hitCoroutine;
         private Color _originColor;
         private Color _hitColor = new Color32(255, 255, 255, 255);
-        private Color _hitEmissionColor = new Color(100f, 100f, 100f);
-        private float _hitEmissionIntensity = 3f;
         private float _hitDuration = 0.15f;
 
         protected override void InitializeComponents()
@@ -50,8 +48,8 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (Weapon != null)
                 Weapon.Init();
 
-            NavMeshAgent = GetModule<INavMeshAgent>();
-            EnemySkill = GetModule<ISkillModule>();
+            EnemyNavMeshAgent = GetModule<INavMeshAgent>();
+            EnemySkill = GetModule<IEnemySkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
@@ -98,11 +96,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             }
         }
 
-        private void SetWeapon()
-        {
-
-        }
-
         private IEnumerator HitCoroutine()
         {
             float time = 0f;
@@ -124,6 +117,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyBombSkill>();
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
             OnDead();
+        }
+
+        public void DashAttack()
+        {
+            EnemySkill.UseSkill<EnemyDashAttackSkill>();
         }
 
         public void OnDead()

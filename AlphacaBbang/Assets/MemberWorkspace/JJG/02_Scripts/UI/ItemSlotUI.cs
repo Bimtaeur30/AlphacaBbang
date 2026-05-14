@@ -3,13 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ItemSlotUI : MonoBehaviour, IPointerClickHandler
+public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _amountText;
 
     private int _slotIndex;
     private ItemContainer _container;
+    private ItemSlot _currentSlot;
     
     public void Initialize(ItemContainer container, int index)
     {
@@ -35,6 +36,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler
             return;
         }
 
+        _currentSlot = slot;
         _iconImage.sprite = slot.ItemData.Icon;
         _iconImage.enabled = slot.ItemData.Icon != null;
 
@@ -46,6 +48,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler
 
     public void ClearSlot()
     {
+        _currentSlot = null;
         _iconImage.sprite = null;
         _iconImage.enabled = false;
         _amountText.text = "";
@@ -55,6 +58,17 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler
     {
         _iconImage.sprite = itemSprite;
         _iconImage.enabled = itemSprite != null;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_currentSlot != null && !_currentSlot.IsEmpty)
+            ItemTooltip.Instance?.Show(_currentSlot.ItemData);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ItemTooltip.Instance?.Hide();
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -69,7 +83,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler
             if (slot == null || slot.IsEmpty)
                 return;
 
-            InventoryContextMenu.Instance.Open(
+            InventoryContextMenu.Open(
                 _container,
                 _slotIndex,
                 transform.position

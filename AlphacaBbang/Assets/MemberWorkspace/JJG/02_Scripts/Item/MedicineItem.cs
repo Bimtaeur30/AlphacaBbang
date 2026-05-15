@@ -10,17 +10,6 @@ public class MedicineItem : CountableItem, IUsableItem
     public bool Use(GameObject user)
     {
         Amount--;
-
-        // var health = user.GetComponent<PlayerHealth>();
-        // if (health != null)
-        // {
-        //     health.Heal(healAmount);
-        // }var health = user.GetComponent<PlayerHealth>();
-        // if (health != null)
-        // {
-        //     health.Heal(healAmount);
-        // }
-
         return true;
     }
 

@@ -5,6 +5,8 @@ namespace MemberWorkspace.JJG._02_Scripts
 {
     public class QuickSlotContainer : InventoryContainer
     {
+        protected override void Compact() { }
+
         public override bool CanPlaceItem(int index, ItemData itemData)
         {
             if (!base.CanPlaceItem(index, itemData))

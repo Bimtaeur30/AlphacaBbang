@@ -1,5 +1,6 @@
 using System;
 using MemberWorkspace.JJG._02_Scripts;
+using MemberWorkspace.JJG._02_Scripts.Item;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine.UI;
 using UnityEngine;
@@ -20,11 +21,15 @@ public class InventoryContextMenu : MonoBehaviour
     [SerializeField] private Button useButton;
     [SerializeField] private Button equipButton;
     [SerializeField] private Button unequipButton;
+    [SerializeField] private Button storeButton;
+    [SerializeField] private Button retrieveButton;
     [SerializeField] private Button dropButton;
 
     [SerializeField] private QuickSlotContainer quickSlotContainer;
     [SerializeField] private EquipmentContainer equipmentContainer;
     [SerializeField] private InventoryContainer inventoryContainer;
+    [SerializeField] private ItemContainer storageContainer;
+    [SerializeField] private GameObject itemUser;
 
     [SerializeField] private int xOffset = 50;
 
@@ -70,7 +75,6 @@ public class InventoryContextMenu : MonoBehaviour
         _slotIndex = slotIndex;
 
         rootPanel.transform.position = position + new Vector3(xOffset, 0, 0);
-        //backdrop?.gameObject.SetActive(true);
         rootPanel.SetActive(true);
 
         BindButtons();
@@ -84,10 +88,12 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void BindButtons()
     {
-        if (useButton != null)     { useButton.onClick.RemoveAllListeners();     useButton.onClick.AddListener(OnClickUse); }
-        if (equipButton != null)   { equipButton.onClick.RemoveAllListeners();   equipButton.onClick.AddListener(OnClickEquip); }
-        if (unequipButton != null) { unequipButton.onClick.RemoveAllListeners(); unequipButton.onClick.AddListener(OnClickUnequip); }
-        if (dropButton != null)    { dropButton.onClick.RemoveAllListeners();    dropButton.onClick.AddListener(OnClickDrop); }
+        if (useButton != null)      { useButton.onClick.RemoveAllListeners();      useButton.onClick.AddListener(OnClickUse); }
+        if (equipButton != null)    { equipButton.onClick.RemoveAllListeners();    equipButton.onClick.AddListener(OnClickEquip); }
+        if (unequipButton != null)  { unequipButton.onClick.RemoveAllListeners();  unequipButton.onClick.AddListener(OnClickUnequip); }
+        if (storeButton != null)    { storeButton.onClick.RemoveAllListeners();    storeButton.onClick.AddListener(OnClickStore); }
+        if (retrieveButton != null) { retrieveButton.onClick.RemoveAllListeners(); retrieveButton.onClick.AddListener(OnClickRetrieve); }
+        if (dropButton != null)     { dropButton.onClick.RemoveAllListeners();     dropButton.onClick.AddListener(OnClickDrop); }
     }
 
     private void RefreshVisibleButtons()
@@ -107,9 +113,15 @@ public class InventoryContextMenu : MonoBehaviour
         bool isGearEquip   = !isWeapon && item.EquipType != EquipType.None;
         bool isEquippable  = isWeapon || isGearEquip;
 
-        useButton?.gameObject.SetActive(isConsumable);
-        equipButton?.gameObject.SetActive(isEquippable || isConsumable);
-        unequipButton?.gameObject.SetActive(isGearEquip && HasEquippedItemOfType(item.EquipType));
+        bool isStorage   = _container.ContainerType == ContainerType.Storage;
+        bool isQuickSlot = _container is MemberWorkspace.JJG._02_Scripts.QuickSlotContainer;
+        bool isExternal  = isStorage || isQuickSlot;
+
+        useButton?.gameObject.SetActive(isConsumable && !isExternal);
+        equipButton?.gameObject.SetActive((isEquippable || isConsumable) && !isExternal);
+        unequipButton?.gameObject.SetActive(isGearEquip && !isExternal && HasEquippedItemOfType(item.EquipType));
+        storeButton?.gameObject.SetActive(!isExternal && storageContainer != null);
+        retrieveButton?.gameObject.SetActive(isExternal);
         dropButton?.gameObject.SetActive(true);
     }
 
@@ -130,7 +142,7 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void OnClickUse()
     {
-        _container.UseItem(_slotIndex, null);
+        _container.UseItem(_slotIndex, itemUser);
         Close();
     }
 
@@ -214,6 +226,32 @@ public class InventoryContextMenu : MonoBehaviour
         }
 
         Debug.LogWarning("빈 슬롯이 없습니다.");
+    }
+
+    private void OnClickStore()
+    {
+        ItemSlot slot = _container.GetSlot(_slotIndex);
+        if (slot == null || slot.IsEmpty || storageContainer == null) { Close(); return; }
+
+        if (storageContainer.AddItem(slot.ItemData, slot.Amount))
+            _container.ClearSlot(_slotIndex);
+        else
+            Debug.LogWarning("창고가 가득 찼습니다.");
+
+        Close();
+    }
+
+    private void OnClickRetrieve()
+    {
+        ItemSlot slot = _container.GetSlot(_slotIndex);
+        if (slot == null || slot.IsEmpty || inventoryContainer == null) { Close(); return; }
+
+        if (inventoryContainer.AddItem(slot.ItemData, slot.Amount))
+            _container.ClearSlot(_slotIndex);
+        else
+            Debug.LogWarning("인벤토리가 가득 찼습니다.");
+
+        Close();
     }
 
     private void OnClickDrop()

@@ -7,6 +7,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
     {
         [SerializeField] private PoolManagerSO poolManager;
         [SerializeField] private PoolItemSO breathPoolItem;
+        [SerializeField] private Transform breathTrans;
 
         private AbstractEnemy _owner;
 
@@ -18,7 +19,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         public void UseSkill()
         {
             BreathParticle effect = poolManager.Pop<BreathParticle>(breathPoolItem);
-            effect.gameObject.transform.position = transform.position;
+            effect.gameObject.transform.position = breathTrans.position;
             effect.PlayBreathParticle();
         }
     }

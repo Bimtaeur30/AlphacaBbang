@@ -14,6 +14,7 @@ public class InventoryTest : MonoBehaviour
     [SerializeField] private ItemData countableItem;
     [SerializeField] private ItemData foodItem;
     [SerializeField] private ItemData medicineItem;
+    [SerializeField] private ItemData equipItem;
 
     [Header("Options")]
     [SerializeField] private bool printSlotStateOnStart = true;

@@ -124,6 +124,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyDashAttackSkill>();
         }
 
+        public void DashAttackStandBy()
+        {
+            EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
+        }
+
         public void OnDead()
         {
             Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
@@ -136,7 +141,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void TakeDamage(float damage)
         {
-            HealthModule.SetHealth(damage);
+            HealthModule.MinusHealth(damage);
         }
     }
 }

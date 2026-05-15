@@ -1,5 +1,6 @@
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 {
@@ -35,7 +36,7 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
         gunChannel.RemoveListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
         gunChannel.RemoveListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
     }
-
+    
     private void Start()
     {
         // 테스트 코드
@@ -45,7 +46,7 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
         // 여기까지
     }
 
-    public override void SetCurrentGun(Gun gun)
+    public override void SetCurrentGun(Gun gun) // 실제로 발사할 총을 정한다. 퀵 슬롯에서 1,2번 선택하면 현재 발사될 총으로 지정됨.
     {
         base.SetCurrentGun(gun);
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentGun.GunDataSO));

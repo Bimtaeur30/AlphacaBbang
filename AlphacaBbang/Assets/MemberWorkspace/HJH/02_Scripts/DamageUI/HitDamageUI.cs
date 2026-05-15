@@ -1,7 +1,6 @@
 using DG.Tweening;
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts_Systems.EventSystems;
-using TMPro;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
@@ -11,8 +10,9 @@ public class HitDamageUI : MonoBehaviour
     [SerializeField] private DamageTextItem damageTextPrefab;
     [SerializeField] private Transform poolParent;
     [SerializeField] private int poolSize = 10;
-    [SerializeField] private Vector3 spawnLocalPos = Vector3.zero;
     [SerializeField] private EventChannelSO agentEventChannel;
+
+    [SerializeField] private Transform spawnPosition;
 
     private Queue<DamageTextItem> pool = new Queue<DamageTextItem>();
 
@@ -34,8 +34,8 @@ public class HitDamageUI : MonoBehaviour
         for (int i = 0; i < poolSize; i++)
         {
             var item = Instantiate(damageTextPrefab, poolParent);
-            item.SetStartPosition(spawnLocalPos);
             item.gameObject.SetActive(false);
+
             pool.Enqueue(item);
         }
     }
@@ -60,6 +60,10 @@ public class HitDamageUI : MonoBehaviour
         if (pool.Count == 0) return;
 
         var item = pool.Dequeue();
-        item.Play(damage, () => pool.Enqueue(item));
+
+        item.Play(
+            damage,
+            spawnPosition.position + new Vector3(0, 3, 0),
+            () => pool.Enqueue(item));
     }
 }

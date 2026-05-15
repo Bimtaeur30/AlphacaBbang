@@ -6,7 +6,6 @@ using UnityEngine;
 public class PoolLineRendererEffect : PoolableMono
 {
     private LineRenderer _lineRenderer;
-    [SerializeField] private PoolManagerSO poolManager;
 
     private void Awake()
     {
@@ -22,6 +21,6 @@ public class PoolLineRendererEffect : PoolableMono
         yield return new WaitForSeconds(time);
 
         _lineRenderer.positionCount = 0;
-        poolManager.Push(this);
+        PoolManager.Push(this);
     }
 }

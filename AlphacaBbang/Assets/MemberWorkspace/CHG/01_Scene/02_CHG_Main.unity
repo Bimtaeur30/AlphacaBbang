@@ -1804,7 +1804,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2.0385}
+  m_AnchoredPosition: {x: 0, y: -2.0384998}
   m_SizeDelta: {x: 0, y: 20.2577}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &640514937
@@ -1879,7 +1879,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2.0385}
+  m_AnchoredPosition: {x: 0, y: -2.0384998}
   m_SizeDelta: {x: 0, y: 20.2577}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &642682402
@@ -2084,7 +2084,7 @@ MonoBehaviour:
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
-  m_ScreenMatchMode: 0
+  m_ScreenMatchMode: 1
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
@@ -2295,7 +2295,46 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 719986915}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2091934742}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
+        m_MethodName: ResetData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1838610711}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
+        m_MethodName: ResetData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 784595933}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
+        m_MethodName: ResetData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &719986915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3098,7 +3137,19 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985145095}
         m_TargetAssemblyTypeName: ScreenSetting, Assembly-CSharp
-        m_MethodName: ResetContent
+        m_MethodName: ResetData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 985145096}
+        m_TargetAssemblyTypeName: ScreenBrightnessSetting, Assembly-CSharp
+        m_MethodName: ResetData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3307,7 +3358,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: -27.75}
+  m_AnchoredPosition: {x: -0.00012207031, y: -27.75}
   m_SizeDelta: {x: 0, y: -55.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &916340074
@@ -3510,6 +3561,7 @@ GameObject:
   - component: {fileID: 985145092}
   - component: {fileID: 985145094}
   - component: {fileID: 985145095}
+  - component: {fileID: 985145096}
   m_Layer: 5
   m_Name: ScreenSettingPanel
   m_TagString: Untagged
@@ -3536,7 +3588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000061035156, y: -27.75}
+  m_AnchoredPosition: {x: -0.00012207031, y: -27.75}
   m_SizeDelta: {x: 0, y: -55.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &985145092
@@ -3604,6 +3656,21 @@ MonoBehaviour:
   _resolutionDropdown: {fileID: 1793150900}
   _fullScreenModeDropdown: {fileID: 731768149}
   parent: {fileID: 1463612229}
+--- !u!114 &985145096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985145090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d0446e0c5166348af64327017b9d2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenBrightnessSetting
+  _brightnessSlider: {fileID: 1809588923}
+  _volume: {fileID: 832575518}
+  _brightnessText: {fileID: 971059573}
 --- !u!1 &990882720
 GameObject:
   m_ObjectHideFlags: 0
@@ -7197,7 +7264,19 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 985145095}
         m_TargetAssemblyTypeName: ScreenSetting, Assembly-CSharp
-        m_MethodName: SetScreen
+        m_MethodName: SettingData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 985145096}
+        m_TargetAssemblyTypeName: ScreenBrightnessSetting, Assembly-CSharp
+        m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7547,15 +7626,15 @@ MonoBehaviour:
   m_FillRect: {fileID: 2045075793}
   m_HandleRect: {fileID: 1735352411}
   m_Direction: 0
-  m_MinValue: -80
-  m_MaxValue: 0
+  m_MinValue: -4
+  m_MaxValue: 2
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: 
         m_Mode: 1
         m_Arguments:
@@ -7891,7 +7970,7 @@ MonoBehaviour:
       - m_Target: {fileID: 2091934742}
         m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
           Assembly-CSharp
-        m_MethodName: SetVolume
+        m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7904,7 +7983,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1838610711}
         m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
           Assembly-CSharp
-        m_MethodName: SetVolume
+        m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7917,7 +7996,7 @@ MonoBehaviour:
       - m_Target: {fileID: 784595933}
         m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
           Assembly-CSharp
-        m_MethodName: SetVolume
+        m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

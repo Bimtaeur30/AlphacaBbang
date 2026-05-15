@@ -1,4 +1,5 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
+using System.Collections;
 using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies.Skills
@@ -18,9 +19,17 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
         public void UseSkill()
         {
-            BreathParticle effect = poolManager.Pop<BreathParticle>(breathPoolItem);
-            effect.gameObject.transform.position = breathTrans.position;
-            effect.PlayBreathParticle();
+            for (int i = 0; i < 3; i++)
+            {
+                BreathParticle effect = poolManager.Pop<BreathParticle>(breathPoolItem);
+                effect.gameObject.transform.position = breathTrans.position;
+                effect.PlayBreathParticle();
+            }
+        }
+
+        private IEnumerator BreathParticle()
+        {
+            yield return new WaitForSeconds(0.5f);
         }
     }
 }

@@ -59,6 +59,9 @@ public class ScreenSetting : AbstractSettingUI
     
         List<Resolution> resolutions = GetResolutions();
     
+        foreach  (Resolution resolution in resolutions)
+            Debug.Log(resolution.width + "x" + resolution.height);
+        
         int defaultIndex = resolutions.FindIndex(r => 
             r.width == Display.main.systemWidth && 
             r.height == Display.main.systemHeight);
@@ -96,7 +99,6 @@ public class ScreenSetting : AbstractSettingUI
         
         yield return null;
         
-        Debug.Log(_resolution.width + "x" + _resolution.height);
         int deviceWidth = Screen.width;
         int deviceHeight = Screen.height;
 
@@ -120,13 +122,10 @@ public class ScreenSetting : AbstractSettingUI
         {
             cam.rect = camRect;
         }
-        
 
         foreach (CanvasScaler canvasScaler in FindObjectsOfType<CanvasScaler>())
         {
-            Debug.Log(canvasScaler.gameObject.name);
             canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasScaler.referenceResolution = new Vector2(_resolution.width, _resolution.height);
             canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
             canvasScaler.matchWidthOrHeight = 0.5f;
         }

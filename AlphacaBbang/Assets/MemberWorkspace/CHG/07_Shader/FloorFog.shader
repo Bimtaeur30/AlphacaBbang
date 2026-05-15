@@ -1,10 +1,13 @@
 Shader "Custom/FloorFog"
 {
     Properties
-    {
+    {   
         _BaseColor ("Base Color", Color) = (1,1,1,1)
         _BaseMap   ("Base Map",   2D)    = "white" {}
         _FogColor  ("Fog Color",  Color) = (0.25, 0.25, 0.25, 0.85)
+        _EdgeBlurWidth   ("Edge Blur Width",   Range(0.001, 0.1)) = 0.03
+        _EdgeBlurSamples ("Edge Blur Samples", Range(4, 16)) = 8
+        
     }
 
     SubShader
@@ -37,6 +40,8 @@ Shader "Custom/FloorFog"
             float  _ViewRadius;
             float  _ViewAngle;
             float  _CloseViewRadius;
+            float _EdgeBlurWidth;   
+            float _EdgeBlurSamples;
 
             struct Attributes
             {
@@ -86,12 +91,10 @@ Shader "Custom/FloorFog"
 
             float4 frag(Varyings IN) : SV_Target
             {
-                float2 screenUV      = IN.positionCS.xy / _ScreenParams.xy;
-                float  maskObstacle  = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV).r;
-
-                float maskRange = IsInViewRange(IN.positionWS) ? 1.0 : 0.0;
-
-                float mask = maskObstacle * maskRange;
+                float2 screenUV     = IN.positionCS.xy / _ScreenParams.xy;
+                float  maskObstacle = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV).r;
+                float  maskRange    = IsInViewRange(IN.positionWS) ? 1.0 : 0.0;
+                float  mask         = maskObstacle * maskRange;
 
                 InputData inputData = (InputData)0;
                 inputData.positionWS      = IN.positionWS;
@@ -105,11 +108,41 @@ Shader "Custom/FloorFog"
                 float  shadow    = mainLight.shadowAttenuation;
                 float3 lit       = texColor.rgb * _BaseColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
 
-                float3 final = lerp(
+                float edgeFactor = 1.0 - abs(mask * 2.0 - 1.0);
+                edgeFactor = smoothstep(0.0, 1.0, edgeFactor);
+
+                float3 blurredLit = lit;
+                if (edgeFactor > 0.01)
+                {
+                    float3 blurAccum = float3(0, 0, 0);
+                    int    samples   = 8;
+                    float  radius    = _EdgeBlurWidth;
+
+                    for (int i = 0; i < samples; i++)
+                    {
+                        float  angle   = (6.28318 / samples) * i;
+                        float2 offset  = float2(cos(angle), sin(angle)) * radius;
+                        float2 sampleUV = screenUV + offset;
+
+                        float sampleMask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, sampleUV).r
+                                         * (IsInViewRange(IN.positionWS) ? 1.0 : 0.0);
+
+                        float3 foggedSample = lerp(
+                            lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
+                            lit,
+                            sampleMask
+                        );
+                        blurAccum += foggedSample;
+                    }
+                    blurredLit = blurAccum / samples;
+                }
+
+                float3 baseFogged = lerp(
                     lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
                     lit,
                     mask
                 );
+                float3 final = lerp(baseFogged, blurredLit, edgeFactor * 0.8);
                 return float4(final, 1.0);
             }
             ENDHLSL

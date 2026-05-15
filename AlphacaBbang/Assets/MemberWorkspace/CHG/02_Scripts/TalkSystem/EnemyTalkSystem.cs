@@ -12,6 +12,7 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         [SerializeField] private float writeTime = 0.8f;
         [SerializeField] private GameObject mainTalkBox;
         private TypewriterByCharacter _mainTypewriter;
+        private Coroutine _typingCoroutine;
 
         private void Awake()
         {
@@ -25,7 +26,13 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
         [ContextMenu("ShowText")]
         public void ShowText()
         {
-            StartCoroutine(BattleTalk());
+            if (_typingCoroutine != null)
+            {
+                StopCoroutine(_typingCoroutine);
+                _typingCoroutine = null;
+            }
+            _mainTypewriter.StopShowingText();
+             _typingCoroutine = StartCoroutine(BattleTalk());
         }
 
         private IEnumerator BattleTalk()

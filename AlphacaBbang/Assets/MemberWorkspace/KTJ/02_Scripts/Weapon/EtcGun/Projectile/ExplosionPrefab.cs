@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(CinemachineImpulseSource))]
 public class ExplosionPrefab : PoolableMono
 {
-    [SerializeField] private PoolManagerSO poolManager;
     [SerializeField] private ParticleSystem _particleSystem;
     private CinemachineImpulseSource _impulseSource;
 
@@ -51,6 +50,6 @@ public class ExplosionPrefab : PoolableMono
 
     private void OnParticleSystemStopped()
     {
-        poolManager.Push(this);
+        PoolManager.Push(this);
     }
 }

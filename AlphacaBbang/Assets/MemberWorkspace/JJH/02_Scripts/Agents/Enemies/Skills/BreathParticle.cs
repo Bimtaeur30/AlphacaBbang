@@ -5,8 +5,6 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 {
     public class BreathParticle : PoolableMono
     {
-        [SerializeField] private PoolManagerSO poolManager;
-
         private ParticleSystem _particleSystem;
 
         private void Awake()
@@ -16,7 +14,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
         private void OnParticleSystemStopped()
         {
-            poolManager.Push(this);
+            PoolManager.Push(this);
         }
 
         public void PlayBreathParticle()

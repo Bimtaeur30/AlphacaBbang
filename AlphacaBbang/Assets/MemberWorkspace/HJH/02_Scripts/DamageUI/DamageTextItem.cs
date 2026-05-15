@@ -1,19 +1,19 @@
 using DG.Tweening;
+using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using TMPro;
 using UnityEngine;
-using System;
 
-public class DamageTextItem : MonoBehaviour
+public class DamageTextItem : PoolableMono
 {
     [SerializeField] private TextMeshPro damageText;
 
-    public void Play(float damage, Vector3 worldPosition, Action onComplete)
+    public void Play(float damage, Vector3 worldPosition)
     {
         transform.DOKill();
         damageText.transform.DOKill();
 
         gameObject.SetActive(true);
-            
+
         transform.position = worldPosition;
 
         transform.localScale = Vector3.one;
@@ -64,8 +64,7 @@ public class DamageTextItem : MonoBehaviour
             .SetEase(Ease.InQuart));
         sequence.OnComplete(() =>
         {
-            gameObject.SetActive(false);
-            onComplete?.Invoke();
+            PoolManager.Push(this);
         });
     }
 }

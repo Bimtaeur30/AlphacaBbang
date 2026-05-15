@@ -1,12 +1,10 @@
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(ParticleSystem))]
 public class PoolParticleEffect : PoolableMono
 {
     private ParticleSystem _particleSystem;
-    [SerializeField] private PoolManagerSO poolManager;
 
     private void Awake()
     {
@@ -22,6 +20,6 @@ public class PoolParticleEffect : PoolableMono
     private void OnParticleSystemStopped()
     {
         if (_particleSystem != null)
-            poolManager.Push(this);
+            PoolManager.Push(this);
     }
 }

@@ -8,7 +8,7 @@ using Action = Unity.Behavior.Action;
 namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 {
     [Serializable, GeneratePropertyBag]
-    [NodeDescription(name: "EnemyDashAttack", story: "[Enemy] Dash Attack", category: "Action", id: "7255976bfeb59242f0d5a6bb9526d63b")]
+    [NodeDescription(name: "EnemyDashAttack", story: "[Enemy] DashAttack", category: "Action", id: "2041cff7f812a12eea70b35d7a2152e8")]
     public partial class EnemyDashAttackAction : Action
     {
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
@@ -25,6 +25,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
                 return Status.Failure;
 
             _lastUseTime = Time.time;
+
             Enemy.Value.DashAttack();
 
             return Status.Running;

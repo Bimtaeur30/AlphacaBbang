@@ -1,44 +1,14 @@
-using DG.Tweening;
 using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.EventSystems;
-using TMPro;
 using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.InputSystem;
 
 public class HitDamageUI : MonoBehaviour
 {
-    [SerializeField] private DamageTextItem damageTextPrefab;
-    [SerializeField] private Transform poolParent;
-    [SerializeField] private int poolSize = 10;
-    [SerializeField] private Vector3 spawnLocalPos = Vector3.zero;
+    [SerializeField] private PoolManagerSO poolManager;
+    [SerializeField] private PoolItemSO damagetext;
     [SerializeField] private EventChannelSO agentEventChannel;
-
-    private Queue<DamageTextItem> pool = new Queue<DamageTextItem>();
-
-    private void Awake()
-    {
-        InitPool();
-    }
-
-    private void Update()
-    {
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            ShowDamage(Random.Range(10f, 999f));
-        }
-    }
-
-    private void InitPool()
-    {
-        for (int i = 0; i < poolSize; i++)
-        {
-            var item = Instantiate(damageTextPrefab, poolParent);
-            item.SetStartPosition(spawnLocalPos);
-            item.gameObject.SetActive(false);
-            pool.Enqueue(item);
-        }
-    }
+    [SerializeField] private Transform spawnPos;
 
     private void OnEnable()
     {
@@ -57,9 +27,7 @@ public class HitDamageUI : MonoBehaviour
 
     private void ShowDamage(float damage)
     {
-        if (pool.Count == 0) return;
-
-        var item = pool.Dequeue();
-        item.Play(damage, () => pool.Enqueue(item));
+        DamageTextItem item = poolManager.Pop<DamageTextItem>(damagetext);
+        item.Play(damage, spawnPos.position);
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using MemberWorkspace.CHG._02_Scripts.SettingUI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 //[RequireComponent(typeof(UIDocument))]
-public class ScreenSetting : MonoBehaviour
+public class ScreenSetting : AbstractSettingUI
 {
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
     [SerializeField] private TMP_Dropdown _fullScreenModeDropdown;
@@ -19,7 +20,7 @@ public class ScreenSetting : MonoBehaviour
     //private UIDocument _document;
     //private VisualElement _root;
     
-    private void Awake()
+    public override void Awake()
     {
         //_document = GetComponent<UIDocument>();
        // _root = _document.rootVisualElement;
@@ -27,14 +28,14 @@ public class ScreenSetting : MonoBehaviour
        foreach (Resolution resolution in GetResolutions())
            _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(resolution.width + "x" + resolution.height));
        
-       ResetContent();
+       ResetData();
        StartCoroutine(SetScreenCoroutine());
        
        _resolutionDropdown.onValueChanged.AddListener(SetResolution);
        _fullScreenModeDropdown.onValueChanged.AddListener(SetFullScreenMode);
     }
     
-    public void OnEnable()
+    public override void OnEnable()
     {
         List<Resolution> resolutions = GetResolutions();
 
@@ -45,8 +46,13 @@ public class ScreenSetting : MonoBehaviour
         _resolutionDropdown.value = defaultIndex;
         _fullScreenModeDropdown.value = (int)_screenMode;
     }
-    
-    public void ResetContent()
+
+    public override void SettingData()
+    {
+        StartCoroutine(SetScreenCoroutine());
+    }
+
+    public override void ResetData()
     {
         _resolution = Screen.currentResolution;
         _screenMode = FullScreenMode.ExclusiveFullScreen;
@@ -59,7 +65,6 @@ public class ScreenSetting : MonoBehaviour
     
         _resolutionDropdown.value = defaultIndex;
         _fullScreenModeDropdown.value = 0;
-    
     }
 
     private List<Resolution> GetResolutions()
@@ -84,13 +89,8 @@ public class ScreenSetting : MonoBehaviour
     {
         _screenMode = (FullScreenMode)index;
     }
-
-    public void SetScreen()
-    {
-        StartCoroutine(SetScreenCoroutine());
-    }
     
-    public IEnumerator SetScreenCoroutine()
+    private IEnumerator SetScreenCoroutine()
     {
         Screen.SetResolution(_resolution.width, _resolution.height, _screenMode);
         

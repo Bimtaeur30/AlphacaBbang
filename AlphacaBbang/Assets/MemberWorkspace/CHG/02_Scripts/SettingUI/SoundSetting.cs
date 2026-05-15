@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.SettingUI
 {
-    public class SoundSetting : MonoBehaviour
+    public class SoundSetting : AbstractSettingUI
     {
         [SerializeField] private string audioMixerParam;
         [SerializeField] private AudioMixer audioMixer;
@@ -17,16 +17,16 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         private float _lastVolume;
         private float _currentVolume;
         private bool _isMute;
-        
-        private void Awake()
+
+        public override void Awake()
         {
             volumeSlider.onValueChanged.AddListener(ChangeVolume);
             muteToggle.onValueChanged.AddListener(Mute);
             UpperParam = audioMixerParam.ToUpper();
-            ResetSound();
+            ResetData();
         }
-
-        private void OnEnable()
+        
+        public override void OnEnable()
         {
             volumeSlider.value = _lastVolume;
             
@@ -38,7 +38,16 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             muteToggle.isOn = false;
         }
 
-        private void ResetSound()
+        public override void SettingData()
+        {
+            if (!_isMute)
+                audioMixer.SetFloat(audioMixerParam, _currentVolume);
+            else 
+                audioMixer.SetFloat(audioMixerParam, -80f);
+            _lastVolume = _currentVolume;
+        }
+
+        public override void ResetData()
         {
             _lastVolume = 0f;
             _currentVolume = 0f;
@@ -56,14 +65,6 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             volumeLabel.text = $"{UpperParam}: {result}";
         }
 
-        public void SetVolume()
-        {
-            if (!_isMute)
-                audioMixer.SetFloat(audioMixerParam, _currentVolume);
-            else 
-                audioMixer.SetFloat(audioMixerParam, -80f);
-            _lastVolume = _currentVolume;
-        }
 
         public void Mute(bool value) => _isMute = value;
     }

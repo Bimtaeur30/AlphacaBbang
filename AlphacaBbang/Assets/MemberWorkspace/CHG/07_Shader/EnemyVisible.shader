@@ -8,12 +8,16 @@ Shader "Custom/EnemyVisible"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent+100" }
 
         Pass
         {
             Tags { "LightMode" = "UniversalForward" }
 
+            ZTest Always
+            ZWrite Off
+            Blend SrcAlpha OneMinusSrcAlpha
+            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -87,11 +91,30 @@ Shader "Custom/EnemyVisible"
             {
                 float2 screenUV     = IN.positionCS.xy / _ScreenParams.xy;
                 float  maskObstacle = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV).r;
+                float  maskRange    = IsInViewRange(IN.positionWS) ? 1.0 : 0.0;
+                float  mask         = maskObstacle * maskRange;
 
-                float maskRange = IsInViewRange(IN.positionWS) ? 1.0 : 0.0;
+                float blurredMask = mask;
+                float edgeFactor  = 1.0 - abs(mask * 2.0 - 1.0);
+                edgeFactor = smoothstep(0.0, 1.0, edgeFactor);
 
-                clip(maskObstacle * maskRange - 0.5);
+                if (edgeFactor > 0.01)
+                {
+                    float accumMask = 0;
+                    int   samples   = 8;
+                    float radius    = 0.03; 
 
+                    for (int i = 0; i < samples; i++)
+                    {
+                        float  angle  = (6.28318 / samples) * i;
+                        float2 offset = float2(cos(angle), sin(angle)) * radius;
+                        accumMask += SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV + offset).r;
+                    }
+                    blurredMask = lerp(mask, accumMask / samples, edgeFactor);
+                }
+
+                clip(blurredMask - 0.1); 
+                
                 InputData inputData = (InputData)0;
                 inputData.positionWS      = IN.positionWS;
                 inputData.normalWS        = normalize(IN.normalWS);
@@ -103,8 +126,10 @@ Shader "Custom/EnemyVisible"
                 float  shadow    = mainLight.shadowAttenuation;
 
                 float4 texColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);
-                float3 color    = texColor.rgb * _BaseColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
-                return float4(color, 1.0);
+
+                float alpha = smoothstep(0.1, 0.5, blurredMask);
+                float3 color = texColor.rgb * _BaseColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
+                return float4(color, alpha);
             }
             ENDHLSL
         }

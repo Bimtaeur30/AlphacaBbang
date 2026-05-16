@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.Events;
 
 public class InteractKeyUI : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class InteractKeyUI : MonoBehaviour
     public Key pressKey = Key.E;
     public float fillDuration = 1.5f;
     public float restoreSpeed = 8f;
+    public float InteractRange = 5f;
+
+    [Header("Action")]
+    [SerializeField] private UnityEvent OnInteract;
 
     [Range(0f, 1f)]
     public float backgroundAlpha = 0.45f;
@@ -25,25 +30,29 @@ public class InteractKeyUI : MonoBehaviour
 
     private float fillAmount = 0f;
     private bool isCompleted = false;
-    private IInteractable currentTarget;
+    //private IInteractable currentTarget;
 
 
     private float pressedTime = 0f;
+
+    void OnEnable() => InteractDetector.Register(this);
+    void OnDisable() => InteractDetector.Unregister(this);
+
     void Start()
     {
-        darkOverlay.type = Image.Type.Filled;
-        darkOverlay.fillMethod = Image.FillMethod.Vertical;
-        darkOverlay.fillOrigin = (int)Image.OriginVertical.Bottom;
+        //darkOverlay.type = Image.Type.Filled;
+        //darkOverlay.fillMethod = Image.FillMethod.Vertical;
+        //darkOverlay.fillOrigin = (int)Image.OriginVertical.Bottom;
         darkOverlay.fillAmount = 0f;
         darkOverlay.raycastTarget = false;
         rootCanvas.SetActive(false);
     }
 
-    public void Show(IInteractable target)
+    public void Show()
     {
-        currentTarget = target;
-        objectText.text = target.ObjectText;
-        actionText.text = target.ActionText;
+        //currentTarget = target;
+        //objectText.text = target.ObjectText;
+        //actionText.text = target.ActionText;
         fillAmount = 0f;
         isCompleted = false;
         rootCanvas.SetActive(true);
@@ -51,7 +60,7 @@ public class InteractKeyUI : MonoBehaviour
 
     public void Hide()
     {
-        currentTarget = null;
+        //currentTarget = null;
         fillAmount = 0f;
         isCompleted = false;
         rootCanvas.SetActive(false);
@@ -59,7 +68,7 @@ public class InteractKeyUI : MonoBehaviour
 
     void Update()
     {
-        if (currentTarget == null) return;
+        //if (currentTarget == null) return;
         bool isPressed = Keyboard.current[pressKey].isPressed;
 
         if (isPressed && !isCompleted)
@@ -70,7 +79,8 @@ public class InteractKeyUI : MonoBehaviour
             if (fillAmount >= 1f)
             {
                 isCompleted = true;
-                currentTarget.Interact();
+                OnInteract?.Invoke();
+                //currentTarget.Interact();
             }
         }
         else if (!isPressed)
@@ -82,7 +92,7 @@ public class InteractKeyUI : MonoBehaviour
         }
 
         float currentAlpha = Mathf.Lerp(0f, backgroundAlpha, fillAmount);
-        darkOverlay.color = new Color(0f, 0f, 0f, currentAlpha);
+        darkOverlay.color = new Color(darkOverlay.color.r, darkOverlay.color.g, darkOverlay.color.b, currentAlpha);
         darkOverlay.fillAmount = fillAmount;
         contentGroup.alpha = Mathf.Lerp(1f, 1f - contentAlpha, fillAmount);
     }

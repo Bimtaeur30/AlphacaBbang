@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 {
-    
     public class QuestManager : MonoSingleton<QuestManager>
     {
         

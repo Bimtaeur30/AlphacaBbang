@@ -54,7 +54,8 @@ public class DataManager : MonoBehaviour
         SystemChannel.AddListener<StartNewGameEvent>(HandleStartNewGame);
         SystemChannel.AddListener<LoadFileEvent>(HandleLoadFileEvent);
 
-        SystemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+        //SystemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+        SystemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
     }
 
     private void OnDestroy()

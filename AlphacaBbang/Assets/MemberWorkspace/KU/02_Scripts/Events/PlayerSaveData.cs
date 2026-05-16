@@ -19,14 +19,14 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         playerStatChannel.AddListener<AddMaxHealth>(HandleAddMaxHealth);
         systemChannel.AddListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.AddListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
+
     }
     private void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
-        if (Keyboard.current.yKey.wasPressedThisFrame)
-            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
-            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+        //if (Keyboard.current.tKey.wasPressedThisFrame)
+        //    playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
+        //if (Keyboard.current.yKey.wasPressedThisFrame)
+        //    systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
     }
     public string GetSaveData()
     {
@@ -41,7 +41,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         {
             playerMaxHpSave = MaxHealth,
             playerMaxRunStaminaSave = MaxStamina,
-            playerMaxAimStaminaSave = GaugeMaxTime
+            playerMaxAimStaminaSave = GaugeMaxTime,
         };
         return JsonUtility.ToJson(saveData);
     }
@@ -54,6 +54,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
         GaugeMaxTime = parsedData.playerMaxAimStaminaSave;
+
 
         Debug.Log($"Health: {parsedData.playerMaxHpSave}");
         Debug.Log($"Stamina: {parsedData.playerMaxRunStaminaSave}");
@@ -80,6 +81,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     }
 
 
+
     private void OnDisable()
     {
         playerStatChannel.RemoveListener<AddMaxHealth>(HandleAddMaxHealth);
@@ -100,4 +102,5 @@ public struct PlayerStateSaveData
     public float playerMaxHpSave;
     public float playerMaxRunStaminaSave;
     public float playerMaxAimStaminaSave;
+    public float playerPercentMoveSpeedSave;
 }

@@ -1,10 +1,16 @@
 using JJH._02_Scripts_Systems.AnimationSystems;
+using JJH._02_Scripts_Systems.EventSystems;
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : Agent
+public class PlayerController : Agent, ISaveable
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
+    [field: SerializeField] public EventChannelSO playerStatChannel;
+    [field:SerializeField]public SaveIdData SaveId {get; private set;}
+
 
     [SerializeField] private AnimParamSO _isGunParam;
     [SerializeField] private AnimParamSO _speedParam;
@@ -24,6 +30,7 @@ public class PlayerController : Agent
     private PlayerStatSystem _stat;
 
     private Vector2 _movementInput;
+    private float _additionalSpeedMultiplier = 1f;
 
     private PlayerAimState _aimState = PlayerAimState.Idle;
 
@@ -66,6 +73,7 @@ public class PlayerController : Agent
     protected override void Awake()
     {
         base.Awake();
+        playerStatChannel.AddListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
 
         _agentMovement = Movement as AgentMovement;
 
@@ -188,7 +196,26 @@ public class PlayerController : Agent
         if (_stat != null && _stat.IsRunning)
             multiplier *= 1.5f;
 
+        multiplier *= _additionalSpeedMultiplier;
+
         _agentMovement.SetSpeedMultiplier(multiplier);
+    }
+
+    IEnumerator PercentAddPlayerMoveSpeed(int val, float time)
+    {
+        float addMultiplier = 1f + (val / 100f);
+
+        _additionalSpeedMultiplier *= addMultiplier;
+        UpdateSpeed();
+
+        yield return new WaitForSeconds(time);
+
+        _additionalSpeedMultiplier /= addMultiplier;
+        UpdateSpeed();
+    }
+    private void HandlePlayerMoveSpeed(AddPlayerMoveSpeed evt)
+    {
+        StartCoroutine(PercentAddPlayerMoveSpeed(evt.val, evt.time));
     }
 
     private void UpdateAnimation()
@@ -325,6 +352,8 @@ public class PlayerController : Agent
     {
         PlayerInput.OnMovementChange -= HandleMovement;
         PlayerInput.OnSprintAction -= HandleSprint;
+        playerStatChannel.RemoveListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
+
     }
 
     #region 총 관련 코드
@@ -340,6 +369,7 @@ public class PlayerController : Agent
     #region 퍼블릭 변수
     public Camera MainCam { get; private set; }
     public Vector2 Forward { get; private set; }
+
     #endregion
 
     protected override void InitializeComponents()
@@ -402,7 +432,22 @@ public class PlayerController : Agent
         GunHandleModule.Aim(false);
         GunHandleModule.Fire(false);
     }
+
     #endregion
+    public string GetSaveData()
+    {
+        PlayerStateSaveData saveData = new PlayerStateSaveData()
+        {
+            playerPercentMoveSpeedSave = _additionalSpeedMultiplier,
+        };
+        return JsonUtility.ToJson(saveData);
+    }
+
+    public void RestoreData(string data)
+    {
+        var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
+        _additionalSpeedMultiplier = parsedData.playerPercentMoveSpeedSave;
+    }
 }
 
 public enum PlayerAimState

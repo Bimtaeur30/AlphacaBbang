@@ -23,5 +23,8 @@ namespace JJH._02_Scripts.Systems.SoundSystems
         [Range(0.1f, 3f)]
         public float pitch = 1f;
 
+        [Header("3D Sound Settings")]
+        public float minDistance = 1f;
+        public float maxDistance = 30f;
     }
 }

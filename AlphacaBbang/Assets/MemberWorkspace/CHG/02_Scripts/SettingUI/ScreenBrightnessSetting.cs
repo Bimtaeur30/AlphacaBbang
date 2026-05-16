@@ -46,9 +46,10 @@ public class ScreenBrightnessSetting : AbstractSettingUI
         {
             Debug.LogWarning("volume not fount ColorAdjustments: " + gameObject.name);
         }
-
+        
         _currentBrightness = 0;
         _lastBrightness = 0;
+        //ChangeBrightness();
         
     }
     

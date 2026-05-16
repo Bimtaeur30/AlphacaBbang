@@ -249,7 +249,6 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 playerStateChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
                 BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, speedData.Duration);
             }
-
         }
 
         if (itemData is CountableItemData)

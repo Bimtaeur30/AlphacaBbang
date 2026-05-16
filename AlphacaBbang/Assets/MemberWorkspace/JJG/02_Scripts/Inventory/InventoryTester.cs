@@ -15,6 +15,7 @@ public class InventoryTest : MonoBehaviour
     [SerializeField] private ItemData foodItem;
     [SerializeField] private ItemData medicineItem;
     [SerializeField] private ItemData equipItem;
+    [SerializeField] private ItemData equipItem2;
 
     [Header("Options")]
     [SerializeField] private bool printSlotStateOnStart = true;
@@ -62,15 +63,15 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.f3Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(foodItem, 3);
-            Debug.Log($"[TEST] 음식 아이템 3개 추가: {result}");
+            bool result = inventoryContainer.AddItem(equipItem2, 3);
+            Debug.Log($"[TEST] 무기 아이템 3개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
         if (_keyboard.f4Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(medicineItem, 2);
-            Debug.Log($"[TEST] 약 아이템 2개 추가: {result}");
+            bool result = inventoryContainer.AddItem(equipItem, 1);
+            Debug.Log($"[TEST] 무기 아이템 2개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 

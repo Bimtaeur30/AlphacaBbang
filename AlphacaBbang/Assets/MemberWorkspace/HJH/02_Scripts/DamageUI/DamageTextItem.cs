@@ -35,7 +35,7 @@ public class DamageTextItem : PoolableMono
 
         Vector3 targetPos = new Vector3(
             worldPosition.x + randomXDir,
-            worldPosition.y + 2f,
+            worldPosition.y + 1f,
             worldPosition.z);
 
         Sequence sequence = DOTween.Sequence();

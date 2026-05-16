@@ -49,11 +49,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42abd2d9f4ec1d049b7339745af46cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitDamageUI
-  damageTextPrefab: {fileID: 6603975052841221630, guid: 9aacfd3371ca1304bbf4844ecd6f0ee1, type: 3}
-  poolParent: {fileID: 4202162074289547882}
-  poolSize: 10
+  poolManager: {fileID: 0}
+  damagetext: {fileID: 0}
   agentEventChannel: {fileID: 11400000, guid: 64ebf60eac750d34e8aaef41faaa83bd, type: 2}
-  spawnPosition: {fileID: 0}
+  spawnPos: {fileID: 0}
 --- !u!1 &5312038026046192549
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,7 +138,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &8993548482613852035
 MonoBehaviour:
   m_ObjectHideFlags: 0

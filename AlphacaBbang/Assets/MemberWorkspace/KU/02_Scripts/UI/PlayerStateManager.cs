@@ -14,7 +14,33 @@ public class PlayerStateManager : MonoSingleton<PlayerStateManager>
 
     [SerializeField] private float _uiSmoothSpeed = 10f;
 
-    public int CurrentLevel { get; private set; } = 1;
+    private int _currentLevel = 1;
+    public int _statUpPoint;
+    
+    public int CurrentLevel
+    {
+        get
+        {
+            return _currentLevel;
+        }
+        private set
+        {
+            StatUpPoint += 3;
+            _currentLevel = value;
+        }
+    }
+
+    public int StatUpPoint
+    {
+        get
+        {
+            return _statUpPoint;
+        }
+        set
+        {
+            _statUpPoint = Mathf.Max(0, value);
+        }
+    }
 
     public float CurrentExp { get; private set; }
     public float MaxExp { get; private set; }
@@ -62,9 +88,10 @@ public class PlayerStateManager : MonoSingleton<PlayerStateManager>
 
         OnExpChanged?.Invoke(CurrentExp);
 
-        Debug.Log($"ÃÖ´ëEXP: {MaxExp}, ÇöÀçEXP: {CurrentExp}");
+        Debug.Log($"ï¿½Ö´ï¿½EXP: {MaxExp}, ï¿½ï¿½ï¿½ï¿½EXP: {CurrentExp}");
     }
 
+    [ContextMenu("LevelUp")]
     private void LevelUp()
     {
         CurrentLevel++;

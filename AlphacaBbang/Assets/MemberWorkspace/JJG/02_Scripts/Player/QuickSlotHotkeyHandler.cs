@@ -19,10 +19,39 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7
     };
 
+    private bool _isAiming;
+
+    private void OnEnable()
+    {
+        if (weaponHolder != null)
+            weaponHolder.OnThrowingItemChanged += OnThrowingItemChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (weaponHolder != null)
+            weaponHolder.OnThrowingItemChanged -= OnThrowingItemChanged;
+    }
+
+    private void OnThrowingItemChanged(ThrowingItemData throwingData)
+    {
+        if (throwingData != null)
+        {
+            _isAiming = true;
+            Debug.Log($"[투척류] 조준");
+        }
+        else
+        {
+            _isAiming = false;
+            Debug.Log("[투척류] 조준 해제");
+        }
+    }
+
     private void Update()
     {
         HandleWeaponKeys();
         HandleItemKeys();
+        HandleThrowingInput();
     }
 
     private void HandleWeaponKeys()
@@ -73,6 +102,20 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
             quickSlotContainer.UseItem(slotIndex, itemUser);
             return;
+        }
+    }
+
+    private void HandleThrowingInput()
+    {
+        if (!_isAiming) return;
+
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        if (mouse.leftButton.wasPressedThisFrame)
+        {
+            ThrowingItemData throwingData = weaponHolder.CurrentThrowingItem;
+            Debug.Log($"[투척류] 발사");
         }
     }
 }

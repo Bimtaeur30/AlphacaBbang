@@ -61,14 +61,12 @@ namespace JJH._02_Scripts.Agents.Enemies
 
             AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
-            AgentEventChannel.AddListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
         protected virtual void OnDestroy()
         {
             AgentEventChannel.RemoveListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.RemoveListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);
-            AgentEventChannel.RemoveListener<AgentInventoryDropEvent>(HandkeEnemyInventoryDropEvent);
         }
 
         private void HandkeEnemyDeadEvent(AgentDeadEvent evt)
@@ -88,14 +86,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             _hitCoroutine = StartCoroutine(HitCoroutine());
         }
 
-        private void HandkeEnemyInventoryDropEvent(AgentInventoryDropEvent evt)
-        {
-            if (evt.Agent == this)
-            {
-                OnDead();
-            }
-        }
-
         private IEnumerator HitCoroutine()
         {
             float time = 0f;
@@ -112,11 +102,17 @@ namespace JJH._02_Scripts.Agents.Enemies
             Renderer.Renderer.material.color = _originColor;
         }
 
+        public void OnDead()
+        {
+            EnemySkill.UseSkill<EnemyDeadSkill>();
+            Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
+        }
+
         public void Suicide()
         {
             EnemySkill.UseSkill<EnemyBombSkill>();
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-            OnDead();
         }
 
         public void DashAttack()
@@ -129,14 +125,9 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
         }
 
-        public void OnDead()
-        {
-            Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
-            Destroy(gameObject);
-        }
-
         public void ApplyBurn(float dps, float duration)
         {
+
         }
 
         public void TakeDamage(float damage)

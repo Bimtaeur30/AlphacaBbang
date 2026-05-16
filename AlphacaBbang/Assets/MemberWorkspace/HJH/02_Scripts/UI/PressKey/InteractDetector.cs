@@ -1,7 +1,13 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class InteractDetector : MonoBehaviour
 {
+    private static readonly List<InteractKeyUI> _registered = new();
+
+    public static void Register(InteractKeyUI ui) => _registered.Add(ui);
+    public static void Unregister(InteractKeyUI ui) => _registered.Remove(ui);
+
     void Update()
     {
         DetectInteractable();
@@ -9,22 +15,28 @@ public class InteractDetector : MonoBehaviour
 
     void DetectInteractable()
     {
-        foreach (var mono in FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None))
+        InteractKeyUI closest = null;
+        float closestDist = float.MaxValue;
+
+        foreach (var target in _registered)
         {
-            if (mono is IInteractable target)
+            if (target == null) continue;
+
+            float dist = Vector3.Distance(transform.position, target.transform.position);
+            if (dist <= target.InteractRange && dist < closestDist)
             {
-                float dist = Vector3.Distance(transform.position, mono.transform.position);
-                bool inRange = dist <= target.InteractRange;
-
-                var ui = mono.GetComponentInChildren<InteractKeyUI>();
-
-                if (ui == null) continue;
-
-                if (inRange)
-                    ui.Show(target);
-                else
-                    ui.Hide();
+                closestDist = dist;
+                closest = target;
             }
+        }
+
+        foreach (var target in _registered)
+        {
+            if (target == null) continue;
+            if (target == closest)
+                target.Show();
+            else
+                target.Hide();
         }
     }
 }

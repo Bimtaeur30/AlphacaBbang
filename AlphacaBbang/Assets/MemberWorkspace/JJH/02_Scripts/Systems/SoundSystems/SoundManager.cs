@@ -30,7 +30,11 @@ namespace JJH._02_Scripts.Systems.SoundSystems
         private void HandlePlaySoundEvent(PlaySoundEvent evt)
         {
             SoundPlayer player = poolManager.Pop<SoundPlayer>(soundItem);
-            player.transform.position = evt.Position;
+            if (evt.Trans != null)
+            {
+                player.transform.SetParent(evt.Trans);
+                player.transform.position = evt.Trans.position;
+            }
             player.PlaySound(evt.ClipData);
             player.OnSoundFinished += HandleSoundFinish;
 

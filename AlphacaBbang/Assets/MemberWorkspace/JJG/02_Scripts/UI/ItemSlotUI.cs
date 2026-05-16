@@ -7,6 +7,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 {
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _amountText;
+    [SerializeField] private Image _selectedOverlay;
 
     private int _slotIndex;
     private ItemContainer _container;
@@ -52,6 +53,12 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _iconImage.sprite = null;
         _iconImage.enabled = false;
         _amountText.text = "";
+    }
+
+    public void SetSelected(bool selected)
+    {
+        if (_selectedOverlay != null)
+            _selectedOverlay.enabled = selected;
     }
 
     public void SetItem(Sprite itemSprite)

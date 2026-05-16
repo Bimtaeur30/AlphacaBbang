@@ -1,4 +1,5 @@
 ﻿using JJH._02_Scripts_Systems.EventSystems;
+using Reflex.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public class DataManager : MonoBehaviour
+public class DataManager : MonoBehaviour, IInstaller
 {
     #region 데이터 구조체
     [Serializable]
@@ -221,5 +222,19 @@ public class DataManager : MonoBehaviour
     [ContextMenu("Clear Pref Data")]
     public void ClearPrefData() => PlayerPrefs.DeleteKey(prefKey);
 
+    public bool HasSaveData()
+    {
+        if (PlayerPrefs.HasKey(prefKey) &&
+            !string.IsNullOrEmpty(PlayerPrefs.GetString(prefKey)))
+            return true;
+
+        string filePath = Path.Combine(Application.persistentDataPath, saveFileName);
+        return File.Exists(filePath);
+    }
+
+    public void InstallBindings(ContainerBuilder containerBuilder)
+    {
+        containerBuilder.RegisterValue(this);
+    }
     #endregion
 }

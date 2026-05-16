@@ -101,8 +101,8 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
 
     private string GetStatsText(ItemData data)
     {
-        if (data is WeaponItemData weapon)
-            return $"공격력: {weapon.Damage}\n탄약: {weapon.Ammo}\n장전 속도: {weapon.ReloadSpeed:F1}s";
+        //if (data is WeaponItemData weapon)
+            //return $"공격력: {weapon.Damage}\n탄약: {weapon.Ammo}\n장전 속도: {weapon.ReloadSpeed:F1}s";
 
         if (data is CountableItemData countable)
             return $"최대 수량: {countable.MaxAmount}";

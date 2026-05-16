@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
@@ -48,7 +49,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         
     }
 
-    public ItemSlot GetSlot(int index)
+    public virtual ItemSlot GetSlot(int index)
     {
         if (index < 0 || index >= slots.Count)
             return null;
@@ -233,22 +234,14 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
         if (user != null)
         {
-            // var healable = user.GetComponent<IHealable>();
-            // if (healable != null)
-            // {
-            //     float healAmount = 0f;
-            //     if (itemData is FoodItemData foodData) healAmount = foodData.HealAmount;
-            //     else if (itemData is MedicineItemData medData) healAmount = medData.HealAmount;
-            //
-            //     if (healAmount > 0f)
-            //         healable.Heal(healAmount);
-            // }
-            int healAmount = 0;
-            if (itemData is MedicineItemData foodData) 
-                healAmount = foodData.HealAmount;
-
-            if (healAmount > 0f)
-                playerStateChannel.RaiseEvent((PlayerStateEvents.PlayerHpHeal.Init(healAmount)));
+            if (itemData is HotMedicineItemData hotData)
+            {
+                StartCoroutine(HealOverTime(hotData.HealAmountPerTick, hotData.TickCount, hotData.TickInterval));
+            }
+            else if (itemData is MedicineItemData medData && medData.HealAmount > 0)
+            {
+                playerStateChannel.RaiseEvent(PlayerStateEvents.PlayerHpHeal.Init(medData.HealAmount));
+            }
 
         }
 
@@ -367,6 +360,16 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         }
 
         return totalCount;
+    }
+
+    private IEnumerator HealOverTime(int amountPerTick, int tickCount, float interval)
+    {
+        var wait = new WaitForSeconds(interval);
+        for (int i = 0; i < tickCount; i++)
+        {
+            PlayerStatSystem.Instance.Heal(amountPerTick);
+            yield return wait;
+        }
     }
 
     protected void NotifyContainerChanged()

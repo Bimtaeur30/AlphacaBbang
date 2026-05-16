@@ -12,13 +12,13 @@ namespace JJH._02_Scripts.Systems.EventSystems
 
     public class PlaySoundEvent : GameEvent
     {
-        public Vector3 Position { get; private set; }
+        public Transform Trans { get; private set; }
         public SoundClipSO ClipData { get; private set; }
         public int ChannelNumber { get; private set; }
 
-        public PlaySoundEvent Init(Vector3 position, SoundClipSO clipData, int channelNumber = 0)
+        public PlaySoundEvent Init(SoundClipSO clipData, Transform trans = null, int channelNumber = 0)
         {
-            Position = position;
+            Trans = trans;
             ClipData = clipData;
             ChannelNumber = channelNumber;
             return this;

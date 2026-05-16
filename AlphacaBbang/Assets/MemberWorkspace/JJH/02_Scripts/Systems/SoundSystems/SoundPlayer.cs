@@ -46,8 +46,8 @@ namespace JJH._02_Scripts.Systems.SoundSystems
             _audioSource.loop = clipData.loop;
             _audioSource.minDistance = clipData.minDistance;
             _audioSource.maxDistance = clipData.maxDistance;
-
             _audioSource.spatialBlend = clipData.audioType == AudioTypes.Sfx ? 1f : 0f;
+            _audioSource.rolloffMode = AudioRolloffMode.Linear;
 
             if (!clipData.loop)
             {

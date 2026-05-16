@@ -46,6 +46,11 @@ public class DataManager : MonoBehaviour
     private List<SaveData> _unUsedData = new List<SaveData>();
 
     #region 라이프사이클
+
+    private void OnApplicationQuit()
+    {
+        SystemChannel.RaiseEvent(SystemEvents.SaveFileEvent); // 게임 종료 시 파일저장
+    }
     private void Awake()
     {
         SystemChannel.AddListener<SavePrefEvent>(HandleSavePrefEvent);
@@ -54,7 +59,6 @@ public class DataManager : MonoBehaviour
         SystemChannel.AddListener<StartNewGameEvent>(HandleStartNewGame);
         SystemChannel.AddListener<LoadFileEvent>(HandleLoadFileEvent);
 
-        //SystemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
         SystemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
     }
 
@@ -206,6 +210,7 @@ public class DataManager : MonoBehaviour
 
     #region 유틸리티
 
+    [ContextMenu("Clear Save File")]
     private void DeleteSaveFile()
     {
         string filePath = Path.Combine(Application.persistentDataPath, saveFileName);

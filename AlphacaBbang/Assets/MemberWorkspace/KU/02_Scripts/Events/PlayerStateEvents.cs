@@ -8,7 +8,7 @@ public static class PlayerStateEvents
     public static readonly AddMaxStamina AddMaxStamina = new AddMaxStamina();
     public static readonly AddMaxStamina AddMaxAimStamina = new AddMaxStamina();
     public static readonly PlayerHpHeal PlayerHpHeal = new PlayerHpHeal();
-    public static readonly AddPlayerMoveSpeed PlayerMoveSpeed = new AddPlayerMoveSpeed();
+    public static readonly AddPlayerMoveSpeed AddPlayerMoveSpeed = new AddPlayerMoveSpeed();
 
 }
 

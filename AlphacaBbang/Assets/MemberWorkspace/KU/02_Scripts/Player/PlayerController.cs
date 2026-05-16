@@ -351,6 +351,8 @@ public class PlayerController : Agent
     {
         PlayerInput.OnMovementChange -= HandleMovement;
         PlayerInput.OnSprintAction -= HandleSprint;
+        playerStatChannel.RemoveListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
+
     }
 
     #region รั ฐüทร ฤฺตๅ

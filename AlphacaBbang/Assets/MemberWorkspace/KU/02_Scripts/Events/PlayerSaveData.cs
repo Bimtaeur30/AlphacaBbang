@@ -27,7 +27,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         //    playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
         //if (Keyboard.current.yKey.wasPressedThisFrame)
         //    systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
-
+        playerStatChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(30, 10));
     }
     public string GetSaveData()
     {

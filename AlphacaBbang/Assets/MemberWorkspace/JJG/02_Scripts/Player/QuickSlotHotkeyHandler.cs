@@ -1,4 +1,5 @@
 using MemberWorkspace.JJG._02_Scripts;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -34,6 +35,8 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             if (!keyboard[WeaponKeys[i]].wasPressedThisFrame)
                 continue;
 
+            weaponHolder.UnequipThrowingItem();
+
             ItemSlot slot = quickSlotContainer.GetSlot(i);
 
             if (slot == null || slot.IsEmpty)
@@ -60,6 +63,14 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
                 continue;
 
             int slotIndex = 3 + i;
+            ItemSlot slot = quickSlotContainer.GetSlot(slotIndex);
+
+            if (slot != null && slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.EquipThrowingItem(slotIndex, throwingData);
+                return;
+            }
+
             quickSlotContainer.UseItem(slotIndex, itemUser);
             return;
         }

@@ -4,7 +4,7 @@
     {
         Health, 
         Speed,
-        Stamina,  //run stamina
-        Gauge //standing stamina
+        Stamina, 
+        AimStamina 
     }
 }

@@ -135,7 +135,7 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
                 Debug.LogWarning($"{type}: {MaxStamina}");
             }
                 break;
-            case PlayerStatType.Gauge:
+            case PlayerStatType.AimStamina:
             {
                 GaugeMaxTime += value;
                 Debug.LogWarning($"{type}: {GaugeMaxTime}");

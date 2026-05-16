@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JJH._02_Scripts_Systems.EventSystems;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,10 +17,13 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
     
     public class PlayerStatUp : MonoBehaviour
     {
-        [SerializeField] private float healthUpValue;
+        [SerializeField] private EventChannelSO playerStatChannel;
+        [SerializeField] private EventChannelSO systemChannel;
+        
+        [SerializeField] private int healthUpValue;
         [SerializeField] private float speedUpValue;
-        [SerializeField] private float staminaUpValue;
-        [SerializeField] private float gaugeUpValue;
+        [SerializeField] private int staminaUpValue;
+        [SerializeField] private int aimStaminaUpValue;
 
         [SerializeField] private TextMeshProUGUI StatUpPointText;
         [SerializeField] private TextMeshProUGUI LevelText;
@@ -46,43 +50,44 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
                     case PlayerStatType.Stamina:
                         s = PlayerStatSystem.Instance.MaxStamina.ToString();
                         break;
-                    case PlayerStatType.Gauge:
+                    case PlayerStatType.AimStamina:
                         s = PlayerStatSystem.Instance.GaugeMaxTime.ToString();
                         break;
                 }
-                Debug.Log(s + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 statView[i].Text.text = s;
             }
         }
 
         public void AddStat(PlayerStatType type)
         {
-            Debug.LogWarning("11");
             if (PlayerStateManager.Instance.StatUpPoint <= 0) return;
-            Debug.LogWarning("22");
             PlayerStateManager.Instance.StatUpPoint--;
             
             switch (type)
             {
                 case PlayerStatType.Health:
                 {
-                    PlayerStatSystem.Instance.AddStat(type, healthUpValue);
+                    AddMaxHealth addHealth = new AddMaxHealth().Init(healthUpValue);
+                    playerStatChannel.RaiseEvent(addHealth);
                     ChangeText(PlayerStatType.Health ,PlayerStatSystem.Instance.MaxHealth);
                 }
                     break;
                 case PlayerStatType.Speed:
                 {
+                    //추가해야함.
                     PlayerStatSystem.Instance.AddStat(type, speedUpValue);
                     ChangeText(PlayerStatType.Speed ,PlayerStatSystem.Instance.MoveSpeed);
                 }
                     break;
                 case PlayerStatType.Stamina:
-                    PlayerStatSystem.Instance.AddStat(type, speedUpValue);
+                    AddMaxStamina addMaxStamina = new AddMaxStamina().Init(staminaUpValue);
+                    systemChannel.RaiseEvent(addMaxStamina);
                     ChangeText(PlayerStatType.Stamina ,PlayerStatSystem.Instance.MaxStamina);
                     break;
-                case PlayerStatType.Gauge:
-                    PlayerStatSystem.Instance.AddStat(type, speedUpValue);
-                    ChangeText(PlayerStatType.Gauge ,PlayerStatSystem.Instance.GaugeMaxTime);
+                case PlayerStatType.AimStamina:
+                    AddMaxAimStamina addAimStamina = new AddMaxAimStamina().Init(aimStaminaUpValue);
+                    systemChannel.RaiseEvent(addAimStamina);
+                    ChangeText(PlayerStatType.AimStamina ,PlayerStatSystem.Instance.GaugeMaxTime);
                     break;
                 default:
                     Debug.LogWarning("NOoo");

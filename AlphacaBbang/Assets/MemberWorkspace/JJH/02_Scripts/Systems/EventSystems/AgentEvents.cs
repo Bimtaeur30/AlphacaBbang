@@ -8,7 +8,6 @@ namespace JJH._02_Scripts.Systems.EventSystems
     {
         public static readonly AgentDeadEvent AgentDeadEvent = new AgentDeadEvent();
         public static readonly AgentHealthChangeEvent AgentHealthChangeEvent = new AgentHealthChangeEvent();
-        public static readonly AgentInventoryDropEvent AgentInventoryDropEvent = new AgentInventoryDropEvent();
         public static readonly AgentArmorEquip AgentArmorEquip = new AgentArmorEquip();
     }
 
@@ -27,24 +26,13 @@ namespace JJH._02_Scripts.Systems.EventSystems
             return this;
         }
     }
-    public class AgentHealthChangeEvent : GameEvent 
+    public class AgentHealthChangeEvent : GameEvent
     {
         public float Damage { get; private set; }
 
         public AgentHealthChangeEvent Init(float damage)
         {
             Damage = damage;
-            return this;
-        }
-    }
-
-    public class AgentInventoryDropEvent : GameEvent
-    {
-        public Agent Agent { get; private set; }
-
-        public AgentInventoryDropEvent Init(Agent agent)
-        {
-            Agent = agent;
             return this;
         }
     }

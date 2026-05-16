@@ -108,7 +108,7 @@ public class InventoryContextMenu : MonoBehaviour
 
         ItemData item = slot.ItemData;
 
-        bool isConsumable  = item is FoodItemData || item is MedicineItemData;
+        bool isConsumable  = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
         bool isWeapon      = item is WeaponItemData;
         bool isGearEquip   = !isWeapon && item.EquipType != EquipType.None;
         bool isEquippable  = isWeapon || isGearEquip;

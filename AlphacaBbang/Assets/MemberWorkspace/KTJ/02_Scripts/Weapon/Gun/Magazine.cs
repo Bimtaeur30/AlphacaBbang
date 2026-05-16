@@ -1,3 +1,5 @@
+using Reflex.Attributes;
+using Reflex.Core;
 using System;
 using System.Collections;
 using System.Security.Claims;
@@ -18,6 +20,8 @@ public class Magazine : MonoBehaviour
     private bool _loading = false;
     private float _reloadDuration = 2f;
     private float _rotationSpeed = 360f;
+
+    [Inject] private InventoryContainer inventoryContainer;
 
     public bool IsReloading
     {
@@ -56,7 +60,8 @@ public class Magazine : MonoBehaviour
         if (_loading)
             return;
 
-        int inventoryBulletCount = 1000; // 나중에 실제 인벤토리 값으로 교체
+        int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.GunDataSO.BulletType);
+
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
         if (emptySpace <= 0)
@@ -72,6 +77,9 @@ public class Magazine : MonoBehaviour
         }
 
         int reloadBulletCount = Mathf.Min(emptySpace, inventoryBulletCount);
+        for (int i = 0; i < reloadBulletCount; i++)
+            inventoryContainer.UseItem(emptySpace, null);
+
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
     }
 

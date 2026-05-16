@@ -1,4 +1,4 @@
-﻿using JJH._02_Scripts_Systems.EventSystems;
+using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;

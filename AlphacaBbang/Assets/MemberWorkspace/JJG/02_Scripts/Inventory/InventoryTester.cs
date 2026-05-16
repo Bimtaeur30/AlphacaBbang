@@ -69,8 +69,8 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.f4Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(medicineItem, 2);
-            Debug.Log($"[TEST] 약 아이템 2개 추가: {result}");
+            bool result = inventoryContainer.AddItem(equipItem, 1);
+            Debug.Log($"[TEST] 무기 아이템 2개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 

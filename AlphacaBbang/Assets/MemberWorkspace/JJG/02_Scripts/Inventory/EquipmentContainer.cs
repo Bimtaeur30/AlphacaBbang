@@ -10,6 +10,12 @@ public class EquipmentContainer : ItemContainer
 
     public event Action OnEquipmentChanged;
 
+    public override ItemSlot GetSlot(int index)
+    {
+        if (index < 0 || index >= equipmentSlots.Count) return null;
+        return equipmentSlots[index].slot;
+    }
+
     public EquipmentSlot GetEquipmentSlot(int index)
     {
         if (index < 0 || index >= equipmentSlots.Count)
@@ -49,6 +55,45 @@ public class EquipmentContainer : ItemContainer
         equipmentSlot.slot.ItemData = null;
         equipmentSlot.slot.Amount = 0;
         return true;
+    }
+
+    public bool TryEquipWeapon(WeaponItemData weaponData, int weaponSlotIndex)
+    {
+        int weaponCount = 0;
+        for (int i = 0; i < equipmentSlots.Count; i++)
+        {
+            EquipType t = equipmentSlots[i].allowedEquipType;
+            if (t != EquipType.MainWeapon && t != EquipType.SubWeapon) continue;
+
+            if (weaponCount == weaponSlotIndex)
+            {
+                equipmentSlots[i].slot.ItemData = weaponData;
+                equipmentSlots[i].slot.Amount = 1;
+                OnEquipmentChanged?.Invoke();
+                return true;
+            }
+            weaponCount++;
+        }
+        return false;
+    }
+
+    public bool UnequipWeapon(int weaponSlotIndex)
+    {
+        int weaponCount = 0;
+        for (int i = 0; i < equipmentSlots.Count; i++)
+        {
+            EquipType t = equipmentSlots[i].allowedEquipType;
+            if (t != EquipType.MainWeapon && t != EquipType.SubWeapon) continue;
+
+            if (weaponCount == weaponSlotIndex)
+            {
+                equipmentSlots[i].slot.Clear();
+                OnEquipmentChanged?.Invoke();
+                return true;
+            }
+            weaponCount++;
+        }
+        return false;
     }
 
     public bool TryEquipFromContainer(ItemContainer sourceContainer, int sourceIndex)

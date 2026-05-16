@@ -7,8 +7,8 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
     [Header("Gun")]
     [SerializeField] private Gun firstSlotGun;
     [SerializeField] private Gun secondSlotGun;
-    [SerializeField] private Gun TEST_GUN1;
-    [SerializeField] private Gun TEST_GUN2;
+    //[SerializeField] private Gun TEST_GUN1;
+    //[SerializeField] private Gun TEST_GUN2;
 
     [Header("Transform")]
     [SerializeField] private Transform gunHoldParent_1;
@@ -40,9 +40,9 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
     private void Start()
     {
         // 테스트 코드
-        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN1, WeaponSlotIndex.First));
-        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
-        gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
+        //gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN1, WeaponSlotIndex.First));
+        //gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
+        //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
         // 여기까지
     }
 

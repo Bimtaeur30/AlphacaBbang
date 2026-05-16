@@ -210,6 +210,7 @@ public class DataManager : MonoBehaviour
 
     #region 유틸리티
 
+    [ContextMenu("Clear Save File")]
     private void DeleteSaveFile()
     {
         string filePath = Path.Combine(Application.persistentDataPath, saveFileName);

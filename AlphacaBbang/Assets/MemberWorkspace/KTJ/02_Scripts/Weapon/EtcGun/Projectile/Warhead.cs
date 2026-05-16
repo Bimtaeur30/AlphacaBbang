@@ -1,13 +1,11 @@
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts.Systems.SoundSystems;
-using Unity.AppUI.Core;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class Warhead : PoolableMono, IProjectile // 바주카 탄두
 {
-    [SerializeField] private PoolManagerSO poolManager;
     [SerializeField] private PoolItemSO explosionPref;
     [SerializeField] private SoundClipSO explosionSound;
     [SerializeField] private LayerMask layerMask;
@@ -40,11 +38,11 @@ public class Warhead : PoolableMono, IProjectile // 바주카 탄두
         soundPlayer.PlaySound(explosionSound);
         body.linearVelocity = Vector3.zero;
 
-        ExplosionPrefab effect = poolManager.Pop<ExplosionPrefab>(explosionPref);
+        ExplosionPrefab effect = PoolManager.Pop<ExplosionPrefab>(explosionPref);
         effect.transform.position = transform.position;
         effect.Active(5f, 50f, layerMask);
 
-        poolManager.Push(this);
+        PoolManager.Push(this);
 
     }
 

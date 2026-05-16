@@ -69,14 +69,14 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             _saveButton.clicked += () =>
             {
                 Tab curTab = _tabView.activeTab;
-                if (curTab.name == "Screen")
-                    screenSetting.ChangeResolution(_currentResolution, _screenMode);
+                /*if (curTab.name == "Screen")
+                    screenSetting.SetResolution(_currentResolution, _screenMode);
                 else if (curTab.name == "Sound")
                 {
                     _audioMixer.SetFloat("Master", _masterVolume);
                     _audioMixer.SetFloat("Bgm", _bGMVolume);
                     _audioMixer.SetFloat("Sfx", _sFXVolume);
-                }
+                }*/
             };
             _exitButton.clicked += () => UIShowHide();
         }

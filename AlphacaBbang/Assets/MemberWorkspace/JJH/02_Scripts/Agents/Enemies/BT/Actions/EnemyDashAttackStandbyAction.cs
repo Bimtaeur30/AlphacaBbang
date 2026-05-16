@@ -27,10 +27,13 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnUpdate()
         {
-
-            return Status.Success;
+            _nowTime += UnityEngine.Time.deltaTime;
+            if (_nowTime > Time.Value)
+            {
+                _nowTime = 0;
+                return Status.Success;
+            }
+            return Status.Running;
         }
     }
 }
-
-

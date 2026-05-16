@@ -141,7 +141,7 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         public void TakeDamage(float damage)
         {
-            HealthModule.SetHealth(damage);
+            HealthModule.MinusHealth(damage);
         }
     }
 }

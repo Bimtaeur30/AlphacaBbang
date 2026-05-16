@@ -14,19 +14,20 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     [field: SerializeField] public float MaxStamina { get; private set; }
     [field: SerializeField] public float GaugeMaxTime { get; private set; }
 
-
     private void OnEnable()
     {
         playerStatChannel.AddListener<AddMaxHealth>(HandleAddMaxHealth);
         systemChannel.AddListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.AddListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
+
     }
     private void Update()
     {
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
-        if (Keyboard.current.yKey.wasPressedThisFrame)
-            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+        //if (Keyboard.current.tKey.wasPressedThisFrame)
+        //    playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
+        //if (Keyboard.current.yKey.wasPressedThisFrame)
+        //    systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+        playerStatChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(30, 10));
     }
     public string GetSaveData()
     {
@@ -41,7 +42,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         {
             playerMaxHpSave = MaxHealth,
             playerMaxRunStaminaSave = MaxStamina,
-            playerMaxAimStaminaSave = GaugeMaxTime
+            playerMaxAimStaminaSave = GaugeMaxTime,
         };
         return JsonUtility.ToJson(saveData);
     }
@@ -78,6 +79,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
 
         Debug.Log($"최대 에임 스태미나 증가 : {evt.val}");
     }
+
 
 
     private void OnDisable()

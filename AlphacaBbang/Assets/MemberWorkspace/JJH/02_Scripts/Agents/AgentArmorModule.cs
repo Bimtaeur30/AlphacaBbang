@@ -51,7 +51,7 @@ namespace JJH._02_Scripts.Agents
 
             if (value)
             {
-                if(armors.ContainsKey(armorType))
+                if (armors.ContainsKey(armorType))
                     armors[armorType] = armorSO;
                 else
                     armors.Add(armorType, armorSO);
@@ -94,7 +94,8 @@ namespace JJH._02_Scripts.Agents
                 }
             }
 
-            _agentEventChannel.RaiseEvent(AgentEvents.AgentArmorEquip.Init(_owner, armors.Values.ToArray()));
+            if (armors != null)
+                _agentEventChannel.RaiseEvent(AgentEvents.AgentArmorEquip.Init(_owner, armors.Values.ToArray()));
         }
     }
 }

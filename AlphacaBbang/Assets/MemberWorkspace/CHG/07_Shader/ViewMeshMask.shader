@@ -4,7 +4,7 @@ Shader "Custom/ViewMeshMask"
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry" }
         ZWrite Off
-        ZTest Always
+        ZTest LEqual 
 
         Pass
         {

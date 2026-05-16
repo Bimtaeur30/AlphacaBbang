@@ -54,21 +54,71 @@ namespace MemberWorkspace.CHG._02_Scripts
         [SerializeField] private MeshFilter circleMeshFilter;
         [SerializeField] private int circleSegments = 36;
 
+        [Header("EnemyVisible")] 
+        [SerializeField] private LayerMask enemyLayer;
+
+        [SerializeField] private float checkDelay;
+        
         private Mesh viewMesh;
         private Mesh circleMesh;
-
+        private Collider[] _overlapResults = new Collider[50];
+        private readonly HashSet<EnemyVisibility> _previousVisible = new();
+        
         public float ViewRadius => viewRadius;
         public float CloseViewRadius => closeViewRadius;
         public float ViewAngle => viewAngle;
 
         
-        private void Start()
+        private IEnumerator Start()
         {
             viewMesh = new Mesh { name = "View Cone Mesh" };
             coneMeshFilter.mesh = viewMesh;
 
             circleMesh = new Mesh { name = "Close View Circle Mesh" };
             circleMeshFilter.mesh = circleMesh;
+            
+            yield return StartCoroutine(UpdateVisibilityCoroutine());
+        }
+        
+        private IEnumerator UpdateVisibilityCoroutine()
+        {
+            WaitForSeconds delay = new WaitForSeconds(checkDelay);
+            while (true)
+            {
+                yield return delay;
+                
+                HashSet<EnemyVisibility> currentVisible = new();
+                
+                int cnt = Physics.OverlapSphereNonAlloc(
+                    transform.position, viewRadius, _overlapResults, enemyLayer
+                );
+                
+                for (int i = 0; i < cnt; i++)
+                {
+                    if (!_overlapResults[i].TryGetComponent(out EnemyVisibility enemy))
+                        continue;
+
+                    if (!IsVisible(_overlapResults[i].transform.position))
+                        continue;
+
+                    currentVisible.Add(enemy);
+
+                    if (!_previousVisible.Contains(enemy))
+                    {
+                        enemy.Show();
+                    }
+                }
+
+                foreach (var enemy in _previousVisible)
+                {
+                    if (!currentVisible.Contains(enemy))
+                        enemy.Hide();
+                }
+
+                _previousVisible.Clear();
+                foreach (var enemy in currentVisible)
+                    _previousVisible.Add(enemy);
+            }
         }
 
         private void Update()
@@ -171,27 +221,39 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private void BuildMesh(Mesh mesh, List<Vector3> viewPoints)
         {
-            int vertexCount = viewPoints.Count + 1;
-            Vector3[] vertices = new Vector3[vertexCount];
-            int[] triangles = new int[(vertexCount - 2) * 3];
+            float height = 3f; 
+            int count = viewPoints.Count;
+            int vertexCount = count * 2 + 2; 
+
+            Vector3[] vertices  = new Vector3[vertexCount];
+            List<int> triangles = new List<int>();
 
             vertices[0] = Vector3.zero;
+            vertices[1] = new Vector3(0, height, 0);
 
-            for (int i = 0; i < vertexCount - 1; i++)
+            for (int i = 0; i < count; i++)
             {
-                vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
+                Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
+                vertices[2 + i * 2]     = p;                           
+                vertices[2 + i * 2 + 1] = new Vector3(p.x, height, p.z); 
 
-                if (i < vertexCount - 2)
+                if (i < count - 1)
                 {
-                    triangles[i * 3] = 0;
-                    triangles[i * 3 + 1] = i + 1;
-                    triangles[i * 3 + 2] = i + 2;
+                    int a = 2 + i * 2;
+                    int b = 2 + i * 2 + 1;
+                    int c = 2 + (i + 1) * 2;
+                    int d = 2 + (i + 1) * 2 + 1;
+
+                    triangles.Add(0); triangles.Add(a); triangles.Add(c);
+                    triangles.Add(1); triangles.Add(d); triangles.Add(b);
+                    triangles.Add(a); triangles.Add(b); triangles.Add(c);
+                    triangles.Add(b); triangles.Add(d); triangles.Add(c);
                 }
             }
 
             mesh.Clear();
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
+            mesh.vertices  = vertices;
+            mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
         }
         
@@ -262,5 +324,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 );
             }
         }
+        
+        
     }
 }

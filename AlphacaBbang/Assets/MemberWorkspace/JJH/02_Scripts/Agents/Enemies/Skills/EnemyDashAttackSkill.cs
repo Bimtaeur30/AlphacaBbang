@@ -22,9 +22,11 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         private AbstractEnemy _owner;
         private NavMeshAgent _navMeshAgent;
 
-        private HashSet<Collider> _hitTargets = new HashSet<Collider>();
+        private readonly HashSet<Collider> _hitTargets = new();
+
         private Vector3 _dashStartPos;
         private Vector3 _dashDirection;
+
         private bool _isDashing;
 
         public void Initialize(AbstractEnemy owner)
@@ -47,25 +49,25 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
                 return;
 
             _hitTargets.Clear();
+
             _dashStartPos = transform.position;
             _dashDirection = transform.forward.normalized;
+
             _isDashing = true;
 
+            _navMeshAgent.ResetPath();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.updateRotation = false;
         }
 
         private void Dash()
         {
-            Vector3 move = _dashDirection * dashSpeed * Time.deltaTime;
-            _navMeshAgent.Move(move);
+            Vector3 move = _dashDirection * dashSpeed * Time.fixedDeltaTime;
 
-            float moveDistance = move.magnitude;
+            bool isHit = Physics.SphereCast(transform.position + Vector3.up * 0.5f, playerCheckRadius,
+                                                                        _dashDirection, out RaycastHit hit, move.magnitude, targetLayer);
 
-            bool hitObstacle = Physics.SphereCast(transform.position + Vector3.up * 0.5f, playerCheckRadius,
-                                                                        _dashDirection, out RaycastHit hit, moveDistance, targetLayer);
-
-            if (hitObstacle)
+            if (isHit)
             {
                 EndDash();
                 return;
@@ -76,42 +78,62 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             DamageAround();
 
             float distance = Vector3.Distance(_dashStartPos, transform.position);
+
             if (distance >= dashDistance)
+            {
                 EndDash();
+            }
         }
 
         private void EndDash()
         {
             _isDashing = false;
-
             _navMeshAgent.isStopped = false;
             _navMeshAgent.updateRotation = true;
         }
 
         private void DamageAround()
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, range, targetLayer);
+            Collider[] hits = Physics.OverlapSphere(
+                transform.position,
+                range,
+                targetLayer);
+
             foreach (Collider hit in hits)
             {
                 if (hit.transform == transform)
                     continue;
+
                 if (_hitTargets.Contains(hit))
                     continue;
 
                 _hitTargets.Add(hit);
 
                 Vector3 hitPoint = transform.position + Vector3.up;
-                float distance = Vector3.Distance(hitPoint, hit.transform.position);
 
-                float damage = Mathf.Lerp(maxDamage, 0f, distance / range);
+                float distance = Vector3.Distance(
+                    hitPoint,
+                    hit.transform.position);
+
+                float damage = Mathf.Lerp(
+                    maxDamage,
+                    0f,
+                    distance / range);
+
                 hit.GetComponent<IDamageable>()?.TakeDamage(damage);
 
                 Rigidbody rb = hit.attachedRigidbody;
+
                 if (rb != null)
                 {
-                    Vector3 dir = (hit.transform.position - transform.position).normalized;
+                    Vector3 dir =
+                        (hit.transform.position - transform.position).normalized;
+
                     dir.y = 0.2f;
-                    rb.AddForce(dir * knockbackForce, ForceMode.Impulse);
+
+                    rb.AddForce(
+                        dir * knockbackForce,
+                        ForceMode.Impulse);
                 }
             }
         }
@@ -119,6 +141,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
+
             Gizmos.DrawWireSphere(transform.position, range);
         }
     }

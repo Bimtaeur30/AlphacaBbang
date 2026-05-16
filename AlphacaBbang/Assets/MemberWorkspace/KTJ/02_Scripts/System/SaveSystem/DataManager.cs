@@ -25,8 +25,6 @@ public class DataManager : MonoBehaviour
     [Serializable]
     public struct FileSaveData
     {
-        public int SavePointId;
-        public int SceneIndex;
         public string PrefData;
     }
 
@@ -55,6 +53,9 @@ public class DataManager : MonoBehaviour
         SystemChannel.AddListener<SaveFileEvent>(HandleSaveFileEvent);
         SystemChannel.AddListener<StartNewGameEvent>(HandleStartNewGame);
         SystemChannel.AddListener<LoadFileEvent>(HandleLoadFileEvent);
+
+        //SystemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+        SystemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
     }
 
     private void OnDestroy()
@@ -90,8 +91,6 @@ public class DataManager : MonoBehaviour
     {
         FileSaveData fileSaveData = new FileSaveData
         {
-            SavePointId = evt.SavePointId,
-            SceneIndex = evt.SceneNumberId,
             PrefData = GetSaveData()
         };
 
@@ -129,7 +128,9 @@ public class DataManager : MonoBehaviour
         FileSaveData fileSaveData = JsonUtility.FromJson<FileSaveData>(rawData);
 
         PlayerPrefs.SetString(prefKey, fileSaveData.PrefData);
-        PlayerPrefs.SetInt(savePointIdKey, fileSaveData.SavePointId);
+
+        // 실제 오브젝트에 데이터 복원
+        RestoreData(fileSaveData.PrefData);
 
         // TODO: 저장된 씬으로 전환 (fileSaveData.SceneIndex)
     }

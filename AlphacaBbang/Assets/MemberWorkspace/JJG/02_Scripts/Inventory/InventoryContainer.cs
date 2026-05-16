@@ -1,12 +1,18 @@
+using Reflex.Core;
 using System.Collections.Generic;
 
-public class InventoryContainer : ItemContainer
+public class InventoryContainer : ItemContainer, IInstaller
 {
     public override bool ClearSlot(int index)
     {
         bool result = base.ClearSlot(index);
         if (result) Compact();
         return result;
+    }
+
+    public void InstallBindings(ContainerBuilder containerBuilder)
+    {
+        containerBuilder.RegisterValue(this);
     }
 
     public override bool RemoveAmount(int index, int amount = 1)

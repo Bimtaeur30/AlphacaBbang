@@ -1,11 +1,12 @@
+using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts.Systems.SoundSystems;
+using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
 public class GunSoundPlayer : MonoBehaviour
 {
-    [SerializeField] private PoolManagerSO poolManagerSO;
-    [SerializeField] private PoolItemSO soundPoolSO;
+    [SerializeField] private EventChannelSO soundChannel;
     private AudioSource audioSource;
 
     private void Awake()
@@ -17,7 +18,6 @@ public class GunSoundPlayer : MonoBehaviour
     {
         if (audio == null) return;
         //Debug.Assert(audio != null, "오디오가 널입니다.");
-        SoundPlayer sp = poolManagerSO.Pop<SoundPlayer>(soundPoolSO);
-        sp.PlaySound(audio);
+        //soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(transform.position, ))
     }
 }

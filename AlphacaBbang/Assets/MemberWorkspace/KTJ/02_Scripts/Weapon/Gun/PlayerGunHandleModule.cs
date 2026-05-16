@@ -1,6 +1,8 @@
 using JJH._02_Scripts_Systems.EventSystems;
+using Reflex.Attributes;
+using Reflex.Core;
+using Reflex.Injectors;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 {
@@ -18,6 +20,8 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
     [SerializeField] private EventChannelSO gunChannel;
 
     public PlayerController PlayerController { get; private set; }
+
+    [Inject] private Container _container;
 
     public override void Initialize(ModuleOwner owner)
     {
@@ -87,6 +91,7 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
         gun.transform.localPosition = Vector3.zero;
         gun.transform.localRotation = Quaternion.identity;
         gun.transform.localScale = Vector3.one;
+        GameObjectInjector.InjectRecursive(gun.gameObject, _container);
 
         // 인스턴스를 슬롯에 저장
         switch (@event.SlotIndex)

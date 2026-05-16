@@ -11,7 +11,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Conditions
         [SerializeReference] public BlackboardVariable<GameObject> Target;
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
 
-        private float _closeDistance = 7f;
+        private float _closeDistance = 10f;
 
         public override bool IsTrue()
         {

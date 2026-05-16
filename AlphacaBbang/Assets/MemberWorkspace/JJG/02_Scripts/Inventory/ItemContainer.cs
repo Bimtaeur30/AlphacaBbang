@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using JJH._02_Scripts_Systems.EventSystems;
+using JJH._02_Scripts.Agents;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
@@ -15,6 +16,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [SerializeField] private ItemDatabase itemDatabase;
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
+
+    [Header("Item Setting")] 
+    [SerializeField] private GrenadeFirePos grenadeFirePos;
+    [SerializeField] private AgentArmorModule agentArmorModule;
 
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
@@ -249,7 +254,15 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 playerStateChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
                 BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, speedData.Duration);
             }
-
+            else if (itemData is ThrowingItemData throwingData)
+            {
+                Vector3 direction = grenadeFirePos.targetMark.transform.position;
+                StartCoroutine(grenadeFirePos.SimulateProjectile(direction, true, throwingData.Grenade));
+            }
+            else if (itemData is ArmorItemData armorData)
+            { 
+                agentArmorModule.ArmorEquip(true, armorData.ArmorType, armorData.Armor); 
+            }
         }
 
         if (itemData is CountableItemData)

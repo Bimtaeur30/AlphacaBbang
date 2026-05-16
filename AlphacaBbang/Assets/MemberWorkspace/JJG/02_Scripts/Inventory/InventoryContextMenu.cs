@@ -108,7 +108,7 @@ public class InventoryContextMenu : MonoBehaviour
 
         ItemData item = slot.ItemData;
 
-        bool isConsumable  = item is FoodItemData || item is MedicineItemData;
+        bool isConsumable  = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
         bool isWeapon      = item is WeaponItemData;
         bool isGearEquip   = !isWeapon && item.EquipType != EquipType.None;
         bool isEquippable  = isWeapon || isGearEquip;
@@ -171,7 +171,7 @@ public class InventoryContextMenu : MonoBehaviour
             }
             equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
         }
-        else if (itemData is FoodItemData || itemData is MedicineItemData)
+        else if (itemData is FoodItemData || itemData is MedicineItemData || itemData is ThrowingItemData)
         {
             TryMoveToQuickSlot(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
         }

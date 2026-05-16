@@ -1,6 +1,7 @@
 using System;
 using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 
 public class WeaponHolder : MonoBehaviour
@@ -12,7 +13,11 @@ public class WeaponHolder : MonoBehaviour
     public WeaponItemData CurrentWeapon { get; private set; }
     public int CurrentSlotIndex { get; private set; } = -1;
 
+    public ThrowingItemData CurrentThrowingItem { get; private set; }
+    public int CurrentThrowingSlotIndex { get; private set; } = -1;
+
     public event Action<WeaponItemData> OnWeaponChanged;
+    public event Action<ThrowingItemData> OnThrowingItemChanged;
 
     private readonly WeaponItemData[] _slotCache = new WeaponItemData[2];
 
@@ -80,5 +85,31 @@ public class WeaponHolder : MonoBehaviour
         OnWeaponChanged?.Invoke(null);
 
         Debug.Log("[WeaponHolder] 무기 해제");
+    }
+
+    public void EquipThrowingItem(int slotIndex, ThrowingItemData throwingData)
+    {
+        if (CurrentThrowingSlotIndex == slotIndex && CurrentThrowingItem == throwingData)
+        {
+            UnequipThrowingItem();
+            return;
+        }
+
+        Unequip();
+
+        CurrentThrowingSlotIndex = slotIndex;
+        CurrentThrowingItem = throwingData;
+        OnThrowingItemChanged?.Invoke(CurrentThrowingItem);
+
+        Debug.Log($"[WeaponHolder] 투척류 장착: {throwingData?.ItemName ?? "없음"} (슬롯 {slotIndex})");
+    }
+
+    public void UnequipThrowingItem()
+    {
+        CurrentThrowingSlotIndex = -1;
+        CurrentThrowingItem = null;
+        OnThrowingItemChanged?.Invoke(null);
+
+        Debug.Log("[WeaponHolder] 투척류 해제");
     }
 }

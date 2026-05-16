@@ -11269,7 +11269,7 @@ GameObject:
   - component: {fileID: 1331986826}
   - component: {fileID: 1331986825}
   - component: {fileID: 1331986824}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Plane
   m_TagString: Floor
   m_Icon: {fileID: 0}
@@ -11864,7 +11864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef8bede99f7e804ca85806643120eab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrenadeFirePos
-  characterState: 0
+  characterState: 1
   firingAngle: 45
   gravity: 9.8
   throwingDistance: 10
@@ -11872,12 +11872,12 @@ MonoBehaviour:
   targetMark: {fileID: 1264165220301592963, guid: 4a32aa4d8eef8a2449ea0f126159e446, type: 3}
   layermask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 2048
   grenadeList:
   - {fileID: 11400000, guid: f5ff75a0dc4b8454e8473da7a789cabe, type: 2}
   - {fileID: 11400000, guid: b1a8dbb66c488e94bbfce3ddeb7cf857, type: 2}
   - {fileID: 11400000, guid: dd70dd9ffefd49f4a8752f27a3bc34cc, type: 2}
-  currentGrenade: {fileID: 11400000, guid: f5ff75a0dc4b8454e8473da7a789cabe, type: 2}
+  currentGrenade: {fileID: 11400000, guid: b1a8dbb66c488e94bbfce3ddeb7cf857, type: 2}
   lineRenderer: {fileID: 2109145472}
   lineSegmentCount: 30
   lineTimeStep: 0.0375
@@ -11904,7 +11904,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109145469}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -17769,6 +17769,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   AgentEventChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}
   <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
+  playerStatChannel: {fileID: 0}
+  <SaveId>k__BackingField: {fileID: 0}
   _isGunParam: {fileID: 11400000, guid: 1ed3e90167f86854aa8c0f6c47aa74bf, type: 2}
   _speedParam: {fileID: 11400000, guid: 5f18c7ef8293beb41ad821adf54e3f85, type: 2}
   _attackXParam: {fileID: 11400000, guid: 42cc18460e9f60e4296ddb7fa9460c4f, type: 2}

@@ -14,7 +14,7 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     [SerializeField] private Image _gaugeImage;
     [SerializeField] private Image _parentGaugeImage;
-    [field: SerializeField] public float GaugeMaxTime { get; private set; } = 10f;
+    public float GaugeMaxTime => PlayerStatSystem.Instance.GaugeMaxTime;
     public float CurrentGauge { get; private set; }
 
 

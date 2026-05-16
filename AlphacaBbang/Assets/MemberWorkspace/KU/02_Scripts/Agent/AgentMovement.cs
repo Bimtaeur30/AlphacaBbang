@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 {
-    [field: SerializeField] public float _moveSpeed { get; private set; }
+    public float _moveSpeed => PlayerStatSystem.Instance.MoveSpeed;
 
     private Rigidbody _rigidbody;
 

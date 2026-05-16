@@ -1,5 +1,6 @@
 using JJH._02_Scripts_Systems.EventSystems;
 using System;
+using MemberWorkspace.CHG._02_Scripts.Bunker;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -9,12 +10,13 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
 
-    public float MaxHealth = 100f;
+    [field: SerializeField] public float MaxHealth { get; private set; }
+    [field: SerializeField] public float MoveSpeed { get; private set; }
+    [field: SerializeField] public float MaxStamina { get; private set; }
+    [field: SerializeField] public float GaugeMaxTime { get; private set; }
     public float CurrentHealth { get; private set; }
-
-    public float MaxStamina = 10f;
     public float CurrentStamina { get; private set; }
-
+    
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
 
@@ -34,7 +36,7 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 
     }
 
-
+ 
 
     private void Update()
     {
@@ -111,5 +113,34 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         return CurrentStamina > 0f;
     }
 
-
+    public void AddStat(PlayerStatType type ,float value)
+    {
+        switch (type)
+        {
+            case PlayerStatType.Speed:
+            {
+                MoveSpeed += value;
+                Debug.LogWarning($"{type}: {MoveSpeed}");
+            }
+                break;
+            case PlayerStatType.Health:
+            {
+                MaxHealth += value;
+                Debug.LogWarning($"{type}: {MaxHealth}");
+            }
+                break;
+            case PlayerStatType.Stamina:
+            {
+                MaxStamina += value;
+                Debug.LogWarning($"{type}: {MaxStamina}");
+            }
+                break;
+            case PlayerStatType.Gauge:
+            {
+                GaugeMaxTime += value;
+                Debug.LogWarning($"{type}: {GaugeMaxTime}");
+            }
+                break;
+        }
+    }
 }

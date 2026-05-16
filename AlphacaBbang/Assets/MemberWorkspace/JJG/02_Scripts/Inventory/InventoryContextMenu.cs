@@ -110,7 +110,8 @@ public class InventoryContextMenu : MonoBehaviour
 
         bool isConsumable  = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
         bool isWeapon      = item is WeaponItemData;
-        bool isGearEquip   = !isWeapon && item.EquipType != EquipType.None;
+        bool isArmor       = item is ArmorItemData;
+        bool isGearEquip   = isArmor || (!isWeapon && item.EquipType != EquipType.None);
         bool isEquippable  = isWeapon || isGearEquip;
 
         bool isStorage   = _container.ContainerType == ContainerType.Storage;
@@ -160,6 +161,16 @@ public class InventoryContextMenu : MonoBehaviour
         if (itemData is WeaponItemData)
         {
             TryMoveToQuickSlot(itemData, minIndex: 0, maxIndex: 3);
+        }
+        else if (itemData is ArmorItemData)
+        {
+            if (equipmentContainer == null)
+            {
+                Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
+                Close();
+                return;
+            }
+            equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
         }
         else if (itemData.EquipType != EquipType.None)
         {

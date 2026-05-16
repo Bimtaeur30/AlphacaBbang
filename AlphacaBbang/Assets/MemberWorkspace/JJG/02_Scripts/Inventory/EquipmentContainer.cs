@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 
 public class EquipmentContainer : ItemContainer
@@ -32,6 +33,9 @@ public class EquipmentContainer : ItemContainer
         EquipmentSlot equipmentSlot = GetEquipmentSlot(index);
         if (equipmentSlot == null)
             return false;
+
+        if (itemData is ArmorItemData)
+            return equipmentSlot.allowedEquipType == EquipType.Helmet;
 
         return equipmentSlot.allowedEquipType == itemData.EquipType;
     }

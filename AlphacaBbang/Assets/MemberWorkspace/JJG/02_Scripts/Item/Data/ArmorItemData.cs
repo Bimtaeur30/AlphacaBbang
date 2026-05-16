@@ -7,6 +7,5 @@ namespace MemberWorkspace.JJG._02_Scripts.Item.Data
     public class ArmorItemData : ItemData
     {
         [field: SerializeField] public ArmorSO Armor { get; private set; }
-        [field: SerializeField] public ArmorType ArmorType { get; private set; }
     }
 }

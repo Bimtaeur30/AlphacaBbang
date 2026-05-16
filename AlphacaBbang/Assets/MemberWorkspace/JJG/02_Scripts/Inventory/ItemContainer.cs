@@ -17,7 +17,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
 
-    [Header("Item Setting")] 
+    [Header("Item Setting")]
     [SerializeField] private GrenadeFirePos grenadeFirePos;
     [SerializeField] private AgentArmorModule agentArmorModule;
 
@@ -261,7 +261,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ArmorItemData armorData)
             { 
-                agentArmorModule.ArmorEquip(true, armorData.ArmorType, armorData.Armor); 
+                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor); 
             }
         }
 

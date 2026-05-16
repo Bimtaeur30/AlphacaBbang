@@ -228,6 +228,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
 
     public void Attack(Vector3 vector, bool val)
     {
-        StartCoroutine(SimulateProjectile(vector, val));
+        StartCoroutine(SimulateProjectile(vector, val, currentGrenade));
     }
 }

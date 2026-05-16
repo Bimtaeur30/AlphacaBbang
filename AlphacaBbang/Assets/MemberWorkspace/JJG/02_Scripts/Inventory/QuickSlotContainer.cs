@@ -18,7 +18,7 @@ namespace MemberWorkspace.JJG._02_Scripts
             if (itemData is WeaponItemData)
                 return index < 3;
 
-            if (itemData is FoodItemData || itemData is MedicineItemData)
+            if (itemData is FoodItemData || itemData is MedicineItemData || itemData is ThrowingItemData)
                 return index >= 3;
 
             return false;

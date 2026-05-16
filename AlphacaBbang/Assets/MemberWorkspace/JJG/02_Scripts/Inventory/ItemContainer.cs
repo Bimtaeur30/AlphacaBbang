@@ -16,6 +16,9 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
 
+    [Header("Throwing Item")] [SerializeField]
+    private GrenadeFirePos grenadeFirePos;
+
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
@@ -249,7 +252,11 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 playerStateChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
                 BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, speedData.Duration);
             }
-
+            else if (itemData is ThrowingItemData throwingData)
+            {
+                Vector3 direction = grenadeFirePos.targetMark.transform.position;
+                StartCoroutine(grenadeFirePos.SimulateProjectile(direction, true, throwingData.Grenade));
+            }
         }
 
         if (itemData is CountableItemData)

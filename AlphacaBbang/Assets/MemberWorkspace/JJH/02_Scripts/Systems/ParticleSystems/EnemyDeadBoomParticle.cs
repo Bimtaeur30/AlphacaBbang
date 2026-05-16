@@ -1,9 +1,9 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using UnityEngine;
 
-namespace JJH._02_Scripts.Agents.Enemies.Skills
+namespace JJH._02_Scripts.Systems.ParticleSystems
 {
-    public class BreathParticle : PoolableMono
+    public class EnemyDeadBoomParticle : PoolableMono
     {
         private ParticleSystem _particleSystem;
 
@@ -17,7 +17,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             PoolManager.Push(this);
         }
 
-        public void PlayBreathParticle()
+        public void PlayBoomParticle()
         {
             _particleSystem.Play();
         }

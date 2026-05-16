@@ -27,7 +27,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         //    playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
         //if (Keyboard.current.yKey.wasPressedThisFrame)
         //    systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
-        playerStatChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(30, 10));
     }
     public string GetSaveData()
     {
@@ -55,6 +54,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
         GaugeMaxTime = parsedData.playerMaxAimStaminaSave;
+
 
         Debug.Log($"Health: {parsedData.playerMaxHpSave}");
         Debug.Log($"Stamina: {parsedData.playerMaxRunStaminaSave}");
@@ -102,4 +102,5 @@ public struct PlayerStateSaveData
     public float playerMaxHpSave;
     public float playerMaxRunStaminaSave;
     public float playerMaxAimStaminaSave;
+    public float playerPercentMoveSpeedSave;
 }

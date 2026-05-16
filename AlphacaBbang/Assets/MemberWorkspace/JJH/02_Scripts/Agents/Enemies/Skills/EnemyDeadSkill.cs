@@ -3,11 +3,10 @@ using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies.Skills
 {
-    public class EnemyBombSkill : MonoBehaviour, IEnemySkill
+    public class EnemyDeadSkill : MonoBehaviour, IEnemySkill
     {
         [SerializeField] private PoolManagerSO poolManager;
-        [SerializeField] private PoolItemSO explosionPref;
-        [SerializeField] private float explosionDamage = 30f;
+        [SerializeField] private PoolItemSO deadBoomPref;
 
         private AbstractEnemy _owner;
 
@@ -18,9 +17,9 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
         public void UseSkill()
         {
-            ExplosionPrefab effect = poolManager.Pop<ExplosionPrefab>(explosionPref);
+            EnemyDeadBoomParticle effect = poolManager.Pop<EnemyDeadBoomParticle>(deadBoomPref);
             effect.transform.position = _owner.transform.position;
-            effect.Active(5f, explosionDamage, _owner.Sensor.TargetLayer);
+            effect.PlayBoomParticle();
         }
     }
 }

@@ -53,14 +53,14 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
             case CharacterState.Player:
                 if (Mouse.current.rightButton.isPressed)
                 {
-                    Vector3 direction = targetMark.transform.position;
                     MousePosition();
+                    Vector3 direction = targetMark.transform.position;
                     DrawTrajectory(direction);
 
                     if (Mouse.current.leftButton.wasPressedThisFrame)
                     {
                         bool canAttack = true; // 임시로 박아둠
-                        StartCoroutine(SimulateProjectile(direction, canAttack));
+                        StartCoroutine(SimulateProjectile(direction, canAttack, currentGrenade));
                     }
                 }
                 else
@@ -105,7 +105,7 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
         }
     }
 
-    public IEnumerator SimulateProjectile(Vector3 direction, bool val)
+    public IEnumerator SimulateProjectile(Vector3 direction, bool val, GrenadeSO currentGrenade)
     {
         if (currentGrenade == null || currentGrenade.count <= 0)
         {

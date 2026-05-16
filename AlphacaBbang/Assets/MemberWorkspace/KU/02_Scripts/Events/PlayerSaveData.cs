@@ -13,7 +13,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     [field: SerializeField] public float MaxHealth { get; private set; }
     [field: SerializeField] public float MaxStamina { get; private set; }
     [field: SerializeField] public float GaugeMaxTime { get; private set; }
-    [field: SerializeField] public float PlayerMoveSpeed { get; private set; }
 
     private void OnEnable()
     {
@@ -43,7 +42,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
             playerMaxHpSave = MaxHealth,
             playerMaxRunStaminaSave = MaxStamina,
             playerMaxAimStaminaSave = GaugeMaxTime,
-            playerMoveSpeedSave = PlayerMoveSpeed,
         };
         return JsonUtility.ToJson(saveData);
     }
@@ -56,7 +54,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
         GaugeMaxTime = parsedData.playerMaxAimStaminaSave;
-        PlayerMoveSpeed = parsedData.playerMoveSpeedSave;
 
 
         Debug.Log($"Health: {parsedData.playerMaxHpSave}");
@@ -105,5 +102,5 @@ public struct PlayerStateSaveData
     public float playerMaxHpSave;
     public float playerMaxRunStaminaSave;
     public float playerMaxAimStaminaSave;
-    public float playerMoveSpeedSave;
+    public float playerPercentMoveSpeedSave;
 }

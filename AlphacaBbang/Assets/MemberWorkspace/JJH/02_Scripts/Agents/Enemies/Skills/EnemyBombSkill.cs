@@ -8,6 +8,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         [SerializeField] private PoolManagerSO poolManager;
         [SerializeField] private PoolItemSO explosionPref;
         [SerializeField] private float explosionDamage = 30f;
+
         private AbstractEnemy _owner;
 
         public void Initialize(AbstractEnemy owner)

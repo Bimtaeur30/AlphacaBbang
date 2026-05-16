@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,11 +27,13 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private RectTransform _contentAreaRT;
     [SerializeField] private GameObject _slotUIPrefab;
     [SerializeField] private ItemContainer inventory;
+    [SerializeField] private WeaponHolder _weaponHolder;
 
     [Header("Preview")]
     [SerializeField] private bool _showPreview = false;
 
     private readonly List<ItemSlotUI> _slotUIList = new();
+    private int _selectedSlotIndex = -1;
 
     private int SlotCount
     {
@@ -53,6 +56,12 @@ public class InventoryUI : MonoBehaviour
             if (inventory != null)
                 inventory.OnContainerChanged += RefreshUI;
 
+            if (_weaponHolder != null)
+            {
+                _weaponHolder.OnWeaponChanged += OnWeaponChanged;
+                _weaponHolder.OnThrowingItemChanged += OnThrowingItemChanged;
+            }
+
             RebuildRuntime();
         }
 #if UNITY_EDITOR
@@ -65,8 +74,35 @@ public class InventoryUI : MonoBehaviour
 
     private void OnDisable()
     {
-        if (Application.isPlaying && inventory != null)
-            inventory.OnContainerChanged -= RefreshUI;
+        if (Application.isPlaying)
+        {
+            if (inventory != null)
+                inventory.OnContainerChanged -= RefreshUI;
+
+            if (_weaponHolder != null)
+            {
+                _weaponHolder.OnWeaponChanged -= OnWeaponChanged;
+                _weaponHolder.OnThrowingItemChanged -= OnThrowingItemChanged;
+            }
+        }
+    }
+
+    private void OnWeaponChanged(WeaponItemData weaponData)
+    {
+        _selectedSlotIndex = weaponData != null ? _weaponHolder.CurrentSlotIndex : -1;
+        UpdateSelectionUI();
+    }
+
+    private void OnThrowingItemChanged(ThrowingItemData throwingData)
+    {
+        _selectedSlotIndex = throwingData != null ? _weaponHolder.CurrentThrowingSlotIndex : -1;
+        UpdateSelectionUI();
+    }
+
+    private void UpdateSelectionUI()
+    {
+        for (int i = 0; i < _slotUIList.Count; i++)
+            _slotUIList[i].SetSelected(i == _selectedSlotIndex);
     }
 
     private void Start()

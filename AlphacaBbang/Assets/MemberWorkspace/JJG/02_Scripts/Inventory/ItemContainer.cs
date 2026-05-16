@@ -237,10 +237,17 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             if (itemData is HotMedicineItemData hotData)
             {
                 StartCoroutine(HealOverTime(hotData.HealAmountPerTick, hotData.TickCount, hotData.TickInterval));
+                float healDuration = hotData.TickCount * hotData.TickInterval;
+                BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, healDuration);
             }
             else if (itemData is MedicineItemData medData && medData.HealAmount > 0)
             {
                 playerStateChannel.RaiseEvent(PlayerStateEvents.PlayerHpHeal.Init(medData.HealAmount));
+            }
+            else if (itemData is MoveSpeedItemData speedData)
+            {
+                playerStateChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
+                BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, speedData.Duration);
             }
 
         }

@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e07c0e7e5158540b8ba7d31ae1212c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractKeyUI
-  rootCanvas: {fileID: 0}
+  rootCanvas: {fileID: 3482125538826393746}
   circleBackground: {fileID: 6968750731411977129}
   darkOverlay: {fileID: 3089711495634030026}
   contentGroup: {fileID: 4569722444642691871}
@@ -439,9 +439,22 @@ MonoBehaviour:
   pressKey: 19
   fillDuration: 1.5
   restoreSpeed: 8
+  InteractRange: 5
   OnInteract:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: SceneTeleporter, Assembly-CSharp
+        m_MethodName: SceneChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   backgroundAlpha: 0.755
   contentAlpha: 0.474
 --- !u!1 &2927993704125147063

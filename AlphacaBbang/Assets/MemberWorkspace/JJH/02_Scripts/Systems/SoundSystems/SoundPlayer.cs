@@ -43,8 +43,11 @@ namespace JJH._02_Scripts.Systems.SoundSystems
                 _audioSource.pitch += Random.Range(-clipData.randomPitchModifier, clipData.randomPitchModifier);
             }
             _audioSource.clip = clipData.clip;
-
             _audioSource.loop = clipData.loop;
+            _audioSource.minDistance = clipData.minDistance;
+            _audioSource.maxDistance = clipData.maxDistance;
+
+            _audioSource.spatialBlend = clipData.audioType == AudioTypes.Sfx ? 1f : 0f;
 
             if (!clipData.loop)
             {
@@ -69,6 +72,5 @@ namespace JJH._02_Scripts.Systems.SoundSystems
         {
             _audioSource.Stop();
         }
-
     }
 }

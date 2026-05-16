@@ -67,7 +67,7 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
                 case PlayerStatType.Health:
                 {
                     PlayerStatSystem.Instance.AddStat(type, healthUpValue);
-                    ChangeText(PlayerStatType.Speed ,PlayerStatSystem.Instance.MaxHealth);
+                    ChangeText(PlayerStatType.Health ,PlayerStatSystem.Instance.MaxHealth);
                 }
                     break;
                 case PlayerStatType.Speed:
@@ -78,11 +78,11 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
                     break;
                 case PlayerStatType.Stamina:
                     PlayerStatSystem.Instance.AddStat(type, speedUpValue);
-                    ChangeText(PlayerStatType.Speed ,PlayerStatSystem.Instance.MaxStamina);
+                    ChangeText(PlayerStatType.Stamina ,PlayerStatSystem.Instance.MaxStamina);
                     break;
                 case PlayerStatType.Gauge:
                     PlayerStatSystem.Instance.AddStat(type, speedUpValue);
-                    ChangeText(PlayerStatType.Speed ,PlayerStatSystem.Instance.GaugeMaxTime);
+                    ChangeText(PlayerStatType.Gauge ,PlayerStatSystem.Instance.GaugeMaxTime);
                     break;
                 default:
                     Debug.LogWarning("NOoo");

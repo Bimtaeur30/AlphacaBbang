@@ -5,9 +5,14 @@ Shader "Custom/FloorFog"
         _BaseColor ("Base Color", Color) = (1,1,1,1)
         _BaseMap   ("Base Map",   2D)    = "white" {}
         _FogColor  ("Fog Color",  Color) = (0.25, 0.25, 0.25, 0.85)
-        _EdgeBlurWidth   ("Edge Blur Width",   Range(0.001, 0.1)) = 0.03
-        _EdgeBlurSamples ("Edge Blur Samples", Range(4, 16)) = 8
         
+        [Header(Mask Blur Settings)]
+        _EdgeBlurWidth ("Obstacle Mask Blur Width", Range(0.001, 0.1)) = 0.03
+        _EdgeBlurSamples ("Obstacle Blur Samples", Range(4, 16)) = 8
+        
+        [Header(View Cone Softness)]
+        _ViewSoftness ("View Distance Softness", Range(0.1, 5.0)) = 1.0
+        _AngleSoftness ("View Angle Softness", Range(1.0, 20.0)) = 5.0
     }
 
     SubShader
@@ -33,6 +38,10 @@ Shader "Custom/FloorFog"
                 float4 _BaseColor;
                 float4 _BaseMap_ST;
                 float4 _FogColor;
+                float _EdgeBlurWidth;
+                float _EdgeBlurSamples;
+                float _ViewSoftness;
+                float _AngleSoftness;
             CBUFFER_END
 
             float4 _PlayerPos;
@@ -40,8 +49,6 @@ Shader "Custom/FloorFog"
             float  _ViewRadius;
             float  _ViewAngle;
             float  _CloseViewRadius;
-            float _EdgeBlurWidth;   
-            float _EdgeBlurSamples;
 
             struct Attributes
             {
@@ -58,24 +65,34 @@ Shader "Custom/FloorFog"
                 float3 positionWS : TEXCOORD2;
             };
 
-            bool IsInViewRange(float3 worldPos)
+            // 기존의 bool 반환 대신 0.0 ~ 1.0 사이의 부드러운 float 값을 반환하도록 수정
+            float GetViewMask(float3 worldPos)
             {
                 float3 toTarget = worldPos - _PlayerPos.xyz;
                 toTarget.y = 0;
                 float dist = length(toTarget);
 
-                if (dist <= _CloseViewRadius)
-                    return true;
+                // 1. 거리에 따른 부드러운 경계 (외곽 _ViewSoftness 유닛만큼 서서히 투명해짐)
+                float viewMask = 1.0 - smoothstep(_ViewRadius - _ViewSoftness, _ViewRadius, dist);
+                float closeMask = 1.0 - smoothstep(_CloseViewRadius - _ViewSoftness, _CloseViewRadius, dist);
 
-                if (dist <= _ViewRadius)
-                {
-                    float3 forward = normalize(_PlayerForward.xyz);
-                    float3 dir     = normalize(toTarget);
-                    float  angle   = degrees(acos(clamp(dot(forward, dir), -1.0, 1.0)));
-                    if (angle <= _ViewAngle * 0.5)
-                        return true;
-                }
-                return false;
+                if (dist > _ViewRadius) 
+                    return closeMask; // 거리가 벗어나면 근접 시야 마스크만 반환
+
+                // 2. 각도에 따른 부드러운 경계
+                float3 forward = normalize(_PlayerForward.xyz);
+                float3 dir     = dist > 0.001 ? toTarget / dist : forward;
+                float  angle   = degrees(acos(clamp(dot(forward, dir), -1.0, 1.0)));
+                
+                float  halfAngle = _ViewAngle * 0.5;
+                // 끝부분 _AngleSoftness 도(degree) 만큼 서서히 투명해짐
+                float  angleMask = 1.0 - smoothstep(halfAngle - _AngleSoftness, halfAngle, angle);
+
+                // 거리 마스크와 각도 마스크를 곱하여 부드러운 부채꼴 완성
+                float coneMask = viewMask * angleMask;
+                
+                // 근접 시야와 부채꼴 시야 중 더 큰 값을 최종 시야로 사용
+                return saturate(max(coneMask, closeMask));
             }
 
             Varyings vert(Attributes IN)
@@ -91,11 +108,29 @@ Shader "Custom/FloorFog"
 
             float4 frag(Varyings IN) : SV_Target
             {
-                float2 screenUV     = IN.positionCS.xy / _ScreenParams.xy;
-                float  maskObstacle = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV).r;
-                float  maskRange    = IsInViewRange(IN.positionWS) ? 1.0 : 0.0;
-                float  mask         = maskObstacle * maskRange;
+                float2 screenUV = IN.positionCS.xy / _ScreenParams.xy;
 
+                // --- 1. 장애물 마스크(_MaskTex) 블러 처리 ---
+                float blurredMaskObstacle = 0;
+                int   samples = (int)_EdgeBlurSamples;
+                float radius  = _EdgeBlurWidth;
+
+                for (int i = 0; i < samples; i++)
+                {
+                    float  angle  = (6.28318 / samples) * i;
+                    float2 offset = float2(cos(angle), sin(angle)) * radius;
+                    blurredMaskObstacle += SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV + offset).r;
+                }
+                blurredMaskObstacle /= samples;
+
+                // --- 2. 플레이어 시야 마스크 (부채꼴) ---
+                // GetViewMask 내부의 smoothstep 덕분에 자체적으로 부드러운 0~1 값을 가집니다.
+                float maskRange = GetViewMask(IN.positionWS);
+
+                // --- 3. 최종 마스크 합성 ---
+                float finalMask = blurredMaskObstacle * maskRange;
+
+                // --- 라이팅 연산 ---
                 InputData inputData = (InputData)0;
                 inputData.positionWS      = IN.positionWS;
                 inputData.normalWS        = normalize(IN.normalWS);
@@ -108,41 +143,10 @@ Shader "Custom/FloorFog"
                 float  shadow    = mainLight.shadowAttenuation;
                 float3 lit       = texColor.rgb * _BaseColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
 
-                float edgeFactor = 1.0 - abs(mask * 2.0 - 1.0);
-                edgeFactor = smoothstep(0.0, 1.0, edgeFactor);
-
-                float3 blurredLit = lit;
-                if (edgeFactor > 0.01)
-                {
-                    float3 blurAccum = float3(0, 0, 0);
-                    int    samples   = 8;
-                    float  radius    = _EdgeBlurWidth;
-
-                    for (int i = 0; i < samples; i++)
-                    {
-                        float  angle   = (6.28318 / samples) * i;
-                        float2 offset  = float2(cos(angle), sin(angle)) * radius;
-                        float2 sampleUV = screenUV + offset;
-
-                        float sampleMask = SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, sampleUV).r
-                                         * (IsInViewRange(IN.positionWS) ? 1.0 : 0.0);
-
-                        float3 foggedSample = lerp(
-                            lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
-                            lit,
-                            sampleMask
-                        );
-                        blurAccum += foggedSample;
-                    }
-                    blurredLit = blurAccum / samples;
-                }
-
-                float3 baseFogged = lerp(
-                    lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a,
-                    lit,
-                    mask
-                );
-                float3 final = lerp(baseFogged, blurredLit, edgeFactor * 0.8);
+                // --- 안개 적용 ---
+                float3 fogged = lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a;
+                float3 final  = lerp(fogged, lit, finalMask);
+                
                 return float4(final, 1.0);
             }
             ENDHLSL

@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 { 
@@ -24,7 +26,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         [SerializeField] private GameObject layOutGroup;
         [SerializeField] private GameObject questPanelPrefab;
         [SerializeField] private GameObject conditionTextPrefab;
-    
+
         private Dictionary<Quest, QuestUIStruct> _activeQuests = new();
 
         private void Awake()
@@ -36,22 +38,28 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         private void AcceptQuest(Quest quest)
         {
             GameObject panel = Instantiate(questPanelPrefab, layOutGroup.transform);
+            StartCoroutine(LayoutRebuild());
             
             TextMeshProUGUI nameText = panel.GetComponentInChildren<TextMeshProUGUI>();
             nameText.text = quest.Data.Name;
             
-            Transform conditionLayout = panel.transform.Find("ConditionLayoutGroup");
 
             List<TextMeshProUGUI> conditionTexts = new List<TextMeshProUGUI>();
             foreach (QuestCondition condition in quest.Conditions)
             {
-                GameObject condObj = Instantiate(conditionTextPrefab, conditionLayout);
+                GameObject condObj = Instantiate(conditionTextPrefab, panel.transform);
                 TextMeshProUGUI condText = condObj.GetComponent<TextMeshProUGUI>();
                 condText.text = $"{condition.TargetId}: {condition.Progress} / {condition.Required}";
                 conditionTexts.Add(condText);
             }
 
             _activeQuests.Add(quest, new QuestUIStruct(panel, nameText, conditionTexts));
+        }
+
+        private IEnumerator LayoutRebuild()
+        {
+            yield return null;
+            LayoutRebuilder.ForceRebuildLayoutImmediate(layOutGroup.GetComponent<RectTransform>());
         }
 
 

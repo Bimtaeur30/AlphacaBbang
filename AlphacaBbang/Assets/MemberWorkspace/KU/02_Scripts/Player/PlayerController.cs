@@ -5,10 +5,11 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : Agent
+public class PlayerController : Agent, ISaveable
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
     [field: SerializeField] public EventChannelSO playerStatChannel;
+    [field:SerializeField]public SaveIdData SaveId {get; private set;}
 
 
     [SerializeField] private AnimParamSO _isGunParam;
@@ -368,6 +369,7 @@ public class PlayerController : Agent
     #region 퍼블릭 변수
     public Camera MainCam { get; private set; }
     public Vector2 Forward { get; private set; }
+
     #endregion
 
     protected override void InitializeComponents()
@@ -430,7 +432,22 @@ public class PlayerController : Agent
         GunHandleModule.Aim(false);
         GunHandleModule.Fire(false);
     }
+
     #endregion
+    public string GetSaveData()
+    {
+        PlayerStateSaveData saveData = new PlayerStateSaveData()
+        {
+            playerPercentMoveSpeedSave = _additionalSpeedMultiplier,
+        };
+        return JsonUtility.ToJson(saveData);
+    }
+
+    public void RestoreData(string data)
+    {
+        var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
+        _additionalSpeedMultiplier = parsedData.playerPercentMoveSpeedSave;
+    }
 }
 
 public enum PlayerAimState

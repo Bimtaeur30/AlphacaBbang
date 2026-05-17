@@ -8,12 +8,9 @@ using UnityEngine.InputSystem;
 
 public class InventoryContextMenu : MonoBehaviour
 {
-    // 장비 아이템(EquipType != None)만 처리할지 여부 — 인스턴스별로 Inspector에서 설정
     [SerializeField] private bool _handleEquipmentItems = false;
-
     [SerializeField] private GameObject rootPanel;
 
-    // ItemSlotUI에서 호출하는 static 진입점
     public static event Action<ItemContainer, int, Vector3> OnOpenRequested;
     public static void Open(ItemContainer container, int slotIndex, Vector3 position)
         => OnOpenRequested?.Invoke(container, slotIndex, position);
@@ -30,12 +27,14 @@ public class InventoryContextMenu : MonoBehaviour
     [SerializeField] private InventoryContainer inventoryContainer;
     [SerializeField] private ItemContainer storageContainer;
     [SerializeField] private GameObject itemUser;
+    [SerializeField] private WeaponHolder weaponHolder;
+    [SerializeField] private GrenadeFirePos grenadeFirePos;
+    [SerializeField] private QuickSlotHotkeyHandler hotkeyHandler;
 
     [SerializeField] private int xOffset = 50;
 
     private ItemContainer _container;
     private int _slotIndex;
-
     private RectTransform _panelRT;
 
     private void Awake()
@@ -44,7 +43,7 @@ public class InventoryContextMenu : MonoBehaviour
         rootPanel?.SetActive(false);
     }
 
-    private void OnEnable()  => OnOpenRequested += HandleOpenRequest;
+    private void OnEnable() => OnOpenRequested += HandleOpenRequest;
     private void OnDisable() => OnOpenRequested -= HandleOpenRequest;
 
     private void Update()
@@ -88,12 +87,12 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void BindButtons()
     {
-        if (useButton != null)      { useButton.onClick.RemoveAllListeners();      useButton.onClick.AddListener(OnClickUse); }
-        if (equipButton != null)    { equipButton.onClick.RemoveAllListeners();    equipButton.onClick.AddListener(OnClickEquip); }
-        if (unequipButton != null)  { unequipButton.onClick.RemoveAllListeners();  unequipButton.onClick.AddListener(OnClickUnequip); }
-        if (storeButton != null)    { storeButton.onClick.RemoveAllListeners();    storeButton.onClick.AddListener(OnClickStore); }
+        if (useButton != null) { useButton.onClick.RemoveAllListeners(); useButton.onClick.AddListener(OnClickUse); }
+        if (equipButton != null) { equipButton.onClick.RemoveAllListeners(); equipButton.onClick.AddListener(OnClickEquip); }
+        if (unequipButton != null) { unequipButton.onClick.RemoveAllListeners(); unequipButton.onClick.AddListener(OnClickUnequip); }
+        if (storeButton != null) { storeButton.onClick.RemoveAllListeners(); storeButton.onClick.AddListener(OnClickStore); }
         if (retrieveButton != null) { retrieveButton.onClick.RemoveAllListeners(); retrieveButton.onClick.AddListener(OnClickRetrieve); }
-        if (dropButton != null)     { dropButton.onClick.RemoveAllListeners();     dropButton.onClick.AddListener(OnClickDrop); }
+        if (dropButton != null) { dropButton.onClick.RemoveAllListeners(); dropButton.onClick.AddListener(OnClickDrop); }
     }
 
     private void RefreshVisibleButtons()
@@ -108,14 +107,14 @@ public class InventoryContextMenu : MonoBehaviour
 
         ItemData item = slot.ItemData;
 
-        bool isConsumable  = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
-        bool isWeapon      = item is WeaponItemData;
-        bool isGearEquip   = !isWeapon && item.EquipType != EquipType.None;
-        bool isEquippable  = isWeapon || isGearEquip;
+        bool isConsumable = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
+        bool isWeapon = item is WeaponItemData;
+        bool isGearEquip = !isWeapon && item.EquipType != EquipType.None;
+        bool isEquippable = isWeapon || isGearEquip;
 
-        bool isStorage   = _container.ContainerType == ContainerType.Storage;
+        bool isStorage = _container.ContainerType == ContainerType.Storage;
         bool isQuickSlot = _container is MemberWorkspace.JJG._02_Scripts.QuickSlotContainer;
-        bool isExternal  = isStorage || isQuickSlot;
+        bool isExternal = isStorage || isQuickSlot;
 
         useButton?.gameObject.SetActive(isConsumable && !isExternal);
         equipButton?.gameObject.SetActive((isEquippable || isConsumable) && !isExternal);
@@ -157,9 +156,21 @@ public class InventoryContextMenu : MonoBehaviour
 
         ItemData itemData = slot.ItemData;
 
-        if (itemData is WeaponItemData)
+        if (itemData is WeaponItemData weaponData)
         {
-            TryMoveToQuickSlot(itemData, minIndex: 0, maxIndex: 3);
+            if (weaponData.Gun != null)
+            {
+                TryMoveToQuickSlot(itemData, minIndex: 0, maxIndex: 3);
+            }
+            else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
+            {
+                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 3);
+                if (targetSlotIndex >= 0 && weaponHolder != null)
+                {
+                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
+                    weaponHolder.EquipMeleeWeapon(targetSlotIndex, weaponData, meleeWeapon);
+                }
+            }
         }
         else if (itemData.EquipType != EquipType.None)
         {
@@ -171,7 +182,16 @@ public class InventoryContextMenu : MonoBehaviour
             }
             equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
         }
-        else if (itemData is FoodItemData || itemData is MedicineItemData || itemData is ThrowingItemData)
+        else if (itemData is ThrowingItemData throwingData)
+        {
+            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            if (targetSlotIndex >= 0 && weaponHolder != null)
+            {
+                weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);
+                hotkeyHandler.SetThrowingSlotIndex(targetSlotIndex);
+            }
+        }
+        else if (itemData is FoodItemData || itemData is MedicineItemData)
         {
             TryMoveToQuickSlot(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
         }
@@ -206,28 +226,34 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void TryMoveToQuickSlot(ItemData itemData, int minIndex, int maxIndex)
     {
+        TryMoveToQuickSlotAndGetIndex(itemData, minIndex, maxIndex);
+    }
+
+    private int TryMoveToQuickSlotAndGetIndex(ItemData itemData, int minIndex, int maxIndex)
+    {
         if (quickSlotContainer == null)
         {
-            Debug.LogWarning("QuickSlotContainer가 연결되지 않았습니다.");
-            return;
+            Debug.LogError("QuickSlotContainer가 null입니다.");
+            return -1;
         }
 
         for (int i = minIndex; i < maxIndex; i++)
         {
-            if (!quickSlotContainer.CanPlaceItem(i, itemData))
-                continue;
-
+            bool canPlace = quickSlotContainer.CanPlaceItem(i, itemData);
             ItemSlot targetSlot = quickSlotContainer.GetSlot(i);
-            if (targetSlot == null || !targetSlot.IsEmpty)
-                continue;
+            Debug.Log($"슬롯 {i} | CanPlace: {canPlace} | IsEmpty: {targetSlot?.IsEmpty}");
+
+            if (!canPlace) continue;
+            if (targetSlot == null || !targetSlot.IsEmpty) continue;
 
             _container.MoveItemTo(_slotIndex, quickSlotContainer, i);
-            return;
+            Debug.Log($"MoveItemTo 완료 → return {i}");
+            return i;
         }
 
         Debug.LogWarning("빈 슬롯이 없습니다.");
+        return -1;
     }
-
     private void OnClickStore()
     {
         ItemSlot slot = _container.GetSlot(_slotIndex);

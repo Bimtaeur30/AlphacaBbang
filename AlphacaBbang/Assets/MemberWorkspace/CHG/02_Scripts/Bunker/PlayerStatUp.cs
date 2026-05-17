@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using TMPro;
 using UnityEngine;
@@ -30,8 +31,20 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
 
         [SerializeField] private PlayerStatViewUI[] statView;
 
+        private CanvasGroup _canvasGroup;
+        private Tween _tween;
+
+        private void Awake()
+        {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
         private void Start()
         {
+            _tween = _canvasGroup.DOFade(0, 0.0f);
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
+            
             StatUpPointText.text = "남은 포인트: " + PlayerStateManager.Instance.StatUpPoint;
             LevelText.text = "현재 레벨: " + PlayerStateManager.Instance.CurrentLevel;
             for (int i = 0; i < statView.Length; i++)
@@ -134,6 +147,22 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
         private void ChangeText(PlayerStatType type, float value)
         {
             statView[(int)type].Text.text = value.ToString();
+        }
+
+        public void ShowUI()
+        {
+            _tween?.Kill();
+            _tween = _canvasGroup.DOFade(1, 0.5f);
+            _canvasGroup.interactable = true;
+            _canvasGroup.blocksRaycasts = true;
+        }
+
+        public void HideUI()
+        {
+            _tween?.Kill();
+            _tween = _canvasGroup.DOFade(0, 0.5f);
+            _canvasGroup.interactable = false;
+            _canvasGroup.blocksRaycasts = false;
         }
     }
 }

@@ -9,7 +9,7 @@ public class WeaponHolder : MonoBehaviour
     [SerializeField] private EventChannelSO gunChannel;
     [SerializeField] private QuickSlotContainer quickSlotContainer;
     [SerializeField] private EquipmentContainer equipmentContainer;
-
+    [SerializeField] private MeleeWeaponBase[] meleeWeapons;
     public WeaponItemData CurrentWeapon { get; private set; }
     public int CurrentSlotIndex { get; private set; } = -1;
 
@@ -18,8 +18,17 @@ public class WeaponHolder : MonoBehaviour
 
     public event Action<WeaponItemData> OnWeaponChanged;
     public event Action<ThrowingItemData> OnThrowingItemChanged;
+    public event Action<MeleeWeaponBase> OnMeleeWeaponChanged;
+
 
     private readonly WeaponItemData[] _slotCache = new WeaponItemData[2];
+
+    private AgentAttack _agentAttack;
+
+    private void Awake()
+    {
+        _agentAttack = GetComponentInChildren<AgentAttack>();
+    }
 
     private void OnEnable()
     {
@@ -33,6 +42,34 @@ public class WeaponHolder : MonoBehaviour
             quickSlotContainer.OnContainerChanged -= OnQuickSlotChanged;
     }
 
+    public MeleeWeaponBase FindMeleeWeapon(string id)
+    {
+        foreach (var weapon in meleeWeapons)
+            if (weapon.name == id) return weapon;
+        Debug.LogWarning($"[WeaponHolder] 근접무기 못찾음: {id}");
+        return null;
+    }
+
+    public void EquipMeleeWeapon(int slotIndex, WeaponItemData weaponData, MeleeWeaponBase meleeWeapon)
+    {
+        if (CurrentSlotIndex == slotIndex && CurrentWeapon == weaponData)
+        {
+            UnequipMeleeWeapon();
+            return;
+        }
+        CurrentSlotIndex = slotIndex;
+        CurrentWeapon = weaponData;
+        OnMeleeWeaponChanged?.Invoke(meleeWeapon);
+        Debug.Log($"[WeaponHolder] 근접무기 장착: {weaponData?.ItemName ?? "없음"} (슬롯 {slotIndex})");
+    }
+
+    public void UnequipMeleeWeapon()
+    {
+        CurrentSlotIndex = -1;
+        CurrentWeapon = null;
+        OnMeleeWeaponChanged?.Invoke(null);
+        Debug.Log("[WeaponHolder] 근접무기 해제");
+    }
     private void OnQuickSlotChanged()
     {
         for (int i = 0; i < 2; i++)

@@ -10,23 +10,31 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     [field: SerializeField] public EventChannelSO systemChannel;
     [field: SerializeField] public SaveIdData SaveId { get; private set; }
 
-    [field: SerializeField] public float MaxHealth { get; private set; }
-    [field: SerializeField] public float MaxStamina { get; private set; }
-    [field: SerializeField] public float GaugeMaxTime { get; private set; }
+    [field: SerializeField] public float MaxHealth { get; private set; } = 100f;
+    [field: SerializeField] public float MaxStamina { get; private set; } = 10f;
+    [field: SerializeField] public float MaxAimStamina { get; private set; } = 5f;
 
     private void OnEnable()
     {
         playerStatChannel.AddListener<AddMaxHealth>(HandleAddMaxHealth);
-        systemChannel.AddListener<AddMaxStamina>(HandleAddMaxStamina);
+        playerStatChannel.AddListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.AddListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
+
+        Debug.Log("MaxHealth" + MaxHealth);
+        Debug.Log("MaxStamina" + MaxStamina);
+        Debug.Log("MaxAimStamina" + MaxAimStamina);
 
     }
     private void Update()
     {
-        //if (Keyboard.current.tKey.wasPressedThisFrame)
-        //    playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
-        //if (Keyboard.current.yKey.wasPressedThisFrame)
-        //    systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+        if (Keyboard.current.tKey.wasPressedThisFrame)
+            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
+        if (Keyboard.current.yKey.wasPressedThisFrame)
+            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxAimStamina.Init(1));
+        if (Keyboard.current.uKey.wasPressedThisFrame)
+            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxStamina.Init(1));
+        if (Keyboard.current.iKey.wasPressedThisFrame)
+            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
     }
     public string GetSaveData()
     {
@@ -41,7 +49,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         {
             playerMaxHpSave = MaxHealth,
             playerMaxRunStaminaSave = MaxStamina,
-            playerMaxAimStaminaSave = GaugeMaxTime,
+            playerMaxAimStaminaSave = MaxAimStamina,
         };
         return JsonUtility.ToJson(saveData);
     }
@@ -53,7 +61,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
-        GaugeMaxTime = parsedData.playerMaxAimStaminaSave;
+        MaxAimStamina = parsedData.playerMaxAimStaminaSave;
 
 
         Debug.Log($"Health: {parsedData.playerMaxHpSave}");
@@ -75,7 +83,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     }
     private void HandleAddMaxAimStamina(AddMaxAimStamina evt)
     {
-        GaugeMaxTime += evt.val;
+        MaxAimStamina += evt.val;
 
         Debug.Log($"최대 에임 스태미나 증가 : {evt.val}");
     }
@@ -85,7 +93,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     private void OnDisable()
     {
         playerStatChannel.RemoveListener<AddMaxHealth>(HandleAddMaxHealth);
-        systemChannel.RemoveListener<AddMaxStamina>(HandleAddMaxStamina);
+        playerStatChannel.RemoveListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.RemoveListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
 
     }
@@ -102,5 +110,4 @@ public struct PlayerStateSaveData
     public float playerMaxHpSave;
     public float playerMaxRunStaminaSave;
     public float playerMaxAimStaminaSave;
-    public float playerPercentMoveSpeedSave;
 }

@@ -3,7 +3,6 @@
     public enum PlayerStatType
     {
         Health, 
-        Speed,
         Stamina, 
         AimStamina 
     }

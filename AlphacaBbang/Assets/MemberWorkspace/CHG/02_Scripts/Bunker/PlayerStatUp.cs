@@ -33,10 +33,12 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
 
         private CanvasGroup _canvasGroup;
         private Tween _tween;
+        private PlayerSaveData _playerSaveData;
 
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
+            _playerSaveData = PlayerStatSystem.Instance.SaveData;
         }
 
         private void Start()
@@ -55,16 +57,13 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
                 switch ((PlayerStatType)i)
                 {
                     case PlayerStatType.Health:
-                        s = PlayerStatSystem.Instance.MaxHealth.ToString();
-                        break;
-                    case PlayerStatType.Speed:
-                        s = PlayerStatSystem.Instance.MoveSpeed.ToString();
+                        s = _playerSaveData.MaxHealth.ToString();
                         break;
                     case PlayerStatType.Stamina:
-                        s = PlayerStatSystem.Instance.MaxStamina.ToString();
+                        s = _playerSaveData.MaxStamina.ToString();
                         break;
                     case PlayerStatType.AimStamina:
-                        s = PlayerStatSystem.Instance.GaugeMaxTime.ToString();
+                        s = _playerSaveData.MaxStamina.ToString();
                         break;
                 }
                 statView[i].Text.text = s;
@@ -82,67 +81,24 @@ namespace MemberWorkspace.CHG._02_Scripts.Bunker
                 {
                     AddMaxHealth addHealth = new AddMaxHealth().Init(healthUpValue);
                     playerStatChannel.RaiseEvent(addHealth);
-                    ChangeText(PlayerStatType.Health ,PlayerStatSystem.Instance.MaxHealth);
-                }
-                    break;
-                case PlayerStatType.Speed:
-                {
-                    //추가해야함.
-                    PlayerStatSystem.Instance.AddStat(type, speedUpValue);
-                    ChangeText(PlayerStatType.Speed ,PlayerStatSystem.Instance.MoveSpeed);
+                    ChangeText(PlayerStatType.Health , _playerSaveData.MaxHealth);
                 }
                     break;
                 case PlayerStatType.Stamina:
                     AddMaxStamina addMaxStamina = new AddMaxStamina().Init(staminaUpValue);
                     systemChannel.RaiseEvent(addMaxStamina);
-                    ChangeText(PlayerStatType.Stamina ,PlayerStatSystem.Instance.MaxStamina);
+                    ChangeText(PlayerStatType.Stamina ,_playerSaveData.MaxStamina);
                     break;
                 case PlayerStatType.AimStamina:
                     AddMaxAimStamina addAimStamina = new AddMaxAimStamina().Init(aimStaminaUpValue);
                     systemChannel.RaiseEvent(addAimStamina);
-                    ChangeText(PlayerStatType.AimStamina ,PlayerStatSystem.Instance.GaugeMaxTime);
+                    ChangeText(PlayerStatType.AimStamina ,_playerSaveData.MaxAimStamina);
                     break;
                 default:
                     Debug.LogWarning("NOoo");
                     break;
             }
         }
-        
-        /*public void StatDown(PlayerStatType type)
-        {
-            PlayerStateManager.Instance.StateUpPoint++;
-            
-            switch (type)
-            {
-                case PlayerStatType.Speed:
-                {
-                    changeValues[type] -= speedUpValue;
-                    ChangeText(type, PlayerStatSystem.Instance.MoveSpeed - changeValues[type]);
-                }
-                    break;
-                case PlayerStatType.Health:
-                {
-                    changeValues[type] -= healthUpValue;
-                    ChangeText(type, PlayerStatSystem.Instance.MaxHealth - changeValues[type]);
-                }
-                    break;
-                case PlayerStatType.Stamina:
-                    changeValues[type] -= staminaUpValue;
-                    ChangeText(type, PlayerStatSystem.Instance.MaxStamina - changeValues[type]);
-                    break;
-                case PlayerStatType.Concentration:
-                    
-                    break;
-            }
-        }*/
-
-        /*public void SetStat()
-        {
-            PlayerStatSystem.Instance.MoveSpeed += changeValues[PlayerStatType.Speed];
-            PlayerStatSystem.Instance.MaxHealth += changeValues[PlayerStatType.Health];
-            PlayerStatSystem.Instance.MaxStamina += changeValues[PlayerStatType.Stamina];
-            
-        }*/
 
         private void ChangeText(PlayerStatType type, float value)
         {

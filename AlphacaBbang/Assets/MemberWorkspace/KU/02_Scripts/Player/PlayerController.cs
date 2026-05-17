@@ -5,12 +5,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : Agent, ISaveable
+public class PlayerController : Agent
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
-    [field: SerializeField] public EventChannelSO playerStatChannel;
-    [field:SerializeField]public SaveIdData SaveId {get; private set;}
-
 
     [SerializeField] private AnimParamSO _isGunParam;
     [SerializeField] private AnimParamSO _speedParam;
@@ -73,9 +70,8 @@ public class PlayerController : Agent, ISaveable
     protected override void Awake()
     {
         base.Awake();
-        playerStatChannel.AddListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
 
-        _agentMovement = Movement as AgentMovement;
+        _agentMovement = GetComponentInChildren<AgentMovement>();
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
@@ -101,6 +97,7 @@ public class PlayerController : Agent, ISaveable
             RotateToMovement();
 
         UpdateAnimation();
+        Debug.Log(_agentMovement.name);
     }
 
     private void HandleAimInput()
@@ -352,8 +349,6 @@ public class PlayerController : Agent, ISaveable
     {
         PlayerInput.OnMovementChange -= HandleMovement;
         PlayerInput.OnSprintAction -= HandleSprint;
-        playerStatChannel.RemoveListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
-
     }
 
     #region �� ���� �ڵ�
@@ -434,20 +429,6 @@ public class PlayerController : Agent, ISaveable
     }
 
     #endregion
-    public string GetSaveData()
-    {
-        PlayerStateSaveData saveData = new PlayerStateSaveData()
-        {
-            playerPercentMoveSpeedSave = _additionalSpeedMultiplier,
-        };
-        return JsonUtility.ToJson(saveData);
-    }
-
-    public void RestoreData(string data)
-    {
-        var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
-        _additionalSpeedMultiplier = parsedData.playerPercentMoveSpeedSave;
-    }
 }
 
 public enum PlayerAimState

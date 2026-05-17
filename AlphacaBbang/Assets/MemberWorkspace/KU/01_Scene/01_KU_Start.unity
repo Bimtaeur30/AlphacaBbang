@@ -420,8 +420,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   AgentEventChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}
   <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
-  playerStatChannel: {fileID: 0}
-  <SaveId>k__BackingField: {fileID: 0}
   _isGunParam: {fileID: 11400000, guid: 1ed3e90167f86854aa8c0f6c47aa74bf, type: 2}
   _speedParam: {fileID: 11400000, guid: 5f18c7ef8293beb41ad821adf54e3f85, type: 2}
   _attackXParam: {fileID: 11400000, guid: 42cc18460e9f60e4296ddb7fa9460c4f, type: 2}
@@ -608,7 +606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &217685591
 RectTransform:
   m_ObjectHideFlags: 0
@@ -645,30 +643,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48715bc65d740f99148fb680bc9243c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.Bunker.PlayerStatUp
-  healthUpValue: 3
-  speedUpValue: 3
-  staminaUpValue: 3
-  gaugeUpValue: 3
-  StatUpPointText: {fileID: 652894255}
-  LevelText: {fileID: 1462757609}
-  statView:
-  - Obj: {fileID: 1166249709}
-    Text: {fileID: 862592014}
-    Button: {fileID: 1711154101}
-  - Obj: {fileID: 1797830762}
-    Text: {fileID: 1957646052}
-    Button: {fileID: 1191693757}
-  - Obj: {fileID: 1609473653}
-    Text: {fileID: 1471805724}
-    Button: {fileID: 1982975819}
-  - Obj: {fileID: 681429889}
-    Text: {fileID: 57389866}
-    Button: {fileID: 1334478220}
 --- !u!1 &241385549 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e6eb9321b823efb478e299b9538867cd, type: 3}
   m_PrefabInstance: {fileID: 703329920}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &241749398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7409039312561745448, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+  m_PrefabInstance: {fileID: 1450216557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &241749404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241749398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a5d2d2578d7d945a99f2ecaae4c897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSaveData
+  playerStatChannel: {fileID: 11400000, guid: d655508e55a436b4a951a0330a6935d3, type: 2}
+  systemChannel: {fileID: 11400000, guid: 4fa04cb7e0c323f4197c5741b5741fb1, type: 2}
+  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
+  <MaxHealth>k__BackingField: 100
+  <MaxStamina>k__BackingField: 10
+  <MaxAimStamina>k__BackingField: 5
 --- !u!1 &267357926
 GameObject:
   m_ObjectHideFlags: 0
@@ -1175,7 +1177,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &337961187
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1603,9 +1605,9 @@ RectTransform:
   - {fileID: 968161515}
   m_Father: {fileID: 1688504378}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -20}
   m_SizeDelta: {x: 500, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &515878002
@@ -2700,7 +2702,7 @@ RectTransform:
   m_Father: {fileID: 968161515}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3368,9 +3370,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1686934597242654721, guid: bdeeb590a56793445a277e343fd6e0fd, type: 3}
+      propertyPath: _mainCamera
+      value: 
+      objectReference: {fileID: 330585545}
     - target: {fileID: 5507248977026731881, guid: bdeeb590a56793445a277e343fd6e0fd, type: 3}
       propertyPath: m_Name
       value: System
+      objectReference: {fileID: 0}
+    - target: {fileID: 5507248977026731881, guid: bdeeb590a56793445a277e343fd6e0fd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6639750255025554996, guid: bdeeb590a56793445a277e343fd6e0fd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3561,7 +3571,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1050565345
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4495,13 +4505,10 @@ MonoBehaviour:
   isDonDestroy: 0
   _healthBar: {fileID: 1026399645}
   _staminaBar: {fileID: 594979269}
-  <MaxHealth>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 0
-  <MaxStamina>k__BackingField: 0
-  <GaugeMaxTime>k__BackingField: 0
+  MaxHealth: 100
+  MaxStamina: 10
   _staminaDrainSpeed: 2
   _staminaRegenSpeed: 1.5
-  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
 --- !u!1 &1431917638
 GameObject:
   m_ObjectHideFlags: 0
@@ -4950,6 +4957,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -149.11035
       objectReference: {fileID: 0}
+    - target: {fileID: 2966456441220208159, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      propertyPath: _healthBar
+      value: 
+      objectReference: {fileID: 1026399645}
+    - target: {fileID: 2966456441220208159, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      propertyPath: _staminaBar
+      value: 
+      objectReference: {fileID: 594979269}
     - target: {fileID: 3019983327169546338, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -3.1837761
@@ -5113,6 +5128,10 @@ PrefabInstance:
     - target: {fileID: 4593708980926443722, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -1.6676476
+      objectReference: {fileID: 0}
+    - target: {fileID: 4630842157759798398, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      propertyPath: _moveSpeed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4680211944164289066, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5349,11 +5368,11 @@ PrefabInstance:
     - target: {fileID: 6588190764572395724, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: _gaugeImage
       value: 
-      objectReference: {fileID: 2049038031}
+      objectReference: {fileID: 1844120193}
     - target: {fileID: 6588190764572395724, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: _parentGaugeImage
       value: 
-      objectReference: {fileID: 1691095756}
+      objectReference: {fileID: 373375709}
     - target: {fileID: 6624332312915301054, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -47.161274
@@ -5712,7 +5731,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2795532867426782165, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 343618351}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7409039312561745448, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 241749404}
   m_SourcePrefab: {fileID: 100100000, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
 --- !u!4 &1450216558 stripped
 Transform:
@@ -6272,6 +6294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4822acc83c11b45bd32d97e193f009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  _moveSpeed: 5
 --- !u!1 &1633306681
 GameObject:
   m_ObjectHideFlags: 0
@@ -6568,9 +6591,9 @@ RectTransform:
   - {fileID: 806545364}
   m_Father: {fileID: 1688504378}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -70}
   m_SizeDelta: {x: 500, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1657996890
@@ -7661,7 +7684,7 @@ MonoBehaviour:
   <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
   <MaxHealth>k__BackingField: 0
   <MaxStamina>k__BackingField: 0
-  <GaugeMaxTime>k__BackingField: 0
+  <MaxAimStamina>k__BackingField: 5
 --- !u!4 &1962786126
 Transform:
   m_ObjectHideFlags: 0
@@ -8196,7 +8219,7 @@ RectTransform:
   m_Father: {fileID: 806545364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}

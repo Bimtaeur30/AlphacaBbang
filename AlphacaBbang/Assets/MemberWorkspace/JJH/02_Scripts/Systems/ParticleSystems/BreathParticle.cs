@@ -1,7 +1,7 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using UnityEngine;
 
-namespace JJH._02_Scripts.Agents.Enemies.Skills
+namespace JJH._02_Scripts.Systems.ParticleSystems
 {
     public class BreathParticle : PoolableMono
     {

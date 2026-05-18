@@ -227,10 +227,7 @@ public class InventoryUI : MonoBehaviour
 
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-        _contentAreaRT.pivot = new Vector2(0f, 1f);
-        _contentAreaRT.anchorMin = new Vector2(0f, 1f);
-        _contentAreaRT.anchorMax = new Vector2(0f, 1f);
+        
         _contentAreaRT.localScale = Vector3.one;
     }
 

@@ -11415,6 +11415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Test_PlayerAttack
   weapon: {fileID: 2017749807}
+  weaponHolder: {fileID: 0}
   mainCamera: {fileID: 1888415459}
   characterState: 0
 --- !u!4 &1540182782 stripped
@@ -11822,7 +11823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e25db63ef1790dc43aef5f8326947105, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TwoHandedSteelPipe
-  characterState: 0
+  characterState: 1
   data:
   - {fileID: 11400000, guid: b97dc64206f691c4c91cec8a060b29a4, type: 2}
   - {fileID: 11400000, guid: 0c81fbb653bfb68449500bacbfcdff79, type: 2}
@@ -11845,6 +11846,7 @@ GameObject:
   - component: {fileID: 2109145471}
   - component: {fileID: 2109145470}
   - component: {fileID: 2109145472}
+  - component: {fileID: 2109145473}
   m_Layer: 0
   m_Name: FirePos
   m_TagString: Untagged
@@ -11859,7 +11861,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109145469}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ef8bede99f7e804ca85806643120eab, type: 3}
   m_Name: 
@@ -12005,6 +12007,22 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &2109145473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109145469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7267d46e43704124096d1ab9c3fa3a42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentAttack
+  weapon: {fileID: 2017749807}
+  weaponHolder: {fileID: 0}
+  mainCamera: {fileID: 1888415459}
+  characterState: 1
 --- !u!1 &282002550455645109
 GameObject:
   m_ObjectHideFlags: 0
@@ -12129,7 +12147,6 @@ MonoBehaviour:
   MaxStamina: 10
   _staminaDrainSpeed: 2
   _staminaRegenSpeed: 1.5
-  <SaveId>k__BackingField: {fileID: 0}
 --- !u!114 &1700479911568834439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17659,12 +17676,10 @@ MonoBehaviour:
   isDonDestroy: 0
   _gaugeImage: {fileID: 0}
   _parentGaugeImage: {fileID: 0}
-  <GaugeMaxTime>k__BackingField: 10
   _minAimCooldown: 1
   _useSpeed: 1
   _chargeSpeed: 1.5
   _aimReleaseCooldown: 1
-  <SaveId>k__BackingField: {fileID: 0}
   playerStatChannel: {fileID: 0}
 --- !u!1 &7057093198513659357
 GameObject:
@@ -17769,8 +17784,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   AgentEventChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}
   <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
-  playerStatChannel: {fileID: 0}
-  <SaveId>k__BackingField: {fileID: 0}
   _isGunParam: {fileID: 11400000, guid: 1ed3e90167f86854aa8c0f6c47aa74bf, type: 2}
   _speedParam: {fileID: 11400000, guid: 5f18c7ef8293beb41ad821adf54e3f85, type: 2}
   _attackXParam: {fileID: 11400000, guid: 42cc18460e9f60e4296ddb7fa9460c4f, type: 2}
@@ -17833,7 +17846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4822acc83c11b45bd32d97e193f009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  <_moveSpeed>k__BackingField: 6
+  _moveSpeed: 5
 --- !u!4 &8880444429916157919
 Transform:
   m_ObjectHideFlags: 0

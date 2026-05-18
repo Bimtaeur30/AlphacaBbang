@@ -21,7 +21,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         }
     }
 
-    public class QuestUIManager : MonoBehaviour
+    public class ActiveQuestUIManager : MonoBehaviour
     {
         [SerializeField] private GameObject layOutGroup;
         [SerializeField] private GameObject questPanelPrefab;

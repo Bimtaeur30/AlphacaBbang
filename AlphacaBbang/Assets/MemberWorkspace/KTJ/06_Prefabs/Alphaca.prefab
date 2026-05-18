@@ -47,13 +47,10 @@ MonoBehaviour:
   isDonDestroy: 0
   _healthBar: {fileID: 0}
   _staminaBar: {fileID: 0}
-  <MaxHealth>k__BackingField: 0
-  <MoveSpeed>k__BackingField: 0
-  <MaxStamina>k__BackingField: 0
-  <GaugeMaxTime>k__BackingField: 0
+  MaxHealth: 100
+  MaxStamina: 10
   _staminaDrainSpeed: 2
   _staminaRegenSpeed: 1.5
-  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
 --- !u!1 &282364366017578608
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +259,6 @@ MonoBehaviour:
   _useSpeed: 1
   _chargeSpeed: 1.5
   _aimReleaseCooldown: 1
-  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
   playerStatChannel: {fileID: 11400000, guid: d655508e55a436b4a951a0330a6935d3, type: 2}
 --- !u!1 &4314552058483432283
 GameObject:
@@ -361,7 +357,7 @@ MonoBehaviour:
   <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
   <MaxHealth>k__BackingField: 0
   <MaxStamina>k__BackingField: 0
-  <GaugeMaxTime>k__BackingField: 0
+  <MaxAimStamina>k__BackingField: 5
 --- !u!1 &5523204830986490838
 GameObject:
   m_ObjectHideFlags: 0
@@ -714,6 +710,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7057925352724836701}
   - component: {fileID: 5428621937661179215}
+  - component: {fileID: 5823509768392659990}
   - component: {fileID: 1254022997667945965}
   - component: {fileID: 5598999929187972529}
   - component: {fileID: 7332532898021816215}
@@ -765,8 +762,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   AgentEventChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}
   <PlayerInput>k__BackingField: {fileID: 11400000, guid: cd34ab8ea172a2745a05ff7ef7f4041c, type: 2}
-  playerStatChannel: {fileID: 11400000, guid: d655508e55a436b4a951a0330a6935d3, type: 2}
-  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
   _isGunParam: {fileID: 11400000, guid: 1ed3e90167f86854aa8c0f6c47aa74bf, type: 2}
   _speedParam: {fileID: 11400000, guid: 5f18c7ef8293beb41ad821adf54e3f85, type: 2}
   _attackXParam: {fileID: 11400000, guid: 42cc18460e9f60e4296ddb7fa9460c4f, type: 2}
@@ -775,6 +770,24 @@ MonoBehaviour:
   _releaseDuration: 0.67
   _shortClickThreshold: 1
   playerInputSO: {fileID: 11400000, guid: 7f331cee3fc0b2a4bae901ec427a6542, type: 2}
+--- !u!114 &5823509768392659990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7409039312561745448}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9a5d2d2578d7d945a99f2ecaae4c897, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSaveData
+  playerStatChannel: {fileID: 11400000, guid: d655508e55a436b4a951a0330a6935d3, type: 2}
+  systemChannel: {fileID: 11400000, guid: 4fa04cb7e0c323f4197c5741b5741fb1, type: 2}
+  <SaveId>k__BackingField: {fileID: 11400000, guid: 55ecc95a07935c443a58883361199434, type: 2}
+  <MaxHealth>k__BackingField: 100
+  <MaxStamina>k__BackingField: 10
+  <MaxAimStamina>k__BackingField: 5
 --- !u!136 &1254022997667945965
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -967,6 +980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4822acc83c11b45bd32d97e193f009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  _moveSpeed: 5
 --- !u!1001 &2235018715038179763
 PrefabInstance:
   m_ObjectHideFlags: 0

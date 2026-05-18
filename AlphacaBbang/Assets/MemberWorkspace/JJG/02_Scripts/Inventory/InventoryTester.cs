@@ -17,6 +17,7 @@ public class InventoryTest : MonoBehaviour
     [SerializeField] private ItemData equipItem;
     [SerializeField] private ItemData equipItem2;
     [SerializeField] private ItemData throwingItem;
+    [SerializeField] private ItemData armorItem;
 
     [Header("Options")]
     [SerializeField] private bool printSlotStateOnStart = true;
@@ -93,10 +94,9 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.f6Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.MoveItemTo(0, storageContainer, 0);
-            Debug.Log($"[TEST] Inventory[0] -> Storage[0] 이동: {result}");
+            bool result = inventoryContainer.AddItem(armorItem, 1);
+            Debug.Log($"[TEST] 0번 슬롯 아이템 사용: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
-            PrintContainerState(storageContainer, "Storage");
         }
 
         if (_keyboard.f7Key.wasPressedThisFrame)

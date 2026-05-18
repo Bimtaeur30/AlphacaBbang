@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1076176275027229387}
   - component: {fileID: 8251910122402290524}
   - component: {fileID: 6368826464545067272}
-  - component: {fileID: 6406322708233372468}
   - component: {fileID: 5766200390464109357}
+  - component: {fileID: 1532303418568841702}
   m_Layer: 6
   m_Name: WildBoarEnemy
   m_TagString: Untagged
@@ -93,29 +93,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 5782013422704101083}
---- !u!136 &6406322708233372468
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5782013422704101083}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2.631951
-  m_Height: 5.263902
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0.30138946}
 --- !u!195 &5766200390464109357
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -138,6 +115,27 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &1532303418568841702
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5782013422704101083}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0992641, y: 4.5265284, z: 4.578764}
+  m_Center: {x: 0.024382591, y: 0.91117835, z: -0.03185892}
 --- !u!1001 &720610986066466374
 PrefabInstance:
   m_ObjectHideFlags: 0

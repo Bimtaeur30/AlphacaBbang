@@ -19,7 +19,7 @@ public abstract class ItemData : ScriptableObject
     
     [TextArea] public string description;
     
-    [field: SerializeField] public EquipType EquipType { get; private set; }
+    [field: SerializeField] public virtual EquipType EquipType { get; private set; }
     
     [field: SerializeField] public GradeType GradeType { get; private set; }
 }

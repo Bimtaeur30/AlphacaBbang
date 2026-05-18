@@ -8,13 +8,38 @@ public enum CharacterState
     Player,
     Enemy
 }
+
 public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
 {
     [SerializeField] private MeleeWeaponBase weapon;
+    [SerializeField] private WeaponHolder weaponHolder;
     [Inject][SerializeField] private Camera mainCamera;
-
     [SerializeField] private CharacterState characterState;
     public CharacterState CharacterState => characterState;
+
+    private void OnEnable()
+    {
+        if (weaponHolder != null)
+            weaponHolder.OnMeleeWeaponChanged += SetCurrentWeapon;
+    }
+
+    private void OnDisable()
+    {
+        if (weaponHolder != null)
+            weaponHolder.OnMeleeWeaponChanged -= SetCurrentWeapon;
+    }
+
+    public void SetCurrentWeapon(MeleeWeaponBase meleeWeapon)
+    {
+        if (weapon != null) weapon.gameObject.SetActive(false);
+        weapon = meleeWeapon;
+        if (weapon != null)
+        {
+            weapon.gameObject.SetActive(true);
+            weapon.characterState = characterState;
+            weapon.Init();
+        }
+    }
 
     private void Update()
     {
@@ -24,12 +49,11 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
                 Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
                 break;
             case CharacterState.Player:
-                if (Mouse.current.leftButton.wasPressedThisFrame)
+                if (weapon != null && Mouse.current.leftButton.wasPressedThisFrame)
                 {
                     Vector3 targetPos = GetMouseWorldPoint();
                     weapon.Attack(targetPos, true);
                 }
-                ;
                 break;
             case CharacterState.Enemy:
                 break;
@@ -39,40 +63,30 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
     private Vector3 GetMouseWorldPoint()
     {
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-
         Plane plane = new Plane(Vector3.up, transform.position);
-
         if (plane.Raycast(ray, out float enter))
-        {
             return ray.GetPoint(enter);
-        }
-
         return transform.position + transform.forward;
     }
 
-    public void Initialize(ModuleOwner owner)
-    {
-
-    }
-
-    public void SetCurrentWeapon(MeleeWeaponBase meleeWeaponBase)
-    {
-        weapon = meleeWeaponBase;
-    }
+    public void Initialize(ModuleOwner owner) { }
 
     public void Init()
     {
-        weapon.Init();
-        weapon.characterState = characterState;
+        if (weapon != null)
+        {
+            weapon.Init();
+            weapon.characterState = characterState;
+        }
     }
 
     public void SetAim(bool val)
     {
-        weapon.SetAim(val);
+        weapon?.SetAim(val);
     }
 
     public void Attack(Vector3 vector, bool val)
     {
-        weapon.Attack(vector, val);
+        weapon?.Attack(vector, val);
     }
 }

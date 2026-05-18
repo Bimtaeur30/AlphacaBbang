@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
 {
-    [field: SerializeField] public float _moveSpeed { get; private set; }
+    public float _moveSpeed = 5;
 
     private Rigidbody _rigidbody;
 
@@ -47,19 +47,19 @@ public class AgentMovement : MonoBehaviour, IModule, IControllerMovement
                 10f * Time.fixedDeltaTime);
         }
     }
-
-    private void Move()
-    {
-        Vector3 move = _velocity * Time.fixedDeltaTime;
-        _rigidbody.MovePosition(_rigidbody.position + move);
-    }
-
     public void Initialize(ModuleOwner owner)
     {
         _owner = owner;
         _rigidbody = owner.GetComponent<Rigidbody>();
 
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+    }
+
+
+    private void Move()
+    {
+        Vector3 move = _velocity * Time.fixedDeltaTime;
+        _rigidbody.MovePosition(_rigidbody.position + move);
     }
 
     public void SetUseRotation(bool useRotation)

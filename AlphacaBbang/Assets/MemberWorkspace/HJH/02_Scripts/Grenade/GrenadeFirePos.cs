@@ -1,9 +1,10 @@
+using Assets.MemberWorkspace.HJH._02_Scripts.Grenade;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
+public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacterStateOwner
 {
     [SerializeField] private CharacterState characterState;
     public CharacterState CharacterState => characterState;
@@ -31,19 +32,17 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
     [SerializeField] private float lineTimeStep = 0.1f;
 
     private int currentIndex = 0;
+    private Vector3 _targetWorldPos;
+
+    public bool IsReady => currentGrenade != null && currentGrenade.count > 0;
 
     private void Start()
     {
-        //if(layermask == 0)
-        //{
-        //    layermask = 1 << LayerMask.NameToLayer("Obstacle");
-        //}
-
         if (grenadeList.Count > 0)
             currentGrenade = grenadeList[0];
     }
 
-    void Update()
+    private void Update()
     {
         switch (characterState)
         {
@@ -51,52 +50,125 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
                 Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
                 break;
             case CharacterState.Player:
-                if (Mouse.current.rightButton.isPressed)
-                {
-                    MousePosition();
-                    Vector3 direction = targetMark.transform.position;
-                    DrawTrajectory(direction);
-
-                    if (Mouse.current.leftButton.wasPressedThisFrame)
-                    {
-                        bool canAttack = true; // 임시로 박아둠
-                        StartCoroutine(SimulateProjectile(direction, canAttack, currentGrenade));
-                    }
-                }
-                else
-                {
-                    lineRenderer.positionCount = 0;
-                    ClearTargetPoint();
-                }
                 break;
             case CharacterState.Enemy:
                 break;
         }
     }
 
-    public void MousePosition()
+    public void SetAim(bool val)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layermask))
+        if (!val)
         {
-            Vector3 dir = hit.point - startPoint.position;
-            if (dir.magnitude > throwingDistance)
-                dir = dir.normalized * throwingDistance;
-
-            Vector3 finalPos = startPoint.position + dir;
-            if (targetPoint == null)
-            {
-                GameObject obj = Instantiate(targetMark, finalPos, Quaternion.identity);
-                targetPoint = obj.transform;
-            }
-            else
-            {
-                targetPoint.position = finalPos;
-            }
+            lineRenderer.positionCount = 0;
+            ClearTargetPoint();
         }
     }
-    public void ClearTargetPoint()
+
+    public void SetTarget(Vector3 worldPosition)
+    {
+        Vector3 dir = worldPosition - startPoint.position;
+        if (dir.magnitude > throwingDistance)
+            dir = dir.normalized * throwingDistance;
+
+        _targetWorldPos = startPoint.position + dir;
+
+        if (targetPoint == null)
+        {
+            GameObject obj = Instantiate(targetMark, _targetWorldPos, Quaternion.identity);
+            targetPoint = obj.transform;
+        }
+        else
+        {
+            targetPoint.position = _targetWorldPos;
+        }
+
+        DrawTrajectory(_targetWorldPos);
+    }
+
+    public void Fire()
+    {
+        if (!IsReady)
+        {
+            Debug.Log("사용할 수 있는 폭탄 없음");
+            return;
+        }
+        StartCoroutine(SimulateProjectile(_targetWorldPos, true, currentGrenade));
+    }
+
+    public void Attack(Vector3 vector, bool val)
+    {
+        StartCoroutine(SimulateProjectile(vector, val, currentGrenade));
+    }
+
+    public IEnumerator SimulateProjectile(Vector3 targetPos, bool val, GrenadeSO grenade)
+    {
+        if (grenade == null || grenade.count <= 0)
+        {
+            Debug.Log("사용할 수 있는 폭탄 없음");
+            yield break;
+        }
+
+        if (!val)
+        {
+            Debug.Log("공격 못함");
+            yield break;
+        }
+
+        GameObject projectile = Instantiate(grenade.prefab, startPoint.position, Quaternion.identity);
+        Rigidbody rb = projectile.GetComponent<Rigidbody>();
+
+        grenade.count--;
+        if (grenade.count <= 0)
+            ChangeNextGrenade();
+
+        Vector3 direction = (targetPos - startPoint.position).normalized;
+        float distance = Vector3.Distance(startPoint.position, targetPos);
+
+        float angleRad = firingAngle * Mathf.Deg2Rad;
+        float sinValue = Mathf.Sin(2 * angleRad);
+        if (Mathf.Abs(sinValue) < 0.01f) yield break;
+
+        float velocity = distance * gravity / sinValue;
+        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
+        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
+
+        projectile.transform.rotation = Quaternion.LookRotation(direction);
+        rb.linearVelocity = new Vector3(direction.x * Vx, Vy, direction.z * Vx);
+
+        yield return null;
+    }
+
+    private void DrawTrajectory(Vector3 targetPos)
+    {
+        if (targetPoint == null) return;
+
+        Vector3 direction = (targetPos - startPoint.position).normalized;
+        float distance = Vector3.Distance(startPoint.position, targetPos);
+
+        float angleRad = firingAngle * Mathf.Deg2Rad;
+        float sinValue = Mathf.Sin(2 * angleRad);
+        if (Mathf.Abs(sinValue) < 0.01f) return;
+
+        float velocity = distance * gravity / sinValue;
+        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
+        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
+
+        Vector3 velocityVector = new Vector3(direction.x * Vx, Vy - 0.5f, direction.z * Vx);
+
+        lineRenderer.positionCount = lineSegmentCount;
+
+        for (int i = 0; i < lineSegmentCount; i++)
+        {
+            float t = i * lineTimeStep;
+            Vector3 point = startPoint.position
+                            + velocityVector * t
+                            + 0.5f * Physics.gravity * t * t;
+            lineRenderer.SetPosition(i, point);
+        }
+    }
+
+    private void ClearTargetPoint()
     {
         if (targetPoint != null)
         {
@@ -105,57 +177,11 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
         }
     }
 
-    public IEnumerator SimulateProjectile(Vector3 direction, bool val, GrenadeSO currentGrenade)
-    {
-        if (currentGrenade == null || currentGrenade.count <= 0)
-        {
-            Debug.Log("사용할 수 있는 폭탄 없음");
-            yield break;
-        }
-        else if (!val)
-        {
-            Debug.Log("공격 못함");
-            yield break;
-        }
-
-        GameObject projectile = Instantiate(currentGrenade.prefab, startPoint.position, Quaternion.identity);
-
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        currentGrenade.count--;
-
-        if (currentGrenade.count <= 0)
-        {
-            ChangeNextGrenade();
-        }
-
-        direction = (direction - startPoint.position).normalized;
-
-        float distance = Vector3.Distance(startPoint.position, direction);
-
-        float angleRad = firingAngle * Mathf.Deg2Rad;
-        float sinValue = Mathf.Sin(2 * angleRad);
-
-        if (Mathf.Abs(sinValue) < 0.01f) yield break;
-
-        float velocity = distance * gravity / sinValue;
-
-        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
-        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
-
-        projectile.transform.rotation = Quaternion.LookRotation(direction);
-
-        rb.linearVelocity = new Vector3(direction.x * Vx, Vy, direction.z * Vx);
-
-        yield return null;
-    }
-
-    void ChangeNextGrenade()
+    private void ChangeNextGrenade()
     {
         for (int i = 0; i < grenadeList.Count; i++)
         {
             currentIndex = (currentIndex + 1) % grenadeList.Count;
-
             if (grenadeList[currentIndex].count > 0)
             {
                 currentGrenade = grenadeList[currentIndex];
@@ -167,67 +193,15 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOw
         currentGrenade = null;
         Debug.Log("폭탄 없어");
     }
-    void OnDrawGizmos()
+
+    public void Initialize(ModuleOwner owner) { }
+
+    public void Init() { }
+
+    private void OnDrawGizmos()
     {
         if (startPoint == null) return;
-
         Gizmos.color = Color.green;
-
-        float range = throwingDistance;
-
-        Gizmos.DrawWireSphere(startPoint.position, range);
-    }
-
-    void DrawTrajectory(Vector3 direction)
-    {
-        if (targetPoint == null) return;
-        direction = (direction - startPoint.position).normalized;
-
-        float distance = Vector3.Distance(startPoint.position, direction);
-
-        float angleRad = firingAngle * Mathf.Deg2Rad;
-        float sinValue = Mathf.Sin(2 * angleRad);
-
-        if (Mathf.Abs(sinValue) < 0.01f) return;
-
-        float velocity = distance * gravity / sinValue;
-
-        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
-        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
-
-        Vector3 velocityVector = new Vector3(direction.x * Vx, Vy - 0.5f, direction.z * Vx);
-
-        lineRenderer.positionCount = lineSegmentCount;
-
-        for (int i = 0; i < lineSegmentCount; i++)
-        {
-            float t = i * lineTimeStep;
-
-            Vector3 point = startPoint.position +
-                            velocityVector * t +
-                            0.5f * Physics.gravity * t * t;
-
-            lineRenderer.SetPosition(i, point);
-        }
-    }
-
-    public void Initialize(ModuleOwner owner)
-    {
-
-    }
-
-    public void Init()
-    {
-
-    }
-
-    public void SetAim(bool val)
-    {
-        // 애니메이션 추가 예정
-    }
-
-    public void Attack(Vector3 vector, bool val)
-    {
-        StartCoroutine(SimulateProjectile(vector, val, currentGrenade));
+        Gizmos.DrawWireSphere(startPoint.position, throwingDistance);
     }
 }

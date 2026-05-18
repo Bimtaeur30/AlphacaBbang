@@ -56,10 +56,18 @@ public class InventoryTest : MonoBehaviour
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
+        // 테스트로 이거 비활성화 하고 근접무기 해놔씅
+        //if (_keyboard.f2Key.wasPressedThisFrame)
+        //{
+        //    bool result = inventoryContainer.AddItem(countableItem, 5);
+        //    Debug.Log($"[TEST] 스택 아이템 5개 추가: {result}");
+        //    PrintContainerState(inventoryContainer, "Inventory");
+        //}
+
         if (_keyboard.f2Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(countableItem, 5);
-            Debug.Log($"[TEST] 스택 아이템 5개 추가: {result}");
+            bool result = inventoryContainer.AddItem(equipItem2, 1);
+            Debug.Log($"근접 아이템 1개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 

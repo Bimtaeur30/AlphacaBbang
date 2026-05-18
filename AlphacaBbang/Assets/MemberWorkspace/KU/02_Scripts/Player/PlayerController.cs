@@ -5,12 +5,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : Agent, ISaveable
+public class PlayerController : Agent
 {
     [field: SerializeField] public PlayerInputSO PlayerInput { get; private set; }
-    [field: SerializeField] public EventChannelSO playerStatChannel;
-    [field:SerializeField]public SaveIdData SaveId {get; private set;}
-
 
     [SerializeField] private AnimParamSO _isGunParam;
     [SerializeField] private AnimParamSO _speedParam;
@@ -41,8 +38,8 @@ public class PlayerController : Agent, ISaveable
         {
             if (_aimState == value) return;
 
-            var prev = _aimState;  // ÀÌÀü »óÅÂ ÀúÀå
-            _aimState = value;     // »óÅÂ º¯°æ
+            var prev = _aimState;  // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            _aimState = value;     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
             switch (value)
             {
@@ -73,9 +70,8 @@ public class PlayerController : Agent, ISaveable
     protected override void Awake()
     {
         base.Awake();
-        playerStatChannel.AddListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
 
-        _agentMovement = Movement as AgentMovement;
+        _agentMovement = GetComponentInChildren<AgentMovement>();
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
@@ -101,6 +97,7 @@ public class PlayerController : Agent, ISaveable
             RotateToMovement();
 
         UpdateAnimation();
+        Debug.Log(_agentMovement.name);
     }
 
     private void HandleAimInput()
@@ -328,7 +325,7 @@ public class PlayerController : Agent, ISaveable
         UpdateSpeed();
         UpdateColliderState();
 
-        // ÃÑ ¸ðµâ¿¡µµ Á¶ÁØ ÇØÁ¦ Àü´Þ
+        // ï¿½ï¿½ ï¿½ï¿½â¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         //HandleAimKey(false);
     }
 
@@ -352,21 +349,19 @@ public class PlayerController : Agent, ISaveable
     {
         PlayerInput.OnMovementChange -= HandleMovement;
         PlayerInput.OnSprintAction -= HandleSprint;
-        playerStatChannel.RemoveListener<AddPlayerMoveSpeed>(HandlePlayerMoveSpeed);
-
     }
 
-    #region ÃÑ °ü·Ã ÄÚµå
-    #region Á÷·ÄÈ­
+    #region ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½
+    #region ï¿½ï¿½ï¿½ï¿½È­
     [SerializeField] private PlayerInputSO_KTJ playerInputSO;
     #endregion
 
-    #region ¸ðµâ
+    #region ï¿½ï¿½ï¿½
     public PlayerGunHandleModule GunHandleModule { get; private set; }
     public CrossHairModule CrossHairModule { get; private set; }
     #endregion
 
-    #region ÆÛºí¸¯ º¯¼ö
+    #region ï¿½Ûºï¿½ ï¿½ï¿½ï¿½ï¿½
     public Camera MainCam { get; private set; }
     public Vector2 Forward { get; private set; }
 
@@ -434,20 +429,6 @@ public class PlayerController : Agent, ISaveable
     }
 
     #endregion
-    public string GetSaveData()
-    {
-        PlayerStateSaveData saveData = new PlayerStateSaveData()
-        {
-            playerPercentMoveSpeedSave = _additionalSpeedMultiplier,
-        };
-        return JsonUtility.ToJson(saveData);
-    }
-
-    public void RestoreData(string data)
-    {
-        var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
-        _additionalSpeedMultiplier = parsedData.playerPercentMoveSpeedSave;
-    }
 }
 
 public enum PlayerAimState

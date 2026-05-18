@@ -1,4 +1,3 @@
-using JJH._02_Scripts.Systems.EventSystems;
 using UnityEngine;
 
 public class AgentRenderer : MonoBehaviour, IRenderer, IModule
@@ -28,10 +27,5 @@ public class AgentRenderer : MonoBehaviour, IRenderer, IModule
     public void SetBool(int hash, bool value)
     {
         Animator.SetBool(hash, value);
-    }
-
-    public void AgentDead()
-    {
-        _owner.AgentEventChannel.RaiseEvent(AgentEvents.AgentInventoryDropEvent.Init(_owner));
     }
 }

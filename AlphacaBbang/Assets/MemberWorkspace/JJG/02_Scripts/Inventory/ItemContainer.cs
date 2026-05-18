@@ -256,6 +256,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ThrowingItemData throwingData)
             {
+                Debug.Log("Grenade used, preparing to throw.");
                 Vector3 direction = grenadeFirePos.targetMark.transform.position;
                 StartCoroutine(grenadeFirePos.SimulateProjectile(direction, true, throwingData.Grenade));
             }

@@ -14,16 +14,15 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     [SerializeField] private Image _gaugeImage;
     [SerializeField] private Image _parentGaugeImage;
-    [field: SerializeField] public float GaugeMaxTime { get; private set; } = 10f;
+    public float GaugeMaxTime => _saveData.MaxAimStamina;
     public float CurrentGauge { get; private set; }
+    private PlayerSaveData _saveData;
 
 
     [SerializeField] private float _minAimCooldown = 2f;
     [SerializeField] private float _useSpeed = 1f;
     [SerializeField] private float _chargeSpeed = 1f;
     [SerializeField] private float _aimReleaseCooldown = 1.5f;
-
-    [field: SerializeField] public SaveIdData SaveId { get; private set; }
 
     [field: SerializeField] public EventChannelSO playerStatChannel;
 
@@ -42,6 +41,7 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
     protected override void Awake()
     {
         _controller = GetComponentInParent<PlayerController>();
+        _saveData = GetComponentInParent<PlayerSaveData>();
 
         CurrentGauge = GaugeMaxTime;
 
@@ -49,6 +49,8 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
         _parentFirstColor = _parentGaugeImage.color;
 
         OnAimStaminaChanged += UpdateUI;
+
+        Debug.Log(GaugeMaxTime);
     }
 
 
@@ -121,7 +123,9 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     private void UpdateUI(float value)
     {
-        float fill = CurrentGauge / GaugeMaxTime;
+        float fill = GaugeMaxTime <= 0f
+            ? 0f
+            : CurrentGauge / GaugeMaxTime;
 
         _gaugeImage.fillAmount = Mathf.Lerp(
             _gaugeImage.fillAmount,

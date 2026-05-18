@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
+using JJH._02_Scripts.Systems.ParticleSystems;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,6 +19,12 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         [SerializeField] private float knockbackForce = 4f;
         [SerializeField] private LayerMask targetLayer;
 
+        [Header("Particle")]
+        [SerializeField] private PoolManagerSO poolManager;
+        [SerializeField] private PoolItemSO dashParticlePref;
+        [SerializeField] private Transform particleSpawnPos;
+        [SerializeField] private float particleSpawnInterval = 0.1f;
+
         public bool IsDashing => _isDashing;
 
         private AbstractEnemy _owner;
@@ -28,6 +36,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         private Vector3 _dashDirection;
 
         private bool _isDashing;
+        private float _particleTimer;
 
         public void Initialize(AbstractEnemy owner)
         {
@@ -54,6 +63,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             _dashDirection = transform.forward.normalized;
 
             _isDashing = true;
+            _particleTimer = 0f;
 
             _navMeshAgent.ResetPath();
             _navMeshAgent.isStopped = true;
@@ -62,6 +72,17 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
         private void Dash()
         {
+            _particleTimer += Time.fixedDeltaTime;
+            if (_particleTimer >= particleSpawnInterval)
+            {
+                _particleTimer = 0f;
+
+                DashAttackParticle effect = poolManager.Pop<DashAttackParticle>(dashParticlePref);
+                effect.transform.position = particleSpawnPos.position;
+                effect.transform.rotation = Quaternion.LookRotation(-_dashDirection);
+                effect.PlayDashParticle();
+            }
+
             Vector3 move = _dashDirection * dashSpeed * Time.fixedDeltaTime;
 
             bool isHit = Physics.SphereCast(transform.position + Vector3.up * 0.5f, playerCheckRadius,

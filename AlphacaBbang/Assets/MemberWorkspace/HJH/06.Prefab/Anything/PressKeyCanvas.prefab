@@ -762,7 +762,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &1167911511778312582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -804,6 +804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34e07c0e7e5158540b8ba7d31ae1212c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractKeyUI
+  rootCanvas: {fileID: 7036164103465126634}
   circleBackground: {fileID: 7030556157696968766}
   darkOverlay: {fileID: 8279770050171439965}
   contentGroup: {fileID: 2293281369209365939}
@@ -812,9 +813,12 @@ MonoBehaviour:
   pressKey: 19
   fillDuration: 1.5
   restoreSpeed: 8
+  InteractRange: 5
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
   backgroundAlpha: 0.755
   contentAlpha: 0.474
-  rootCanvas: {fileID: 7036164103465126634}
 --- !u!1 &4805170699818216982
 GameObject:
   m_ObjectHideFlags: 0

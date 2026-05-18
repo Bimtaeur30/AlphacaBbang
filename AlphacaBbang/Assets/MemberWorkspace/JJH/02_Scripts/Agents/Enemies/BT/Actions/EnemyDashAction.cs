@@ -1,4 +1,4 @@
-using JJH._02_Scripts.Agents.Enemies.NavMeshs;
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -13,46 +13,32 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
     {
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
 
-        [SerializeReference] public BlackboardVariable<float> DashDistance = new(10f);
-        [SerializeReference] public BlackboardVariable<float> DashSpeed = new(20f);
-
-        private INavMeshAgent _navMeshAgent;
-
-        private Vector3 _targetPosition;
-        Transform _enemyTrans;
+        private float _cooldown = 3f;
+        private float _lastUseTime = -999f;
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.EnemyNavMeshAgent == null)
+            if (Enemy.Value == null)
                 return Status.Failure;
 
-            _navMeshAgent = Enemy.Value.EnemyNavMeshAgent;
-            _enemyTrans = Enemy.Value.transform;
+            if (Time.time < _lastUseTime + _cooldown)
+                return Status.Failure;
 
-            Vector3 dashDirection = _enemyTrans.forward;
-            dashDirection.y = 0;
-            dashDirection.Normalize();
+            _lastUseTime = Time.time;
 
-            _targetPosition = _enemyTrans.position + dashDirection * DashDistance.Value;
-
-            _navMeshAgent.KeepChase(false);
+            Enemy.Value.Dash();
 
             return Status.Running;
         }
 
         protected override Status OnUpdate()
         {
-            Vector3 direction = (_targetPosition - _enemyTrans.position).normalized;
-            _enemyTrans.position += direction * DashSpeed.Value * Time.deltaTime;
+            if (Enemy.Value == null)
+                return Status.Failure;
 
-            float distance = Vector3.Distance(_enemyTrans.position, _targetPosition);
-            if (distance <= 0.2f)
-            {
-                _enemyTrans.position = _targetPosition;
-                return Status.Success;
-            }
+            EnemyDashSkill dashSkill = Enemy.Value.EnemySkill.GetSkill<EnemyDashSkill>() as EnemyDashSkill;
 
-            return Status.Running;
+            return dashSkill != null && dashSkill.IsDashing ? Status.Running : Status.Success;
         }
     }
 }

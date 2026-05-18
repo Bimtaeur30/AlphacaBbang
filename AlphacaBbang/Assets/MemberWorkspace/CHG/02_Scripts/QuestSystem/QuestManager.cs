@@ -114,7 +114,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public bool IsCompleted(string questId)
             => _completedQuestIds.Contains(questId);
 
-        private QuestData FindQuestData(string questId)
+        public QuestData FindQuestData(string questId)
         {
             if (MainQuests.TryGetValue(questId, out var main)) return main;
             if (SubQuests.TryGetValue(questId, out var sub)) return sub;

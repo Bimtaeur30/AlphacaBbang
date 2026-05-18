@@ -8,6 +8,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     {
         public string Id;
         public string Name;
+        public string Description;
         public QuestImportanceType Importance;
         public List<ConditionData> Conditions;
     }

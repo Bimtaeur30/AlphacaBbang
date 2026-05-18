@@ -86,10 +86,16 @@ public class TwoHandedSteelPipe : MeleeWeaponBase
         dir.y = 0f;
 
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
-            * data[ComboCounter].attackParticlePrefab.transform.rotation
-            * Quaternion.Euler(0f, 0f, 180f);
+                       * data[ComboCounter].attackParticlePrefab.transform.rotation
+                       * Quaternion.Euler(0f, 0f, 180f);
 
-        gameObject.transform.parent.parent.rotation = rot;
+        Quaternion pRot = Quaternion.LookRotation(dir.normalized)
+                       * Quaternion.Euler(0f, 0f, 180f);
+
+        Vector3 parentRotation = gameObject.transform.parent.rotation.eulerAngles;
+        parentRotation.y = pRot.eulerAngles.y;
+        gameObject.transform.parent.rotation = Quaternion.Euler(parentRotation);
+
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

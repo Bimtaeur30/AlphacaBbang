@@ -11845,6 +11845,7 @@ GameObject:
   - component: {fileID: 2109145471}
   - component: {fileID: 2109145470}
   - component: {fileID: 2109145472}
+  - component: {fileID: 2109145473}
   m_Layer: 0
   m_Name: FirePos
   m_TagString: Untagged
@@ -11859,7 +11860,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109145469}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ef8bede99f7e804ca85806643120eab, type: 3}
   m_Name: 
@@ -12005,6 +12006,21 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &2109145473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2109145469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7267d46e43704124096d1ab9c3fa3a42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentAttack
+  weapon: {fileID: 0}
+  mainCamera: {fileID: 0}
+  characterState: 0
 --- !u!1 &282002550455645109
 GameObject:
   m_ObjectHideFlags: 0
@@ -12125,8 +12141,10 @@ MonoBehaviour:
   isDonDestroy: 0
   _healthBar: {fileID: 0}
   _staminaBar: {fileID: 0}
-  MaxHealth: 100
-  MaxStamina: 10
+  <MaxHealth>k__BackingField: 0
+  <MoveSpeed>k__BackingField: 0
+  <MaxStamina>k__BackingField: 0
+  <GaugeMaxTime>k__BackingField: 0
   _staminaDrainSpeed: 2
   _staminaRegenSpeed: 1.5
   <SaveId>k__BackingField: {fileID: 0}
@@ -17659,7 +17677,6 @@ MonoBehaviour:
   isDonDestroy: 0
   _gaugeImage: {fileID: 0}
   _parentGaugeImage: {fileID: 0}
-  <GaugeMaxTime>k__BackingField: 10
   _minAimCooldown: 1
   _useSpeed: 1
   _chargeSpeed: 1.5
@@ -17833,7 +17850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb4822acc83c11b45bd32d97e193f009, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  <_moveSpeed>k__BackingField: 6
 --- !u!4 &8880444429916157919
 Transform:
   m_ObjectHideFlags: 0

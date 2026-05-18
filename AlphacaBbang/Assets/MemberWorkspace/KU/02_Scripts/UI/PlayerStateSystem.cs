@@ -19,17 +19,17 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     public event Action<float> OnHealthChanged;
     public event Action<float> OnStaminaChanged;
 
-    private PlayerSaveData _saveData;
+    public PlayerSaveData SaveData {get; private set;}
 
     protected override void Awake()
     {
         _controller = GetComponentInParent<PlayerController>();
-        _saveData = GetComponentInParent<PlayerSaveData>();
+        SaveData = GetComponentInParent<PlayerSaveData>();
 
-        if (_saveData != null)
+        if (SaveData != null)
         {
-            MaxHealth = Mathf.Max(1, _saveData.MaxHealth);
-            MaxStamina = Mathf.Max(1, _saveData.MaxStamina);
+            MaxHealth = Mathf.Max(1, SaveData.MaxHealth);
+            MaxStamina = Mathf.Max(1, SaveData.MaxStamina);
         }
 
         CurrentHealth = MaxHealth;

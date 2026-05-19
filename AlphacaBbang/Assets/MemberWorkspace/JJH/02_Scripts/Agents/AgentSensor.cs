@@ -5,8 +5,13 @@ namespace JJH._02_Scripts.Agents
 {
     public class AgentSensor : MonoBehaviour, IModule, ISensor
     {
+        [Header("Layer")]
         [field: SerializeField] public LayerMask ObstacleLayer { get; private set; }
         [field: SerializeField] public LayerMask TargetLayer { get; private set; }
+        [field: SerializeField] public LayerMask SmokeLayer { get; private set; }
+
+        [Header("Layer")]
+        [SerializeField] private float selfCheckRadius;
 
         private Agent _owner;
 
@@ -35,6 +40,12 @@ namespace JJH._02_Scripts.Agents
             Debug.DrawLine(startPosition, target.transform.position, Color.red, 0.1f);
 
             return !isHit;
+        }
+
+        public bool CheckAgentInSmoke()
+        {
+            Collider hitCollider = Physics.OverlapSphere(transform.position, selfCheckRadius, SmokeLayer).FirstOrDefault();
+            return hitCollider != null;
         }
 
         private void OnDrawGizmos()

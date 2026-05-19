@@ -49,6 +49,15 @@ public class InventoryUI : MonoBehaviour
             inventory = GetComponent<ItemContainer>();
     }
 
+    public void SetInventory(ItemContainer container)
+    {
+        if (container == null)
+            return;
+
+        inventory = container;
+        RefreshUI();
+    }
+
     private void OnEnable()
     {
         if (Application.isPlaying)

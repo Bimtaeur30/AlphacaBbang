@@ -114,13 +114,14 @@ public class InventoryContextMenu : MonoBehaviour
 
         bool isStorage = _container.ContainerType == ContainerType.Storage;
         bool isQuickSlot = _container is MemberWorkspace.JJG._02_Scripts.QuickSlotContainer;
+        bool isLootBox = _container is LootBoxContainer;
         bool isExternal = isStorage || isQuickSlot;
 
         useButton?.gameObject.SetActive(isConsumable && !isExternal);
         equipButton?.gameObject.SetActive((isEquippable || isConsumable) && !isExternal);
         unequipButton?.gameObject.SetActive(isGearEquip && !isExternal && HasEquippedItemOfType(item.EquipType));
-        storeButton?.gameObject.SetActive(!isExternal && storageContainer != null);
-        retrieveButton?.gameObject.SetActive(isExternal);
+        storeButton?.gameObject.SetActive(!isExternal && !isLootBox && storageContainer != null);
+        retrieveButton?.gameObject.SetActive(isExternal || isLootBox);
         dropButton?.gameObject.SetActive(true);
     }
 
@@ -257,9 +258,22 @@ public class InventoryContextMenu : MonoBehaviour
     private void OnClickStore()
     {
         ItemSlot slot = _container.GetSlot(_slotIndex);
-        if (slot == null || slot.IsEmpty || storageContainer == null) { Close(); return; }
+        if (slot == null || slot.IsEmpty) { Close(); return; }
 
-        if (storageContainer.AddItem(slot.ItemData, slot.Amount))
+        if (_container is LootBoxContainer)
+        {
+            if (inventoryContainer == null) { Close(); return; }
+
+            if (inventoryContainer.AddItem(slot.ItemData, slot.Amount))
+                _container.ClearSlot(_slotIndex);
+            else
+                Debug.LogWarning("인벤토리가 가득 찼습니다.");
+
+            Close();
+            return;
+        }
+
+        if (storageContainer != null && storageContainer.AddItem(slot.ItemData, slot.Amount))
             _container.ClearSlot(_slotIndex);
         else
             Debug.LogWarning("창고가 가득 찼습니다.");

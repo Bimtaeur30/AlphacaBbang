@@ -1,3 +1,5 @@
+using JJH._02_Scripts_Systems.EventSystems;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,12 +19,14 @@ public class LootBoxRevealUI : MonoBehaviour
     [SerializeField] private InventoryUI _lootInventoryUI;
     [SerializeField] private float _itemRevealInterval = 0.4f;
 
+
     private Coroutine _revealCoroutine;
 
     private void Awake()
     {
         _root.SetActive(false);
     }
+
 
     private void Update()
     {

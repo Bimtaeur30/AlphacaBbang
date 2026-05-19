@@ -1,23 +1,25 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class LootBoxTestOpener : MonoBehaviour
 {
-    private LootBoxInteractor _lootBoxInteractor;
-    private LootBoxContainer _lootBoxContainer;
-    
+    private LootBoxContainer lootBox;
+    private LootBoxInteractor interactor;
+
     private void Awake()
     {
-        _lootBoxInteractor = GetComponent<LootBoxInteractor>();
-        _lootBoxContainer = GetComponent<LootBoxContainer>();
+        if (lootBox == null)
+            lootBox = GetComponent<LootBoxContainer>();
+
+        if (interactor == null)
+            interactor = GetComponent<LootBoxInteractor>();
     }
 
     private void Update()
     {
+        if (Keyboard.current == null) return;
+
         if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            _lootBoxInteractor.StartOpen(_lootBoxContainer);
-        }
+            interactor.StartOpen(lootBox);
     }
 }

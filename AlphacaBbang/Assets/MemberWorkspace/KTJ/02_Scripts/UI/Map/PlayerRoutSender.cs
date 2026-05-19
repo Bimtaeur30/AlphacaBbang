@@ -53,6 +53,6 @@ public class PlayerRoutSender : MonoBehaviour
     private void SendPlayerPosition()
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerPointEvent.Init(transform.position));
-        Debug.Log($"PlayerRoutSender: 현재 위치를 전송했습니다. 위치: {transform.position}");
+        //Debug.Log($"PlayerRoutSender: 현재 위치를 전송했습니다. 위치: {transform.position}");
     }
 }

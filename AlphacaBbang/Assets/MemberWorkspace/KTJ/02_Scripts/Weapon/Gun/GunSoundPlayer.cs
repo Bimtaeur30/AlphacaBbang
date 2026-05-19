@@ -7,16 +7,11 @@ using UnityEngine;
 public class GunSoundPlayer : MonoBehaviour
 {
     [SerializeField] private EventChannelSO soundChannel;
-    private AudioSource audioSource;
-
-    private void Awake()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
 
     public void PlaySound(SoundClipSO audio)
     {
         if (audio == null) return;
+        soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(audio, this.transform));
         //Debug.Assert(audio != null, "오디오가 널입니다.");
         //soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(transform.position, ))
     }

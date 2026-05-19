@@ -55,10 +55,10 @@ public class Magazine : MonoBehaviour
         return true;
     }
 
-    public void TryReload(Action OnReloadEnd)
+    public bool TryReload(Action OnReloadEnd)
     {
         if (_loading)
-            return;
+            return false;
 
         int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.GunDataSO.BulletType);
 
@@ -67,13 +67,13 @@ public class Magazine : MonoBehaviour
         if (emptySpace <= 0)
         {
             Debug.Log("이미 탄창이 가득 찼습니다.");
-            return;
+            return false;
         }
 
         if (inventoryBulletCount <= 0)
         {
             Debug.Log("인벤토리에 총알이 없어요!");
-            return;
+            return false;
         }
 
         int reloadBulletCount = Mathf.Min(emptySpace, inventoryBulletCount);
@@ -81,6 +81,7 @@ public class Magazine : MonoBehaviour
             inventoryContainer.UseItem(emptySpace, null);
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
+        return true;
     }
 
     private IEnumerator Reload(int reloadBulletCount, Action onReloadEnd)

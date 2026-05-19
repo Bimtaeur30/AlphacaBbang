@@ -215,6 +215,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 622014}
   m_CullTransparentMesh: 1
+--- !u!4 &72257448 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+  m_PrefabInstance: {fileID: 612512019}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &152887274 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1316743738759499498, guid: c685e123039b1474dbf7f999babe4db1, type: 3}
@@ -1715,12 +1720,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e6cad1c3071f504e9c2b3abea100040, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseballBat
-  characterState: 0
+  characterState: 1
   data:
   - {fileID: 11400000, guid: de32f3783db83674093bfa3d1a27c2da, type: 2}
   - {fileID: 11400000, guid: 8edfb89bb9f291a478119bd91ce9b640, type: 2}
   comboWindow: 0.75
   ComboCounter: 0
+--- !u!1001 &612512019
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6322243511866309681}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.000000021855694
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
+      propertyPath: m_Name
+      value: BaseBall_Bat
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ebd49dff77c66274fa6087f230e18688, type: 3}
 --- !u!1 &615423198
 GameObject:
   m_ObjectHideFlags: 0
@@ -5513,7 +5587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7267d46e43704124096d1ab9c3fa3a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AgentAttack
-  weapon: {fileID: 809741587}
+  weapon: {fileID: 610686065}
   weaponHolder: {fileID: 0}
   mainCamera: {fileID: 330585545}
   characterState: 1
@@ -43338,6 +43412,7 @@ Transform:
   m_Children:
   - {fileID: 5637153529345231194}
   - {fileID: 185732112}
+  - {fileID: 72257448}
   m_Father: {fileID: 9032876683681912779}
   m_LocalEulerAnglesHint: {x: 0.0000017039088, y: 4.155723, z: 0.000010861523}
 --- !u!4 &6334818580284906773

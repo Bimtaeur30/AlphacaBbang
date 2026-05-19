@@ -9,7 +9,8 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
     public class EnemyDashAttackSkill : MonoBehaviour, IEnemySkill
     {
         [Header("Dash")]
-        [SerializeField] private float dashSpeed = 5f;
+        [SerializeField] private float dashAcceleration = 20f;
+        [SerializeField] private float maxDashSpeed = 12f;
         [SerializeField] private float dashDistance = 12f;
         [SerializeField] private float playerCheckRadius = 0.5f;
 
@@ -37,6 +38,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
         private bool _isDashing;
         private float _particleTimer;
+        private float _currentDashSpeed;
 
         public void Initialize(AbstractEnemy owner)
         {
@@ -64,6 +66,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
             _isDashing = true;
             _particleTimer = 0f;
+            _currentDashSpeed = maxDashSpeed / 2;
 
             _navMeshAgent.ResetPath();
             _navMeshAgent.isStopped = true;
@@ -83,11 +86,12 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
                 effect.PlayDashParticle();
             }
 
-            Vector3 move = _dashDirection * dashSpeed * Time.fixedDeltaTime;
+            _currentDashSpeed += dashAcceleration * Time.fixedDeltaTime;
+            _currentDashSpeed = Mathf.Min(_currentDashSpeed, maxDashSpeed);
+            Vector3 move = _dashDirection * _currentDashSpeed * Time.fixedDeltaTime;
 
             bool isHit = Physics.SphereCast(transform.position + Vector3.up * 0.5f, playerCheckRadius,
-                                                                        _dashDirection, out RaycastHit hit, move.magnitude, targetLayer);
-
+                                                              _dashDirection, out RaycastHit hit, move.magnitude, targetLayer);
             if (isHit)
             {
                 EndDash();

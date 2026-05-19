@@ -30,10 +30,14 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _nowTime += UnityEngine.Time.deltaTime;
             if (_nowTime > Time.Value)
             {
-                _nowTime = 0;
                 return Status.Success;
             }
             return Status.Running;
+        }
+
+        protected override void OnEnd()
+        {
+            _nowTime = 0f;
         }
     }
 }

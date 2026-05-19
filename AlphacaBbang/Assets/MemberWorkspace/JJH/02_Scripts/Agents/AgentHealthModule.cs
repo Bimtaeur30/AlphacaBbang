@@ -9,10 +9,28 @@ namespace JJH._02_Scripts.Agents
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
         [SerializeField] private Slider slider;
-        private EventChannelSO _agentEventChannel;
+
+        public float Health
+        {
+            get => _health;
+            set
+            {
+                _health = Mathf.Min(value, _maxHealth);
+
+                if (_health <= 0)
+                {
+                    _health = 0;
+                    _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent.Init(_owner));
+                    return;
+                }
+
+                ChangeHealthText();
+            }
+        }
 
         private Agent _owner;
         private ArmorSO[] armors;
+        private EventChannelSO _agentEventChannel;
 
         private float _maxHealth;
         private float _health;
@@ -47,7 +65,7 @@ namespace JJH._02_Scripts.Agents
         public void InitHealth(float maxHealth)
         {
             _maxHealth = maxHealth;
-            _health = _maxHealth;
+            Health = _maxHealth;
             ChangeHealthText();
         }
 
@@ -59,26 +77,19 @@ namespace JJH._02_Scripts.Agents
                 {
                     damage *= 1f - armor.DamageReductionRate;
                 }
-            _health -= damage;
+            Health -= damage;
             _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(damage));
-
-            if (_health <= 0)
-            {
-                _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent.Init(_owner));
-                return;
-            }
-            ChangeHealthText();
         }
 
         public void Heal(float amount)
         {
-            _health = Mathf.Min(_health + amount, _maxHealth);
+            Health = Mathf.Min(Health + amount, _maxHealth);
             ChangeHealthText();
         }
 
         private void ChangeHealthText()
         {
-            slider.value = _health / _maxHealth;
+            slider.value = Health / _maxHealth;
         }
     }
 }

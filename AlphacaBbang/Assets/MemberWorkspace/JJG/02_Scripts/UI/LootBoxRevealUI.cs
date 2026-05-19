@@ -35,6 +35,9 @@ public class LootBoxRevealUI : MonoBehaviour
         if (_revealCoroutine != null)
             StopCoroutine(_revealCoroutine);
 
+        if (_lootInventoryUI != null)
+            _lootInventoryUI.SetInventory(lootBox);
+
         _root.SetActive(true);
         _bufferingPanel.SetActive(true);
         _contentArea.SetActive(false);

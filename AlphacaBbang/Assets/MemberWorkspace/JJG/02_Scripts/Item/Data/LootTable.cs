@@ -12,12 +12,13 @@ public class LootTable : ScriptableObject
 
     [SerializeField] private List<LootEntry> lootEntries = new();
 
-    public void GenerateLoot(ItemContainer container)
+    public bool GenerateLoot(ItemContainer container)
     {
-        if (container == null)
-            return;
+        if (container == null) return false;
 
         int dropCount = Random.Range(minDropCount, maxDropCount + 1);
+
+        int addedCount = 0;
 
         for (int i = 0; i < dropCount; i++)
         {
@@ -28,8 +29,12 @@ public class LootTable : ScriptableObject
 
             int amount = entry.GetRandomAmount();
 
-            container.AddItem(entry.ItemData, amount);
+            bool added = container.AddItem(entry.ItemData, amount);
+        
+            if (added) addedCount++;
         }
+
+        return addedCount > 0;
     }
 
     private LootEntry PickRandomEntry()

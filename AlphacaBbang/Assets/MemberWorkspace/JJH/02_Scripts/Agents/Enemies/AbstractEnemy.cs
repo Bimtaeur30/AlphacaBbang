@@ -115,6 +115,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
         }
 
+        public void Dash()
+        {
+            EnemySkill.UseSkill<EnemyDashSkill>();
+        }
+
         public void DashAttack()
         {
             EnemySkill.UseSkill<EnemyDashAttackSkill>();

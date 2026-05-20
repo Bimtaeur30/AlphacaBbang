@@ -45,11 +45,13 @@ namespace JJH._02_Scripts.Agents
         public bool CheckAgentInSmoke()
         {
             Collider hitCollider = Physics.OverlapSphere(transform.position, selfCheckRadius, SmokeLayer).FirstOrDefault();
+            _debugRange = selfCheckRadius;
             return hitCollider != null;
         }
 
         private void OnDrawGizmos()
         {
+            _debugRange = selfCheckRadius;
             if (_debugRange > 0f)
             {
                 Gizmos.color = Color.blue;

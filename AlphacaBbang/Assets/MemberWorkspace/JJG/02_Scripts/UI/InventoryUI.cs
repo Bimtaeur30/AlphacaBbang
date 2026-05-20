@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,6 +29,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject _slotUIPrefab;
     [SerializeField] private ItemContainer inventory;
     [SerializeField] private WeaponHolder _weaponHolder;
+    [SerializeField] private TextMeshProUGUI _inventoryStatusText;
 
     [Header("Preview")]
     [SerializeField] private bool _showPreview = false;
@@ -273,6 +275,24 @@ public class InventoryUI : MonoBehaviour
             else
                 _slotUIList[i].ClearSlot();
         }
+
+        UpdateInventoryStatus();
+    }
+
+    private void UpdateInventoryStatus()
+    {
+        if (_inventoryStatusText == null || inventory == null)
+            return;
+
+        int occupiedCount = 0;
+        for (int i = 0; i < inventory.SlotCount; i++)
+        {
+            ItemSlot slot = inventory.GetSlot(i);
+            if (slot != null && !slot.IsEmpty)
+                occupiedCount++;
+        }
+
+        _inventoryStatusText.text = $"{occupiedCount}/{inventory.SlotCount}";
     }
 
     public void PrepareForReveal()

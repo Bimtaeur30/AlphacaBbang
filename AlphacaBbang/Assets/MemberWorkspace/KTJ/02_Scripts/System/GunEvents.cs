@@ -18,7 +18,7 @@ public class WeaponEquipEvent : GameEvent // CurrentGun에 장착(1,2번 중 선택)
         return this;
     }
 }
-
+    
 
 public enum WeaponSlotIndex
 {
@@ -27,9 +27,9 @@ public enum WeaponSlotIndex
 }
 public class WeaponSlotEquipEvent : GameEvent // WeaponSlot에 장착(1,2번 중 선택)
 {
-    public Gun Gun { get; private set; }
+    public GameObject Gun { get; private set; }
     public WeaponSlotIndex SlotIndex { get; private set; }
-    public WeaponSlotEquipEvent Init(Gun gun, WeaponSlotIndex slotIndex)
+    public WeaponSlotEquipEvent Init(GameObject gun, WeaponSlotIndex slotIndex)
     {
         Gun = gun;
         SlotIndex = slotIndex;

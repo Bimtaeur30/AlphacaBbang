@@ -1,15 +1,18 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.AnimationSystems;
+using JJH._02_Scripts_Systems.EventSystems;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-public abstract class Gun : WeaponBase
+public abstract class Gun : WeaponBase, IWeapon
 {
     public GunRenderer Renderer { get; private set; }
     public bool IsAiming { get; private set; }
     public bool IsFiring { get; private set; }
+    public bool IsReloading { get; private set; }
 
-    [field: SerializeField] public GunDataSO GunDataSO { get; private set; }
+    [field: SerializeField] public GunDataSO WeaponData { get; private set; }
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
     [field: SerializeField] public Magazine Magazine { get; private set; }
 
@@ -28,8 +31,11 @@ public abstract class Gun : WeaponBase
     [SerializeField] protected PoolItemSO lineRenderer;
     [SerializeField] protected PoolItemSO bulletParticle;
 
+    [Header("System")]
+    [SerializeField] private EventChannelSO gunChannel;
+
     protected float _lastFireTime = -999f;
-    protected GunHandleModule _gunHandleModule;
+    protected WeaponHandleModule _gunHandleModule;
     protected GunSoundPlayer _gunSoundPlayuer;
 
     protected virtual void Awake()
@@ -42,7 +48,7 @@ public abstract class Gun : WeaponBase
         Debug.Assert(firePos != null, "firePos가 할당되지 않았습니다.");
     }
 
-    public virtual void Initialize(GunHandleModule module)
+    public virtual void Initialize(WeaponHandleModule module)
     {
         IsAiming = false;
         IsFiring = false;
@@ -53,6 +59,8 @@ public abstract class Gun : WeaponBase
         Magazine.Initialize(this);
         Debug.Log("탄창 초기화 완료");
         Debug.Assert(Magazine != null, "Magazine.cs가 자식으로 붙어있지 않습니다.");
+
+        gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(WeaponData));
     }
 
     public virtual void SetAim(bool isAim)
@@ -66,7 +74,7 @@ public abstract class Gun : WeaponBase
             return;
         }
 
-        if (IsFiring && !Magazine.IsReloading && GunDataSO.FireMode == FireMode.Auto)
+        if (IsFiring && !Magazine.IsReloading && WeaponData.FireMode == FireMode.Auto)
         {
             PlayAutoFire();
             return;
@@ -82,10 +90,11 @@ public abstract class Gun : WeaponBase
         if (!isAim || Magazine.IsReloading)
             return;
 
-        switch (GunDataSO.FireMode)
+        switch (WeaponData.FireMode)
         {
             case FireMode.Single:
             case FireMode.Spread:
+            case FireMode.Melee:
                 if (TryFire())
                     PlaySingleFire();
                 break;
@@ -109,10 +118,10 @@ public abstract class Gun : WeaponBase
 
     public virtual void TickFire()
     {
-        if (!IsAiming || !IsFiring)
+        if (!IsAiming || !IsFiring || Magazine.IsReloading)
             return;
 
-        if (GunDataSO.FireMode == FireMode.Auto)
+        if (WeaponData.FireMode == FireMode.Auto)
         {
             TryFire();
         }
@@ -125,12 +134,18 @@ public abstract class Gun : WeaponBase
             //_gunSoundPlayuer.PlaySound(GunDataSO.DryFireClip);
             return false;
         }
+        if (WeaponData.FireMode == FireMode.Melee)
+        {
+            return true;
+        }
+
+        //==========================================================//
 
         _lastFireTime = Time.time;
         if (Magazine.TryUseBullet())
         {
             FireInternal();
-            _gunSoundPlayuer.PlaySound(GunDataSO.FireClip);
+            _gunSoundPlayuer.PlaySound(WeaponData.FireClip);
             return true;
         }
         else
@@ -147,7 +162,8 @@ public abstract class Gun : WeaponBase
     // 장전 시작 시 호출 (서브클래스 확장용)
     protected virtual void OnReloadStart()
     {
-        _gunSoundPlayuer.PlaySound(GunDataSO.UnLoadClip);
+        _gunSoundPlayuer.PlaySound(WeaponData.UnLoadClip);
+        IsReloading = true;
     }
 
     // 장전 완료 시 호출 — 기본은 아무것도 안 함 (플레이어는 다시 입력해야 발사)
@@ -155,13 +171,14 @@ public abstract class Gun : WeaponBase
     protected virtual void OnReloadEnd()
     {
         _gunHandleModule.OnReloadEnd();
-        _gunSoundPlayuer.PlaySound(GunDataSO.LoadClip);
-        _gunSoundPlayuer.PlaySound(GunDataSO.CookClip);
+        _gunSoundPlayuer.PlaySound(WeaponData.LoadClip);
+        _gunSoundPlayuer.PlaySound(WeaponData.CookClip);
+        IsReloading = false;
     }
 
     protected virtual bool CanFire()
     {
-        return Time.time >= _lastFireTime + GunDataSO.FireInterval;
+        return Time.time >= _lastFireTime + WeaponData.FireInterval;
     }
 
     protected virtual void FireInternal()
@@ -230,7 +247,7 @@ public abstract class Gun : WeaponBase
     {
         if (autoFireAnimParam != null && Renderer != null)
         {
-            float animSpeed = 0.083f / GunDataSO.FireInterval;
+            float animSpeed = 0.083f / WeaponData.FireInterval;
             Renderer.PlayClip(autoFireAnimParam.ParamHash, 0, 0.1f, 0, animSpeed);
         }
     }

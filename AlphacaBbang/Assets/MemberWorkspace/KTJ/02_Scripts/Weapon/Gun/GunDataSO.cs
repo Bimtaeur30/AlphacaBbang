@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public enum FireMode
 {
-    Single, Auto, Spread
+    Single, Auto, Spread, Melee
 }
 
 [CreateAssetMenu(fileName = "Gun data", menuName = "KTJ/Gun/GunData")]

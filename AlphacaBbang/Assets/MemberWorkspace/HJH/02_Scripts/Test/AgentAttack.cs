@@ -9,7 +9,7 @@ public enum CharacterState
     Enemy
 }
 
-public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
+public class AgentAttack : MonoBehaviour, IModule, IEnemyWeaponModule, ICharacterStateOwner
 {
     [SerializeField] private MeleeWeaponBase weapon;
     [SerializeField] private WeaponHolder weaponHolder;
@@ -37,7 +37,6 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
         {
             weapon.gameObject.SetActive(true);
             weapon.characterState = characterState;
-            weapon.Init();
         }
     }
 
@@ -75,7 +74,6 @@ public class AgentAttack : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
     {
         if (weapon != null)
         {
-            weapon.Init();
             weapon.characterState = characterState;
         }
     }

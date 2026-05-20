@@ -32,8 +32,8 @@ public class Magazine : MonoBehaviour
     public void Initialize(Gun gun)
     {
         _gun = gun;
-        _reloadDuration = gun.GunDataSO.ReloadDuration;
-        MaxBulletCount = gun.GunDataSO.MagCapacity;
+        _reloadDuration = gun.WeaponData.ReloadDuration;
+        MaxBulletCount = gun.WeaponData.MagCapacity;
         Debug.Assert(_gun != null, "Gun을 가져오지 못했습니다.");
 
         if (reloadUI != null)
@@ -60,7 +60,7 @@ public class Magazine : MonoBehaviour
         if (_loading)
             return false;
 
-        int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.GunDataSO.BulletType);
+        int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 

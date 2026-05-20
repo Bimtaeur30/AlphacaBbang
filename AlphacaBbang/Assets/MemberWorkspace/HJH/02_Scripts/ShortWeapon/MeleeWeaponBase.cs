@@ -25,40 +25,43 @@ public abstract class
     }
     public void TickFire()
     {
-        throw new System.NotImplementedException();
     }
-
-    public void StartFire(bool isAim)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void StopFire(bool isAim)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public virtual void SetAim(bool val)
     {
 
     }
+
+    public void StartFire(bool isAim)
+    {
+        Debug.Log("근접무기 공격");
+        Vector3 direction = GetShootDirection();
+        PerformAttack(direction);
+    }
+
+    public void StopFire(bool isAim)
+    {
+    }
+
     void Update()
     {
         currentTime += Time.deltaTime;
     }
-    public virtual void Attack(Vector3 targetPos, bool isAttack)
-    {
-        Debug.Log($"Attack is : {isAttack}");
-        if (!isAttack) return;
+    //public virtual void Attack(Vector3 targetPos, bool isAttack)
+    //{
+    //    Debug.Log($"Attack is : {isAttack}");
+    //    if (!isAttack) return;
 
-        Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
+    //    Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
 
-        if (currentTime < data[currentLevel].attackDelay) return;
+    //    if (currentTime < data[currentLevel].attackDelay) return;
 
-        PerformAttack(targetPos);
-    }
+    //    PerformAttack(targetPos);
+    //}
 
     protected abstract void PerformAttack(Vector3 targetPos);
 
-
+    protected virtual Vector3 GetShootDirection()
+    {
+        return transform.right.normalized;
+    }
 }

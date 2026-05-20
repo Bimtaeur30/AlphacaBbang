@@ -42,21 +42,21 @@ public class AgentAttack : MonoBehaviour, IModule, IEnemyWeaponModule, ICharacte
 
     private void Update()
     {
-        switch (characterState)
-        {
-            case CharacterState.None:
-                Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
-                break;
-            case CharacterState.Player:
-                if (weapon != null && Mouse.current.leftButton.wasPressedThisFrame)
-                {
-                    Vector3 targetPos = GetMouseWorldPoint();
-                    weapon.Attack(targetPos, true);
-                }
-                break;
-            case CharacterState.Enemy:
-                break;
-        }
+        //switch (characterState)
+        //{
+        //    case CharacterState.None:
+        //        Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
+        //        break;
+        //    case CharacterState.Player:
+        //        if (weapon != null && Mouse.current.leftButton.wasPressedThisFrame)
+        //        {
+        //            Vector3 targetPos = GetMouseWorldPoint();
+        //            weapon.Attack(targetPos, true);
+        //        }
+        //        break;
+        //    case CharacterState.Enemy:
+        //        break;
+        //}
     }
 
     private Vector3 GetMouseWorldPoint()
@@ -85,6 +85,6 @@ public class AgentAttack : MonoBehaviour, IModule, IEnemyWeaponModule, ICharacte
 
     public void Attack(Vector3 vector, bool val)
     {
-        weapon?.Attack(vector, val);
+        //weapon?.Attack(vector, val);
     }
 }

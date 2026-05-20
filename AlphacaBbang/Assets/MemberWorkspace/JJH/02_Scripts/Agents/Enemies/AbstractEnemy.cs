@@ -130,13 +130,9 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
         }
 
-        public void ApplyBurn(float dps, float duration)
+        public override void TakeDamage(float damage)
         {
-
-        }
-
-        public void TakeDamage(float damage)
-        {
+            base.TakeDamage(damage);
             HealthModule.MinusHealth(damage);
         }
     }

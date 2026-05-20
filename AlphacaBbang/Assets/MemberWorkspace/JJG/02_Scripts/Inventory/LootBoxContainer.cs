@@ -31,8 +31,8 @@ public class LootBoxContainer : ItemContainer
             Debug.LogWarning($"{name}에 LootTable이 없습니다.");
             return;
         }
-
-        lootTable.GenerateLoot(this);
+        
+        bool result = lootTable.GenerateLoot(this);
     }
 
     private float CalculateOpenTime()

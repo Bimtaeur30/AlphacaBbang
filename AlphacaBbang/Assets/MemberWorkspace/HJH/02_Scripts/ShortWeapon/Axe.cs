@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class Axe : MeleeWeaponBase
+public  class Axe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
     public int ComboCounter { get; private set; } = 0;
+
     protected override void PerformAttack(Vector3 targetPos)
     {
         PlayAttackParticle(targetPos);

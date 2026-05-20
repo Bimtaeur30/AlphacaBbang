@@ -1,10 +1,12 @@
 using JJH._02_Scripts.Weapons;
 using UnityEngine;
 
-public abstract class MeleeWeaponBase : WeaponBase
+public abstract class 
+    MeleeWeaponBase : MonoBehaviour,IWeapon
 {
     public CharacterState characterState;
 
+    [field:SerializeField]public GunDataSO WeaponData { get; private set; }
     [SerializeField] protected ShortWeaponSO[] data;
     protected int currentLevel = 0;
 
@@ -12,7 +14,29 @@ public abstract class MeleeWeaponBase : WeaponBase
     protected float currentTime = 0;
 
 
-    public virtual void Init() { }
+    public bool IsFiring => false;
+
+    public bool IsAiming => false;
+
+    public bool IsReloading => false;
+
+    public virtual void Initialize(WeaponHandleModule owner)
+    {
+    }
+    public void TickFire()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void StartFire(bool isAim)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void StopFire(bool isAim)
+    {
+        throw new System.NotImplementedException();
+    }
 
     public virtual void SetAim(bool val)
     {
@@ -35,4 +59,6 @@ public abstract class MeleeWeaponBase : WeaponBase
     }
 
     protected abstract void PerformAttack(Vector3 targetPos);
+
+
 }

@@ -1,8 +1,18 @@
-using UnityEngine;
+ï»¿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 public interface IWeapon
 {
-    void Init(); // ÃÊ±âÈ­. ÀûÀÌ ¹«±â¸¦ »ç¿ëÇÏ±â Àü¿¡ ¹«Á¶°Ç È£ÃâÇØ¾ßÈû.
-    void SetAim(bool val); // true¸¦ ³Ñ±â¸é Á¶ÁØÀ» ½ÃÀÛÇÏ°í, false¸¦ ³Ñ±â¸é Á¶ÁØÇØÁ¦ÇÔ.
-    void Attack(Vector3 vector, bool val);
+    GunDataSO WeaponData { get; }
+    bool IsFiring { get; }
+    bool IsAiming { get; }
+    bool IsReloading { get; }
+    void Initialize(WeaponHandleModule owner); //; ì´ˆê¸°í™”
+    void TickFire(); // ì˜¤í†  ì´ê¸°ìš© ë°œì‚¬
+    void StartFire(bool isAim); // ë°œì‚¬ ì‹œì‘(í˜„ì¬ ì—ì„ìƒíƒœ)
+    void StopFire(bool isAim); // ë°œì‚¬ ì¤‘ì§€(í˜„ì¬ ì—ì„ìƒíƒœ)
+    void SetAim(bool isAim); // ì—ì„ ì‹œì‘/í•´ì œ
 }

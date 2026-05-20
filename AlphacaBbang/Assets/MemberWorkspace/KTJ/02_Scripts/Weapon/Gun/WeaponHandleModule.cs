@@ -2,6 +2,7 @@
 
 public class WeaponHandleModule : MonoBehaviour, IModule
 {
+    public ModuleOwner Owner { get; private set; }
     [Header("State")]
     [field: SerializeField] public bool IsInputAim { get; private set; }
     [field: SerializeField] public bool IsInputFire { get; private set; }
@@ -9,7 +10,10 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     [Header("Gun")]
     [field: SerializeField] public IWeapon CurrentWeapon { get; private set; }
 
-    public virtual void Initialize(ModuleOwner owner) { }
+    public virtual void Initialize(ModuleOwner owner)
+    {
+        Owner = owner;
+    }
 
     public virtual void SetCurrentGun(IWeapon gun)  
     {

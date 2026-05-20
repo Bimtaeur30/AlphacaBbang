@@ -12,7 +12,7 @@ public class Test_EnemyAttack : MonoBehaviour, IEnemyWeaponModule
     public void EnemyAttack()
     {
         Vector3 targetPos = transform.position;
-        weapon.Attack(targetPos, true);
+        //weapon.Attack(targetPos, true);
     }
 
     public void Init()

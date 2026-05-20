@@ -13,7 +13,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
-        private IWeapon _weapon;
+        private IEnemyWeaponModule _weapon;
 
         private float _time = 0;
 

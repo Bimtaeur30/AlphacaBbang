@@ -63,16 +63,16 @@ public class CrossHairModule : MonoBehaviour, IModule
         if (!_isCrossHairActive || crossHairImg == null || Mouse.current == null || _player == null)
             return;
 
-        if (_player.GunHandleModule == null || _player.GunHandleModule.CurrentGun == null)
+        if (_player.GunHandleModule == null || _player.GunHandleModule.CurrentWeapon == null)
             return;
 
         _mousePos = Mouse.current.position.ReadValue();
 
         PlayerGunHandleModule gunHandle = _player.GunHandleModule;
-        Gun currentGun = gunHandle.CurrentGun;
-        GunDataSO gunData = currentGun.GunDataSO;
+        IWeapon currentGun = gunHandle.CurrentWeapon;
+        GunDataSO gunData = currentGun.WeaponData;
 
-        bool isFiring = gunHandle.CurrentGun.IsFiring && gunHandle.CurrentGun.IsAiming && gunHandle.CurrentGun.Magazine.IsReloading == false;
+        bool isFiring = gunHandle.CurrentWeapon.IsFiring && gunHandle.CurrentWeapon.IsAiming && gunHandle.CurrentWeapon.IsReloading == false;
 
         if (isFiring)
         {

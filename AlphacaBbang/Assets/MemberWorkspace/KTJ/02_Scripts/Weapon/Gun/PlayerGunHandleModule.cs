@@ -4,11 +4,11 @@ using Reflex.Core;
 using Reflex.Injectors;
 using UnityEngine;
 
-public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
+public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
 {
     [Header("Gun")]
-    [SerializeField] private Gun firstSlotGun;
-    [SerializeField] private Gun secondSlotGun;
+    [SerializeField] private IWeapon firstSlotGun;
+    [SerializeField] private IWeapon secondSlotGun;
     //[SerializeField] private Gun TEST_GUN1;
     //[SerializeField] private Gun TEST_GUN2;
 
@@ -50,10 +50,10 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
         // 여기까지
     }
 
-    public override void SetCurrentGun(Gun gun) // 실제로 발사할 총을 정한다. 퀵 슬롯에서 1,2번 선택하면 현재 발사될 총으로 지정됨.
+    public override void SetCurrentGun(IWeapon gun) // 실제로 발사할 총을 정한다. 퀵 슬롯에서 1,2번 선택하면 현재 발사될 총으로 지정됨.
     {
         base.SetCurrentGun(gun);
-        gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentGun.GunDataSO));
+        gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentWeapon.WeaponData));
     }
 
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
@@ -86,12 +86,17 @@ public class PlayerGunHandleModule : GunHandleModule, IAfterInitModule
 
         if (gunParent.childCount > 0)
             Destroy(gunParent.GetChild(0).gameObject);
+        // IWeapon gun = Instantiate(@event.Gun, gunParent);
+        
 
-        Gun gun = Instantiate(@event.Gun, gunParent);
-        gun.transform.localPosition = Vector3.zero;
-        gun.transform.localRotation = Quaternion.identity;
-        gun.transform.localScale = Vector3.one;
-        GameObjectInjector.InjectRecursive(gun.gameObject, _container);
+        GameObject gunObj = Instantiate(@event.Gun, gunParent);
+        IWeapon gun = gunObj.GetComponent<IWeapon>();
+        Debug.Assert(gun != null, "gun이 IWeapon을 구현하지 않았습니다.");
+
+        gunObj.transform.localPosition = Vector3.zero;
+        gunObj.transform.localRotation = Quaternion.identity;
+        gunObj.transform.localScale = Vector3.one;
+        GameObjectInjector.InjectRecursive(gunObj, _container);
 
         // 인스턴스를 슬롯에 저장
         switch (@event.SlotIndex)

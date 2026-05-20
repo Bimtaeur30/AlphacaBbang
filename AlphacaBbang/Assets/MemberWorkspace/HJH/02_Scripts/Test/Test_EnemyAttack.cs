@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Test_EnemyAttack : MonoBehaviour, IWeapon
+public class Test_EnemyAttack : MonoBehaviour, IEnemyWeaponModule
 {
     [SerializeField] private MeleeWeaponBase weapon;
     
     private void Start()
     {
-        weapon.Init();
     }
 
     public void EnemyAttack()

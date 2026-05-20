@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class EnemyGunHandleModule : GunHandleModule, IWeapon
+public class EnemyGunHandleModule : WeaponHandleModule, IEnemyWeaponModule
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
 
-    public override void SetCurrentGun(Gun gun)
+    public override void SetCurrentGun(IWeapon gun)
     {
         base.SetCurrentGun(gun);
     }
@@ -16,7 +16,7 @@ public class EnemyGunHandleModule : GunHandleModule, IWeapon
 
     public void Attack(Vector3 vector, bool val)
     {
-        Debug.Assert(CurrentGun != null, "현재 장착중인 총이 없습니다.");
+        Debug.Assert(CurrentWeapon != null, "현재 장착중인 총이 없습니다.");
         Fire(val);
     }
 
@@ -33,7 +33,7 @@ public class EnemyGunHandleModule : GunHandleModule, IWeapon
     public override void OnFire()
     {
         base.OnFire();
-        BodyRecoilController.ApplyRecoil(CurrentGun.GunDataSO.SpreadAngle);
+        BodyRecoilController.ApplyRecoil(CurrentWeapon.WeaponData.SpreadAngle);
     }
 
     // 장전 완료 시 자동으로 발사 재개 (적은 항상 조준 상태이므로)
@@ -46,9 +46,9 @@ public class EnemyGunHandleModule : GunHandleModule, IWeapon
         }
     }
 
-    protected override bool CanFire()
-    {
-        if (CurrentGun.Magazine.IsReloading) return false;
-        return true;
-    }
+    //protected override bool CanFire()
+    //{
+    //    if (CurrentWeapon.Magazine.IsReloading) return false;
+    //    return true;
+    //}
 }

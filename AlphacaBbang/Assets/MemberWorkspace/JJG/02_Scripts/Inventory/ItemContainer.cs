@@ -17,7 +17,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
 
-    [Header("Item Setting")] 
+    [Header("Item Setting")]
     [SerializeField] private GrenadeFirePos grenadeFirePos;
     [SerializeField] private AgentArmorModule agentArmorModule;
 
@@ -39,7 +39,14 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     protected void InitializeSlots()
     {
         if (slots.Count == slotCount)
+        {
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (slots[i] == null)
+                    slots[i] = new ItemSlot();
+            }
             return;
+        }
 
         slots.Clear();
 
@@ -99,6 +106,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
     public virtual bool AddItem(ItemData itemData, int amount = 1)
     {
+
         if (itemData == null)
         {
             Debug.LogWarning("itemData is null");
@@ -113,6 +121,11 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
         if (itemData is CountableItemData countableItemData)
         {
+            if (countableItemData.MaxAmount <= 0)
+            {
+                Debug.LogWarning($"[ItemContainer] CountableItemData.MaxAmount must be > 0 for {itemData.name}. current={countableItemData.MaxAmount}");
+                return false;
+            }
             for (int i = 0; i < slots.Count; i++)
             {
                 ItemSlot slot = slots[i];
@@ -161,7 +174,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 }
             }
 
-            Debug.LogWarning("Container is full");
+            Debug.LogWarning($"Container is full or no valid empty slot for countable item {itemData.name}");
             NotifyContainerChanged();
             return false;
         }
@@ -262,7 +275,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ArmorItemData armorData)
             { 
-                agentArmorModule.ArmorEquip(true, armorData.ArmorType, armorData.Armor); 
+                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor); 
             }
         }
 

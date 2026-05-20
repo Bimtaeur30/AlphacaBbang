@@ -17,15 +17,18 @@ public class InventoryTest : MonoBehaviour
     [SerializeField] private ItemData equipItem;
     [SerializeField] private ItemData equipItem2;
     [SerializeField] private ItemData throwingItem;
+    [SerializeField] private ItemData armorItem;
 
     [Header("Options")]
     [SerializeField] private bool printSlotStateOnStart = true;
 
+    // Keyboard.current는 Awake 시점에 null일 수 있으므로 Update에서 다시 가져옵니다.
     private Keyboard _keyboard;
 
     private void Awake()
     {
-        _keyboard = Keyboard.current;
+        // Keyboard.current가 Awake 시점에는 아직 준비되지 않을 수 있으므로
+        // Update에서 다시 확인하도록 유지합니다.
     }
 
     private void Start()
@@ -45,8 +48,19 @@ public class InventoryTest : MonoBehaviour
 
     private void Update()
     {
+        _keyboard = Keyboard.current;
+
         if (_keyboard == null)
+        {
+            Debug.LogWarning("[InventoryTest] Keyboard.current is null");
             return;
+        }
+
+        if (inventoryContainer == null)
+        {
+            Debug.LogError("[InventoryTest] inventoryContainer가 비어있음");
+            return;
+        }
 
         if (_keyboard.f1Key.wasPressedThisFrame)
         {
@@ -55,10 +69,18 @@ public class InventoryTest : MonoBehaviour
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
+        // 테스트로 이거 비활성화 하고 근접무기 해놔씅
+        //if (_keyboard.f2Key.wasPressedThisFrame)
+        //{
+        //    bool result = inventoryContainer.AddItem(countableItem, 5);
+        //    Debug.Log($"[TEST] 스택 아이템 5개 추가: {result}");
+        //    PrintContainerState(inventoryContainer, "Inventory");
+        //}
+
         if (_keyboard.f2Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(countableItem, 5);
-            Debug.Log($"[TEST] 스택 아이템 5개 추가: {result}");
+            bool result = inventoryContainer.AddItem(equipItem2, 1);
+            Debug.Log($"근접 아이템 1개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }
 
@@ -85,10 +107,9 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.f6Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.MoveItemTo(0, storageContainer, 0);
-            Debug.Log($"[TEST] Inventory[0] -> Storage[0] 이동: {result}");
+            bool result = inventoryContainer.AddItem(armorItem, 1);
+            Debug.Log($"[TEST] 0번 슬롯 아이템 사용: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
-            PrintContainerState(storageContainer, "Storage");
         }
 
         if (_keyboard.f7Key.wasPressedThisFrame)
@@ -142,22 +163,22 @@ public class InventoryTest : MonoBehaviour
 
     private void PrintContainerState(ItemContainer container, string label)
     {
-        if (container == null)
-        {
-            Debug.LogWarning($"[{label}] container is null");
-            return;
-        }
-
-        Debug.Log($"==== {label} 상태 ====");
-
-        for (int i = 0; i < container.SlotCount; i++)
-        {
-            ItemSlot slot = container.GetSlot(i);
-
-            if (slot == null || slot.IsEmpty)
-                Debug.Log($"[{label}] Slot {i}: Empty");
-            else
-                Debug.Log($"[{label}] Slot {i}: {slot.ItemData.name} x {slot.Amount}");
-        }
+        // if (container == null)
+        // {
+        //     Debug.LogWarning($"[{label}] container is null");
+        //     return;
+        // }
+        //
+        // Debug.Log($"==== {label} 상태 ====");
+        //
+        // for (int i = 0; i < container.SlotCount; i++)
+        // {
+        //     ItemSlot slot = container.GetSlot(i);
+        //
+        //     if (slot == null || slot.IsEmpty)
+        //         Debug.Log($"[{label}] Slot {i}: Empty");
+        //     else
+        //         Debug.Log($"[{label}] Slot {i}: {slot.ItemData.name} x {slot.Amount}");
+        // }
     }
 }

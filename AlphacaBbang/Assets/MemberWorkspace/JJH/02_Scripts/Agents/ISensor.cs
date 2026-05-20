@@ -8,5 +8,6 @@ namespace JJH._02_Scripts.Agents
         LayerMask TargetLayer { get; }
         public bool IsTargetInRange(float range, out Collider hitCollider);
         public bool IsTargetInSight(Vector3 startPosition, Transform target);
+        public bool CheckAgentInSmoke();
     }
 }

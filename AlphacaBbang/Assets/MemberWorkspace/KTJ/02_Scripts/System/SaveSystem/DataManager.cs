@@ -146,10 +146,16 @@ public class DataManager : MonoBehaviour, IInstaller
 
     private string GetSaveData()
     {
-        var saveableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ISaveable>();
+        var saveableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<ISaveable>();
 
         List<SaveData> toSaveData = saveableObjects
-            .Select(s => new SaveData { Id = s.SaveId.Id, Data = s.GetSaveData() })
+            .Where(s => s.SaveId != null)                  // SaveId null 방어
+            .Select(s => new SaveData
+            {
+                Id = s.SaveId.Id,
+                Data = s.GetSaveData() ?? string.Empty     // GetSaveData() null 방어
+            })
             .ToList();
 
         toSaveData.AddRange(_unUsedData);

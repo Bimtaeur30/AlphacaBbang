@@ -202,7 +202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e9f4a2740357144b87fc093da139fe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.Enemies.Skills.EnemyDashAttackSkill
-  dashSpeed: 15
+  dashAcceleration: 20
+  maxDashSpeed: 12
   dashDistance: 12
   playerCheckRadius: 0.5
   range: 3
@@ -211,6 +212,10 @@ MonoBehaviour:
   targetLayer:
     serializedVersion: 2
     m_Bits: 256
+  poolManager: {fileID: 0}
+  dashParticlePref: {fileID: 0}
+  particleSpawnPos: {fileID: 0}
+  particleSpawnInterval: 0.1
 --- !u!1 &4621916259109897713
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,8 +385,8 @@ GameObject:
   - component: {fileID: 6270399436933380448}
   - component: {fileID: 3937659291578244070}
   - component: {fileID: 2955913557790707137}
-  - component: {fileID: 2547512530588789760}
   - component: {fileID: 3712286778472168668}
+  - component: {fileID: 9149401442518641242}
   m_Layer: 6
   m_Name: 'AlphacaEnemy[SMG]'
   m_TagString: Untagged
@@ -463,29 +468,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 9025960027935032911}
---- !u!136 &2547512530588789760
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9025960027935032911}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.9713259
-  m_Height: 5
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: -0.023991585}
 --- !u!195 &3712286778472168668
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -508,6 +490,27 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &9149401442518641242
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9025960027935032911}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1832142, y: 3.2199414, z: 2.800085}
+  m_Center: {x: 0.020056725, y: 0.30922306, z: -0.1184206}
 --- !u!1001 &622518322491176422
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1282,6 +1285,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5818329833401852724, guid: 30480efcc00bcba42b5e744598b5f6a3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6352379859253697954}
+    - targetCorrespondingSourceObject: {fileID: 5818329833401852724, guid: 30480efcc00bcba42b5e744598b5f6a3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8813441811837648135}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30480efcc00bcba42b5e744598b5f6a3, type: 3}
 --- !u!4 &9132834014396434254 stripped
@@ -2924,6 +2930,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
+--- !u!1001 &4957284807158672284
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 9132834014396434254}
+    m_Modifications:
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.7652063
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.23000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 31.717873
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7509622808686441032, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+      propertyPath: m_Name
+      value: EnemyDeadSkill
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+--- !u!4 &8813441811837648135 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4504851858204546715, guid: dea7f82e698fb694ebedbf93260eaa77, type: 3}
+  m_PrefabInstance: {fileID: 4957284807158672284}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5850648930109840427
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3388,6 +3456,10 @@ PrefabInstance:
     - target: {fileID: 8301267758413255460, guid: 8a5315102dbd45c42b7eae04411eb2b2, type: 3}
       propertyPath: m_Name
       value: AgentSensor
+      objectReference: {fileID: 0}
+    - target: {fileID: 8899119762188796705, guid: 8a5315102dbd45c42b7eae04411eb2b2, type: 3}
+      propertyPath: selfCheckRadius
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8899119762188796705, guid: 8a5315102dbd45c42b7eae04411eb2b2, type: 3}
       propertyPath: targetLayer.m_Bits

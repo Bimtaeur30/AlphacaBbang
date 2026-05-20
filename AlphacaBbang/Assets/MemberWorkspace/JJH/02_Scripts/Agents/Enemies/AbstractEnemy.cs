@@ -115,6 +115,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
         }
 
+        public void Dash()
+        {
+            EnemySkill.UseSkill<EnemyDashSkill>();
+        }
+
         public void DashAttack()
         {
             EnemySkill.UseSkill<EnemyDashAttackSkill>();
@@ -125,13 +130,9 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
         }
 
-        public void ApplyBurn(float dps, float duration)
+        public override void TakeDamage(float damage)
         {
-
-        }
-
-        public void TakeDamage(float damage)
-        {
+            base.TakeDamage(damage);
             HealthModule.MinusHealth(damage);
         }
     }

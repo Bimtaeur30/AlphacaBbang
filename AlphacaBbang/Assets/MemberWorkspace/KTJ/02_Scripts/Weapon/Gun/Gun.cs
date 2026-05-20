@@ -135,8 +135,10 @@ public abstract class Gun : WeaponBase
         }
         else
         {
-            OnReloadStart();
-            Magazine.TryReload(OnReloadEnd);  // 람다/Action 래핑 없이 직접 전달
+            if (Magazine.TryReload(OnReloadEnd))
+            {
+                OnReloadStart();
+            }// 람다/Action 래핑 없이 직접 전달
             StopFire(IsAiming);               // IsFiring = false
             return false;
         }

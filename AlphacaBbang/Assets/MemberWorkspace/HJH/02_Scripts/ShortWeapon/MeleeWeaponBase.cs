@@ -5,6 +5,7 @@ public abstract class
     MeleeWeaponBase : MonoBehaviour,IWeapon
 {
     public CharacterState characterState;
+    public IRenderer renderer;
 
     [field:SerializeField]public GunDataSO WeaponData { get; private set; }
     [SerializeField] protected ShortWeaponSO[] data;
@@ -22,6 +23,8 @@ public abstract class
 
     public virtual void Initialize(WeaponHandleModule owner)
     {
+        Agent agent = owner.Owner as Agent;
+        renderer = agent.Renderer;
     }
     public void TickFire()
     {

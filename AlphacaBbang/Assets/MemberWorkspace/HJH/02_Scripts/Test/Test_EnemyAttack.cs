@@ -1,19 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Test_EnemyAttack : MonoBehaviour, IWeapon
+public class Test_EnemyAttack : MonoBehaviour, IEnemyWeaponModule
 {
     [SerializeField] private MeleeWeaponBase weapon;
     
     private void Start()
     {
-        weapon.Init();
     }
 
     public void EnemyAttack()
     {
         Vector3 targetPos = transform.position;
-        weapon.Attack(targetPos, true);
+        //weapon.Attack(targetPos, true);
     }
 
     public void Init()

@@ -43,7 +43,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             {
                 Weapons[rand].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
-                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
+                //gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
             }
             if (Weapon != null)
                 Weapon.Init();
@@ -130,13 +130,9 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
         }
 
-        public void ApplyBurn(float dps, float duration)
+        public override void TakeDamage(float damage)
         {
-
-        }
-
-        public void TakeDamage(float damage)
-        {
+            base.TakeDamage(damage);
             HealthModule.MinusHealth(damage);
         }
     }

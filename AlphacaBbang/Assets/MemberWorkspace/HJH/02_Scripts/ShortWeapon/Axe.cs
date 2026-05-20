@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class Axe : MeleeWeaponBase
+public  class Axe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
     public int ComboCounter { get; private set; } = 0;
-    protected override void PerformAttack(Vector3 targetPos)
+
+    protected override void PerformAttack(Vector3 dir)
     {
-        PlayAttackParticle(targetPos);
+        PlayAttackParticle(dir);
 
         bool comboCounterOver = ComboCounter >= data.Length;
         bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
@@ -31,7 +32,6 @@ public class Axe : MeleeWeaponBase
 
 
         Vector3 origin = transform.position;
-        Vector3 dir = (targetPos - origin).normalized;
 
         Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
 
@@ -74,11 +74,10 @@ public class Axe : MeleeWeaponBase
         Gizmos.DrawLine(origin, origin + rightDir);
         Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
     }
-    private void PlayAttackParticle(Vector3 targetPos)
+    private void PlayAttackParticle(Vector3 dir)
     {
         if (data[ComboCounter].attackParticlePrefab == null) return;
         Vector3 origin = transform.position;
-        Vector3 dir = targetPos - origin;
 
         if (dir == Vector3.zero)
             dir = transform.forward;
@@ -88,7 +87,6 @@ public class Axe : MeleeWeaponBase
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
                        * Quaternion.Euler(-90f, 180f, 0f);
 
-        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

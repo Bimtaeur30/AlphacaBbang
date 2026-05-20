@@ -24,7 +24,7 @@ public class InventoryToggleUI : MonoBehaviour
     private void Start()
     {
         InventoryGroup.alpha = 0f;
-        slidePanel.SlideOut();
+        InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
     }
     private void Update() // 테스트 코드
     {

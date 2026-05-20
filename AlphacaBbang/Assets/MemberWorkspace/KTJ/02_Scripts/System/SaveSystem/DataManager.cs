@@ -169,7 +169,10 @@ public class DataManager : MonoBehaviour, IInstaller
 
     private void RestoreData(string dataJson)
     {
-        var saveableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ISaveable>();
+        var saveableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<ISaveable>()
+            .Where(s => s.SaveId != null); //  null 방어 추가
+
         var collection = string.IsNullOrEmpty(dataJson)
             ? new DataCollection()
             : JsonUtility.FromJson<DataCollection>(dataJson);

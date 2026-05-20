@@ -1,33 +1,37 @@
 ﻿using UnityEngine;
 
-public class GunHandleModule : MonoBehaviour, IModule
+public class WeaponHandleModule : MonoBehaviour, IModule
 {
+    public ModuleOwner Owner { get; private set; }
     [Header("State")]
     [field: SerializeField] public bool IsInputAim { get; private set; }
     [field: SerializeField] public bool IsInputFire { get; private set; }
 
     [Header("Gun")]
-    [field: SerializeField] public Gun CurrentGun { get; private set; }
+    [field: SerializeField] public IWeapon CurrentWeapon { get; private set; }
 
-    public virtual void Initialize(ModuleOwner owner) { }
-
-    public virtual void SetCurrentGun(Gun gun)
+    public virtual void Initialize(ModuleOwner owner)
     {
-        CurrentGun = gun;
-        CurrentGun.Initialize(this);
-        Debug.Assert(CurrentGun.GunDataSO != null, "CurrentGun.GunDataSO가 할당되지 않았습니다.");
+        Owner = owner;
+    }
+
+    public virtual void SetCurrentGun(IWeapon gun)  
+    {
+        CurrentWeapon = gun;
+        CurrentWeapon.Initialize(this);
+        Debug.Assert(CurrentWeapon.WeaponData != null, "CurrentWeapon.WeaponData가 할당되지 않았습니다.");
     }
 
     private void Update()
     {
         if (CanFire() == false)
             return;
-        if (CurrentGun == null)
+        if (CurrentWeapon == null)
             return;
 
         if (IsInputAim && IsInputFire)
         {
-            CurrentGun.TickFire();
+            CurrentWeapon.TickFire();
         }
     }
 
@@ -37,13 +41,13 @@ public class GunHandleModule : MonoBehaviour, IModule
 
         if (CanFire() == false)
             return;
-        if (CurrentGun == null)
+        if (CurrentWeapon == null)
             return;
 
         if (value)
-            CurrentGun.StartFire(IsInputAim);
+            CurrentWeapon.StartFire(IsInputAim);
         else
-            CurrentGun.StopFire(IsInputAim);
+            CurrentWeapon.StopFire(IsInputAim);
     }
 
     public virtual void OnFire() { }
@@ -55,17 +59,17 @@ public class GunHandleModule : MonoBehaviour, IModule
     {
         IsInputAim = value;
 
-        if (CurrentGun == null)
+        if (CurrentWeapon == null)
             return;
 
         if (!value && IsInputFire)
         {
             IsInputFire = false;
-            CurrentGun.StopFire(false);
+            CurrentWeapon.StopFire(false);
             return;
         }
 
-        CurrentGun.SetAim(value);
+        CurrentWeapon.SetAim(value);
     }
 
     protected virtual bool CanFire()

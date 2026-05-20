@@ -6,9 +6,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 {
     public class MouseFollowSphere : MonoBehaviour
     {
-        [SerializeField] private PlayerInputSO playerInput;
         [SerializeField] private float distance = 10f;
-        [SerializeField] private CinemachineCamera cam;
         void LateUpdate()
         {
             Vector2 mouseScreenPos = Mouse.current.position.ReadValue();

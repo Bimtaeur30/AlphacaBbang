@@ -9,7 +9,7 @@ public class Agent : ModuleOwner, IDamageable
     public ISensor Sensor { get; private set; }
     public IRenderer Renderer { get; private set; }
     public IControllerMovement Movement { get; private set; }
-    public IWeapon Weapon { get; private set; }
+    public IEnemyWeaponModule Weapon { get; private set; }
     public IHealth HealthModule { get; private set; }
     public IAgentArmor Armor { get; private set; }
 
@@ -19,7 +19,7 @@ public class Agent : ModuleOwner, IDamageable
         Sensor = GetModule<ISensor>();
         Renderer = GetModule<IRenderer>();
         Movement = GetModule<IControllerMovement>();
-        Weapon = GetModule<IWeapon>();
+        Weapon = GetModule<IEnemyWeaponModule>();
         Armor = GetModule<IAgentArmor>();
         HealthModule = GetModule<IHealth>();
     }

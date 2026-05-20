@@ -43,7 +43,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             {
                 Weapons[rand].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
-                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
+                //gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
             }
             if (Weapon != null)
                 Weapon.Init();

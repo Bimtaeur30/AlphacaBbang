@@ -8,10 +8,10 @@ public class ShotGun : Gun
         Vector3 origin = firePos.position;
         Vector3 baseDirection = GetShootDirection();
 
-        for (int i = 0; i < GunDataSO.BulletFireCount; i++)
+        for (int i = 0; i < WeaponData.BulletFireCount; i++)
         {
-            float spreadAngleX = Random.Range(-GunDataSO.SpreadAngle, GunDataSO.SpreadAngle);
-            float spreadAngleY = Random.Range(-GunDataSO.SpreadAngle, GunDataSO.SpreadAngle);
+            float spreadAngleX = Random.Range(-WeaponData.SpreadAngle, WeaponData.SpreadAngle);
+            float spreadAngleY = Random.Range(-WeaponData.SpreadAngle, WeaponData.SpreadAngle);
             
             Quaternion spreadRotation = Quaternion.Euler(spreadAngleX, spreadAngleY, 0);
             Vector3 direction = (spreadRotation * baseDirection).normalized;

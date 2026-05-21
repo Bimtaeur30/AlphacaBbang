@@ -97,7 +97,7 @@ public class PlayerController : Agent
             RotateToMovement();
 
         UpdateAnimation();
-        Debug.Log(_agentMovement.name);
+        // Debug.Log(_agentMovement.name);
     }
 
     private void HandleAimInput()

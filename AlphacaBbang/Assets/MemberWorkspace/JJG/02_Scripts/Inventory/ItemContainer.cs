@@ -31,6 +31,11 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
+    private void Start()
+    {
+        Debug.Log(slots.Count);
+    }
+
     protected virtual void Awake()
     {
         InitializeSlots();
@@ -274,7 +279,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ArmorItemData armorData)
             { 
-                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor); 
+                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor);
             }
         }
 

@@ -29,6 +29,8 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject _slotUIPrefab;
     [SerializeField] private ItemContainer inventory;
     [SerializeField] private WeaponHolder _weaponHolder;
+    
+    [Header("Inventory Only")]
     [SerializeField] private TextMeshProUGUI _inventoryStatusText;
 
     [Header("Preview")]

@@ -11,6 +11,39 @@ public class EquipmentContainer : ItemContainer
 
     public event Action OnEquipmentChanged;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        SyncEquipmentSlots();
+    }
+
+    private void OnValidate()
+    {
+        SyncEquipmentSlots();
+    }
+
+    private void SyncEquipmentSlots()
+    {
+        if (equipmentSlots == null)
+            equipmentSlots = new List<EquipmentSlot>();
+
+        if (slots == null)
+            slots = new List<ItemSlot>();
+
+        slots.Clear();
+
+        foreach (EquipmentSlot equipmentSlot in equipmentSlots)
+        {
+            if (equipmentSlot == null)
+                continue;
+
+            if (equipmentSlot.slot == null)
+                equipmentSlot.slot = new ItemSlot();
+
+            slots.Add(equipmentSlot.slot);
+        }
+    }
+
     public override ItemSlot GetSlot(int index)
     {
         if (index < 0 || index >= equipmentSlots.Count) return null;
@@ -34,10 +67,7 @@ public class EquipmentContainer : ItemContainer
         if (equipmentSlot == null)
             return false;
 
-        if (itemData is ArmorItemData)
-            return equipmentSlot.allowedEquipType == EquipType.Helmet;
-
-        return equipmentSlot.allowedEquipType == itemData.EquipType;
+        return itemData is ArmorItemData;
     }
 
     public bool Equip(int index, ItemData itemData)
@@ -47,6 +77,7 @@ public class EquipmentContainer : ItemContainer
 
         equipmentSlots[index].slot.ItemData = itemData;
         equipmentSlots[index].slot.Amount = 1;
+        NotifyEquipmentChanged();
         return true;
     }
 
@@ -58,6 +89,7 @@ public class EquipmentContainer : ItemContainer
 
         equipmentSlot.slot.ItemData = null;
         equipmentSlot.slot.Amount = 0;
+        NotifyEquipmentChanged();
         return true;
     }
 
@@ -73,7 +105,7 @@ public class EquipmentContainer : ItemContainer
             {
                 equipmentSlots[i].slot.ItemData = weaponData;
                 equipmentSlots[i].slot.Amount = 1;
-                OnEquipmentChanged?.Invoke();
+                NotifyEquipmentChanged();
                 return true;
             }
             weaponCount++;
@@ -92,7 +124,7 @@ public class EquipmentContainer : ItemContainer
             if (weaponCount == weaponSlotIndex)
             {
                 equipmentSlots[i].slot.Clear();
-                OnEquipmentChanged?.Invoke();
+                NotifyEquipmentChanged();
                 return true;
             }
             weaponCount++;
@@ -118,11 +150,17 @@ public class EquipmentContainer : ItemContainer
 
             Equip(i, itemData);
             sourceContainer.ClearSlot(sourceIndex);
-            OnEquipmentChanged?.Invoke();
+            NotifyEquipmentChanged();
             return true;
         }
 
         Debug.LogWarning("장착 가능한 빈 슬롯이 없습니다.");
         return false;
+    }
+
+    public void NotifyEquipmentChanged()
+    {
+        NotifyContainerChanged();
+        OnEquipmentChanged?.Invoke();
     }
 }

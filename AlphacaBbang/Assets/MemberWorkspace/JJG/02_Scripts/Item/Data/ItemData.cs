@@ -23,4 +23,13 @@ public abstract class ItemData : ScriptableObject
     [field: SerializeField] public virtual EquipType EquipType { get; private set; }
     
     [field: SerializeField] public GradeType GradeType { get; private set; }
+
+    private void OnValidate()
+    {
+        if (string.IsNullOrEmpty(Id) || Id != name)
+            Id = name;
+        
+        if (string.IsNullOrEmpty(ItemName) || ItemName != name)
+            ItemName = name;
+    }
 }

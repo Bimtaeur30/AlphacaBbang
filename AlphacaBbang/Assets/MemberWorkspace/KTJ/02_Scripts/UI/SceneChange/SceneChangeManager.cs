@@ -30,62 +30,82 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
 
     public void SceneLoad(SceneType sceneType)
     {
-        int idx = 0;
-        switch (sceneType)
-        {
-            case SceneType.TITLE:
-                currentMessageTxt = "메인 타이틀로 이동중";
-                idx = 1;
-                break;
-            case SceneType.BASE:
-                currentMessageTxt = "기지로 이동중";
-                idx = 1;
-                break;
-            case SceneType.STAGE_1:
-                currentMessageTxt = "스테이지 1로 이동중";
-                idx = 1;
-                break;
-            case SceneType.STAGE_2:
-                currentMessageTxt = "스테이지 2로 이동중";
-                idx = 1;
-                break;
-            case SceneType.STAGE_3:
-                currentMessageTxt = "스테이지 3로 이동중";
-                idx = 1;
-                break;
-        }
-        string randomTip = tipMessages[UnityEngine.Random.Range(0, tipMessages.Length - 1)];
-        currentTipTxt = randomTip;
+        int idx = GetSceneIndex(sceneType);
+
+        currentMessageTxt = GetSceneMessage(sceneType);
+        currentTipTxt = GetRandomTip();
 
         messageTxt.text = currentMessageTxt;
         tipTxt.text = currentTipTxt;
 
-        systemChannel.RaiseEvent(SystemEvents.SavePrefEvent);
-        Action onEnd = () => SceneChange(idx);
-        SceneExitEffect(onEnd);
+        // 현재 씬 데이터 저장
+        systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+
+        SceneExitEffect(() =>
+        {
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+            SceneManager.LoadScene(idx);
+        });
     }
 
-    private void SceneChange(int idx)
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        
-        SceneManager.LoadScene(idx);
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+
+        // 새 씬의 ISaveable 오브젝트들이 생성된 뒤 로드
+        systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+    }
+
+    private int GetSceneIndex(SceneType sceneType)
+    {
+        return sceneType switch
+        {
+            SceneType.TITLE => 0,
+            SceneType.BASE => 1,
+            SceneType.STAGE_1 => 2,
+            SceneType.STAGE_2 => 3,
+            SceneType.STAGE_3 => 4,
+            _ => 0
+        };
+    }
+
+    private string GetSceneMessage(SceneType sceneType)
+    {
+        return sceneType switch
+        {
+            SceneType.TITLE => "메인 타이틀로 이동중",
+            SceneType.BASE => "기지로 이동중",
+            SceneType.STAGE_1 => "스테이지 1로 이동중",
+            SceneType.STAGE_2 => "스테이지 2로 이동중",
+            SceneType.STAGE_3 => "스테이지 3로 이동중",
+            _ => "씬 이동중"
+        };
+    }
+
+    private string GetRandomTip()
+    {
+        if (tipMessages == null || tipMessages.Length == 0)
+            return string.Empty;
+
+        return tipMessages[UnityEngine.Random.Range(0, tipMessages.Length)];
     }
 
     private void SceneEnterEffect()
     {
         messageTxt.text = currentMessageTxt;
         tipTxt.text = currentTipTxt;
+
         canvasGroup.alpha = 1f;
         canvasGroup.DOFade(0f, transitionDuration);
     }
 
-    private void SceneExitEffect(Action act)
+    private void SceneExitEffect(Action onComplete)
     {
         canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, transitionDuration).OnComplete(() =>
-        {
-            act.Invoke();
-        });
+
+        canvasGroup
+            .DOFade(1f, transitionDuration)
+            .OnComplete(() => onComplete?.Invoke());
     }
 
     public void InstallBindings(ContainerBuilder containerBuilder)

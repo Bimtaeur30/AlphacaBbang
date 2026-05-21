@@ -10,7 +10,7 @@ public class Sword : MeleeWeaponBase
     [SerializeField] private int animLayerIndex = 0;
 
     [SerializeField] private AnimParamSO[] attackAnimParam;
-    [SerializeField] private Transform visual;
+    private Transform visual;
     public int ComboCounter = 0;
 
     private void Awake()
@@ -53,14 +53,12 @@ public class Sword : MeleeWeaponBase
 
         int currentCombo = ComboCounter;
 
-        // 콤보 윈도우 체크 후 다음 콤보 결정
         bool resetCombo = Time.time > lastUseTime + comboWindow;
+
         if (resetCombo)
             ComboCounter = 0;
         else
             ComboCounter = (currentCombo < data.Length - 1) ? currentCombo + 1 : 0;
-
-        lastUseTime = Time.time;
 
         characterRenderer.PlayClip(
             attackAnimParam[currentCombo].ParamHash,
@@ -68,6 +66,10 @@ public class Sword : MeleeWeaponBase
             crossFadeDuration: crossFadeDuration,
             layerIndex: animLayerIndex
         );
+
+
+        lastUseTime = Time.time;
+
 
         if (data[currentCombo].attackDelay > comboWindow)
         {

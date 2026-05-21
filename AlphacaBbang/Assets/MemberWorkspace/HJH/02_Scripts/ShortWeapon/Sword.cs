@@ -1,159 +1,173 @@
-//using System;
-//using System.Collections;
-//using UnityEngine;
+using JJH._02_Scripts_Systems.AnimationSystems;
+using System;
+using System.Collections;
+using UnityEngine;
 
-//public class Sword : MeleeWeaponBase
-//{
-//    [SerializeField] private float comboWindow = 0.75f;
-//    [SerializeField] private Transform visual;
-//    public int ComboCounter = 0;//{ get; private set; } = 0;
-    
+public class Sword : MeleeWeaponBase
+{
+    [SerializeField] private float comboWindow = 0.75f;
+    [SerializeField] private float crossFadeDuration = 0.1f;
+    [SerializeField] private int animLayerIndex = 0;
 
-//    protected override void PerformAttack(Vector3 targetPos)
-//    {
-//        if (data[ComboCounter].attackDelay > comboWindow)
-//        {
-//            Debug.Assert(false, "Attack delay is bigger than lastUseTime");
-//        }
+    [SerializeField] private AnimParamSO[] attackAnimParam;
+    private Transform visual;
+    public int ComboCounter = 0;
 
+    private void Awake()
+    {
+        if (visual == null)
+        {
+            Transform current = this.transform;
+            while (current != null)
+            {
+                if (current.name == "Alphaca")
+                {
+                    visual = current;
+                    break;
+                }
+                current = current.parent;
+            }
 
-//        Debug.Log($"ComboCounter: {ComboCounter}");
-//        Debug.Log($"comboWindow{comboWindow}, lastUseTime{lastUseTime}, ComboCounter{ComboCounter}");
+            if (visual == null)
+            {
+                Debug.LogError($"[Sword] visual 오브젝트를 찾지 못했습니다! 오브젝트: {gameObject.name}");
+            }
+        }
+    }
 
-//        bool resetCombo = Time.time > lastUseTime + comboWindow;
+    protected override void PerformAttack(Vector3 targetPos)
+    {
+        if (attackAnimParam == null || attackAnimParam.Length == 0)
+        {
+            Debug.LogError("attackAnimParam이 비어있습니다. Inspector 확인!");
+            return;
+        }
+        if (data == null || data.Length == 0)
+        {
+            Debug.LogError("data가 비어있습니다. Inspector 확인!");
+            return;
+        }
 
-//        if (resetCombo)
-//        {
-//            ComboCounter = 0;
-//        }
-//        else
-//        {
-//            if (ComboCounter < data.Length - 1)
-//                ComboCounter++;
-//            else
-//                ComboCounter = 0;
-//        }
+        if (ComboCounter >= attackAnimParam.Length || ComboCounter >= data.Length)
+            ComboCounter = 0;
 
-//        lastUseTime = Time.time;
+        int currentCombo = ComboCounter;
 
-//        Vector3 origin = transform.position;
-//        Vector3 dir = (targetPos - origin).normalized;
+        bool resetCombo = Time.time > lastUseTime + comboWindow;
 
-//        if (ComboCounter == 2)
-//        {
-//            StartCoroutine(AttackDash(targetPos));
-//        }
-//        else
-//        {
-//            PlayAttackParticle(targetPos);
-//        }
+        if (resetCombo)
+            ComboCounter = 0;
+        else
+            ComboCounter = (currentCombo < data.Length - 1) ? currentCombo + 1 : 0;
 
-//        Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
-
-//        foreach (Collider hit in hits)
-//        {
-//            Vector3 toTarget = (hit.transform.position - origin).normalized;
-//            float angle = Vector3.Angle(dir, toTarget);
-
-//            if (angle <= data[ComboCounter].angle * 0.5f)
-//            {
-//                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
-//                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
-
-//                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
-
-//                IDamageable damageable = hit.GetComponent<IDamageable>();
-//                if (damageable != null)
-//                {
-//                    damageable.TakeDamage(data[ComboCounter].damage);
-//                }
-//            }
-//        }
-
-//        currentTime = 0;
-//    }
-
-//    public IEnumerator AttackDash(Vector3 targetPos)
-//    {
-//        Debug.Log("돌진");
-
-//        Vector3 dashDir = (targetPos - visual.position).normalized;
-//        dashDir.y = 0f;
-
-//        float duration = 0.15f;
-//        float timer = 0f;
-//        float speed = 10f;
-
-//        while (timer < duration)
-//        {
-//            visual.position += dashDir * speed * Time.deltaTime;
-
-//            timer += Time.deltaTime;
-
-//            yield return null;
-//        }
-//        PlayAttackParticle(targetPos);
-//    }
+        characterRenderer.PlayClip(
+            attackAnimParam[currentCombo].ParamHash,
+            normalizedTime: 0f,
+            crossFadeDuration: crossFadeDuration,
+            layerIndex: animLayerIndex
+        );
 
 
-//    private void OnDrawGizmosSelected()
-//    {
-//        if (data == null || data.Length == 0) return;
+        lastUseTime = Time.time;
 
-//        Gizmos.color = Color.red;
 
-//        Vector3 origin = transform.position;
-//        Vector3 forward = transform.forward;
+        if (data[currentCombo].attackDelay > comboWindow)
+        {
+            Debug.Assert(false, "Attack delay is bigger than lastUseTime");
+        }
 
-//        Quaternion leftRot = Quaternion.AngleAxis(-data[ComboCounter].angle * 0.5f, Vector3.up);
-//        Quaternion rightRot = Quaternion.AngleAxis(data[ComboCounter].angle * 0.5f, Vector3.up);
+        Debug.Log($"currentCombo: {currentCombo}, 다음 ComboCounter: {ComboCounter}");
 
-//        Vector3 leftDir = leftRot * forward * data[ComboCounter].range;
-//        Vector3 rightDir = rightRot * forward * data[ComboCounter].range;
+        Vector3 origin = transform.position;
+        Vector3 dir = (targetPos - origin).normalized;
 
-//        Gizmos.DrawLine(origin, origin + leftDir);
-//        Gizmos.DrawLine(origin, origin + rightDir);
-//        Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
-//    }
+        PlayAttackParticle(targetPos, currentCombo);
 
-//    private void PlayAttackParticle(Vector3 targetPos)
-//    {
-//        if (data[ComboCounter].attackParticlePrefab == null) return;
+        Collider[] hits = Physics.OverlapSphere(origin, data[currentCombo].range);
 
-//        Vector3 origin = transform.position;
-//        Vector3 dir = targetPos - origin;
+        foreach (Collider hit in hits)
+        {
+            Vector3 toTarget = (hit.transform.position - origin).normalized;
+            float angle = Vector3.Angle(dir, toTarget);
 
-//        if (dir == Vector3.zero)
-//            dir = transform.forward;
+            if (angle <= data[currentCombo].angle * 0.5f)
+            {
+                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
+                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
 
-//        dir.y = 0f;
+                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
 
-//        Quaternion rot = Quaternion.LookRotation(dir.normalized)
-//                       * data[ComboCounter].attackParticlePrefab.transform.rotation
-//                       * Quaternion.Euler(0f, 0f, 180f);
+                IDamageable damageable = hit.GetComponent<IDamageable>();
+                if (damageable != null)
+                    damageable.TakeDamage(data[currentCombo].damage);
+            }
+        }
 
-//        Quaternion pRot = Quaternion.LookRotation(dir.normalized)
-//                       * Quaternion.Euler(0f, 0f, 180f);
+        currentTime = 0;
+    }
 
-//        Vector3 parentRotation = gameObject.transform.parent.rotation.eulerAngles;
-//        parentRotation.y = pRot.eulerAngles.y;
-//        gameObject.transform.parent.rotation = Quaternion.Euler(parentRotation);
+    public IEnumerator AttackDash(Vector3 targetPos, int comboIndex)
+    {
+        Debug.Log("돌진");
 
-//        Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
-//    }
+        if (visual == null) yield break;
 
-//    protected override void OnFire(Vector3 origin, Vector3 direction)
-//    {
-//        throw new NotImplementedException();
-//    }
+        Vector3 dashDir = (targetPos - visual.position).normalized;
+        dashDir.y = 0f;
 
-//    protected override void OnHit(RaycastHit hit)
-//    {
-//        throw new NotImplementedException();
-//    }
+        float duration = 0.15f;
+        float timer = 0f;
+        float speed = 10f;
 
-//    protected override void OnMiss(Vector3 origin, Vector3 endPoint)
-//    {
-//        throw new NotImplementedException();
-//    }
-//}
+        while (timer < duration)
+        {
+            if (visual == null) yield break;
+
+            visual.position += dashDir * speed * Time.deltaTime;
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+
+        PlayAttackParticle(targetPos, comboIndex);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (data == null || data.Length == 0) return;
+
+        Gizmos.color = Color.red;
+
+        Vector3 origin = transform.position;
+        Vector3 forward = transform.forward;
+
+        Quaternion leftRot = Quaternion.AngleAxis(-data[ComboCounter].angle * 0.5f, Vector3.up);
+        Quaternion rightRot = Quaternion.AngleAxis(data[ComboCounter].angle * 0.5f, Vector3.up);
+
+        Vector3 leftDir = leftRot * forward * data[ComboCounter].range;
+        Vector3 rightDir = rightRot * forward * data[ComboCounter].range;
+
+        Gizmos.DrawLine(origin, origin + leftDir);
+        Gizmos.DrawLine(origin, origin + rightDir);
+        Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
+    }
+
+    private void PlayAttackParticle(Vector3 targetPos, int comboIndex)
+    {
+        if (data[comboIndex].attackParticlePrefab == null) return;
+
+        Vector3 origin = transform.position;
+        Vector3 dir = targetPos - origin;
+
+        if (dir == Vector3.zero)
+            dir = transform.forward;
+
+        dir.y = 0f;
+
+        Quaternion rot = Quaternion.LookRotation(dir.normalized)
+                       * data[comboIndex].attackParticlePrefab.transform.rotation
+                       * Quaternion.Euler(0f, 0f, 180f);
+
+        Instantiate(data[comboIndex].attackParticlePrefab, origin, rot);
+    }
+}

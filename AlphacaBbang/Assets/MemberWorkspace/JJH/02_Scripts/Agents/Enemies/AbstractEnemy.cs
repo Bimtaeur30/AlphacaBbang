@@ -15,6 +15,7 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
+        [SerializeField] private LayerMask deadLayer;
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -106,6 +107,7 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             EnemySkill.UseSkill<EnemyDeadSkill>();
             Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
+            gameObject.layer = deadLayer;
             Destroy(gameObject);
         }
 

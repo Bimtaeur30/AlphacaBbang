@@ -1,14 +1,15 @@
 using JJH._02_Scripts.Weapons;
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 
 public abstract class 
     MeleeWeaponBase : MonoBehaviour,IWeapon
 {
     public CharacterState characterState;
-    public IRenderer renderer;
 
     [field:SerializeField]public GunDataSO WeaponData { get; private set; }
     [SerializeField] protected ShortWeaponSO[] data;
+    protected IRenderer characterRenderer;
     protected int currentLevel = 0;
 
     protected float lastUseTime;
@@ -24,7 +25,7 @@ public abstract class
     public virtual void Initialize(WeaponHandleModule owner)
     {
         Agent agent = owner.Owner as Agent;
-        renderer = agent.Renderer;
+        characterRenderer = agent.Renderer;
     }
     public void TickFire()
     {
@@ -36,11 +37,15 @@ public abstract class
 
     public void StartFire(bool isAim)
     {
+        if (currentTime < data[currentLevel].attackDelay)
+        {
+            Debug.Log($"공격 대기 중입니다. 남은 시간: {data[currentLevel].attackDelay - currentTime:F2}초");
+            return;
+        }
         Debug.Log("근접무기 공격");
         Vector3 direction = GetShootDirection();
         PerformAttack(direction);
     }
-
     public void StopFire(bool isAim)
     {
     }

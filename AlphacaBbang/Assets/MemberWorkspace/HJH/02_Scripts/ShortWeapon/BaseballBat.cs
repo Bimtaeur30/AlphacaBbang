@@ -1,145 +1,119 @@
-//using UnityEngine;
+using JJH._02_Scripts_Systems.AnimationSystems;
+using UnityEngine;
 
-//public class BaseballBat : MeleeWeaponBase
-//{
-//    [SerializeField] private float comboWindow = 0.4f;
-//    public int ComboCounter = 0;
-//    protected override void PerformAttack(Vector3 targetPos)
-//    {
-//        //PlayAttackParticle(targetPos);
+public class BaseballBat : MeleeWeaponBase
+{
+    [SerializeField] private float comboWindow = 0.4f;
 
-//        //bool comboCounterOver = ComboCounter >= data.Length;
-//        //bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
+    [SerializeField] private float crossFadeDuration = 0.1f;
+    [SerializeField] private int animLayerIndex = 0;
 
-//        //Debug.Log($"ComboCounter: {ComboCounter}");
+    [SerializeField] private AnimParamSO[] attackAnimParam;
+    public int ComboCounter { get; private set; } = 0;
 
-//        //if (comboCounterOver || comboWindowExhausted)
-//        //{
-//        //    Debug.Log("Combo reset");
-//        //    if (data == null || data.Length == 0) return;
-//        //    lastUseTime = Time.time;
+    protected override void PerformAttack(Vector3 dir)
+    {
+        if (attackAnimParam == null || attackAnimParam.Length == 0)
+        {
+            Debug.LogError("attackAnimParam이 비어있습니다. Inspector 확인!");
+            return;
+        }
+        if (data == null || data.Length == 0)
+        {
+            Debug.LogError("data가 비어있습니다. Inspector 확인!");
+            return;
+        }
 
-//        //    if (ComboCounter < data.Length - 1)
-//        //    {
-//        //        ComboCounter++;
-//        //    }
-//        //    else {
-//        //        ComboCounter = 0;
-//        //    }
-//        //}
+        if (ComboCounter >= attackAnimParam.Length || ComboCounter >= data.Length)
+            ComboCounter = 0;
+
+        characterRenderer.PlayClip(
+            attackAnimParam[ComboCounter].ParamHash,
+            normalizedTime: 0f,
+            crossFadeDuration: crossFadeDuration,
+            layerIndex: animLayerIndex
+        );
+
+        PlayAttackParticle(dir);
+
+        bool comboCounterOver = ComboCounter >= data.Length;
+        bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
+
+        Debug.Log($"ComboCounter: {ComboCounter}");
+
+        if (comboCounterOver || comboWindowExhausted)
+        {
+            Debug.Log("Combo reset");
+            if (data == null || data.Length == 0) return;
+            lastUseTime = Time.time;
+
+            if (ComboCounter < data.Length - 1)
+            {
+                ComboCounter++;
+            }
+            else
+            {
+                ComboCounter = 0;
+            }
+        }
 
 
-//        //Vector3 origin = transform.position;
-//        //Vector3 dir = (targetPos - origin).normalized;
+        Vector3 origin = transform.position;
 
-//        //Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
+        Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
 
-//        //foreach (Collider hit in hits)
-//        //{
-//        //    Vector3 toTarget = (hit.transform.position - origin).normalized;
-//        //    float angle = Vector3.Angle(dir, toTarget);
+        foreach (Collider hit in hits)
+        {
+            Vector3 toTarget = (hit.transform.position - origin).normalized;
+            float angle = Vector3.Angle(dir, toTarget);
 
-//        //    if (angle <= data[ComboCounter].angle * 0.5f)
-//        //    {
-//        //        IDamageable damageable = hit.GetComponent<IDamageable>();
-//        //        if (damageable != null)
-//        //        {
-//        //            damageable.TakeDamage(data[ComboCounter].damage);
-//        //        }
-//        //    }
-//        //}
-//        if (data[ComboCounter].attackDelay > comboWindow)
-//        {
-//            Debug.Assert(false, "Attack delay is bigger than lastUseTime");
-//        }
+            if (angle <= data[ComboCounter].angle * 0.5f)
+            {
+                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
+                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
 
+                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
 
-//        Debug.Log($"ComboCounter: {ComboCounter}");
-//        Debug.Log($"comboWindow{comboWindow}, lastUseTime{lastUseTime}, ComboCounter{ComboCounter}");
+                IDamageable damageable = hit.GetComponent<IDamageable>();
+                if (damageable != null)
+                {
+                    damageable.TakeDamage(data[ComboCounter].damage);
+                }
+            }
+        }
+    }
 
-//        bool resetCombo = Time.time > lastUseTime + comboWindow;
+    private void OnDrawGizmosSelected()
+    {
+        if (data == null || data.Length == 0) return;
 
-//        if (resetCombo)
-//        {
-//            ComboCounter = 0;
-//        }
-//        else
-//        {
-//            if (ComboCounter < data.Length - 1)
-//                ComboCounter++;
-//            else
-//                ComboCounter = 0;
-//        }
+        Gizmos.color = Color.red;
 
-//        lastUseTime = Time.time;
+        Vector3 origin = transform.position;
+        Vector3 forward = transform.forward;
 
-//        Vector3 origin = transform.position;
-//        Vector3 dir = (targetPos - origin).normalized;
+        Quaternion leftRot = Quaternion.AngleAxis(-data[ComboCounter].angle * 0.5f, Vector3.up);
+        Quaternion rightRot = Quaternion.AngleAxis(data[ComboCounter].angle * 0.5f, Vector3.up);
 
-//        PlayAttackParticle(targetPos);
+        Vector3 leftDir = leftRot * forward * data[ComboCounter].range;
+        Vector3 rightDir = rightRot * forward * data[ComboCounter].range;
+        Gizmos.DrawLine(origin, origin + leftDir);
+        Gizmos.DrawLine(origin, origin + rightDir);
+        Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
+    }
+    private void PlayAttackParticle(Vector3 dir)
+    {
+        if (data[ComboCounter].attackParticlePrefab == null) return;
+        Vector3 origin = transform.position;
 
-//        Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
+        if (dir == Vector3.zero)
+            dir = transform.forward;
 
-//        foreach (Collider hit in hits)
-//        {
-//            Vector3 toTarget = (hit.transform.position - origin).normalized;
-//            float angle = Vector3.Angle(dir, toTarget);
+        dir.y = 0f;
 
-//            if (angle <= data[ComboCounter].angle * 0.5f)
-//            {
-//                ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
-//                                               ?? hit.GetComponentInParent<ICharacterStateOwner>();
+        Quaternion rot = Quaternion.LookRotation(dir.normalized)
+                       * Quaternion.Euler(-90f, 180f, 0f);
 
-//                if (stateOwner != null && stateOwner.CharacterState == characterState) continue;
-
-//                IDamageable damageable = hit.GetComponent<IDamageable>();
-//                if (damageable != null)
-//                {
-//                    damageable.TakeDamage(data[ComboCounter].damage);
-//                }
-//            }
-//        }
-
-//        currentTime = 0;
-//    }
-
-//    private void OnDrawGizmosSelected()
-//    {
-//        if (data == null || data.Length == 0) return;
-
-//        Gizmos.color = Color.red;
-
-//        Vector3 origin = transform.position;
-//        Vector3 forward = transform.forward;
-
-//        Quaternion leftRot = Quaternion.AngleAxis(-data[ComboCounter].angle * 0.5f, Vector3.up);
-//        Quaternion rightRot = Quaternion.AngleAxis(data[ComboCounter].angle * 0.5f, Vector3.up);
-
-//        Vector3 leftDir = leftRot * forward * data[ComboCounter].range;
-//        Vector3 rightDir = rightRot * forward * data[ComboCounter].range;
-//        Gizmos.DrawLine(origin, origin + leftDir);
-//        Gizmos.DrawLine(origin, origin + rightDir);
-//        Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
-//    }
-//    private void PlayAttackParticle(Vector3 targetPos)
-//    {
-//        if (data[ComboCounter].attackParticlePrefab == null) return;
-//        Vector3 origin = transform.position;
-//        Vector3 dir = targetPos - origin;
-
-//        if (dir == Vector3.zero)
-//            dir = transform.forward;
-
-//        dir.y = 0f;
-
-//        Quaternion rot = Quaternion.LookRotation(dir.normalized)
-//            * data[ComboCounter].attackParticlePrefab.transform.rotation
-//            * Quaternion.Euler(0f, 0f, 180f);
-
-//        if(characterState == CharacterState.Player)
-//        {
-//            gameObject.transform.parent.rotation = rot;
-//        }
-//        Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
-//    }
-//}
+        Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
+    }
+}

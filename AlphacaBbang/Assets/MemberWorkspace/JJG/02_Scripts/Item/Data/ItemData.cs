@@ -6,7 +6,8 @@ public enum EquipType
     None,
     MainWeapon,
     SubWeapon,
-    Helmet
+    Helmet,
+    Body
 };
 
 [CreateAssetMenu(fileName = "ItemData", menuName = "SO/ItemData")]

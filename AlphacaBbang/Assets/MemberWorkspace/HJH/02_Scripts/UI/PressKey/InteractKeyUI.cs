@@ -73,7 +73,7 @@ public class InteractKeyUI : MonoBehaviour
 
         if (isPressed && !isCompleted)
         {
-            pressedTime += Time.deltaTime;   // ´©¸£´Â µ¿¾È¸¸ ´©Àû
+            pressedTime += Time.deltaTime;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È¸ï¿½ ï¿½ï¿½ï¿½ï¿½
             fillAmount = Mathf.Clamp01(pressedTime / fillDuration);
 
             if (fillAmount >= 1f)
@@ -86,7 +86,7 @@ public class InteractKeyUI : MonoBehaviour
         else if (!isPressed)
         {
             isCompleted = false;
-            pressedTime -= Time.deltaTime * restoreSpeed;   // º¹±Í
+            pressedTime -= Time.deltaTime * restoreSpeed;   // ï¿½ï¿½ï¿½ï¿½
             pressedTime = Mathf.Clamp(pressedTime, 0f, fillDuration);
             fillAmount = Mathf.Clamp01(pressedTime / fillDuration);
         }

@@ -11,6 +11,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public string Description;
         public QuestImportanceType Importance;
         public List<ConditionData> Conditions;
+        public List<string> RewardIds;
     }
 
     [Serializable]

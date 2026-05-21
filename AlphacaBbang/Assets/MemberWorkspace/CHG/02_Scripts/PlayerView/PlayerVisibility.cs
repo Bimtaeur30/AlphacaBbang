@@ -121,17 +121,11 @@ namespace MemberWorkspace.CHG._02_Scripts
             }
         }
 
-        private void Update()
-        {
-            RotateToMouse();
-        }
-
         private void LateUpdate()
         {
             DrawViewCone();
             DrawCloseCircle();
         }
-        
         
         public bool IsVisible(Vector3 worldPosition)
         {
@@ -307,7 +301,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             );
         }
 
-        private void RotateToMouse()
+        /*private void RotateToMouse()
         {
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, 100f))
@@ -323,7 +317,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                     10f * Time.deltaTime
                 );
             }
-        }
+        }*/
         
         
     }

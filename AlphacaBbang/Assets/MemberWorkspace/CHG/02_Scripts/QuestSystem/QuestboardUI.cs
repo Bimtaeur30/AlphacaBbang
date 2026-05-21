@@ -18,8 +18,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         [SerializeField] private TextMeshProUGUI rewardText;
         [SerializeField] private ItemDatabase itemDatabase;
 
-        private List<QuestData> choiceQuestDatas = new();
-        private Dictionary<string, GameObject> questChoiceBtnDict = new();
+        private List<QuestData> _choiceQuestDatas = new();
+        private Dictionary<string, GameObject> _questChoiceBtnDict = new();
         private string _currentQuestId = "";
 
         private void Start()
@@ -31,27 +31,30 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         {
             if (!QuestManager.Instance.TryGetQuestData(questId, out QuestData questData))
                 return;
-            choiceQuestDatas.Add(questData);
+            _choiceQuestDatas.Add(questData);
         }
 
         private void AddQuestBtn()
         {
-            foreach (QuestData questData in choiceQuestDatas)
+            foreach (QuestData questData in _choiceQuestDatas)
             {
+                if (_questChoiceBtnDict.ContainsKey(questData.Id)) return;
+                
                 GameObject obj = Instantiate(questChoiceBtnPrefab, questChoiceLayout.transform);
                 obj.GetComponentInChildren<TextMeshProUGUI>().text = questData.Name;
                 obj.GetComponent<Button>().onClick.AddListener(() => SetContent(questData));
 
-                if (questChoiceBtnDict.ContainsKey(questData.Id))
-                    questChoiceBtnDict[questData.Id] = obj;
+                if (_questChoiceBtnDict.ContainsKey(questData.Id))
+                    _questChoiceBtnDict[questData.Id] = obj;
                 else
-                    questChoiceBtnDict.Add(questData.Id, obj);
+                    _questChoiceBtnDict.Add(questData.Id, obj);
 
             }
         }
 
         private void SetContent(QuestData questData)
         {
+            Debug.Log("111");
             _currentQuestId = questData.Id;
             questNameText.text = questData.Name;
             descriptionText.text = questData.Description;
@@ -72,32 +75,34 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                         break;
                 }
             }
-
+            
             conditionText.text = conditionString;
             string rewardString = "보상: ";
             foreach (string rewardId in questData.RewardIds)
             {
+                Debug.Log(rewardId);
                 if (!itemDatabase.TryGetItem(rewardId, out ItemData item))
-                    return;
-                rewardString = rewardString.TrimEnd(',', ' ');
+                    rewardString += item.ItemName + ", ";
             }
 
-            rewardString.Remove(rewardString.Length - 2, 2);
+            rewardString = rewardString.TrimEnd(',', ' ');
             rewardText.text = rewardString;
         }
 
         public void AcceptanceQuest()
         {
+            if (string.IsNullOrEmpty(_currentQuestId)) return;
+    
             QuestManager.Instance.QuestAccept(_currentQuestId);
-            Destroy(questChoiceBtnDict[_currentQuestId]);
-
-            choiceQuestDatas.RemoveAll(q => q.Id == _currentQuestId);
+            Destroy(_questChoiceBtnDict[_currentQuestId]);
+            _questChoiceBtnDict.Remove(_currentQuestId);  
+            _choiceQuestDatas.RemoveAll(q => q.Id == _currentQuestId);
             _currentQuestId = "";
 
-            if (choiceQuestDatas.Count == 0)
+            if (_choiceQuestDatas.Count == 0)
                 EmptyingContent();
             else
-                SetContent(choiceQuestDatas[0]);
+                SetContent(_choiceQuestDatas[0]);
         }
 
         private void EmptyingContent()

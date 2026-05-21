@@ -34,23 +34,23 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
         switch (sceneType)
         {
             case SceneType.TITLE:
-                currentMessageTxt = "¸ÞÀÎ Å¸ÀÌÆ²·Î ÀÌµ¿Áß";
+                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ²ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
                 idx = 1;
                 break;
             case SceneType.BASE:
-                currentMessageTxt = "±âÁö·Î ÀÌµ¿Áß";
+                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
                 idx = 1;
                 break;
             case SceneType.STAGE_1:
-                currentMessageTxt = "½ºÅ×ÀÌÁö 1·Î ÀÌµ¿Áß";
+                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
                 idx = 1;
                 break;
             case SceneType.STAGE_2:
-                currentMessageTxt = "½ºÅ×ÀÌÁö 2·Î ÀÌµ¿Áß";
+                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
                 idx = 1;
                 break;
             case SceneType.STAGE_3:
-                currentMessageTxt = "½ºÅ×ÀÌÁö 3·Î ÀÌµ¿Áß";
+                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
                 idx = 1;
                 break;
         }
@@ -77,6 +77,8 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
         tipTxt.text = currentTipTxt;
         canvasGroup.alpha = 1f;
         canvasGroup.DOFade(0f, transitionDuration);
+        systemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
+
     }
 
     private void SceneExitEffect(Action act)

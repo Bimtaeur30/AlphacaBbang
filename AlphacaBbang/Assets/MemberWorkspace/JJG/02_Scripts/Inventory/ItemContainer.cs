@@ -24,16 +24,20 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
+    [field: SerializeField] public SaveIdData SaveId { get; private set; }
+
     public event Action OnContainerChanged;
 
     private void OnEnable()
     {
-        playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
+        if (playerStateChannel != null)
+            playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
-    private void Start()
+    private void OnDisable()
     {
-        Debug.Log(slots.Count);
+        if (playerStateChannel != null)
+            playerStateChannel.RemoveListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
     protected virtual void Awake()
@@ -415,7 +419,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         OnContainerChanged?.Invoke();
     }
 
-    public SaveIdData SaveId { get; }
+    //public SaveIdData SaveId { get; }
     
     [Serializable]
     private struct InventorySaveData

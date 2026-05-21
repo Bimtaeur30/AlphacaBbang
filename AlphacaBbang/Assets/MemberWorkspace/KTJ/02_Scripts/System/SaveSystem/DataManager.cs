@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataManager : MonoBehaviour, IInstaller
 {
@@ -52,6 +53,7 @@ public class DataManager : MonoBehaviour, IInstaller
     {
         SystemChannel.RaiseEvent(SystemEvents.SaveFileEvent); // 게임 종료 시 파일저장
     }
+
     private void Awake()
     {
         SystemChannel.AddListener<SavePrefEvent>(HandleSavePrefEvent);
@@ -59,8 +61,14 @@ public class DataManager : MonoBehaviour, IInstaller
         SystemChannel.AddListener<SaveFileEvent>(HandleSaveFileEvent);
         SystemChannel.AddListener<StartNewGameEvent>(HandleStartNewGame);
         SystemChannel.AddListener<LoadFileEvent>(HandleLoadFileEvent);
+        SceneManager.sceneLoaded += OnSceneLoaded;
 
         SystemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        HandleLoadPrefEvent(default);
     }
 
     private void OnDestroy()
@@ -70,6 +78,7 @@ public class DataManager : MonoBehaviour, IInstaller
         SystemChannel.RemoveListener<SaveFileEvent>(HandleSaveFileEvent);
         SystemChannel.RemoveListener<StartNewGameEvent>(HandleStartNewGame);
         SystemChannel.RemoveListener<LoadFileEvent>(HandleLoadFileEvent);
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     #endregion

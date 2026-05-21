@@ -30,64 +30,82 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
 
     public void SceneLoad(SceneType sceneType)
     {
-        int idx = 0;
-        switch (sceneType)
-        {
-            case SceneType.TITLE:
-                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½Æ²ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
-                idx = 1;
-                break;
-            case SceneType.BASE:
-                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
-                idx = 1;
-                break;
-            case SceneType.STAGE_1:
-                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
-                idx = 1;
-                break;
-            case SceneType.STAGE_2:
-                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
-                idx = 1;
-                break;
-            case SceneType.STAGE_3:
-                currentMessageTxt = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½";
-                idx = 1;
-                break;
-        }
-        string randomTip = tipMessages[UnityEngine.Random.Range(0, tipMessages.Length - 1)];
-        currentTipTxt = randomTip;
+        int idx = GetSceneIndex(sceneType);
+
+        currentMessageTxt = GetSceneMessage(sceneType);
+        currentTipTxt = GetRandomTip();
 
         messageTxt.text = currentMessageTxt;
         tipTxt.text = currentTipTxt;
 
-        systemChannel.RaiseEvent(SystemEvents.SavePrefEvent);
-        Action onEnd = () => SceneChange(idx);
-        SceneExitEffect(onEnd);
+        // ÇöÀç ¾À µ¥ÀÌÅÍ ÀúÀå
+        systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
+
+        SceneExitEffect(() =>
+        {
+            SceneManager.sceneLoaded += HandleSceneLoaded;
+            SceneManager.LoadScene(idx);
+        });
     }
 
-    private void SceneChange(int idx)
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        
-        SceneManager.LoadScene(idx);
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+
+        // »õ ¾ÀÀÇ ISaveable ¿ÀºêÁ§Æ®µéÀÌ »ý¼ºµÈ µÚ ·Îµå
+        systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+    }
+
+    private int GetSceneIndex(SceneType sceneType)
+    {
+        return sceneType switch
+        {
+            SceneType.TITLE => 0,
+            SceneType.BASE => 1,
+            SceneType.STAGE_1 => 2,
+            SceneType.STAGE_2 => 3,
+            SceneType.STAGE_3 => 4,
+            _ => 0
+        };
+    }
+
+    private string GetSceneMessage(SceneType sceneType)
+    {
+        return sceneType switch
+        {
+            SceneType.TITLE => "¸ÞÀÎ Å¸ÀÌÆ²·Î ÀÌµ¿Áß",
+            SceneType.BASE => "±âÁö·Î ÀÌµ¿Áß",
+            SceneType.STAGE_1 => "½ºÅ×ÀÌÁö 1·Î ÀÌµ¿Áß",
+            SceneType.STAGE_2 => "½ºÅ×ÀÌÁö 2·Î ÀÌµ¿Áß",
+            SceneType.STAGE_3 => "½ºÅ×ÀÌÁö 3·Î ÀÌµ¿Áß",
+            _ => "¾À ÀÌµ¿Áß"
+        };
+    }
+
+    private string GetRandomTip()
+    {
+        if (tipMessages == null || tipMessages.Length == 0)
+            return string.Empty;
+
+        return tipMessages[UnityEngine.Random.Range(0, tipMessages.Length)];
     }
 
     private void SceneEnterEffect()
     {
         messageTxt.text = currentMessageTxt;
         tipTxt.text = currentTipTxt;
+
         canvasGroup.alpha = 1f;
         canvasGroup.DOFade(0f, transitionDuration);
-        systemChannel.RaiseEvent(SystemEvents.LoadPrefEvent);
-
     }
 
-    private void SceneExitEffect(Action act)
+    private void SceneExitEffect(Action onComplete)
     {
         canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, transitionDuration).OnComplete(() =>
-        {
-            act.Invoke();
-        });
+
+        canvasGroup
+            .DOFade(1f, transitionDuration)
+            .OnComplete(() => onComplete?.Invoke());
     }
 
     public void InstallBindings(ContainerBuilder containerBuilder)

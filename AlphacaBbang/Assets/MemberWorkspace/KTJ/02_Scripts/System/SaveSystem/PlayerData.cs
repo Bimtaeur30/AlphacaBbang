@@ -56,8 +56,12 @@ public class PlayerData : MonoBehaviour, IModule, ISaveable
 
     public void RestoreData(string data)
     {
+        Debug.Log($"[PlayerData] RestoreData È£ÃâµÊ: {data}");
+
         var parsedData = JsonUtility.FromJson<PlayerSaveData>(data);
         TestSaveValue = parsedData.testSaveValue;
+
+        Debug.Log($"[PlayerData] TestSaveValue º¹¿øµÊ: {TestSaveValue}");
     }
     #endregion
 }

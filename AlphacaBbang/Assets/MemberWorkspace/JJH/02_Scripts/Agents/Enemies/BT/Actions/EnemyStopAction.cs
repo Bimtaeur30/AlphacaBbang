@@ -14,10 +14,11 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Enemy.Value.Movement == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyNavMeshAgent == null)
                 return Status.Failure;
 
-            Enemy.Value.Movement.SetMovementDirection(Vector3.zero);
+            Enemy.Value.EnemyNavMeshAgent.StopImmediately();
+
             return Status.Success;
         }
     }

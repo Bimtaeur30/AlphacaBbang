@@ -24,11 +24,20 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
+    [field: SerializeField] public SaveIdData SaveId { get; private set; }
+
     public event Action OnContainerChanged;
 
     private void OnEnable()
     {
-        playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
+        if (playerStateChannel != null)
+            playerStateChannel.AddListener<PlayerHpHeal>(HandlePlayerHpHeal);
+    }
+
+    private void OnDisable()
+    {
+        if (playerStateChannel != null)
+            playerStateChannel.RemoveListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
     protected virtual void Awake()
@@ -269,13 +278,12 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ThrowingItemData throwingData)
             {
-                Debug.Log("Grenade used, preparing to throw.");
                 Vector3 direction = grenadeFirePos.targetMark.transform.position;
                 StartCoroutine(grenadeFirePos.SimulateProjectile(direction, true, throwingData.Grenade));
             }
             else if (itemData is ArmorItemData armorData)
             { 
-                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor); 
+                agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor);
             }
         }
 
@@ -411,7 +419,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         OnContainerChanged?.Invoke();
     }
 
-    public SaveIdData SaveId { get; }
+    //public SaveIdData SaveId { get; }
     
     [Serializable]
     private struct InventorySaveData

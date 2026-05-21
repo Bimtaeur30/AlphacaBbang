@@ -13,10 +13,13 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Conditions
 
         public override bool IsTrue()
         {
-            if (Target.Value == null || Enemy.Value == null || Enemy.Value.Sensor == null)
+            if (Enemy.Value == null || Enemy.Value.Sensor == null)
                 return false;
 
-            return Enemy.Value.Sensor.IsTargetInSight(Enemy.Value.transform.position, Target.Value.transform);
+            if (Target.Value == null)
+                return Enemy.Value.Sensor.IsTargetInSight(Enemy.Value.transform.position);
+            else
+                return Enemy.Value.Sensor.IsTargetInSight(Enemy.Value.transform.position, Target.Value.transform);
         }
     }
 }

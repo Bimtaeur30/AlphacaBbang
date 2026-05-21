@@ -8,6 +8,14 @@ namespace MemberWorkspace.JJG._02_Scripts.Item.Data
     {
         [field: SerializeField] public ArmorSO Armor { get; private set; }
 
-        public override EquipType EquipType => EquipType.Helmet;
+        public override EquipType EquipType
+        {
+            get
+            {
+                return Armor != null && Armor.ArmorType == ArmorType.Body
+                    ? EquipType.Body
+                    : EquipType.Helmet;
+            }
+        }
     }
 }

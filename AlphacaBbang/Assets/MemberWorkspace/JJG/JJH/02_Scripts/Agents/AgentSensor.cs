@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using JJH._02_Scripts.Agents.Enemies;
+using System.Linq;
 using UnityEngine;
 
 namespace JJH._02_Scripts.Agents
@@ -12,6 +13,7 @@ namespace JJH._02_Scripts.Agents
 
         [Header("Layer")]
         [SerializeField] private float selfCheckRadius;
+        [SerializeField] private float viewAngle = 120f;
 
         private Agent _owner;
 
@@ -29,17 +31,32 @@ namespace JJH._02_Scripts.Agents
             return hitCollider != null;
         }
 
-        public bool IsTargetInSight(Vector3 startPosition, Transform target)
+        public bool IsTargetInSight(Vector3 startPosition, Transform target = null)
         {
-            Vector3 direction = target.transform.position - startPosition;
+            Vector3 direction;
+            float distance = _owner is AbstractEnemy ? ((AbstractEnemy)_owner).EnemyData.DetectRange : 100f;
 
-            RaycastHit hit;
-            bool isHit = Physics.Raycast(startPosition, direction.normalized,
-                                                         out hit, direction.magnitude, ObstacleLayer);
+            if (target != null)
+            {
+                direction = (target.position - startPosition).normalized;
+                distance = Vector3.Distance(startPosition, target.position);
+            }
+            else
+            {
+                direction = _owner.transform.forward;
+            }
 
-            Debug.DrawLine(startPosition, target.transform.position, Color.red, 0.1f);
+            float angle = Vector3.Angle(_owner.transform.forward, direction);
+            if (angle > viewAngle * 0.5f)
+                return false;
 
-            return !isHit;
+            if (target != null)
+            {
+                if (Physics.Raycast(startPosition, direction, distance, ObstacleLayer))
+                    return false;
+            }
+
+            return true;
         }
 
         public bool CheckAgentInSmoke()

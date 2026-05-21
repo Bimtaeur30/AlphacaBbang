@@ -8,15 +8,25 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _amountText;
     [SerializeField] private Image _selectedOverlay;
+    [Header("Hover")]
+    [SerializeField] private Image _backgroundImage;
+    [SerializeField] private Color _hoverColor = new Color(1f, 1f, 1f, 0.15f);
 
     private int _slotIndex;
     private ItemContainer _container;
     private ItemSlot _currentSlot;
+    private Color _originalBgColor = Color.clear;
     
     public void Initialize(ItemContainer container, int index)
     {
         _container = container;
         _slotIndex = index;
+        // Cache original background color and try fallback if not assigned
+        if (_backgroundImage == null)
+            _backgroundImage = GetComponent<Image>();
+
+        if (_backgroundImage != null)
+            _originalBgColor = _backgroundImage.color;
     }
 
     public void SetSlotIndex(int index)
@@ -69,13 +79,25 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        // highlight slot background
+        SetHover(true);
+
         if (_currentSlot != null && !_currentSlot.IsEmpty)
             ItemTooltip.Instance?.Show(_currentSlot.ItemData);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        SetHover(false);
         ItemTooltip.Instance?.Hide();
+    }
+
+    private void SetHover(bool hover)
+    {
+        if (_backgroundImage == null)
+            return;
+
+        _backgroundImage.color = hover ? _hoverColor : _originalBgColor;
     }
 
     public void OnPointerClick(PointerEventData eventData)

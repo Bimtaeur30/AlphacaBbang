@@ -9,7 +9,7 @@ public class LootBoxInteractor : MonoBehaviour
     [SerializeField] private SlidePanelController SlidePanelController;
 
     [SerializeField] private PlayerController playerController;
-    [SerializeField] private LootBoxOpeningUI openingUI;
+    //[SerializeField] private LootBoxOpeningUI openingUI;
 
     [Header("Post-Open UI")]
     [SerializeField] private GameObject inventoryUIRoot;
@@ -41,26 +41,18 @@ public class LootBoxInteractor : MonoBehaviour
     private IEnumerator OpenRoutine(LootBoxContainer lootBox)
     {
         _isOpening = true;
-        openingUI?.Show();
-
-        float timer = 0f;
-        float totalTime = lootBox.RequiredOpenTime;
-
-        while (timer < totalTime)
-        {
-            timer += Time.deltaTime;
-            openingUI?.SetProgress(timer, totalTime);
-            yield return null;
-        }
-
-        openingUI?.Hide();
-
-        inventoryUIRoot?.SetActive(true);
-        lootBoxRevealUI?.Show(lootBox);
-
+        inventoryUIRoot?.SetActive(false);
         InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));
         SlidePanelController.SlideIn();
 
+        //openingUI?.Show();
+
+        yield return new WaitForSeconds(0.2f);
+
+        //openingUI?.Hide();
+
+        inventoryUIRoot?.SetActive(true);
+        lootBoxRevealUI?.Show(lootBox);
         _isOpening = false;
     }
 }

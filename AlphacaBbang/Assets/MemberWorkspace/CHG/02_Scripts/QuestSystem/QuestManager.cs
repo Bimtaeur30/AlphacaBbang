@@ -78,8 +78,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
             foreach (var quest in save.ActiveQuests)
             {
-                var data = FindQuestData(quest.QuestId);
-                if (data == null) continue;
+                if(!TryGetQuestData(quest.QuestId,out QuestData data))
+                    return;
                 
                 _activeQuests.Add(new Quest(data, quest));
             }
@@ -98,8 +98,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                 return;
             };
             
-            var data = FindQuestData(questId);
-            if (data == null)
+            if (!TryGetQuestData(questId, out QuestData data))
             {
                 Debug.LogError($"Quest {questId} not found");
                 return;
@@ -114,11 +113,21 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public bool IsCompleted(string questId)
             => _completedQuestIds.Contains(questId);
 
-        public QuestData FindQuestData(string questId)
+        public bool TryGetQuestData(string questId, out QuestData quest)
         {
-            if (MainQuests.TryGetValue(questId, out var main)) return main;
-            if (SubQuests.TryGetValue(questId, out var sub)) return sub;
-            return null;
+            if (MainQuests.TryGetValue(questId, out var main))
+            {
+                quest = main;
+                return true;
+            }
+
+            if (SubQuests.TryGetValue(questId, out var sub))
+            {
+                quest = sub;
+                return true;
+            }
+            quest = null;
+            return false;
         }
 
 #region QuestDataUpdateTest

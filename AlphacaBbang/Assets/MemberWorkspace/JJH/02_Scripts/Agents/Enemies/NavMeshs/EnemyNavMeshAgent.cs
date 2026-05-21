@@ -33,5 +33,11 @@ namespace JJH._02_Scripts.Agents.Enemies.NavMeshs
                 NavMeshAgent.velocity = Vector3.zero;
             }
         }
+
+        public void StopImmediately()
+        {
+            NavMeshAgent.ResetPath();
+            NavMeshAgent.velocity = Vector3.zero;
+        }
     }
 }

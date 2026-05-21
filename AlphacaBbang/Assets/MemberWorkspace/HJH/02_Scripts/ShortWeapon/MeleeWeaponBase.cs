@@ -1,4 +1,5 @@
 using JJH._02_Scripts.Weapons;
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 
 public abstract class 
@@ -8,6 +9,7 @@ public abstract class
 
     [field:SerializeField]public GunDataSO WeaponData { get; private set; }
     [SerializeField] protected ShortWeaponSO[] data;
+    protected IRenderer characterRenderer;
     protected int currentLevel = 0;
 
     protected float lastUseTime;
@@ -22,43 +24,52 @@ public abstract class
 
     public virtual void Initialize(WeaponHandleModule owner)
     {
+        Agent agent = owner.Owner as Agent;
+        characterRenderer = agent.Renderer;
     }
     public void TickFire()
     {
-        throw new System.NotImplementedException();
     }
-
-    public void StartFire(bool isAim)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void StopFire(bool isAim)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public virtual void SetAim(bool val)
     {
 
     }
+
+    public void StartFire(bool isAim)
+    {
+        if (currentTime < data[currentLevel].attackDelay)
+        {
+            Debug.Log($"공격 대기 중입니다. 남은 시간: {data[currentLevel].attackDelay - currentTime:F2}초");
+            return;
+        }
+        Debug.Log("근접무기 공격");
+        Vector3 direction = GetShootDirection();
+        PerformAttack(direction);
+    }
+    public void StopFire(bool isAim)
+    {
+    }
+
     void Update()
     {
         currentTime += Time.deltaTime;
     }
-    public virtual void Attack(Vector3 targetPos, bool isAttack)
-    {
-        Debug.Log($"Attack is : {isAttack}");
-        if (!isAttack) return;
+    //public virtual void Attack(Vector3 targetPos, bool isAttack)
+    //{
+    //    Debug.Log($"Attack is : {isAttack}");
+    //    if (!isAttack) return;
 
-        Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
+    //    Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
 
-        if (currentTime < data[currentLevel].attackDelay) return;
+    //    if (currentTime < data[currentLevel].attackDelay) return;
 
-        PerformAttack(targetPos);
-    }
+    //    PerformAttack(targetPos);
+    //}
 
     protected abstract void PerformAttack(Vector3 targetPos);
 
-
+    protected virtual Vector3 GetShootDirection()
+    {
+        return transform.right.normalized;
+    }
 }

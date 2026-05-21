@@ -1,13 +1,40 @@
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 
 public  class Axe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
+        
+    [SerializeField] private float crossFadeDuration = 0.1f;
+    [SerializeField] private int animLayerIndex = 0;
+
+    [SerializeField] private AnimParamSO[] attackAnimParam;
     public int ComboCounter { get; private set; } = 0;
 
-    protected override void PerformAttack(Vector3 targetPos)
+    protected override void PerformAttack(Vector3 dir)
     {
-        PlayAttackParticle(targetPos);
+        if (attackAnimParam == null || attackAnimParam.Length == 0)
+        {
+            Debug.LogError("attackAnimParam이 비어있습니다. Inspector 확인!");
+            return;
+        }
+        if (data == null || data.Length == 0)
+        {
+            Debug.LogError("data가 비어있습니다. Inspector 확인!");
+            return;
+        }
+
+        if (ComboCounter >= attackAnimParam.Length || ComboCounter >= data.Length)
+            ComboCounter = 0;
+
+        characterRenderer.PlayClip(
+            attackAnimParam[ComboCounter].ParamHash,
+            normalizedTime: 0f,
+            crossFadeDuration: crossFadeDuration,
+            layerIndex: animLayerIndex
+        );
+
+        PlayAttackParticle(dir);
 
         bool comboCounterOver = ComboCounter >= data.Length;
         bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
@@ -32,7 +59,6 @@ public  class Axe : MeleeWeaponBase
 
 
         Vector3 origin = transform.position;
-        Vector3 dir = (targetPos - origin).normalized;
 
         Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
 
@@ -75,11 +101,10 @@ public  class Axe : MeleeWeaponBase
         Gizmos.DrawLine(origin, origin + rightDir);
         Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
     }
-    private void PlayAttackParticle(Vector3 targetPos)
+    private void PlayAttackParticle(Vector3 dir)
     {
         if (data[ComboCounter].attackParticlePrefab == null) return;
         Vector3 origin = transform.position;
-        Vector3 dir = targetPos - origin;
 
         if (dir == Vector3.zero)
             dir = transform.forward;
@@ -89,7 +114,6 @@ public  class Axe : MeleeWeaponBase
         Quaternion rot = Quaternion.LookRotation(dir.normalized)
                        * Quaternion.Euler(-90f, 180f, 0f);
 
-        gameObject.transform.parent.rotation = rot;
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

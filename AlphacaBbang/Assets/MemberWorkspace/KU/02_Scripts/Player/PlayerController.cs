@@ -70,13 +70,12 @@ public class PlayerController : Agent
     protected override void Awake()
     {
         base.Awake();
-
         _agentMovement = GetComponentInChildren<AgentMovement>();
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
 
-        _aimCollider = Renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
+        _aimCollider = base.Renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
 
         _playerCollider = GetComponent<CapsuleCollider>();
 
@@ -223,13 +222,13 @@ public class PlayerController : Agent
         if (normalized < 0.5f)
             normalized = 0f;
 
-        Renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
-        Renderer.SetBool(_isGunParam.ParamHash, IsAiming);
+        base.Renderer.SetFloat(_speedParam.ParamHash, normalized, 0.1f, Time.deltaTime);
+        base.Renderer.SetBool(_isGunParam.ParamHash, IsAiming);
 
         if (!IsAiming)
         {
-            Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
-            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
 
             _prevYaw = transform.eulerAngles.y;
             return;
@@ -249,8 +248,8 @@ public class PlayerController : Agent
 
             float fakeX = Mathf.Clamp(turnSpeed * 0.02f, -1f, 1f);
 
-            Renderer.SetFloat(_attackXParam.ParamHash, fakeX, 0.1f, Time.deltaTime);
-            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackXParam.ParamHash, fakeX, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
 
             _prevYaw = currentYaw;
         }
@@ -265,8 +264,8 @@ public class PlayerController : Agent
     {
         if (input.sqrMagnitude < 0.01f)
         {
-            Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
-            Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+            base.Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
             return;
         }
 
@@ -274,8 +273,8 @@ public class PlayerController : Agent
         Vector3 localDir = transform.InverseTransformDirection(worldDir);
         localDir.Normalize();
 
-        Renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
-        Renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
+        base.Renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
+        base.Renderer.SetFloat(_attackYParam.ParamHash, localDir.z, 0.1f, Time.deltaTime);
     }
 
     private void RotateToMovement()

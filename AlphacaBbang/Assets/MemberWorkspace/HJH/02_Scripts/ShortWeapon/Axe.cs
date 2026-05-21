@@ -1,12 +1,39 @@
+using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 
 public  class Axe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
+        
+    [SerializeField] private float crossFadeDuration = 0.1f;
+    [SerializeField] private int animLayerIndex = 0;
+
+    [SerializeField] private AnimParamSO[] attackAnimParam;
     public int ComboCounter { get; private set; } = 0;
 
     protected override void PerformAttack(Vector3 dir)
     {
+        if (attackAnimParam == null || attackAnimParam.Length == 0)
+        {
+            Debug.LogError("attackAnimParam이 비어있습니다. Inspector 확인!");
+            return;
+        }
+        if (data == null || data.Length == 0)
+        {
+            Debug.LogError("data가 비어있습니다. Inspector 확인!");
+            return;
+        }
+
+        if (ComboCounter >= attackAnimParam.Length || ComboCounter >= data.Length)
+            ComboCounter = 0;
+
+        characterRenderer.PlayClip(
+            attackAnimParam[ComboCounter].ParamHash,
+            normalizedTime: 0f,
+            crossFadeDuration: crossFadeDuration,
+            layerIndex: animLayerIndex
+        );
+
         PlayAttackParticle(dir);
 
         bool comboCounterOver = ComboCounter >= data.Length;

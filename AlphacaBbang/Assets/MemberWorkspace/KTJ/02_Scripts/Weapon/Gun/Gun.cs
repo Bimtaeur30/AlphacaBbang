@@ -15,6 +15,8 @@ public abstract class Gun : WeaponBase, IWeapon
     [field: SerializeField] public GunDataSO WeaponData { get; private set; }
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
     [field: SerializeField] public Magazine Magazine { get; private set; }
+    [field:SerializeField] public WeaponHandleModule WeaponHandleModule { get; private set; }
+
 
     [Header("Fire")]
     [SerializeField] protected Transform firePos;
@@ -35,7 +37,6 @@ public abstract class Gun : WeaponBase, IWeapon
     [SerializeField] private EventChannelSO gunChannel;
 
     protected float _lastFireTime = -999f;
-    protected WeaponHandleModule _gunHandleModule;
     protected GunSoundPlayer _gunSoundPlayuer;
 
     protected virtual void Awake()
@@ -52,8 +53,8 @@ public abstract class Gun : WeaponBase, IWeapon
     {
         IsAiming = false;
         IsFiring = false;
-        _gunHandleModule = module;
-        Debug.Assert(_gunHandleModule != null, "건핸들러모듈을 받아오지 못했습니다.");
+        WeaponHandleModule = module;
+        Debug.Assert(WeaponHandleModule != null, "건핸들러모듈을 받아오지 못했습니다.");
 
         Magazine = GetComponentInChildren<Magazine>();
         Magazine.Initialize(this);
@@ -170,7 +171,7 @@ public abstract class Gun : WeaponBase, IWeapon
     // 적처럼 자동 재개가 필요한 경우 GunHandleModule에 위임
     protected virtual void OnReloadEnd()
     {
-        _gunHandleModule.OnReloadEnd();
+        WeaponHandleModule.OnReloadEnd();
         _gunSoundPlayuer.PlaySound(WeaponData.LoadClip);
         _gunSoundPlayuer.PlaySound(WeaponData.CookClip);
         IsReloading = false;
@@ -212,7 +213,7 @@ public abstract class Gun : WeaponBase, IWeapon
             DrawLine(origin, endPoint, 0.05f);
         }
 
-        _gunHandleModule.OnFire();
+        WeaponHandleModule.OnFire();
     }
 
     protected virtual Vector3 GetShootDirection()

@@ -80,4 +80,9 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     {
         return true;
     }
+
+    public virtual bool IsBulletInfinity()
+    {
+        return false;
+    }
 }

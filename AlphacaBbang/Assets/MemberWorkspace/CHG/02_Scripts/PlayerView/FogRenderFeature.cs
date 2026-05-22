@@ -19,22 +19,18 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
             if (renderingData.cameraData.cameraType != CameraType.Game) return;
             if (!renderingData.cameraData.camera.CompareTag("MainCamera")) return;
 
-            if (FogOfWar.MaskTexture != null)
-                Shader.SetGlobalTexture(MaskTexID, FogOfWar.MaskTexture);
+            if (FogOfWar.PlayerTransform == null) return;
 
-            PlayerVisibility vis = FogOfWar.PlayerVisibility;
-            Transform player     = FogOfWar.PlayerTransform;
-            if (vis == null || player == null) return;
-
-            Vector3 forward = player.forward;
+            Vector3 forward = FogOfWar.PlayerTransform.forward;
             forward.y = 0;
             forward.Normalize();
 
-            Shader.SetGlobalVector("_PlayerPos",       player.position);
+            
+            Shader.SetGlobalVector("_PlayerPos",       FogOfWar.PlayerTransform.position);
             Shader.SetGlobalVector("_PlayerForward",   forward);
-            Shader.SetGlobalFloat ("_ViewRadius",      vis.ViewRadius);
-            Shader.SetGlobalFloat ("_ViewAngle",       vis.ViewAngle);
-            Shader.SetGlobalFloat ("_CloseViewRadius", vis.CloseViewRadius);
+            Shader.SetGlobalFloat ("_ViewRadius",      FogOfWar.PlayerVisibility.ViewRadius);
+            Shader.SetGlobalFloat ("_ViewAngle",       FogOfWar.PlayerVisibility.ViewAngle);
+            Shader.SetGlobalFloat ("_CloseViewRadius", FogOfWar.PlayerVisibility.CloseViewRadius);
         }
     }
 }

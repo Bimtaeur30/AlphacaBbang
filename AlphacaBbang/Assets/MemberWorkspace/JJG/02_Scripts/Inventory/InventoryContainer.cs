@@ -50,4 +50,17 @@ public class InventoryContainer : ItemContainer, IInstaller
 
         NotifyContainerChanged();
     }
+
+    /// <summary>
+    /// Initialize or reset this inventory. If newSlotCount &gt; 0, the container's slot count will be updated.
+    /// This will recreate the internal slot list and notify listeners.
+    /// </summary>
+    public void InitializeInventory(int newSlotCount = -1)
+    {
+        if (newSlotCount > 0)
+            slotCount = newSlotCount;
+
+        InitializeSlots();
+        NotifyContainerChanged();
+    }
 }

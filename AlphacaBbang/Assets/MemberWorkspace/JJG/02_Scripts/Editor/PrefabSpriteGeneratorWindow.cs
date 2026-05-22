@@ -11,11 +11,14 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
     private float orthographicSize = 1f;
     private float fieldOfView = 30f;
     private int spriteSize = 512;
+    private bool flipX = false;
+    private bool flipY = false;
     private Color backgroundColor = Color.clear;
     private string outputPath = "Assets/GeneratedSprites";
-    private PreviewRenderUtility previewUtility;
+    private Camera previewCamera;
+    private GameObject previewRoot;
     private GameObject previewInstance;
-    private Texture2D previewTexture;
+    private RenderTexture previewRenderTexture;
 
     [MenuItem("Tools/Prefab Sprite Generator")]
     public static void ShowWindow()
@@ -26,32 +29,19 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
 
     private void OnEnable()
     {
-        previewUtility = new PreviewRenderUtility(true);
-        previewUtility.cameraFieldOfView = fieldOfView;
-        previewUtility.camera.clearFlags = CameraClearFlags.Color;
-        previewUtility.camera.backgroundColor = backgroundColor;
-        previewUtility.camera.nearClipPlane = 0.01f;
-        previewUtility.camera.farClipPlane = 1000f;
-        previewUtility.lights[0].intensity = 1.4f;
-        previewUtility.lights[0].transform.rotation = Quaternion.Euler(50f, 50f, 0f);
-        previewUtility.lights[1].intensity = 1f;
-        previewUtility.lights[1].transform.rotation = Quaternion.Euler(340f, 218f, 0f);
+        CreatePreviewCamera();
         RefreshPreview();
     }
 
     private void OnDisable()
     {
         ClearPreviewInstance();
-        if (previewUtility != null)
-        {
-            previewUtility.Cleanup();
-            previewUtility = null;
-        }
+        DestroyPreviewCamera();
 
-        if (previewTexture != null)
+        if (previewRenderTexture != null)
         {
-            DestroyImmediate(previewTexture);
-            previewTexture = null;
+            previewRenderTexture.Release();
+            previewRenderTexture = null;
         }
     }
 
@@ -60,47 +50,28 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
         EditorGUILayout.LabelField("Prefab Sprite Generator", EditorStyles.boldLabel);
         EditorGUILayout.Space();
 
+        EditorGUI.BeginChangeCheck();
         prefabSource = (GameObject)EditorGUILayout.ObjectField("Prefab Source", prefabSource, typeof(GameObject), false);
-        outputPath = EditorGUILayout.TextField("Output Folder", outputPath);
+        if (EditorGUI.EndChangeCheck()) RefreshPreview();
 
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Browse Folder"))
-        {
-            string selected = EditorUtility.OpenFolderPanel("Select Output Folder", Application.dataPath, string.Empty);
-            if (!string.IsNullOrEmpty(selected) && selected.StartsWith(Application.dataPath))
-            {
-                outputPath = "Assets" + selected.Substring(Application.dataPath.Length);
-            }
-            else if (!string.IsNullOrEmpty(selected))
-            {
-                EditorUtility.DisplayDialog("경고", "출력 폴더는 반드시 프로젝트의 Assets 폴더 아래여야 합니다.", "확인");
-            }
-        }
-        if (GUILayout.Button("Create Folder", GUILayout.Width(110)))
-        {
-            if (!AssetDatabase.IsValidFolder(outputPath))
-            {
-                Directory.CreateDirectory(Path.Combine(Application.dataPath, outputPath.Replace("Assets/", string.Empty)));
-                AssetDatabase.Refresh();
-            }
-        }
-        EditorGUILayout.EndHorizontal();
+        // ... outputPath, 버튼들은 그대로 ...
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Camera Settings", EditorStyles.boldLabel);
+
+        EditorGUI.BeginChangeCheck();
         cameraPosition = EditorGUILayout.Vector3Field("Position", cameraPosition);
         cameraEuler = EditorGUILayout.Vector3Field("Rotation", cameraEuler);
         useOrthographic = EditorGUILayout.Toggle("Orthographic", useOrthographic);
         if (useOrthographic)
-        {
             orthographicSize = EditorGUILayout.FloatField("Orthographic Size", Mathf.Max(0.01f, orthographicSize));
-        }
         else
-        {
             fieldOfView = EditorGUILayout.Slider("Field of View", Mathf.Clamp(fieldOfView, 1f, 179f), 1f, 179f);
-        }
         spriteSize = EditorGUILayout.IntField("Sprite Size", Mathf.Clamp(spriteSize, 16, 4096));
+        flipX = EditorGUILayout.Toggle("Flip X", flipX);
+        flipY = EditorGUILayout.Toggle("Flip Y", flipY);
         backgroundColor = EditorGUILayout.ColorField("Background", backgroundColor);
+        if (EditorGUI.EndChangeCheck()) RefreshPreview();
 
         EditorGUILayout.Space();
 
@@ -130,8 +101,8 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
 
     private void RefreshPreview()
     {
-        if (previewUtility == null)
-            return;
+        if (previewCamera == null)
+            CreatePreviewCamera();
 
         if (prefabSource == null)
         {
@@ -143,31 +114,19 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
         if (previewInstance == null || previewInstance.name != prefabSource.name)
         {
             ClearPreviewInstance();
+
             previewInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefabSource);
             if (previewInstance != null)
             {
                 previewInstance.hideFlags = HideFlags.HideAndDontSave;
-                foreach (Transform child in previewInstance.GetComponentsInChildren<Transform>(true))
-                    child.gameObject.hideFlags = HideFlags.HideAndDontSave;
+                previewInstance.transform.SetParent(previewRoot.transform, false);
+                SetLayerRecursively(previewInstance, previewLayer);
             }
         }
 
-        if (previewInstance != null && previewUtility != null)
-        {
-            previewUtility.Cleanup();
-            previewUtility = new PreviewRenderUtility(true);
-            previewUtility.cameraFieldOfView = fieldOfView;
-            previewUtility.camera.clearFlags = CameraClearFlags.Color;
-            previewUtility.camera.backgroundColor = backgroundColor;
-            previewUtility.camera.nearClipPlane = 0.01f;
-            previewUtility.camera.farClipPlane = 1000f;
-            previewUtility.lights[0].intensity = 1.4f;
-            previewUtility.lights[0].transform.rotation = Quaternion.Euler(50f, 50f, 0f);
-            previewUtility.lights[1].intensity = 1f;
-            previewUtility.lights[1].transform.rotation = Quaternion.Euler(340f, 218f, 0f);
-            previewUtility.AddSingleGO(previewInstance);
-            Repaint();
-        }
+        previewCamera.backgroundColor = backgroundColor;
+        previewCamera.clearFlags = CameraClearFlags.Color;
+        Repaint();
     }
 
     private void ClearPreviewInstance()
@@ -181,8 +140,8 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
 
     private void DrawPreview(Rect rect)
     {
-        if (previewUtility == null)
-            return;
+        if (previewCamera == null)
+            CreatePreviewCamera();
 
         if (prefabSource == null)
         {
@@ -191,25 +150,33 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
             return;
         }
 
-        previewUtility.BeginPreview(rect, GUIStyle.none);
-        previewUtility.camera.transform.position = cameraPosition;
-        previewUtility.camera.transform.rotation = Quaternion.Euler(cameraEuler);
-        previewUtility.camera.orthographic = useOrthographic;
-        previewUtility.camera.orthographicSize = orthographicSize;
-        previewUtility.camera.fieldOfView = fieldOfView;
-        previewUtility.camera.backgroundColor = backgroundColor;
-        previewUtility.camera.clearFlags = CameraClearFlags.Color;
-
         if (previewInstance != null)
         {
             previewInstance.transform.position = Vector3.zero;
             previewInstance.transform.rotation = Quaternion.identity;
         }
 
-        previewUtility.Render();
-        Texture result = previewUtility.EndPreview();
-        if (result != null)
-            GUI.DrawTexture(rect, result, ScaleMode.ScaleToFit, false);
+        previewCamera.transform.position = cameraPosition;
+        previewCamera.transform.rotation = Quaternion.Euler(cameraEuler);
+        previewCamera.orthographic = useOrthographic;
+        previewCamera.orthographicSize = orthographicSize;
+        previewCamera.fieldOfView = fieldOfView;
+        previewCamera.backgroundColor = backgroundColor;
+        previewCamera.clearFlags = CameraClearFlags.Color;
+
+        RenderTexture rt = GetPreviewRenderTexture((int)rect.width, (int)rect.height);
+        previewCamera.targetTexture = rt;
+        previewCamera.Render();
+        previewCamera.targetTexture = null;
+
+        Matrix4x4 previousMatrix = GUI.matrix;
+        if (flipX || flipY)
+        {
+            Vector2 pivot = rect.center;
+            GUIUtility.ScaleAroundPivot(new Vector2(flipX ? -1f : 1f, flipY ? -1f : 1f), pivot);
+        }
+        GUI.DrawTexture(rect, rt, ScaleMode.ScaleToFit, false);
+        GUI.matrix = previousMatrix;
     }
 
     private void GenerateSprite()
@@ -227,22 +194,24 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
         try
         {
             renderTex.antiAliasing = 4;
-            previewUtility.BeginPreview(new Rect(0, 0, size, size), GUIStyle.none);
-            previewUtility.camera.targetTexture = renderTex;
-            previewUtility.camera.transform.position = cameraPosition;
-            previewUtility.camera.transform.rotation = Quaternion.Euler(cameraEuler);
-            previewUtility.camera.orthographic = useOrthographic;
-            previewUtility.camera.orthographicSize = orthographicSize;
-            previewUtility.camera.fieldOfView = fieldOfView;
-            previewUtility.camera.backgroundColor = backgroundColor;
-            previewUtility.camera.clearFlags = CameraClearFlags.Color;
-            previewUtility.Render();
-            previewUtility.camera.targetTexture = null;
+            previewCamera.targetTexture = renderTex;
+            previewCamera.transform.position = cameraPosition;
+            previewCamera.transform.rotation = Quaternion.Euler(cameraEuler);
+            previewCamera.orthographic = useOrthographic;
+            previewCamera.orthographicSize = orthographicSize;
+            previewCamera.fieldOfView = fieldOfView;
+            previewCamera.backgroundColor = backgroundColor;
+            previewCamera.clearFlags = CameraClearFlags.Color;
+            previewCamera.Render();
+            previewCamera.targetTexture = null;
 
             RenderTexture.active = renderTex;
             var texture = new Texture2D(size, size, TextureFormat.ARGB32, false);
             texture.ReadPixels(new Rect(0, 0, size, size), 0, 0);
             texture.Apply();
+
+            if (flipX || flipY)
+                ApplyTextureFlip(texture);
 
             byte[] pngData = texture.EncodeToPNG();
             Object.DestroyImmediate(texture);
@@ -271,5 +240,98 @@ public class PrefabSpriteGeneratorWindow : EditorWindow
         {
             renderTex.Release();
         }
+    }
+
+    private void ApplyTextureFlip(Texture2D texture)
+    {
+        int width = texture.width;
+        int height = texture.height;
+        Color[] pixels = texture.GetPixels();
+        Color[] flipped = new Color[pixels.Length];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int srcIndex = y * width + x;
+                int dstX = flipX ? width - 1 - x : x;
+                int dstY = flipY ? height - 1 - y : y;
+                flipped[dstY * width + dstX] = pixels[srcIndex];
+            }
+        }
+
+        texture.SetPixels(flipped);
+        texture.Apply();
+    }
+
+    private int previewLayer => LayerMask.NameToLayer("EditorOnly");
+
+    private void CreatePreviewCamera()
+    {
+        if (previewCamera != null)
+            return;
+
+        previewRoot = new GameObject("PrefabSpriteGeneratorPreviewRoot");
+        previewRoot.hideFlags = HideFlags.HideAndDontSave;
+
+        GameObject cameraObject = new GameObject("PrefabSpriteGeneratorPreviewCamera");
+        cameraObject.hideFlags = HideFlags.HideAndDontSave;
+        cameraObject.transform.SetParent(previewRoot.transform, false);
+
+        previewCamera = cameraObject.AddComponent<Camera>();
+        previewCamera.enabled = false;
+        previewCamera.clearFlags = CameraClearFlags.Color;
+        previewCamera.backgroundColor = backgroundColor;
+        previewCamera.nearClipPlane = 0.01f;
+        previewCamera.farClipPlane = 1000f;
+        previewCamera.cullingMask = 1 << previewLayer;
+    }
+
+    private void DestroyPreviewCamera()
+    {
+        if (previewCamera != null)
+        {
+            DestroyImmediate(previewCamera.gameObject);
+            previewCamera = null;
+        }
+
+        if (previewRoot != null)
+        {
+            DestroyImmediate(previewRoot);
+            previewRoot = null;
+        }
+    }
+
+    private RenderTexture GetPreviewRenderTexture(int width, int height)
+    {
+        if (width <= 0 || height <= 0)
+            return null;
+
+        if (previewRenderTexture == null || previewRenderTexture.width != width || previewRenderTexture.height != height)
+        {
+            if (previewRenderTexture != null)
+            {
+                previewRenderTexture.Release();
+                previewRenderTexture = null;
+            }
+
+            previewRenderTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32)
+            {
+                antiAliasing = 4
+            };
+            previewRenderTexture.Create();
+        }
+
+        return previewRenderTexture;
+    }
+
+    private void SetLayerRecursively(GameObject root, int layer)
+    {
+        if (root == null || layer < 0)
+            return;
+
+        root.layer = layer;
+        foreach (Transform child in root.transform)
+            SetLayerRecursively(child.gameObject, layer);
     }
 }

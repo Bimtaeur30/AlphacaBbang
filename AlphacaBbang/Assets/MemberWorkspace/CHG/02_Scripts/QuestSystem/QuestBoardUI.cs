@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 {
-    public class QuestboardUI : MonoBehaviour
+    public class QuestBoardUI : MonoBehaviour
     {
         [SerializeField] private GameObject questChoiceLayout;
         [SerializeField] private GameObject questChoiceBtnPrefab;
@@ -44,10 +44,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                 obj.GetComponentInChildren<TextMeshProUGUI>().text = questData.Name;
                 obj.GetComponent<Button>().onClick.AddListener(() => SetContent(questData));
 
-                if (_questChoiceBtnDict.ContainsKey(questData.Id))
-                    _questChoiceBtnDict[questData.Id] = obj;
-                else
-                    _questChoiceBtnDict.Add(questData.Id, obj);
+                _questChoiceBtnDict[questData.Id] = obj;    
 
             }
         }

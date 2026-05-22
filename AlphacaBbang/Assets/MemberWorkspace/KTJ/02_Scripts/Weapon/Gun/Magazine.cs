@@ -61,6 +61,8 @@ public class Magazine : MonoBehaviour
             return false;
 
         int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
+        if (_gun.WeaponHandleModule.IsBulletInfinity())
+            inventoryBulletCount = int.MaxValue;
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 

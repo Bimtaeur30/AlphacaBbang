@@ -67,4 +67,9 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 
         base.SetCurrentGun(newGun);
     }
+
+    public override bool IsBulletInfinity()
+    {
+        return true;
+    }
 }

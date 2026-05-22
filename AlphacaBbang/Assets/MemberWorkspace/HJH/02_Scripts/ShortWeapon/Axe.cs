@@ -60,12 +60,10 @@ public class Axe : MeleeWeaponBase
             layerIndex: animLayerIndex
         );
 
-        // Trail 코루틴 시작
         if (trailCoroutine != null)
             StopCoroutine(trailCoroutine);
         trailCoroutine = StartCoroutine(TrailCoroutine(currentCombo));
 
-        // 히트 판정
         Vector3 origin = transform.position;
         Collider[] hits = Physics.OverlapSphere(origin, data[currentCombo].range);
 
@@ -96,7 +94,6 @@ public class Axe : MeleeWeaponBase
 
         trailRenderer.emitting = true;
 
-        // CrossFade 이후 실제 클립이 반영될 때까지 한 프레임 대기
         yield return null;
 
         AnimatorStateInfo stateInfo = characterRenderer.Animator.GetCurrentAnimatorStateInfo(animLayerIndex);

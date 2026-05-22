@@ -82,7 +82,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         // highlight slot background
         SetHover(true);
 
-        if (_currentSlot != null && !_currentSlot.IsEmpty)
+        if (_currentSlot != null && !_currentSlot.IsEmpty && !InventoryContextMenu.IsOpen)
             ItemTooltip.Instance?.Show(_currentSlot.ItemData);
     }
 

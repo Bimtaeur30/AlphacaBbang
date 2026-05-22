@@ -1,12 +1,12 @@
-using Reflex.Injectors;
 using UnityEngine;
 
-public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
+public class BossWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
 
     public override void SetCurrentGun(IWeapon gun)
     {
+        base.SetCurrentGun(gun);
         HandleWeaponSlotEquipEvent(gun);
     }
 
@@ -48,23 +48,20 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
     }
     private void HandleWeaponSlotEquipEvent(IWeapon gun)
     {
-        Transform gunParent = gunHoldParent_1;
+        if (gunHoldParent_1.childCount > 0)
+            Destroy(gunHoldParent_1.GetChild(0).gameObject);
+        if (gunHoldParent_2.childCount > 0)
+            Destroy(gunHoldParent_2.GetChild(0).gameObject);
 
-        if (gunParent.childCount > 0)
-            Destroy(gunParent.GetChild(0).gameObject);
+        GameObject gunObj_1 = Instantiate((gun as MonoBehaviour).gameObject, gunHoldParent_1);
+        GameObject gunObj_2= Instantiate((gun as MonoBehaviour).gameObject, gunHoldParent_2);
+        Debug.Assert(gun != null, "gun이 IWeapon을 구현하지 않았습니다.");
 
-        MonoBehaviour gunMono = gun as MonoBehaviour;
-        Debug.Assert(gunMono != null, "gun이 MonoBehaviour가 아닙니다.");
-
-        GameObject gunObj = Instantiate(gunMono.gameObject, gunParent);
-
-        gunObj.transform.localPosition = Vector3.zero;
-        gunObj.transform.localRotation = Quaternion.identity;
-        gunObj.transform.localScale = Vector3.one;
-
-        IWeapon newGun = gunObj.GetComponent<IWeapon>();
-        Debug.Assert(newGun != null, "복제된 gun이 IWeapon을 구현하지 않았습니다.");
-
-        base.SetCurrentGun(newGun);
+        gunObj_1.transform.localPosition = Vector3.zero;
+        gunObj_1.transform.localRotation = Quaternion.identity;
+        gunObj_1.transform.localScale = Vector3.one;
+        gunObj_2.transform.localPosition = Vector3.zero;
+        gunObj_2.transform.localRotation = Quaternion.identity;
+        gunObj_2.transform.localScale = Vector3.one;
     }
 }

@@ -17,6 +17,7 @@ public class GunDataSO : ScriptableObject
     [field:SerializeField] public CountableItemData BulletType { get; private set; } // 총알 타입
     [field:SerializeField] public int MagCapacity{ get; private set; } // 탄창 용량
     [field: SerializeField] public float ReloadDuration { get; private set; } = 2f; // 재장전 시간
+    [field: SerializeField] public int Damage { get; private set; } = 3; // 재장전 시간
 
 
     [Header("Fire")]

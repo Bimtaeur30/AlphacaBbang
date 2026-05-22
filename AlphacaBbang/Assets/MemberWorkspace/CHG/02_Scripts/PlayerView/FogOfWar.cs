@@ -16,7 +16,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         public static PlayerVisibility PlayerVisibility { get; private set; }
 
         private Camera _mainCamera;
-
+        private static readonly int MaskTexID = Shader.PropertyToID("_MaskTex");
+        
         private void Awake()
         {
 
@@ -51,6 +52,9 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         {
             SyncMaskCamera();
             maskCamera.Render();
+            
+            if (MaskTexture != null)
+                Shader.SetGlobalTexture(MaskTexID, MaskTexture);
         }
 
         private void SyncMaskCamera()
@@ -74,6 +78,5 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
                 MaskTexture = null;
             }
         }
-
     }
 }

@@ -3,9 +3,8 @@ Shader "Custom/ViewMeshMask"
     SubShader
     {
         Tags { "RenderType"="Opaque" "Queue"="Geometry" }
-        ZWrite Off
+        ZWrite On
         ZTest LEqual 
-
         Pass
         {
             HLSLPROGRAM

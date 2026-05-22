@@ -8,8 +8,6 @@ Shader "Custom/ViewMeshMask"
 
         Pass
         {
-            
-            
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

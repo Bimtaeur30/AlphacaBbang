@@ -17,11 +17,14 @@ Shader "Custom/FloorFog"
 
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent+1" }
 
         Pass
         {
             Tags { "LightMode" = "UniversalForward" }
+
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -118,7 +121,8 @@ Shader "Custom/FloorFog"
                 
                 float maskRange = GetViewMask(IN.positionWS);
 
-                float finalMask = blurredMaskObstacle * maskRange;
+                float finalMask = maskRange;
+                //float finalMask = blurredMaskObstacle * maskRange;
 
                 InputData inputData = (InputData)0;
                 inputData.positionWS      = IN.positionWS;
@@ -130,12 +134,14 @@ Shader "Custom/FloorFog"
                 Light  mainLight = GetMainLight(inputData.shadowCoord);
                 float  NdotL     = saturate(dot(inputData.normalWS, mainLight.direction));
                 float  shadow    = mainLight.shadowAttenuation;
-                float3 lit = texColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
+               float3 lit = texColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
 
                 float3 fogged = lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a;
                 float3 final  = lerp(fogged, lit, finalMask);
                 
-                return float4(final, 1.0);
+
+                float alpha = _FogColor.a * (1.0 - finalMask);
+                return float4(_FogColor.rgb, alpha);
             }
             ENDHLSL
         }

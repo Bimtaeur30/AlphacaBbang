@@ -47,7 +47,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private void CreateFogMaterial()
         {
-            _fogMaterial = new Material(Shader.Find("Custom/FogOverlay"));
+            _fogMaterial = new Material(Shader.Find("Custom/FloorFog"));
             fogColor.a = fogAlpha;
             _fogMaterial.SetColor("_FogColor", fogColor);
             _renderer.material = _fogMaterial;

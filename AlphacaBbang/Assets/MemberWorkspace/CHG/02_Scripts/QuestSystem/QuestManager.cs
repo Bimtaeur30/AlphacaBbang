@@ -96,7 +96,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             {
                 Debug.LogError($"Quest {questId} is active");
                 return;
-            };
+            }
             
             if (!TryGetQuestData(questId, out QuestData data))
             {
@@ -108,6 +108,17 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             Quest newQuest = QuestFactory.Create(data);
             _activeQuests.Add(newQuest);
             OnQuestAccepted?.Invoke(newQuest);
+        }
+        
+        public void QuestProgressUpdate(string targetId, int value)
+        {
+            foreach (Quest quest in _activeQuests)
+            foreach (QuestCondition condition in quest.Conditions)
+                if (condition.TargetId == targetId)
+                {
+                    condition.Progress += value;
+                    OnUpdateQuestProgress?.Invoke(quest);
+                }
         }
         
         public bool IsCompleted(string questId)
@@ -151,16 +162,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                     }
         }
         
-        private void QuestProgressUpdate(string targetId, int value)
-        {
-            foreach (Quest quest in _activeQuests)
-            foreach (QuestCondition condition in quest.Conditions)
-                if (condition.TargetId == targetId)
-                {
-                    condition.Progress += value;
-                    OnUpdateQuestProgress?.Invoke(quest);
-                }
-        }
+        
 
 #endregion
     }

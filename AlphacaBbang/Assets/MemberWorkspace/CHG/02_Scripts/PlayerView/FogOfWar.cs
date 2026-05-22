@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering.Universal;
 
 namespace MemberWorkspace.CHG._02_Scripts.PlayerView
 {
-    [DefaultExecutionOrder(-100)]
     public class FogOfWar : MonoBehaviour
     {
         [SerializeField] private Camera maskCamera;
@@ -19,7 +19,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
 
         private void Awake()
         {
-            _mainCamera = Camera.main;
 
             GameObject player = GameObject.FindWithTag("Player");
             PlayerTransform   = player.transform;
@@ -41,6 +40,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
 
             if (fogMaterial != null)
                 fogMaterial.SetColor("_FogColor", fogColor);
+        }
+
+        private void Start()
+        {
+            _mainCamera = Camera.main;
         }
 
         private void LateUpdate()
@@ -70,5 +74,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
                 MaskTexture = null;
             }
         }
+
     }
 }

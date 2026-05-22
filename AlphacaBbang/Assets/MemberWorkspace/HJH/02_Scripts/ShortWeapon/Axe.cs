@@ -1,16 +1,31 @@
 using JJH._02_Scripts_Systems.AnimationSystems;
+using System.Collections;
 using UnityEngine;
 
-public  class Axe : MeleeWeaponBase
+public class Axe : MeleeWeaponBase
 {
     [SerializeField] private float comboWindow = 0.4f;
-        
     [SerializeField] private float crossFadeDuration = 0.1f;
     [SerializeField] private int animLayerIndex = 0;
-
     [SerializeField] private AnimParamSO[] attackAnimParam;
+    [SerializeField] private TrailRenderer trailRenderer;
+
     public int ComboCounter { get; private set; } = 0;
 
+    private Coroutine trailCoroutine;
+    private void Awake()
+    {
+        if (trailRenderer == null)
+            trailRenderer = GetComponentInChildren<TrailRenderer>();
+
+        if (trailRenderer == null)
+        {
+            Debug.LogError("TrailRenderer 없어요.");
+            return;
+        }
+
+        trailRenderer.emitting = false;
+    }
     protected override void PerformAttack(Vector3 dir)
     {
         if (attackAnimParam == null || attackAnimParam.Length == 0)
@@ -27,47 +42,39 @@ public  class Axe : MeleeWeaponBase
         if (ComboCounter >= attackAnimParam.Length || ComboCounter >= data.Length)
             ComboCounter = 0;
 
+        int currentCombo = ComboCounter;
+
+        bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
+
+        if (comboWindowExhausted)
+            ComboCounter = 0;
+        else
+            ComboCounter = (currentCombo < data.Length - 1) ? currentCombo + 1 : 0;
+
+        lastUseTime = Time.time;
+
         characterRenderer.PlayClip(
-            attackAnimParam[ComboCounter].ParamHash,
+            attackAnimParam[currentCombo].ParamHash,
             normalizedTime: 0f,
             crossFadeDuration: crossFadeDuration,
             layerIndex: animLayerIndex
         );
 
-        PlayAttackParticle(dir);
+        // Trail 코루틴 시작
+        if (trailCoroutine != null)
+            StopCoroutine(trailCoroutine);
+        trailCoroutine = StartCoroutine(TrailCoroutine(currentCombo));
 
-        bool comboCounterOver = ComboCounter >= data.Length;
-        bool comboWindowExhausted = Time.time >= lastUseTime + comboWindow;
-
-        Debug.Log($"ComboCounter: {ComboCounter}");
-
-        if (comboCounterOver || comboWindowExhausted)
-        {
-            Debug.Log("Combo reset");
-            if (data == null || data.Length == 0) return;
-            lastUseTime = Time.time;
-
-            if (ComboCounter < data.Length - 1)
-            {
-                ComboCounter++;
-            }
-            else
-            {
-                ComboCounter = 0;
-            }
-        }
-
-
+        // 히트 판정
         Vector3 origin = transform.position;
-
-        Collider[] hits = Physics.OverlapSphere(origin, data[ComboCounter].range);
+        Collider[] hits = Physics.OverlapSphere(origin, data[currentCombo].range);
 
         foreach (Collider hit in hits)
         {
             Vector3 toTarget = (hit.transform.position - origin).normalized;
             float angle = Vector3.Angle(dir, toTarget);
 
-            if (angle <= data[ComboCounter].angle * 0.5f)
+            if (angle <= data[currentCombo].angle * 0.5f)
             {
                 ICharacterStateOwner stateOwner = hit.GetComponentInChildren<ICharacterStateOwner>()
                                                ?? hit.GetComponentInParent<ICharacterStateOwner>();
@@ -76,11 +83,28 @@ public  class Axe : MeleeWeaponBase
 
                 IDamageable damageable = hit.GetComponent<IDamageable>();
                 if (damageable != null)
-                {
-                    damageable.TakeDamage(data[ComboCounter].damage);
-                }
+                    damageable.TakeDamage(data[currentCombo].damage);
             }
         }
+
+        currentTime = 0;
+    }
+
+    private IEnumerator TrailCoroutine(int comboIndex)
+    {
+        if (trailRenderer == null) yield break;
+
+        trailRenderer.emitting = true;
+
+        // CrossFade 이후 실제 클립이 반영될 때까지 한 프레임 대기
+        yield return null;
+
+        AnimatorStateInfo stateInfo = characterRenderer.Animator.GetCurrentAnimatorStateInfo(animLayerIndex);
+        float clipLength = stateInfo.length;
+
+        yield return new WaitForSeconds(clipLength);
+
+        trailRenderer.emitting = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -88,7 +112,6 @@ public  class Axe : MeleeWeaponBase
         if (data == null || data.Length == 0) return;
 
         Gizmos.color = Color.red;
-
         Vector3 origin = transform.position;
         Vector3 forward = transform.forward;
 
@@ -97,23 +120,9 @@ public  class Axe : MeleeWeaponBase
 
         Vector3 leftDir = leftRot * forward * data[ComboCounter].range;
         Vector3 rightDir = rightRot * forward * data[ComboCounter].range;
+
         Gizmos.DrawLine(origin, origin + leftDir);
         Gizmos.DrawLine(origin, origin + rightDir);
         Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
-    }
-    private void PlayAttackParticle(Vector3 dir)
-    {
-        if (data[ComboCounter].attackParticlePrefab == null) return;
-        Vector3 origin = transform.position;
-
-        if (dir == Vector3.zero)
-            dir = transform.forward;
-
-        dir.y = 0f;
-
-        Quaternion rot = Quaternion.LookRotation(dir.normalized)
-                       * Quaternion.Euler(-90f, 180f, 0f);
-
-        Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }
 }

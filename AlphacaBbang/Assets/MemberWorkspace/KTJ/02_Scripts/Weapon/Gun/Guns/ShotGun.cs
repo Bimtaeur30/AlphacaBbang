@@ -29,7 +29,7 @@ public class ShotGun : Gun
 
                 if (hit.collider.TryGetComponent(out IDamageable damageable))
                 {
-                    damageable.TakeDamage(damage);
+                    damageable.TakeDamage(WeaponData.Damage);
                     Debug.Log("È¦·Ñ·Ñ¤©¤©¤©¤©");
                 }
 

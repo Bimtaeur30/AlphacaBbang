@@ -19,7 +19,7 @@ public abstract class Gun : WeaponBase, IWeapon
     [Header("Fire")]
     [SerializeField] protected Transform firePos;
     [SerializeField] protected float rayDistance = 10f;
-    [SerializeField] protected float damage = 10f;
+    //[SerializeField] protected float damage = 10f;
 
     [Header("Anim")]
     [SerializeField] private AnimParamSO singleFireAnimParam;
@@ -197,7 +197,7 @@ public abstract class Gun : WeaponBase, IWeapon
 
             if (hit.collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TakeDamage(damage);
+                damageable.TakeDamage(WeaponData.Damage);
             }
 
             OnHit(hit);

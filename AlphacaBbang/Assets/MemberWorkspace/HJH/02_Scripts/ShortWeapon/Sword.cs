@@ -1,5 +1,4 @@
 using JJH._02_Scripts_Systems.AnimationSystems;
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,10 +7,13 @@ public class Sword : MeleeWeaponBase
     [SerializeField] private float comboWindow = 0.75f;
     [SerializeField] private float crossFadeDuration = 0.1f;
     [SerializeField] private int animLayerIndex = 0;
-
     [SerializeField] private AnimParamSO[] attackAnimParam;
+    [SerializeField] private TrailRenderer trailRenderer;
+
     private Transform visual;
     public int ComboCounter = 0;
+
+    private Coroutine trailCoroutine;
 
     private void Awake()
     {
@@ -29,10 +31,19 @@ public class Sword : MeleeWeaponBase
             }
 
             if (visual == null)
-            {
                 Debug.LogError($"[Sword] visual 오브젝트를 찾지 못했습니다! 오브젝트: {gameObject.name}");
-            }
         }
+
+        if (trailRenderer == null)
+            trailRenderer = GetComponentInChildren<TrailRenderer>();
+
+        if (trailRenderer == null)
+        {
+            Debug.LogError("TrailRenderer를 찾을 수 없습니다. 무기 오브젝트에 추가해주세요.");
+            return;
+        }
+
+        trailRenderer.emitting = false;
     }
 
     protected override void PerformAttack(Vector3 targetPos)
@@ -67,21 +78,17 @@ public class Sword : MeleeWeaponBase
             layerIndex: animLayerIndex
         );
 
-
         lastUseTime = Time.time;
 
-
         if (data[currentCombo].attackDelay > comboWindow)
-        {
             Debug.Assert(false, "Attack delay is bigger than lastUseTime");
-        }
 
-        Debug.Log($"currentCombo: {currentCombo}, 다음 ComboCounter: {ComboCounter}");
+        if (trailCoroutine != null)
+            StopCoroutine(trailCoroutine);
+        trailCoroutine = StartCoroutine(TrailCoroutine());
 
         Vector3 origin = transform.position;
         Vector3 dir = (targetPos - origin).normalized;
-
-        PlayAttackParticle(targetPos, currentCombo);
 
         Collider[] hits = Physics.OverlapSphere(origin, data[currentCombo].range);
 
@@ -106,30 +113,20 @@ public class Sword : MeleeWeaponBase
         currentTime = 0;
     }
 
-    public IEnumerator AttackDash(Vector3 targetPos, int comboIndex)
+    private IEnumerator TrailCoroutine()
     {
-        Debug.Log("돌진");
+        if (trailRenderer == null) yield break;
 
-        if (visual == null) yield break;
+        trailRenderer.emitting = true;
 
-        Vector3 dashDir = (targetPos - visual.position).normalized;
-        dashDir.y = 0f;
+        yield return null;
 
-        float duration = 0.15f;
-        float timer = 0f;
-        float speed = 10f;
+        AnimatorStateInfo stateInfo = characterRenderer.Animator.GetCurrentAnimatorStateInfo(animLayerIndex);
+        float clipLength = stateInfo.length;
 
-        while (timer < duration)
-        {
-            if (visual == null) yield break;
+        yield return new WaitForSeconds(clipLength);
 
-            visual.position += dashDir * speed * Time.deltaTime;
-            timer += Time.deltaTime;
-
-            yield return null;
-        }
-
-        PlayAttackParticle(targetPos, comboIndex);
+        trailRenderer.emitting = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -137,7 +134,6 @@ public class Sword : MeleeWeaponBase
         if (data == null || data.Length == 0) return;
 
         Gizmos.color = Color.red;
-
         Vector3 origin = transform.position;
         Vector3 forward = transform.forward;
 
@@ -150,24 +146,5 @@ public class Sword : MeleeWeaponBase
         Gizmos.DrawLine(origin, origin + leftDir);
         Gizmos.DrawLine(origin, origin + rightDir);
         Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
-    }
-
-    private void PlayAttackParticle(Vector3 targetPos, int comboIndex)
-    {
-        if (data[comboIndex].attackParticlePrefab == null) return;
-
-        Vector3 origin = transform.position;
-        Vector3 dir = targetPos - origin;
-
-        if (dir == Vector3.zero)
-            dir = transform.forward;
-
-        dir.y = 0f;
-
-        Quaternion rot = Quaternion.LookRotation(dir.normalized)
-                       * data[comboIndex].attackParticlePrefab.transform.rotation
-                       * Quaternion.Euler(0f, 0f, 180f);
-
-        Instantiate(data[comboIndex].attackParticlePrefab, origin, rot);
     }
 }

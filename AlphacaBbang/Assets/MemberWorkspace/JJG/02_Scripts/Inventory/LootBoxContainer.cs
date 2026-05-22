@@ -3,7 +3,17 @@ using UnityEngine;
 
 public class LootBoxContainer : ItemContainer
 {
-    [SerializeField] private LootTable lootTable;
+    public enum LootSelectionMode
+    {
+        Legacy,         // use single legacy lootTable field
+        RandomFromList, // pick a random table from lootTables
+        SpecificIndex   // use specific index from lootTables
+    }
+
+    [SerializeField] private LootTable lootTable; // legacy single table (kept for backward compatibility)
+    [SerializeField] private System.Collections.Generic.List<LootTable> lootTables = new(); // new: multiple tables
+    [SerializeField] private LootSelectionMode selectionMode = LootSelectionMode.RandomFromList;
+    [SerializeField] private int specificTableIndex = 0;
     [SerializeField] private float baseOpenTime = 1.5f;
     [SerializeField] private GradeType highGradeStandard = GradeType.Rare;
 
@@ -26,13 +36,50 @@ public class LootBoxContainer : ItemContainer
 
     private void GenerateLoot()
     {
-        if (lootTable == null)
+        LootTable chosenTable = null;
+
+        switch (selectionMode)
+        {
+            case LootSelectionMode.RandomFromList:
+                if (lootTables != null && lootTables.Count > 0)
+                {
+                    int idx = UnityEngine.Random.Range(0, lootTables.Count);
+                    chosenTable = lootTables[idx];
+                }
+                else if (lootTable != null)
+                {
+                    chosenTable = lootTable; // fallback
+                }
+                break;
+
+            case LootSelectionMode.SpecificIndex:
+                if (lootTables != null && lootTables.Count > 0 && specificTableIndex >= 0 && specificTableIndex < lootTables.Count)
+                {
+                    chosenTable = lootTables[specificTableIndex];
+                }
+                else if (lootTable != null)
+                {
+                    chosenTable = lootTable; // fallback if list empty
+                }
+                else
+                {
+                    Debug.LogWarning($"{name}: SpecificTableIndex {specificTableIndex} is out of range or lootTables is empty.");
+                }
+                break;
+
+            case LootSelectionMode.Legacy:
+            default:
+                chosenTable = lootTable;
+                break;
+        }
+
+        if (chosenTable == null)
         {
             Debug.LogWarning($"{name}에 LootTable이 없습니다.");
             return;
         }
-        
-        bool result = lootTable.GenerateLoot(this);
+
+        bool result = chosenTable.GenerateLoot(this);
     }
 
     private float CalculateOpenTime()

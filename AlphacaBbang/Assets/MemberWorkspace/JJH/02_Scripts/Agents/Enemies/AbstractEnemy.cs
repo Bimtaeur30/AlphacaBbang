@@ -34,10 +34,10 @@ namespace JJH._02_Scripts.Agents.Enemies
             base.InitializeComponents();
 
             int rand = Random.Range(0, Weapons.Length);
-            if (Weapon is EnemyGunHandleModule)
+            if (Weapon is EnemyWeaponHandleModule)
             {
                 Weapons[rand].gameObject.SetActive(true);
-                EnemyGunHandleModule gunHandleModule = (EnemyGunHandleModule)Weapon;
+                EnemyWeaponHandleModule gunHandleModule = (EnemyWeaponHandleModule)Weapon;
                 gunHandleModule.SetCurrentGun((Gun)Weapons[rand]);
             }
             else if (Weapon is AgentAttack)

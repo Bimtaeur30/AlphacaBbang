@@ -19,11 +19,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
             if (renderingData.cameraData.cameraType != CameraType.Game) return;
             if (!renderingData.cameraData.camera.CompareTag("MainCamera")) return;
 
-            if (FogOfWarManager.MaskTexture != null)
-                Shader.SetGlobalTexture(MaskTexID, FogOfWarManager.MaskTexture);
+            if (FogOfWar.MaskTexture != null)
+                Shader.SetGlobalTexture(MaskTexID, FogOfWar.MaskTexture);
 
-            PlayerVisibility vis = FogOfWarManager.PlayerVisibility;
-            Transform player     = FogOfWarManager.PlayerTransform;
+            PlayerVisibility vis = FogOfWar.PlayerVisibility;
+            Transform player     = FogOfWar.PlayerTransform;
             if (vis == null || player == null) return;
 
             Vector3 forward = player.forward;

@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 namespace MemberWorkspace.CHG._02_Scripts.PlayerView
 {
     [DefaultExecutionOrder(-100)]
-    public class FogOfWarManager : MonoBehaviour
+    public class FogOfWar : MonoBehaviour
     {
         [SerializeField] private Camera maskCamera;
         [SerializeField] private Color fogColor = new Color(0.25f, 0.25f, 0.25f, 0.85f);

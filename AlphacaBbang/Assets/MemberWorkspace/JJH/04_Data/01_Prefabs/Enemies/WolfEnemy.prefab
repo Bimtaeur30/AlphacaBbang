@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5327883872085065817}
-  - component: {fileID: 4760421900940043078}
+  - component: {fileID: 4717043737884685491}
   - component: {fileID: 625508295386030655}
   - component: {fileID: 6100204632635559419}
   - component: {fileID: 5925397693124766112}
@@ -42,7 +42,7 @@ Transform:
   - {fileID: 6418157620680110981}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4760421900940043078
+--- !u!114 &4717043737884685491
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -51,13 +51,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 1509490077006756991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 844588bfbc9f2e14a9727c4a7d8f89d4, type: 3}
+  m_Script: {fileID: 11500000, guid: b5dfea658659dd442950d97ad5ee5f0a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Enemies.ChickenEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.Enemies.GoatEnemy
   AgentEventChannel: {fileID: 11400000, guid: 64ebf60eac750d34e8aaef41faaa83bd, type: 2}
   <EnemyData>k__BackingField: {fileID: 11400000, guid: 16e3c9dfac5948244952f7c7f3ab0178, type: 2}
   Weapons:
   - {fileID: 6547140080298969590}
+  deadLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &625508295386030655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8899119762188796705, guid: 8a5315102dbd45c42b7eae04411eb2b2, type: 3}
       propertyPath: selfCheckRadius
-      value: 1.3
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8899119762188796705, guid: 8a5315102dbd45c42b7eae04411eb2b2, type: 3}
       propertyPath: targetLayer.m_Bits

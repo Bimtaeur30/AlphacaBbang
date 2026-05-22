@@ -1,12 +1,14 @@
+using Reflex.Injectors;
 using UnityEngine;
 
-public class EnemyGunHandleModule : WeaponHandleModule, IEnemyWeaponModule
+public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
 
     public override void SetCurrentGun(IWeapon gun)
     {
         base.SetCurrentGun(gun);
+        HandleWeaponSlotEquipEvent(gun);
     }
 
     private void Start()
@@ -27,7 +29,7 @@ public class EnemyGunHandleModule : WeaponHandleModule, IEnemyWeaponModule
 
     public void Init()
     {
-        SetAim(true);
+        //SetAim(true);
     }
 
     public override void OnFire()
@@ -45,10 +47,21 @@ public class EnemyGunHandleModule : WeaponHandleModule, IEnemyWeaponModule
             Fire(true);
         }
     }
+    private void HandleWeaponSlotEquipEvent(IWeapon gun)
+    {
+        Transform gunParent = gunHoldParent_1;
 
-    //protected override bool CanFire()
-    //{
-    //    if (CurrentWeapon.Magazine.IsReloading) return false;
-    //    return true;
-    //}
+        if (gunParent.childCount > 0)
+            Destroy(gunParent.GetChild(0).gameObject);
+        // IWeapon gun = Instantiate(@event.Gun, gunParent);
+
+
+        GameObject gunObj = Instantiate((gun as MonoBehaviour).gameObject, gunParent);
+        Debug.Assert(gun != null, "gun이 IWeapon을 구현하지 않았습니다.");
+
+        gunObj.transform.localPosition = Vector3.zero;
+        gunObj.transform.localRotation = Quaternion.identity;
+        gunObj.transform.localScale = Vector3.one;
+    }
+
 }

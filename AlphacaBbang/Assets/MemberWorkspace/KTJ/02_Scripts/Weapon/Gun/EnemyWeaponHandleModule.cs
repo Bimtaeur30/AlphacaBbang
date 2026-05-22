@@ -7,7 +7,6 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 
     public override void SetCurrentGun(IWeapon gun)
     {
-        base.SetCurrentGun(gun);
         HandleWeaponSlotEquipEvent(gun);
     }
 
@@ -53,15 +52,19 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 
         if (gunParent.childCount > 0)
             Destroy(gunParent.GetChild(0).gameObject);
-        // IWeapon gun = Instantiate(@event.Gun, gunParent);
 
+        MonoBehaviour gunMono = gun as MonoBehaviour;
+        Debug.Assert(gunMono != null, "gun이 MonoBehaviour가 아닙니다.");
 
-        GameObject gunObj = Instantiate((gun as MonoBehaviour).gameObject, gunParent);
-        Debug.Assert(gun != null, "gun이 IWeapon을 구현하지 않았습니다.");
+        GameObject gunObj = Instantiate(gunMono.gameObject, gunParent);
 
         gunObj.transform.localPosition = Vector3.zero;
         gunObj.transform.localRotation = Quaternion.identity;
         gunObj.transform.localScale = Vector3.one;
-    }
 
+        IWeapon newGun = gunObj.GetComponent<IWeapon>();
+        Debug.Assert(newGun != null, "복제된 gun이 IWeapon을 구현하지 않았습니다.");
+
+        base.SetCurrentGun(newGun);
+    }
 }

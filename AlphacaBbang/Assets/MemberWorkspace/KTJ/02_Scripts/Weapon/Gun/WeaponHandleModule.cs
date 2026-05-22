@@ -10,6 +10,10 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     [Header("Gun")]
     [field: SerializeField] public IWeapon CurrentWeapon { get; private set; }
 
+    [Header("Transform")]
+    [SerializeField] protected Transform gunHoldParent_1;
+    [SerializeField] protected Transform gunHoldParent_2;
+
     public virtual void Initialize(ModuleOwner owner)
     {
         Owner = owner;

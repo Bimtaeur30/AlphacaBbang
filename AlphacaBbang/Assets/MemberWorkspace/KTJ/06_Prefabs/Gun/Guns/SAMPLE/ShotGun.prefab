@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a257059a47a086849adb25e3a9f38555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShotGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: b677439f04d73fd4d9760783bb0e7279, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -93,6 +93,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
 --- !u!1 &8552910107115313601
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +213,10 @@ PrefabInstance:
     - target: {fileID: 2960088747145477866, guid: 17484c9059be8974bbb24f82fa0c23bf, type: 3}
       propertyPath: m_Name
       value: Magazine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960088747145477866, guid: 17484c9059be8974bbb24f82fa0c23bf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5664735427390796397, guid: 17484c9059be8974bbb24f82fa0c23bf, type: 3}
       propertyPath: bulletUI
@@ -364,7 +369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7221518987813802768, guid: 91518936cefa5d748ab93a374fe15f48, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 10.58
       objectReference: {fileID: 0}
     - target: {fileID: 7221518987813802768, guid: 91518936cefa5d748ab93a374fe15f48, type: 3}
       propertyPath: m_SizeDelta.y
@@ -381,6 +386,10 @@ PrefabInstance:
     - target: {fileID: 8810669977827525392, guid: 91518936cefa5d748ab93a374fe15f48, type: 3}
       propertyPath: m_Name
       value: GunModuleCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810669977827525392, guid: 91518936cefa5d748ab93a374fe15f48, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

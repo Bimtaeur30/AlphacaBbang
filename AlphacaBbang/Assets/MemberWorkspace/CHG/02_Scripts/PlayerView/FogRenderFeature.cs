@@ -25,6 +25,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
             forward.y = 0;
             forward.Normalize();
 
+            
             Shader.SetGlobalVector("_PlayerPos",       FogOfWar.PlayerTransform.position);
             Shader.SetGlobalVector("_PlayerForward",   forward);
             Shader.SetGlobalFloat ("_ViewRadius",      FogOfWar.PlayerVisibility.ViewRadius);

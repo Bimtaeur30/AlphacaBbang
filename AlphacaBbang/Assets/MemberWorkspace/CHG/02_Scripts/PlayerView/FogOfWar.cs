@@ -10,6 +10,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         [SerializeField] private Camera maskCamera;
         [SerializeField] private Color fogColor = new Color(0.25f, 0.25f, 0.25f, 0.85f);
         [SerializeField] private Material fogMaterial;
+        [SerializeField] private GameObject player;
 
         public static RenderTexture MaskTexture      { get; private set; }
         public static Transform PlayerTransform      { get; private set; }
@@ -20,11 +21,9 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         
         private void Awake()
         {
-
-            GameObject player = GameObject.FindWithTag("Player");
             PlayerTransform   = player.transform;
-            PlayerVisibility  = player.GetComponent<PlayerVisibility>();
-
+            PlayerVisibility  = player.GetComponentInChildren<PlayerVisibility>();
+            
             MaskTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
             MaskTexture.depthStencilFormat = GraphicsFormat.D24_UNorm_S8_UInt;
             MaskTexture.Create();

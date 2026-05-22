@@ -54,18 +54,6 @@ public abstract class
     {
         currentTime += Time.deltaTime;
     }
-    //public virtual void Attack(Vector3 targetPos, bool isAttack)
-    //{
-    //    Debug.Log($"Attack is : {isAttack}");
-    //    if (!isAttack) return;
-
-    //    Debug.Log($"Current Time : {currentTime}, Attack Dela : {data[currentLevel].attackDelay}");
-
-    //    if (currentTime < data[currentLevel].attackDelay) return;
-
-    //    PerformAttack(targetPos);
-    //}
-
     protected abstract void PerformAttack(Vector3 targetPos);
 
     protected virtual Vector3 GetShootDirection()

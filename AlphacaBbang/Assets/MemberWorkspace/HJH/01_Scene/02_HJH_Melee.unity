@@ -1871,11 +1871,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseballBat
   characterState: 1
+  <WeaponData>k__BackingField: {fileID: 0}
   data:
   - {fileID: 11400000, guid: de32f3783db83674093bfa3d1a27c2da, type: 2}
   - {fileID: 11400000, guid: 8edfb89bb9f291a478119bd91ce9b640, type: 2}
   comboWindow: 0.75
-  ComboCounter: 0
+  crossFadeDuration: 0.1
+  animLayerIndex: 0
+  attackAnimParam: []
 --- !u!1001 &612512019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2202,12 +2205,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   characterState: 0
+  <WeaponData>k__BackingField: {fileID: 0}
   data:
   - {fileID: 11400000, guid: a5190384080dbef4f96effc92776a360, type: 2}
   - {fileID: 11400000, guid: a1a9603e73b07244abac94165cd7ae66, type: 2}
   - {fileID: 11400000, guid: 765cce99a36dcf7488a4f2a6f5bc2bbd, type: 2}
   comboWindow: 2
-  visual: {fileID: 7209771509369069872}
+  crossFadeDuration: 0.1
+  animLayerIndex: 0
+  attackAnimParam: []
   ComboCounter: 0
 --- !u!1 &708362768
 GameObject:
@@ -2638,12 +2644,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TwoHandedSteelPipe
   characterState: 1
+  <WeaponData>k__BackingField: {fileID: 0}
   data:
   - {fileID: 11400000, guid: b97dc64206f691c4c91cec8a060b29a4, type: 2}
   - {fileID: 11400000, guid: 0c81fbb653bfb68449500bacbfcdff79, type: 2}
   - {fileID: 11400000, guid: cd8fd73de1777624eba8423ca835b377, type: 2}
   comboWindow: 0.75
-  ComboCounter: 0
+  crossFadeDuration: 0.1
+  animLayerIndex: 0
+  attackAnimParam: []
 --- !u!4 &828058119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ab6fdf4bf3fee7d45841bc76fada4323, type: 3}
@@ -4001,10 +4010,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BaseballBat
   characterState: 0
+  <WeaponData>k__BackingField: {fileID: 0}
   data:
   - {fileID: 11400000, guid: cab7e58a9da45aa4d92180201832954d, type: 2}
   comboWindow: 0.4
-  ComboCounter: 0
+  crossFadeDuration: 0.1
+  animLayerIndex: 0
+  attackAnimParam: []
 --- !u!1001 &1221148417
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5741,7 +5753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7267d46e43704124096d1ab9c3fa3a42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AgentAttack
-  weapon: {fileID: 809741587}
+  weapon: {fileID: 1220902410}
   weaponHolder: {fileID: 0}
   mainCamera: {fileID: 330585545}
   characterState: 1
@@ -17706,7 +17718,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 73a17b523184c9349b61bf433e0aba1c, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -17720,6 +17732,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 7721109169630036141}
 --- !u!4 &1151275837759363429
 Transform:
@@ -19056,7 +19069,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a257059a47a086849adb25e3a9f38555, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShotGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: b677439f04d73fd4d9760783bb0e7279, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -19070,6 +19083,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
 --- !u!1001 &1846876686613818543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19203,7 +19217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: e3418339bb030f54ca43b9a51c373504, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -19217,6 +19231,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 8250123911279040195}
 --- !u!23 &1875141101715639172
 MeshRenderer:
@@ -24407,7 +24422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 1983dd8386f1c034ca6c9b51c1f1f5b5, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -24421,6 +24436,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 528391712514829611}
 --- !u!1 &4235226714137811830
 GameObject:
@@ -24761,7 +24777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 58aaa7cac6793ff4ba129d2c11663593, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -24775,6 +24791,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 321842333419158453}
 --- !u!114 &4433936258877009097
 MonoBehaviour:
@@ -38159,7 +38176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2673d588389e54c8093c7be936074d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bazooka
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 77ce65765152f2e4f8cb3a884ebf06d3, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -38173,6 +38190,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   warHeadSO: {fileID: 11400000, guid: 99214a693e2c2dc49afed85a8abdc7b7, type: 2}
   smokeParticle: {fileID: 8239328828240565673}
   toggleWarHeadObj: {fileID: 0}
@@ -44103,7 +44121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 77ce65765152f2e4f8cb3a884ebf06d3, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -44117,6 +44135,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 6590110221695245633}
 --- !u!1 &6581462305599198870
 GameObject:
@@ -53922,7 +53941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 562b95054dbad354187f867793d58930, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -53936,6 +53955,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 6315442784353107042}
 --- !u!114 &6644909906756974569
 MonoBehaviour:
@@ -54832,7 +54852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 8f6d03d835897e0468e84106e1868961, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -54846,6 +54866,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 5035172783268180747}
 --- !u!1 &7152267437376208506
 GameObject:
@@ -72507,7 +72528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: fde92b37c2bd6e948af289f0400fe48e, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -72521,6 +72542,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 6582920513887657923}
 --- !u!114 &8554557999702860876
 MonoBehaviour:
@@ -72681,7 +72703,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd580b632f24c54c93b6ea39cb5834d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
-  <GunDataSO>k__BackingField: {fileID: 11400000, guid: 790d4c6e262b2cf45950a52ed0e02270, type: 2}
+  <WeaponData>k__BackingField: {fileID: 0}
   <TargetLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 65
@@ -72695,6 +72717,7 @@ MonoBehaviour:
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   lineRenderer: {fileID: 11400000, guid: e0e77539546a7dc44adae159dccf7279, type: 2}
   bulletParticle: {fileID: 11400000, guid: 3eb8b4066857c4e49833ad8f720a8547, type: 2}
+  gunChannel: {fileID: 0}
   BulletShellParticle: {fileID: 5554277041050572666}
 --- !u!4 &8600813771012675737
 Transform:
@@ -74039,9 +74062,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGunHandleModule
   <IsInputAim>k__BackingField: 0
   <IsInputFire>k__BackingField: 0
-  <CurrentGun>k__BackingField: {fileID: 0}
-  firstSlotGun: {fileID: 0}
-  secondSlotGun: {fileID: 0}
   gunHoldParent_1: {fileID: 2537553124410317752}
   gunHoldParent_2: {fileID: 140533828963263757}
   gunChannel: {fileID: 11400000, guid: f4e51a5590203a1489b9a13216aa6e7c, type: 2}

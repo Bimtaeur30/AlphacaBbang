@@ -2,7 +2,6 @@
 using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.AnimationSystems;
 using JJH._02_Scripts_Systems.EventSystems;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public abstract class Gun : WeaponBase, IWeapon
@@ -43,7 +42,7 @@ public abstract class Gun : WeaponBase, IWeapon
         Renderer = GetComponentInChildren<GunRenderer>();
         _gunSoundPlayuer = GetComponentInChildren<GunSoundPlayer>();
         Debug.Assert(Renderer != null, "GunRenderer가 자식으로 붙어있지 않습니다.");
-        Debug.Assert(_gunSoundPlayuer != null, "GunSoundPlayer가 자식으로 붙어있지 않습니다.");
+        Debug.Assert(_gunSoundPlayuer != null, "GunSoundPlayer가 자식으로 붙어있지 않습니다." + gameObject.name);
 
         Debug.Assert(firePos != null, "firePos가 할당되지 않았습니다.");
     }

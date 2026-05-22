@@ -11,9 +11,35 @@ public class InventoryContextMenu : MonoBehaviour
     [SerializeField] private bool _handleEquipmentItems = false;
     [SerializeField] private GameObject rootPanel;
 
+    public static bool IsOpen { get; private set; }
+
+    private static InventoryContextMenu _currentOpenMenu;
+    private static bool _openHandled;
+
     public static event Action<ItemContainer, int, Vector3> OnOpenRequested;
     public static void Open(ItemContainer container, int slotIndex, Vector3 position)
-        => OnOpenRequested?.Invoke(container, slotIndex, position);
+    {
+        CloseCurrent();
+        _openHandled = false;
+
+        try
+        {
+            OnOpenRequested?.Invoke(container, slotIndex, position);
+        }
+        finally
+        {
+            _openHandled = false;
+        }
+    }
+
+    private static void CloseCurrent()
+    {
+        if (_currentOpenMenu != null)
+        {
+            _currentOpenMenu.Close();
+            _currentOpenMenu = null;
+        }
+    }
 
     [SerializeField] private Button useButton;
     [SerializeField] private Button equipButton;
@@ -64,14 +90,22 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void HandleOpenRequest(ItemContainer container, int slotIndex, Vector3 position)
     {
+        if (_openHandled) return;
+
         ItemSlot slot = container.GetSlot(slotIndex);
         if (slot == null || slot.IsEmpty) return;
 
         bool isEquipItem = slot.ItemData.EquipType != EquipType.None;
         if (isEquipItem != _handleEquipmentItems) return;
 
+        _openHandled = true;
+        _currentOpenMenu = this;
+
         _container = container;
         _slotIndex = slotIndex;
+
+        IsOpen = true;
+        ItemTooltip.Instance?.Hide();
 
         rootPanel.transform.position = position + new Vector3(xOffset, 0, 0);
         rootPanel.SetActive(true);
@@ -83,6 +117,10 @@ public class InventoryContextMenu : MonoBehaviour
     public void Close()
     {
         rootPanel?.SetActive(false);
+        IsOpen = false;
+
+        if (_currentOpenMenu == this)
+            _currentOpenMenu = null;
     }
 
     private void BindButtons()
@@ -131,9 +169,9 @@ public class InventoryContextMenu : MonoBehaviour
 
         for (int i = 0; i < equipmentContainer.SlotCount; i++)
         {
-            ItemSlot slot = equipmentContainer.GetSlot(i);
-            if (slot == null || slot.IsEmpty) continue;
-            if (slot.ItemData != null && slot.ItemData.EquipType == equipType)
+            EquipmentSlot eqSlot = equipmentContainer.GetEquipmentSlot(i);
+            if (eqSlot == null) continue;
+            if (eqSlot.allowedEquipType == equipType && !eqSlot.slot.IsEmpty)
                 return true;
         }
 
@@ -175,55 +213,26 @@ public class InventoryContextMenu : MonoBehaviour
         }
         else if (itemData is ArmorItemData armorData)
         {
-            // Debug.Log("Can Use");
-            // if (equipmentContainer == null)
-            // {
-            //     Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
-            //     Close();
-            //     return;
-            // }
-            //
-            // int targetSlotIndex = -1;
-            // for (int i = 0; i < equipmentContainer.SlotCount; i++)
-            // {
-            //     if (!equipmentContainer.CanEquip(i, itemData))
-            //         continue;
-            //
-            //     EquipmentSlot equipSlot = equipmentContainer.GetEquipmentSlot(i);
-            //     if (equipSlot == null || !equipSlot.slot.IsEmpty)
-            //         continue;
-            //
-            //     targetSlotIndex = i;
-            //     break;
-            // }
-            
-            Debug.Log("Can Use");
-            Debug.Log($"equipmentContainer null? {equipmentContainer == null}");
-    
             if (equipmentContainer == null)
             {
                 Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
                 Close();
                 return;
             }
-
-            Debug.Log($"SlotCount: {equipmentContainer.SlotCount}");
-    
+            
             int targetSlotIndex = -1;
             for (int i = 0; i < equipmentContainer.SlotCount; i++)
             {
-                bool canEquip = equipmentContainer.CanEquip(i, itemData);
+                if (!equipmentContainer.CanEquip(i, itemData))
+                    continue;
+            
                 EquipmentSlot equipSlot = equipmentContainer.GetEquipmentSlot(i);
-                Debug.Log($"슬롯 {i}: CanEquip={canEquip}, equipSlot null={equipSlot == null}, isEmpty={equipSlot?.slot.IsEmpty}");
-        
-                if (!canEquip) continue;
-                if (equipSlot == null || !equipSlot.slot.IsEmpty) continue;
-
+                if (equipSlot == null || !equipSlot.slot.IsEmpty)
+                    continue;
+            
                 targetSlotIndex = i;
                 break;
             }
-
-            Debug.Log($"targetSlotIndex: {targetSlotIndex}");
 
             if (targetSlotIndex < 0)
             {
@@ -276,14 +285,14 @@ public class InventoryContextMenu : MonoBehaviour
 
         for (int i = 0; i < equipmentContainer.SlotCount; i++)
         {
-            ItemSlot eqSlot = equipmentContainer.GetSlot(i);
-            if (eqSlot == null || eqSlot.IsEmpty) continue;
-            if (eqSlot.ItemData.EquipType != targetType) continue;
+            EquipmentSlot eqSlot = equipmentContainer.GetEquipmentSlot(i);
+            if (eqSlot == null || eqSlot.slot.IsEmpty) continue;
+            if (eqSlot.allowedEquipType != targetType) continue;
 
             if (inventoryContainer != null)
-                inventoryContainer.AddItem(eqSlot.ItemData, 1);
+                inventoryContainer.AddItem(eqSlot.slot.ItemData, 1);
 
-            equipmentContainer.ClearSlot(i);
+            equipmentContainer.Unequip(i);
             break;
         }
 

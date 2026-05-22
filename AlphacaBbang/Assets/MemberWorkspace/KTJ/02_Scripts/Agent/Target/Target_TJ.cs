@@ -7,12 +7,12 @@ public class Target_TJ : ModuleOwner, IDamageable
 {
     [field: SerializeField] public float Health { get; private set; } = 100f;
     [SerializeField] private TextMeshPro healthTxt;
-    private EnemyGunHandleModule gunHandleModule;
+    private EnemyWeaponHandleModule gunHandleModule;
 
     protected override void InitializeComponents()
     {
         base.InitializeComponents();
-        gunHandleModule = GetModule<EnemyGunHandleModule>();
+        gunHandleModule = GetModule<EnemyWeaponHandleModule>();
         Debug.Assert(gunHandleModule != null, "EnemyGunHandleModule을 발견하지 못했습니다.");
 
     }

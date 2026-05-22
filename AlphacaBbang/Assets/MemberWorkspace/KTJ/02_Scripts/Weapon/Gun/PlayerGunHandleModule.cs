@@ -12,10 +12,6 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     //[SerializeField] private Gun TEST_GUN1;
     //[SerializeField] private Gun TEST_GUN2;
 
-    [Header("Transform")]
-    [SerializeField] private Transform gunHoldParent_1;
-    [SerializeField] private Transform gunHoldParent_2;
-
     [Header("System")]
     [SerializeField] private EventChannelSO gunChannel;
 

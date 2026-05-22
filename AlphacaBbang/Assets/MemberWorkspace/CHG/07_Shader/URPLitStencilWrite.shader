@@ -61,8 +61,7 @@ Shader "Custom/URPLitStencilWrite"
         ZWrite On
         ZTest LEqual
 
-        // ------------------------------------------------------------------
-        // Forward Lit Pass
+
         Pass
         {
             Name "ForwardLit"

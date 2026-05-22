@@ -101,16 +101,20 @@ public class TwoHandedSteelPipe : MeleeWeaponBase
         Gizmos.DrawLine(origin, origin + rightDir);
         Gizmos.DrawWireSphere(origin, data[ComboCounter].range);
     }
-    private void PlayAttackParticle(Vector3 dir)
+    private void PlayAttackParticle(Vector3 targetPos)
     {
         if (data[ComboCounter].attackParticlePrefab == null) return;
         Vector3 origin = transform.position;
+        Vector3 dir = targetPos - origin;
 
         if (dir == Vector3.zero)
             dir = transform.forward;
 
-        Quaternion rot = Quaternion.LookRotation(dir.normalized);
-                       //* Quaternion.Euler(90f, 120f, 0f);
+        dir.y = 0f;
+
+        Quaternion rot = Quaternion.LookRotation(dir.normalized)
+                       * data[ComboCounter].attackParticlePrefab.transform.rotation
+                       * Quaternion.Euler(0f, 0f, 180f);
 
         Instantiate(data[ComboCounter].attackParticlePrefab, origin, rot);
     }

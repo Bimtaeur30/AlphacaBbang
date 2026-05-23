@@ -1,6 +1,7 @@
+using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts_Systems.AnimationSystems;
 using JJH._02_Scripts_Systems.EventSystems;
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,10 +21,15 @@ public class PlayerController : Agent
 
     [Reflex.Attributes.Inject] private CursorController _cursorController;
 
+    [SerializeField] private SoundClipSO equipSoundClip;
+    [SerializeField] private EventChannelSO soundChannel;
+
+
     public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
 
     private AgentMovement _agentMovement;
 
+    private PlayerSaveData _saveData;
     private PlayerStaminaGaugeSystem _stamina;
     private PlayerStatSystem _stat;
     private WeaponHandleModule weaponHandleModule;
@@ -84,6 +90,9 @@ public class PlayerController : Agent
         _playerCollider = GetComponent<CapsuleCollider>();
 
         UpdateColliderState();
+
+        _saveData = GetComponent<PlayerSaveData>();
+        HealthModule.InitHealth(_saveData.MaxHealth);
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;
@@ -457,7 +466,7 @@ public class PlayerController : Agent
     private void OnStartAiming()
     {
         _cursorController.ChangeCursorMode(CursorMode.Gun);
-
+        soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(equipSoundClip, this.transform));
         GunHandleModule.Aim(true);
     }
 

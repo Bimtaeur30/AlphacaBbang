@@ -36,6 +36,10 @@ public class InventoryUI : MonoBehaviour
     [Header("Preview")]
     [SerializeField] private bool _showPreview = false;
 
+    [Header("Empty Slot Icons")]
+    [SerializeField] private Sprite _emptyIcon;
+    [SerializeField] private List<Sprite> _slotEmptyIcons = new();
+
     private readonly List<ItemSlotUI> _slotUIList = new();
     private int _selectedSlotIndex = -1;
 
@@ -51,6 +55,9 @@ public class InventoryUI : MonoBehaviour
     {
         if (inventory == null)
             inventory = GetComponent<ItemContainer>();
+
+        if (_weaponHolder == null)
+            _weaponHolder = FindObjectOfType<WeaponHolder>();
     }
 
     public void SetInventory(ItemContainer container)
@@ -59,6 +66,10 @@ public class InventoryUI : MonoBehaviour
             return;
 
         inventory = container;
+
+        for (int i = 0; i < _slotUIList.Count; i++)
+            _slotUIList[i].SetContainer(inventory);
+
         RefreshUI();
     }
 
@@ -69,10 +80,19 @@ public class InventoryUI : MonoBehaviour
             if (inventory != null)
                 inventory.OnContainerChanged += RefreshUI;
 
+            if (_weaponHolder == null)
+            {
+                _weaponHolder = FindObjectOfType<WeaponHolder>();
+            }
+
             if (_weaponHolder != null)
             {
                 _weaponHolder.OnWeaponChanged += OnWeaponChanged;
                 _weaponHolder.OnThrowingItemChanged += OnThrowingItemChanged;
+            }
+            else
+            {
+                Debug.LogWarning("[InventoryUI] WeaponHolder가 할당되지 않았습니다. 무기 선택 표시가 작동하지 않을 수 있습니다.");
             }
 
             RebuildRuntime();
@@ -114,8 +134,14 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateSelectionUI()
     {
+        // for (int i = 0; i < _slotUIList.Count; i++)
+        //     _slotUIList[i].SetSelected(i == _selectedSlotIndex);
+
         for (int i = 0; i < _slotUIList.Count; i++)
+        {
             _slotUIList[i].SetSelected(i == _selectedSlotIndex);
+            //Debug.Log("[InventoryUI] 슬롯 " + i + " 선택 상태: " + (i == _selectedSlotIndex));
+        }
     }
 
     private void Start()
@@ -211,6 +237,8 @@ public class InventoryUI : MonoBehaviour
                 slotUI = slotGo.AddComponent<ItemSlotUI>();
 
             slotUI.Initialize(inventory, i);
+            Sprite emptyIcon = (i < _slotEmptyIcons.Count && _slotEmptyIcons[i] != null) ? _slotEmptyIcons[i] : _emptyIcon;
+            slotUI.SetEmptyIcon(emptyIcon);
             _slotUIList.Add(slotUI);
         }
 

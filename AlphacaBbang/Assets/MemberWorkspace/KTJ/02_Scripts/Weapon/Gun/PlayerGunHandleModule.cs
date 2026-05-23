@@ -1,3 +1,5 @@
+using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using Reflex.Attributes;
 using Reflex.Core;
@@ -16,6 +18,7 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     [Header("System")]
     [SerializeField] private EventChannelSO gunChannel;
     [SerializeField] private EventChannelSO uiChannel;
+
 
     public PlayerController PlayerController { get; private set; }
 

@@ -28,7 +28,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             {
                 GameObject obj = Instantiate(conditionTextPrefab, transform);
                 TextMeshProUGUI text = obj.GetComponent<TextMeshProUGUI>();
-                text.text = $"{condition.TargetId}: {condition.Progress} / {condition.Required}";
+                text.text = $" {condition.TargetId}: {condition.Progress} / {condition.Required}";
                 _conditionTexts.Add(text);
             }
         }
@@ -47,7 +47,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             if (_quest.IsCompleted)
             {
                 nameText.color = Color.green;
-                rewardButton.interactable = true;  // 완료 시 버튼 활성화
+                rewardButton.interactable = true;  
             }
         }
 

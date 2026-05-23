@@ -36,6 +36,8 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
                 effect.PlayBreathParticle();
 
+                _owner.AgentSoundPlayer.PlaySound(effect.BreathSound);
+
                 yield return new WaitForSeconds(interval);
             }
 

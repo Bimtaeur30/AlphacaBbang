@@ -104,45 +104,28 @@ Shader "Custom/FloorFog"
             }
 
             float4 frag(Varyings IN) : SV_Target
-            {
-                float2 screenUV = IN.positionCS.xy / _ScreenParams.xy;
+{
+    float2 screenUV = IN.positionCS.xy / _ScreenParams.xy;
+    float maskRange = GetViewMask(IN.positionWS);
+    float finalMask = maskRange;
 
-                float blurredMaskObstacle = 0;
-                int   samples = (int)_EdgeBlurSamples;
-                float radius  = _EdgeBlurWidth;
-
-                for (int i = 0; i < samples; i++)
-                {
-                    float  angle  = (6.28318 / samples) * i;
-                    float2 offset = float2(cos(angle), sin(angle)) * radius;
-                    blurredMaskObstacle += SAMPLE_TEXTURE2D(_MaskTex, sampler_MaskTex, screenUV + offset).r;
-                }
-                blurredMaskObstacle /= samples;
-                
-                float maskRange = GetViewMask(IN.positionWS);
-
-                float finalMask = maskRange;
-                //float finalMask = blurredMaskObstacle * maskRange;
-
-                InputData inputData = (InputData)0;
-                inputData.positionWS      = IN.positionWS;
-                inputData.normalWS        = normalize(IN.normalWS);
-                inputData.viewDirectionWS = GetWorldSpaceNormalizeViewDir(IN.positionWS);
-                inputData.shadowCoord     = TransformWorldToShadowCoord(IN.positionWS);
-
-                float4 texColor  = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);
-                Light  mainLight = GetMainLight(inputData.shadowCoord);
-                float  NdotL     = saturate(dot(inputData.normalWS, mainLight.direction));
-                float  shadow    = mainLight.shadowAttenuation;
-               float3 lit = texColor.rgb * (mainLight.color * NdotL * shadow + 0.3);
-
-                float3 fogged = lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a;
-                float3 final  = lerp(fogged, lit, finalMask);
-                
-
-                float alpha = _FogColor.a * (1.0 - finalMask);
-                return float4(_FogColor.rgb, alpha);
-            }
+    InputData inputData = (InputData)0;
+    inputData.positionWS  = IN.positionWS;
+    inputData.normalWS    = normalize(IN.normalWS);
+    inputData.shadowCoord = TransformWorldToShadowCoord(IN.positionWS);
+    
+    Light mainLight = GetMainLight(inputData.shadowCoord);
+    float shadow = mainLight.shadowAttenuation;
+    
+    float3 shadedFog = _FogColor.rgb * shadow;
+    
+    float shadowDarkness = (1.0 - shadow) * 0.5;
+    
+    float fogAlpha = _FogColor.a * (1.0 - finalMask);
+    float alpha = max(shadowDarkness, fogAlpha);
+    
+    return float4(shadedFog, alpha);
+}
             ENDHLSL
         }
 

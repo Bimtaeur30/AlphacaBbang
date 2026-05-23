@@ -1,44 +1,52 @@
 using JJH._02_Scripts_Systems.EventSystems;
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerRoutSender : MonoBehaviour
 {
     [SerializeField] private EventChannelSO mapEventChannel;
+    [SerializeField] private RoutRecorder routRecorder; // 직접 참조로 Clear() 호출
 
-    [SerializeField] private float testRoutRecordTime = 10f; // 테스트로 10초동안 기록함
-    private float currentTime = 0f;
-    private float recordTime = 0f;
-    private bool isRecording = false;
+    private float _currentTime = 0f;
+    private float _recordTime = 0f;
+    private bool _isRecording = false;
+
+    private void Awake()
+    {
+        mapEventChannel.AddListener<StartPlayEvent>(OnEndRecording);
+    }
 
     private void Start()
     {
-        isRecording = true;
+        routRecorder.Clear(); // 탐사 시작 전 이전 데이터 초기화
+        _currentTime = 0f;
+        _recordTime = 0f;
+        _isRecording = true;
+
+        Debug.Log($"[PlayerRoutSender] 탐사 시작. recordTime 초기화");
         mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 시작"));
         SendPlayerPosition();
     }
 
+    private void OnDestroy()
+    {
+        mapEventChannel.RemoveListener<StartPlayEvent>(OnEndRecording);
+    }
+
     private void Update()
     {
-        if (isRecording == false) return;
+        if (!_isRecording) return;
 
-        currentTime += Time.deltaTime;
-        recordTime += Time.deltaTime;
-        //if (recordTime >= testRoutRecordTime)
-        //{
-        //    mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 종료"));
-        //    SendPlayerPosition();
-        //    mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(recordTime)); // 기록 종료 이벤트
-        //    isRecording = false;
-        //}
-        if (currentTime >= MapRoutDataSO.RECORD_INTERVAL)
+        _currentTime += Time.deltaTime;
+        _recordTime += Time.deltaTime;
+
+        if (_currentTime >= MapRoutData.RECORD_INTERVAL)
         {
-            currentTime = 0f;
+            _currentTime = 0f;
             SendPlayerPosition();
         }
 
-        if (Keyboard.current.qKey.wasPressedThisFrame) // 테스트 액션 전송
+        if (Keyboard.current.qKey.wasPressedThisFrame)
         {
             SendPlayerAction();
         }
@@ -47,20 +55,23 @@ public class PlayerRoutSender : MonoBehaviour
     private void SendPlayerAction()
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("테스트 액션이 발동되었습니다."));
-        Debug.Log("PlayerRoutSender: 테스트 액션이 발동되었습니다.");
+        Debug.Log("[PlayerRoutSender] 테스트 액션 발송");
     }
 
     private void SendPlayerPosition()
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerPointEvent.Init(transform.position));
-        //Debug.Log($"PlayerRoutSender: 현재 위치를 전송했습니다. 위치: {transform.position}");
+        Debug.Log($"[PlayerRoutSender] 포인트 발송 | recordTime: {_recordTime:F2}s");
     }
 
-    private void OnGameEnd() // 탐사 종료되었을 때
+    public void OnEndRecording(StartPlayEvent @event)
     {
+        if (!_isRecording) return; // GameEndUI가 StartPlayEvent를 반복 발행해도 최초 1회만 처리
+
+        _isRecording = false;
+        Debug.Log($"[PlayerRoutSender] 탐사 종료 | 최종 recordTime: {_recordTime:F2}s");
         mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 종료"));
         SendPlayerPosition();
-        mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(recordTime)); // 기록 종료 이벤트
-        isRecording = false;
+        mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(_recordTime));
     }
 }

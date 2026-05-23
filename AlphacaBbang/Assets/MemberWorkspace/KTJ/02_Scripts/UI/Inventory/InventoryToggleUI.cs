@@ -21,6 +21,11 @@ public class InventoryToggleUI : MonoBehaviour
 
         InventoryChannel.AddListener<InventoryToggleEvt>(HandleInventoryToggle);
     }
+
+    private void OnDestroy()
+    {
+        InventoryChannel.RemoveListener<InventoryToggleEvt>(HandleInventoryToggle);
+    }
     private void Start()
     {
         InventoryGroup.alpha = 0f;

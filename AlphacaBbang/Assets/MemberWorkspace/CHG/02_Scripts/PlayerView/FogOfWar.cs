@@ -8,8 +8,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
     public class FogOfWar : MonoBehaviour
     {
         [SerializeField] private Camera maskCamera;
-        [SerializeField] private Color fogColor = new Color(0.25f, 0.25f, 0.25f, 0.85f);
-        [SerializeField] private Material fogMaterial;
         [SerializeField] private GameObject player;
 
         public static RenderTexture MaskTexture      { get; private set; }
@@ -37,9 +35,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
             camData.renderPostProcessing = false;
             camData.antialiasing         = AntialiasingMode.None;
             camData.renderType           = CameraRenderType.Base;
-
-            if (fogMaterial != null)
-                fogMaterial.SetColor("_FogColor", fogColor);
+            
         }
 
         private void Start()

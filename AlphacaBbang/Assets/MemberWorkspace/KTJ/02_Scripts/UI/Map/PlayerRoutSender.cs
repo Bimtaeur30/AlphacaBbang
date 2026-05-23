@@ -25,14 +25,14 @@ public class PlayerRoutSender : MonoBehaviour
 
         currentTime += Time.deltaTime;
         recordTime += Time.deltaTime;
-        if (recordTime >= testRoutRecordTime)
-        {
-            mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 종료"));
-            SendPlayerPosition();
-            mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(recordTime)); // 기록 종료 이벤트
-            isRecording = false;
-        }
-        else if (currentTime >= MapRoutDataSO.RECORD_INTERVAL)
+        //if (recordTime >= testRoutRecordTime)
+        //{
+        //    mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 종료"));
+        //    SendPlayerPosition();
+        //    mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(recordTime)); // 기록 종료 이벤트
+        //    isRecording = false;
+        //}
+        if (currentTime >= MapRoutDataSO.RECORD_INTERVAL)
         {
             currentTime = 0f;
             SendPlayerPosition();
@@ -54,5 +54,13 @@ public class PlayerRoutSender : MonoBehaviour
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerPointEvent.Init(transform.position));
         //Debug.Log($"PlayerRoutSender: 현재 위치를 전송했습니다. 위치: {transform.position}");
+    }
+
+    private void OnGameEnd() // 탐사 종료되었을 때
+    {
+        mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("탐사 종료"));
+        SendPlayerPosition();
+        mapEventChannel.RaiseEvent(MapEvents.RoutRecordEndEvent.Init(recordTime)); // 기록 종료 이벤트
+        isRecording = false;
     }
 }

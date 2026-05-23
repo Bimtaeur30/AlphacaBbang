@@ -1,5 +1,4 @@
-﻿using JJH._02_Scripts.Agents.Enemies;
-using JJH._02_Scripts.Systems.EventSystems;
+﻿using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
@@ -10,11 +9,11 @@ namespace JJH._02_Scripts.Agents
     {
         [SerializeField] private EventChannelSO soundChannel;
 
-        private AbstractEnemy _owner;
+        private Agent _owner;
 
         public void Initialize(ModuleOwner owner)
         {
-            _owner = owner as AbstractEnemy;
+            _owner = owner as Agent;
         }
 
         public void PlaySound(SoundClipSO soundClip)

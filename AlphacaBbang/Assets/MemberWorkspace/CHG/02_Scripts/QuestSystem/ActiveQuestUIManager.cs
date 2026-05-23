@@ -32,7 +32,9 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         private void OnQuestAccepted(Quest quest)
         {
             GameObject panel = Instantiate(questPanelPrefab, layoutGroup.transform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(panel.GetComponent<RectTransform>());
             QuestPanelUI panelUI = panel.GetComponent<QuestPanelUI>();
+            Debug.Log($"{panelUI == null} +  :  + {quest == null}");
             panelUI.Initialize(quest);
             panelUI.OnClaimed += OnPanelClaimed;
             _activePanels.Add(quest, panelUI);

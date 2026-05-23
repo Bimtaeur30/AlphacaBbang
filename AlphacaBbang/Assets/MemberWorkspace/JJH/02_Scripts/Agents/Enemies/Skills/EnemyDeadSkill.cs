@@ -21,6 +21,10 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             EnemyDeadBoomParticle effect = poolManager.Pop<EnemyDeadBoomParticle>(deadBoomPref);
             effect.transform.position = _owner.transform.position;
             effect.PlayBoomParticle();
+
+            Instantiate(_owner.EnemyData.EnemyInventoryPrefab, _owner.transform.position, Quaternion.identity);
+            _owner.gameObject.layer = _owner.EnemyData.DeadLayer;
+            Destroy(_owner.gameObject);
         }
     }
 }

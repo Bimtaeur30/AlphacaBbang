@@ -15,13 +15,14 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
-        [SerializeField] private LayerMask deadLayer;
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
         public INavMeshAgent EnemyNavMeshAgent { get; private set; }
+        public IEnemySoundPlayer EnemySoundPlayer { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
+        public BlackboardVariable<StateChannel> StateChannel => _stateChannel;
         private BlackboardVariable<StateChannel> _stateChannel;
 
         private Coroutine _hitCoroutine;
@@ -52,6 +53,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemyNavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<IEnemySkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
+            EnemySoundPlayer = GetModule<IEnemySoundPlayer>();
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
 
@@ -101,35 +103,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             }
 
             Renderer.Renderer.material.color = _originColor;
-        }
-
-        public void OnDead()
-        {
-            EnemySkill.UseSkill<EnemyDeadSkill>();
-            Instantiate(EnemyData.EnemyInventoryPrefab, transform.position, Quaternion.identity);
-            gameObject.layer = deadLayer;
-            Destroy(gameObject);
-        }
-
-        public void Suicide()
-        {
-            EnemySkill.UseSkill<EnemyBombSkill>();
-            _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-        }
-
-        public void Dash()
-        {
-            EnemySkill.UseSkill<EnemyDashSkill>();
-        }
-
-        public void DashAttack()
-        {
-            EnemySkill.UseSkill<EnemyDashAttackSkill>();
-        }
-
-        public void DashAttackStandBy()
-        {
-            EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
         }
 
         public override void TakeDamage(float damage)

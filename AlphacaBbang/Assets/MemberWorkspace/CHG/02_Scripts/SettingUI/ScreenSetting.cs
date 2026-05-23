@@ -1,15 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MemberWorkspace.CHG._02_Scripts.SettingUI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-//[RequireComponent(typeof(UIDocument))]
 public class ScreenSetting : AbstractSettingUI
 {
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
@@ -17,13 +12,9 @@ public class ScreenSetting : AbstractSettingUI
     private Resolution _resolution;
     private FullScreenMode _screenMode;
     
-    //private UIDocument _document;
-    //private VisualElement _root;
     
     public override void Awake()
     {
-        //_document = GetComponent<UIDocument>();
-       // _root = _document.rootVisualElement;
         _resolutionDropdown.options.Clear();
        foreach (Resolution resolution in GetResolutions())
            _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(resolution.width + "x" + resolution.height));
@@ -96,48 +87,40 @@ public class ScreenSetting : AbstractSettingUI
     private IEnumerator SetScreenCoroutine()
     {
         Screen.SetResolution(_resolution.width, _resolution.height, _screenMode);
-        
         yield return null;
-        
-        int deviceWidth = Screen.width;
-        int deviceHeight = Screen.height;
 
         float targetAspect = (float)_resolution.width / _resolution.height;
-        float deviceAspect = (float)deviceWidth / deviceHeight;
+        float deviceAspect = (float)Screen.width / Screen.height;
 
-        Rect camRect = new Rect(0f, 0f, 1f, 1f);
-
-        if (deviceAspect < targetAspect) 
+        Rect camRect;
+        if (deviceAspect < targetAspect)
         {
             float newHeight = deviceAspect / targetAspect;
             camRect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
         }
-        else 
+        else
         {
             float newWidth = targetAspect / deviceAspect;
             camRect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
         }
 
         foreach (Camera cam in Camera.allCameras)
-        {
             cam.rect = camRect;
-        }
 
-        foreach (CanvasScaler canvasScaler in FindObjectsOfType<CanvasScaler>())
+        foreach (Canvas canvas in FindObjectsOfType<Canvas>())
         {
-            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            canvasScaler.matchWidthOrHeight = 0.5f;
+            if (canvas.transform.parent != null) continue;
+            if (canvas.renderMode != RenderMode.ScreenSpaceOverlay) continue;
+
+            Transform safeArea = canvas.transform.Find("SafeArea");
+            if (safeArea == null) continue;
+
+            RectTransform rt = safeArea.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(camRect.x, camRect.y);
+            rt.anchorMax = new Vector2(camRect.x + camRect.width, camRect.y + camRect.height);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
         }
-        
-    
-        /*if (_root != null)
-        {
-            _root.style.paddingLeft   = new StyleLength(camRect.x * deviceWidth);
-            _root.style.paddingBottom = new StyleLength(camRect.y * deviceHeight);
-            _root.style.paddingRight  = new StyleLength((1f - camRect.width - camRect.x) * deviceWidth);
-            _root.style.paddingTop    = new StyleLength((1f - camRect.height - camRect.y) * deviceHeight);
-        }*/
     }
 
     #region Test

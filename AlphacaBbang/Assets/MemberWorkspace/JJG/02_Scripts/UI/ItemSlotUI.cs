@@ -67,8 +67,13 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void SetSelected(bool selected)
     {
+        // if (_selectedOverlay != null)
+        //     _selectedOverlay.enabled = selected;
+        
         if (_selectedOverlay != null)
+        {
             _selectedOverlay.enabled = selected;
+        }
     }
 
     public void SetItem(Sprite itemSprite)

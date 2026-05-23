@@ -104,7 +104,6 @@ public class InventoryUI : MonoBehaviour
     {
         _selectedSlotIndex = weaponData != null ? _weaponHolder.CurrentSlotIndex : -1;
         UpdateSelectionUI();
-        Debug.Log("Changed");
     }
 
     private void OnThrowingItemChanged(ThrowingItemData throwingData)
@@ -115,8 +114,14 @@ public class InventoryUI : MonoBehaviour
 
     private void UpdateSelectionUI()
     {
+        // for (int i = 0; i < _slotUIList.Count; i++)
+        //     _slotUIList[i].SetSelected(i == _selectedSlotIndex);
+
         for (int i = 0; i < _slotUIList.Count; i++)
+        {
             _slotUIList[i].SetSelected(i == _selectedSlotIndex);
+            //Debug.Log("[InventoryUI] 슬롯 " + i + " 선택 상태: " + (i == _selectedSlotIndex));
+        }
     }
 
     private void Start()

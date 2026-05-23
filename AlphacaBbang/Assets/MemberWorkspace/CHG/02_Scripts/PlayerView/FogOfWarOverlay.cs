@@ -11,7 +11,7 @@ namespace MemberWorkspace.CHG._02_Scripts
         
         [SerializeField, Range(0f, 1f)] private float fogAlpha = 0.85f;
         [SerializeField] private Color fogColor = new Color(0.2f, 0.2f, 0.2f, 1f);
-
+        [SerializeField] private Material floorFogMaterial;
         private MeshFilter _meshFilter;
         private MeshRenderer _renderer;
         private Material _fogMaterial;
@@ -22,7 +22,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             _renderer = GetComponent<MeshRenderer>();
 
             BuildQuadMesh();
-            CreateFogMaterial();
+            _renderer.material = floorFogMaterial;
         }
 
         private void BuildQuadMesh()
@@ -45,13 +45,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             _meshFilter.mesh = mesh;
         }
 
-        private void CreateFogMaterial()
-        {
-            _fogMaterial = new Material(Shader.Find("Custom/FloorFog"));
-            fogColor.a = fogAlpha;
-            _fogMaterial.SetColor("_FogColor", fogColor);
-            _renderer.material = _fogMaterial;
-        }
+        
 
         private void LateUpdate()
         {

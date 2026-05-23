@@ -1,5 +1,6 @@
 ﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts.Systems.ParticleSystems;
+using JJH._02_Scripts.Systems.SoundSystems;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,11 +21,12 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         [SerializeField] private float knockbackForce = 4f;
         [SerializeField] private LayerMask targetLayer;
 
-        [Header("Particle")]
+        [Header("Particle&Sound")]
         [SerializeField] private PoolManagerSO poolManager;
         [SerializeField] private PoolItemSO dashParticlePref;
         [SerializeField] private Transform particleSpawnPos;
         [SerializeField] private float particleSpawnInterval = 0.1f;
+        [SerializeField] private SoundClipSO dashAttackSound;
 
         public bool IsDashing => _isDashing;
 
@@ -134,21 +136,15 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
                 _hitTargets.Add(hit);
 
+                _owner.EnemySoundPlayer.PlaySound(dashAttackSound);
+
                 Vector3 hitPoint = transform.position + Vector3.up;
-
-                float distance = Vector3.Distance(
-                    hitPoint,
-                    hit.transform.position);
-
-                float damage = Mathf.Lerp(
-                    maxDamage,
-                    0f,
-                    distance / range);
+                float distance = Vector3.Distance(hitPoint, hit.transform.position);
+                float damage = Mathf.Lerp(maxDamage, 0f, distance / range);
 
                 hit.GetComponent<IDamageable>()?.TakeDamage(damage);
 
                 Rigidbody rb = hit.attachedRigidbody;
-
                 if (rb != null)
                 {
                     Vector3 dir =

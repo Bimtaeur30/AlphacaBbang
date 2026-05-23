@@ -12,6 +12,7 @@ public class Agent : ModuleOwner, IDamageable
     public IEnemyWeaponModule Weapon { get; private set; }
     public IHealth HealthModule { get; private set; }
     public IAgentArmor Armor { get; private set; }
+    public IAgentSoundPlayer AgentSoundPlayer { get; private set; }
 
     protected override void InitializeComponents()
     {
@@ -22,6 +23,7 @@ public class Agent : ModuleOwner, IDamageable
         Weapon = GetModule<IEnemyWeaponModule>();
         Armor = GetModule<IAgentArmor>();
         HealthModule = GetModule<IHealth>();
+        AgentSoundPlayer = GetModule<IAgentSoundPlayer>();
     }
 
     public virtual void TakeDamage(float damage)

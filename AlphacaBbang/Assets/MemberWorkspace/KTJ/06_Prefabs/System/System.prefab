@@ -273,39 +273,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &703047914372563668
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6207602993930372853}
-  m_Layer: 0
-  m_Name: ReplaySystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &6207602993930372853
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 703047914372563668}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 960.228, y: 726.6767, z: 1.19697}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 257292663246377081}
-  - {fileID: 9052075868678550585}
-  m_Father: {fileID: 6639750255025554996}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &874085830815778667
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,51 +375,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &2001969052137753265
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 257292663246377081}
-  - component: {fileID: 4353970769655846630}
-  m_Layer: 0
-  m_Name: RoutRecorder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &257292663246377081
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2001969052137753265}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6207602993930372853}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4353970769655846630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2001969052137753265}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ad360b511e8095478f39f7235522513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RoutRecorder
-  mapEventChannel: {fileID: 11400000, guid: cf76e4656ba07c8458a4c315058fb2d4, type: 2}
 --- !u!1 &2252429347390697746
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,64 +594,6 @@ MonoBehaviour:
   grenadeFirePos: {fileID: 0}
   agentArmorModule: {fileID: 0}
   <SaveId>k__BackingField: {fileID: 11400000, guid: 41906cb3a7640e7448d3a5578ba5df13, type: 2}
---- !u!1 &3204020694730339511
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9052075868678550585}
-  - component: {fileID: 8298892600979298119}
-  m_Layer: 0
-  m_Name: RoutPlayer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &9052075868678550585
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3204020694730339511}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6207602993930372853}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8298892600979298119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3204020694730339511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26e410a924a3cd44bb7cd7e855981c77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RoutPlayer
-  routRecorder: {fileID: 4353970769655846630}
-  mapEventChannel: {fileID: 11400000, guid: cf76e4656ba07c8458a4c315058fb2d4, type: 2}
-  routLineRenderer: {fileID: 0}
-  recordTimeTxt: {fileID: 0}
-  playButton: {fileID: 0}
-  zoomInButton: {fileID: 0}
-  zoomOutButton: {fileID: 0}
-  logBar: {fileID: 5641303901088305492, guid: ea16c219cd0356b4d98a4ebd32a9b29d, type: 3}
-  logBarParent: {fileID: 0}
-  a: {fileID: 21300000, guid: e096dbabbeed3c442b177dad6babe1b7, type: 3}
-  cam: {fileID: 0}
-  minFov: 30
-  maxFov: 150
-  zoomAmount: 5
 --- !u!1 &3725768622632517039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199,7 +1063,6 @@ Transform:
   - {fileID: 667235574173689217}
   - {fileID: 7308738306751039550}
   - {fileID: 1904145823571959763}
-  - {fileID: 6207602993930372853}
   - {fileID: 8604487455292418472}
   - {fileID: 5997557701988501267}
   - {fileID: 4285609171237764241}

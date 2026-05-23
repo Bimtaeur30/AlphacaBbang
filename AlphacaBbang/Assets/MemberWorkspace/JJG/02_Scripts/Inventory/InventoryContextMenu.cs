@@ -1,4 +1,5 @@
 using System;
+using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
@@ -56,6 +57,7 @@ public class InventoryContextMenu : MonoBehaviour
     [SerializeField] private WeaponHolder weaponHolder;
     [SerializeField] private GrenadeFirePos grenadeFirePos;
     [SerializeField] private QuickSlotHotkeyHandler hotkeyHandler;
+    [SerializeField] private EventChannelSO gunChannel;
 
     [SerializeField] private int xOffset = 50;
 
@@ -199,7 +201,21 @@ public class InventoryContextMenu : MonoBehaviour
         {
             if (weaponData.Gun != null)
             {
-                TryMoveToQuickSlot(itemData, minIndex: 0, maxIndex: 3);
+                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 3);
+                
+                // 기존 퀵슬롯의 다른 무기 제거 이벤트 발송
+                for (int i = 0; i < 3; i++)
+                {
+                    if (i != targetSlotIndex)
+                    {
+                        ItemSlot otherSlot = quickSlotContainer.GetSlot(i);
+                        if (otherSlot != null && otherSlot.ItemData is WeaponItemData)
+                        {
+                            WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+                            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex, false));
+                        }
+                    }
+                }
             }
             else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
             {
@@ -219,6 +235,8 @@ public class InventoryContextMenu : MonoBehaviour
                 Close();
                 return;
             }
+            
+            Debug.Log("Equip Armor");
             
             int targetSlotIndex = -1;
             for (int i = 0; i < equipmentContainer.SlotCount; i++)
@@ -360,8 +378,20 @@ public class InventoryContextMenu : MonoBehaviour
         ItemSlot slot = _container.GetSlot(_slotIndex);
         if (slot == null || slot.IsEmpty || inventoryContainer == null) { Close(); return; }
 
-        if (inventoryContainer.AddItem(slot.ItemData, slot.Amount))
+        ItemData itemData = slot.ItemData;
+        int slotIndex = _slotIndex;
+
+        if (inventoryContainer.AddItem(itemData, slot.Amount))
+        {
             _container.ClearSlot(_slotIndex);
+            
+            // 퀵슬롯에서 무기 제거 시 이벤트 발송
+            if (itemData is WeaponItemData && slotIndex < 2)
+            {
+                WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+            }
+        }
         else
             Debug.LogWarning("인벤토리가 가득 찼습니다.");
 
@@ -370,7 +400,19 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void OnClickDrop()
     {
+        ItemSlot slot = _container.GetSlot(_slotIndex);
+        ItemData itemData = slot?.ItemData;
+        int slotIndex = _slotIndex;
+        
         _container.ClearSlot(_slotIndex);
+        
+        // 퀵슬롯에서 무기 버릴 때 이벤트 발송
+        if (itemData is WeaponItemData && slotIndex < 2)
+        {
+            WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+            gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+        }
+        
         Close();
     }
 }

@@ -283,6 +283,9 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ArmorItemData armorData)
             { 
+                Debug.Log($"agentArmorModule: {agentArmorModule}");
+                Debug.Log($"armorData: {armorData}");
+                Debug.Log($"armorData.Armor: {armorData?.Armor}");
                 agentArmorModule.ArmorEquip(true, armorData.Armor.ArmorType, armorData.Armor);
             }
         }

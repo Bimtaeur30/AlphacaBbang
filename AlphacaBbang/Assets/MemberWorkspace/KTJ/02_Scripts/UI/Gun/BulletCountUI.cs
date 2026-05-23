@@ -18,13 +18,14 @@ public class BulletCountUI : MonoBehaviour
     {
         gunChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
         uiChannel.AddListener<BulletCountHandleEvent>(HandleBulletCountChanged);
+        bulletCountLabel.SetActive(false);
     }
 
     private void HandleWeaponSlotEquipEvent(WeaponSlotEquipEvent @event)
     {
         if (@event.SlotIndex != index) return;
         bulletCountLabel.gameObject.SetActive(@event.IsEquip);
-
+        bulletText.text = "X";
     }
     private void HandleBulletCountChanged(BulletCountHandleEvent @event)
     {

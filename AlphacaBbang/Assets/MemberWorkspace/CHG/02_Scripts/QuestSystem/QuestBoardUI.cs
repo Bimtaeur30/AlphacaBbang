@@ -51,7 +51,6 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
         private void SetContent(QuestData questData)
         {
-            Debug.Log("111");
             _currentQuestId = questData.Id;
             questNameText.text = questData.Name;
             descriptionText.text = questData.Description;
@@ -78,7 +77,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             foreach (string rewardId in questData.RewardIds)
             {
                 Debug.Log(rewardId);
-                if (!itemDatabase.TryGetItem(rewardId, out ItemData item))
+                if (itemDatabase.TryGetItem(rewardId, out ItemData item))
                     rewardString += item.ItemName + ", ";
             }
 

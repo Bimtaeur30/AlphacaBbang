@@ -104,6 +104,7 @@ public class InventoryUI : MonoBehaviour
     {
         _selectedSlotIndex = weaponData != null ? _weaponHolder.CurrentSlotIndex : -1;
         UpdateSelectionUI();
+        Debug.Log("Changed");
     }
 
     private void OnThrowingItemChanged(ThrowingItemData throwingData)

@@ -12,9 +12,11 @@ public static class GunEvents
 public class WeaponEquipEvent : GameEvent // CurrentGun에 장착(1,2번 중 선택)
 {
     public WeaponSlotIndex SlotIndex { get; private set; }
-    public WeaponEquipEvent Init(WeaponSlotIndex index)
+    public bool IsEquip { get; private set; } // true : 장착, false  : 해제
+    public WeaponEquipEvent Init(WeaponSlotIndex index, bool IsEquip = true)
     {
         this.SlotIndex = index;
+        this.IsEquip = IsEquip;
         return this;
     }
 }
@@ -29,10 +31,12 @@ public class WeaponSlotEquipEvent : GameEvent // WeaponSlot에 장착(1,2번 중 선택
 {
     public GameObject Gun { get; private set; }
     public WeaponSlotIndex SlotIndex { get; private set; }
-    public WeaponSlotEquipEvent Init(GameObject gun, WeaponSlotIndex slotIndex)
+    public bool IsEquip { get; private set; } // true : 장착, false  : 해제
+    public WeaponSlotEquipEvent Init(GameObject gun, WeaponSlotIndex slotIndex, bool IsEquip = true)
     {
         Gun = gun;
         SlotIndex = slotIndex;
+        this.IsEquip = IsEquip;
         return this;
     }
 }

@@ -17,6 +17,7 @@ public class PlayerController : Agent
 
     [SerializeField] private float _releaseDuration = 1.1f;
     [SerializeField] private float _shortClickThreshold = 0.65f;
+
     [Reflex.Attributes.Inject] private CursorController _cursorController;
 
     public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
@@ -25,6 +26,7 @@ public class PlayerController : Agent
 
     private PlayerStaminaGaugeSystem _stamina;
     private PlayerStatSystem _stat;
+    private WeaponHandleModule weaponHandleModule;
 
     private Vector2 _movementInput;
     private float _additionalSpeedMultiplier = 1f;
@@ -36,16 +38,18 @@ public class PlayerController : Agent
         get => _aimState;
         set
         {
-            if (_aimState == value) return;
+            if (_aimState == value)
+                return;
 
-            var prev = _aimState;  // ���� ���� ����
-            _aimState = value;     // ���� ����
+            var prev = _aimState;
+            _aimState = value;
 
             switch (value)
             {
                 case PlayerAimState.Aiming:
                     OnStartAiming();
                     break;
+
                 case PlayerAimState.Idle when prev == PlayerAimState.Releasing:
                     OnStopAiming();
                     break;
@@ -70,13 +74,13 @@ public class PlayerController : Agent
     protected override void Awake()
     {
         base.Awake();
+
         _agentMovement = GetComponentInChildren<AgentMovement>();
 
         _stamina = GetComponentInChildren<PlayerStaminaGaugeSystem>();
         _stat = GetComponentInChildren<PlayerStatSystem>();
 
         _aimCollider = base.Renderer.Animator.gameObject.GetComponentInChildren<CapsuleCollider>();
-
         _playerCollider = GetComponent<CapsuleCollider>();
 
         UpdateColliderState();
@@ -96,7 +100,6 @@ public class PlayerController : Agent
             RotateToMovement();
 
         UpdateAnimation();
-        // Debug.Log(_agentMovement.name);
     }
 
     private void HandleAimInput()
@@ -113,11 +116,19 @@ public class PlayerController : Agent
 
             if (AimState == PlayerAimState.Idle)
             {
+                // 스태미나 부족 시 조준 불가
                 if (_stamina != null && !_stamina.CanAim)
                     return;
 
+                // 현재 무기가 없으면 조준 불가
+                if (weaponHandleModule == null ||
+                    weaponHandleModule.CurrentWeapon == null)
+                    return;
+
                 AimState = PlayerAimState.Aiming;
+
                 _agentMovement.SetUseRotation(false);
+
                 UpdateSpeed();
                 UpdateColliderState();
             }
@@ -144,26 +155,31 @@ public class PlayerController : Agent
 
     private void UpdateAimState()
     {
-        if (AimState == PlayerAimState.Releasing)
+        if (AimState != PlayerAimState.Releasing)
+            return;
+
+        if (_releaseTimer <= 0f)
         {
-            if (_releaseTimer <= 0f)
-            {
-                AimState = PlayerAimState.Idle;
-                _agentMovement.SetUseRotation(true);
-                UpdateSpeed();
-                UpdateColliderState();
-                return;
-            }
+            AimState = PlayerAimState.Idle;
 
-            _releaseTimer -= Time.deltaTime;
+            _agentMovement.SetUseRotation(true);
 
-            if (_releaseTimer <= 0f)
-            {
-                AimState = PlayerAimState.Idle;
-                _agentMovement.SetUseRotation(true);
-                UpdateSpeed();
-                UpdateColliderState();
-            }
+            UpdateSpeed();
+            UpdateColliderState();
+
+            return;
+        }
+
+        _releaseTimer -= Time.deltaTime;
+
+        if (_releaseTimer <= 0f)
+        {
+            AimState = PlayerAimState.Idle;
+
+            _agentMovement.SetUseRotation(true);
+
+            UpdateSpeed();
+            UpdateColliderState();
         }
     }
 
@@ -179,6 +195,7 @@ public class PlayerController : Agent
             isSprinting = false;
 
         _stat.SetRunning(isSprinting);
+
         UpdateSpeed();
     }
 
@@ -202,13 +219,16 @@ public class PlayerController : Agent
         float addMultiplier = 1f + (val / 100f);
 
         _additionalSpeedMultiplier *= addMultiplier;
+
         UpdateSpeed();
 
         yield return new WaitForSeconds(time);
 
         _additionalSpeedMultiplier /= addMultiplier;
+
         UpdateSpeed();
     }
+
     private void HandlePlayerMoveSpeed(AddPlayerMoveSpeed evt)
     {
         StartCoroutine(PercentAddPlayerMoveSpeed(evt.val, evt.time));
@@ -231,6 +251,7 @@ public class PlayerController : Agent
             base.Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
 
             _prevYaw = transform.eulerAngles.y;
+
             return;
         }
 
@@ -256,6 +277,7 @@ public class PlayerController : Agent
         else
         {
             UpdateAttackAnimation(input);
+
             _prevYaw = transform.eulerAngles.y;
         }
     }
@@ -266,11 +288,14 @@ public class PlayerController : Agent
         {
             base.Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
             base.Renderer.SetFloat(_attackYParam.ParamHash, 0f, 0.1f, Time.deltaTime);
+
             return;
         }
 
         Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
+
         Vector3 localDir = transform.InverseTransformDirection(worldDir);
+
         localDir.Normalize();
 
         base.Renderer.SetFloat(_attackXParam.ParamHash, localDir.x, 0.1f, Time.deltaTime);
@@ -280,6 +305,7 @@ public class PlayerController : Agent
     private void RotateToMovement()
     {
         Vector3 velocity = _agentMovement.Velocity;
+
         velocity.y = 0;
 
         if (velocity.sqrMagnitude < 0.001f)
@@ -298,15 +324,22 @@ public class PlayerController : Agent
         Vector2 mousePos = CrossHairModule.CHMousePos;
 
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
         Plane plane = new Plane(Vector3.up, transform.position);
+
         if (plane.Raycast(ray, out float enter))
         {
             Vector3 hitPoint = ray.GetPoint(enter);
+
             Vector3 dir = hitPoint - transform.position;
+
             dir.y = 0;
+
             if (dir.sqrMagnitude < 0.001f)
                 return;
+
             Quaternion target = Quaternion.LookRotation(dir);
+
             transform.rotation = Quaternion.Lerp(
                 transform.rotation,
                 target,
@@ -317,15 +350,13 @@ public class PlayerController : Agent
     public void ForceStopAim()
     {
         AimState = PlayerAimState.Releasing;
+
         _releaseTimer = 0f;
 
         _agentMovement.SetUseRotation(true);
 
         UpdateSpeed();
         UpdateColliderState();
-
-        // �� ��⿡�� ���� ���� ����
-        //HandleAimKey(false);
     }
 
     public void RefreshMovementSpeed()
@@ -350,17 +381,23 @@ public class PlayerController : Agent
         PlayerInput.OnSprintAction -= HandleSprint;
     }
 
-    #region �� ���� �ڵ�
-    #region ����ȭ
+    #region 총 관련 코드
+
+    #region 입력
+
     [SerializeField] private PlayerInputSO_KTJ playerInputSO;
+
     #endregion
 
-    #region ���
+    #region 모듈
+
     public PlayerGunHandleModule GunHandleModule { get; private set; }
     public CrossHairModule CrossHairModule { get; private set; }
+
     #endregion
 
-    #region �ۺ� ����
+    #region 글로벌 변수
+
     public Camera MainCam { get; private set; }
     public Vector2 Forward { get; private set; }
 
@@ -375,6 +412,9 @@ public class PlayerController : Agent
 
         CrossHairModule = GetModule<CrossHairModule>();
         Debug.Assert(CrossHairModule != null, "CrossHairModule is null");
+
+        weaponHandleModule = GetModule<WeaponHandleModule>();
+        Debug.Assert(weaponHandleModule != null, "WeaponHandleModule is null");
 
         MainCam = Camera.main;
         Debug.Assert(MainCam != null, "MainCam is null");
@@ -403,7 +443,7 @@ public class PlayerController : Agent
         if (GunHandleModule == null)
             return;
 
-        //GunHandleModule.Aim(isPressed);
+        // GunHandleModule.Aim(isPressed);
     }
 
     private void HandleFireKey(bool isPressed)
@@ -417,12 +457,14 @@ public class PlayerController : Agent
     private void OnStartAiming()
     {
         _cursorController.ChangeCursorMode(CursorMode.Gun);
+
         GunHandleModule.Aim(true);
     }
 
     private void OnStopAiming()
     {
         _cursorController.ChangeCursorMode(CursorMode.Default);
+
         GunHandleModule.Aim(false);
         GunHandleModule.Fire(false);
     }

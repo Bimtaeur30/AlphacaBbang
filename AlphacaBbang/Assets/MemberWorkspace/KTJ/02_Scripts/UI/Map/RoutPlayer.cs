@@ -1,3 +1,4 @@
+using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ public class RoutPlayer : MonoBehaviour
     [SerializeField] private LogBar logBar;
     [SerializeField] private RectTransform logBarParent;
     [SerializeField] private Sprite a;
+    [SerializeField] private CanvasGroup ParentPanel;
 
     [Header("Camera")]
     [SerializeField] private Camera cam;
@@ -62,6 +64,7 @@ public class RoutPlayer : MonoBehaviour
         if (_playCoroutine != null)
             StopAllCoroutines();
 
+        ParentPanel.DOFade(1f, 1f);
         _playCoroutine = StartCoroutine(PlayRout());
     }
 

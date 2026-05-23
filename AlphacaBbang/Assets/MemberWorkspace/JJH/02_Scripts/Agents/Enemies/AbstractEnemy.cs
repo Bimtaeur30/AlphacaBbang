@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
-    public abstract class AbstractEnemy : Agent, IDamageable
+    public abstract class AbstractEnemy : Agent
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
@@ -103,12 +103,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             }
 
             Renderer.Renderer.material.color = _originColor;
-        }
-
-        public override void TakeDamage(float damage)
-        {
-            base.TakeDamage(damage);
-            HealthModule.MinusHealth(damage);
         }
     }
 }

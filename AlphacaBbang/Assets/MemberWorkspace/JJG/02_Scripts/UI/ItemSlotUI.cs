@@ -13,6 +13,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [SerializeField] private Color _hoverColor = new Color(1f, 1f, 1f, 0.15f);
     [Header("Empty Slot")]
     [SerializeField] private Sprite _emptyIcon;
+    [SerializeField] private GameObject _emptyIconObject;
 
     private int _slotIndex;
     private ItemContainer _container;
@@ -58,6 +59,9 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _iconImage.sprite = slot.ItemData.Icon;
         _iconImage.enabled = slot.ItemData.Icon != null;
 
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(false);
+
         if (slot.Amount > 1)
             _amountText.text = slot.Amount.ToString();
         else
@@ -67,17 +71,19 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void ClearSlot()
     {
         _currentSlot = null;
-        // show configured empty icon if available, otherwise hide
-        if (_emptyIcon != null)
+        _iconImage.sprite = null;
+        _iconImage.enabled = false;
+
+        if (_emptyIconObject != null)
+        {
+            _emptyIconObject.SetActive(true);
+        }
+        else if (_emptyIcon != null)
         {
             _iconImage.sprite = _emptyIcon;
             _iconImage.enabled = true;
         }
-        else
-        {
-            _iconImage.sprite = null;
-            _iconImage.enabled = false;
-        }
+
         _amountText.text = "";
     }
 
@@ -86,6 +92,10 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _currentSlot = null;
         _iconImage.sprite = defaultIcon;
         _iconImage.enabled = defaultIcon != null;
+
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(false);
+
         _amountText.text = "";
     }
 
@@ -104,6 +114,9 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         _iconImage.sprite = itemSprite;
         _iconImage.enabled = itemSprite != null;
+
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

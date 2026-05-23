@@ -22,7 +22,7 @@ public class ShotGun : Gun
 
             Debug.DrawRay(origin, direction * rayDistance, Color.red, 0.2f);
 
-            if (Physics.Raycast(origin, direction, out RaycastHit hit, rayDistance, TargetLayer))
+            if (Physics.Raycast(origin, direction, out RaycastHit hit, rayDistance, WeaponHandleModule.TargetLayer))
             {
                 Debug.Log("»§¾ß!");
                 endPoint = hit.point;

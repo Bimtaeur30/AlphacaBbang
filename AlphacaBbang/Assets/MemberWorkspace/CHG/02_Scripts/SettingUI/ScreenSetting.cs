@@ -87,23 +87,18 @@ public class ScreenSetting : AbstractSettingUI
     private IEnumerator SetScreenCoroutine()
     {
         Screen.SetResolution(_resolution.width, _resolution.height, _screenMode);
-        
         yield return null;
-        
-        int deviceWidth = Screen.width;
-        int deviceHeight = Screen.height;
 
         float targetAspect = (float)_resolution.width / _resolution.height;
-        float deviceAspect = (float)deviceWidth / deviceHeight;
+        float deviceAspect = (float)Screen.width / Screen.height;
 
-        Rect camRect = new Rect(0f, 0f, 1f, 1f);
-
-        if (deviceAspect < targetAspect) 
+        Rect camRect;
+        if (deviceAspect < targetAspect)
         {
             float newHeight = deviceAspect / targetAspect;
             camRect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight);
         }
-        else 
+        else
         {
             float newWidth = targetAspect / deviceAspect;
             camRect = new Rect((1f - newWidth) / 2f, 0f, newWidth, 1f);
@@ -114,20 +109,17 @@ public class ScreenSetting : AbstractSettingUI
 
         foreach (Canvas canvas in FindObjectsOfType<Canvas>())
         {
-            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-            {
-                int sw = Screen.width;
-                int sh = Screen.height;
+            if (canvas.transform.parent != null) continue;
+            if (canvas.renderMode != RenderMode.ScreenSpaceOverlay) continue;
 
-                float padLeft   = camRect.x * sw;
-                float padBottom = camRect.y * sh;
-                float padRight  = (1f - camRect.xMax) * sw;
-                float padTop    = (1f - camRect.yMax) * sh;
+            Transform safeArea = canvas.transform.Find("SafeArea");
+            if (safeArea == null) continue;
 
-                RectTransform rt = canvas.GetComponent<RectTransform>();
-                rt.offsetMin = new Vector2(padLeft, padBottom);
-                rt.offsetMax = new Vector2(-padRight, -padTop);
-            }
+            RectTransform rt = safeArea.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(camRect.x, camRect.y);
+            rt.anchorMax = new Vector2(camRect.x + camRect.width, camRect.y + camRect.height);
+            rt.offsetMin = Vector2.zero;
+            rt.offsetMax = Vector2.zero;
         }
     }
 

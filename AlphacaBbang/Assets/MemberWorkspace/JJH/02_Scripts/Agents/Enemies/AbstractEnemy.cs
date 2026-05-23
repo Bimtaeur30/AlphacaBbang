@@ -19,7 +19,6 @@ namespace JJH._02_Scripts.Agents.Enemies
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
         public INavMeshAgent EnemyNavMeshAgent { get; private set; }
-        public IEnemySoundPlayer EnemySoundPlayer { get; private set; }
 
         private BehaviorGraphAgent _btAgent;
         public BlackboardVariable<StateChannel> StateChannel => _stateChannel;
@@ -53,7 +52,6 @@ namespace JJH._02_Scripts.Agents.Enemies
             EnemyNavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<IEnemySkillModule>();
             EnemyInterface = GetModule<IEnemyInterface>();
-            EnemySoundPlayer = GetModule<IEnemySoundPlayer>();
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
 

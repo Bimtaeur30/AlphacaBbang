@@ -1,11 +1,12 @@
-﻿using JJH._02_Scripts.Systems.EventSystems;
+﻿using JJH._02_Scripts.Agents.Enemies;
+using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
-namespace JJH._02_Scripts.Agents.Enemies
+namespace JJH._02_Scripts.Agents
 {
-    public class EnemySoundPlayerModule : MonoBehaviour, IModule, IEnemySoundPlayer
+    public class AgentSoundPlayerModule : MonoBehaviour, IModule, IAgentSoundPlayer
     {
         [SerializeField] private EventChannelSO soundChannel;
 

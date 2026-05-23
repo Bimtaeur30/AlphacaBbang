@@ -1,3 +1,4 @@
+using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,6 +6,7 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 {
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
+    [SerializeField] private EventChannelSO systemChannel;
 
     public float MaxHealth = 100f; 
     public float CurrentHealth { get; private set; }
@@ -61,6 +63,7 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     private void Die()
     {
         Debug.Log("플레이어 사망");
+        systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
     }
     public void SetRunning(bool isRunning)
     {
@@ -97,5 +100,11 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     public bool CanRun()
     {
         return CurrentStamina > 0f;
+    }
+
+    [ContextMenu("테스트로 죽이기")]
+    private void TEST()
+    {
+        TakeDamage(10000000);
     }
 }

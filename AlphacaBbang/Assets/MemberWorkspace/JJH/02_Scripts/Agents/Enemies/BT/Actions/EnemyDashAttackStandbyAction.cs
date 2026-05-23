@@ -1,3 +1,4 @@
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -20,7 +21,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             if (Time.Value < 0 || Enemy.Value == null)
                 return Status.Failure;
 
-            Enemy.Value.DashAttackStandBy();
+            Enemy.Value.EnemySkill.UseSkill<EnemyDashAttackStandBySkill>();
 
             return Status.Running;
         }

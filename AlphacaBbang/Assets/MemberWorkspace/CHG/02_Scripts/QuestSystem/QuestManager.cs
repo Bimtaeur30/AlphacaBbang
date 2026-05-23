@@ -10,18 +10,18 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     {
         
         //in game all quest
-        public Dictionary<string, QuestData> MainQuests = new Dictionary<string, QuestData>();
-        public Dictionary<string, QuestData> SubQuests = new Dictionary<string, QuestData>();
+        private Dictionary<string, QuestData> _mainQuests = new Dictionary<string, QuestData>();
+        private Dictionary<string, QuestData> _subQuests = new Dictionary<string, QuestData>();
         
         public event Action<Quest> OnQuestAccepted;
         public event Action<Quest> OnUpdateQuestProgress;
-        
+        public event Action<Quest> OnQuestCompleted;
         // now active/completed quest
         private List<Quest> _activeQuests = new List<Quest>();
         private List<string> _completedQuestIds = new List<string>();
         
         
-        public string SavePath => Application.persistentDataPath + "/QuestsSave.json";
+        private string _savePath => Application.persistentDataPath + "/QuestsSave.json";
 
         protected override void Awake()
         {
@@ -36,12 +36,12 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             {
                 var data = JsonUtility.FromJson<QuestData>(file.text);
                 if (data.Importance == QuestImportanceType.Main)
-                    MainQuests[data.Id] = data;
+                    _mainQuests[data.Id] = data;
                 else if (data.Importance == QuestImportanceType.Sub)
-                    SubQuests[data.Id] = data;
+                    _subQuests[data.Id] = data;
             }
 
-            foreach (var v in MainQuests)
+            foreach (var v in _mainQuests)
             {
                 Debug.Log(v.Key + " : " + v.Value);
             }
@@ -66,20 +66,20 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                 CompletedQuestIds = _completedQuestIds
             };
             
-            File.WriteAllText(SavePath, JsonUtility.ToJson(save, true));
+            File.WriteAllText(_savePath, JsonUtility.ToJson(save, true));
         }
 
         public void LoadSaveData()
         {
-            if (!File.Exists(SavePath)) return; 
+            if (!File.Exists(_savePath)) return; 
             
-            QuestSaveData save = JsonUtility.FromJson<QuestSaveData>(File.ReadAllText(SavePath)); 
+            QuestSaveData save = JsonUtility.FromJson<QuestSaveData>(File.ReadAllText(_savePath)); 
             _completedQuestIds = save.CompletedQuestIds ?? new List<string>();
 
             foreach (var quest in save.ActiveQuests)
             {
                 if(!TryGetQuestData(quest.QuestId,out QuestData data))
-                    return;
+                    continue;   
                 
                 _activeQuests.Add(new Quest(data, quest));
             }
@@ -113,12 +113,12 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public void QuestProgressUpdate(string targetId, int value)
         {
             foreach (Quest quest in _activeQuests)
-            foreach (QuestCondition condition in quest.Conditions)
-                if (condition.TargetId == targetId)
-                {
-                    condition.Progress += value;
-                    OnUpdateQuestProgress?.Invoke(quest);
-                }
+                foreach (QuestCondition condition in quest.Conditions)
+                    if (condition.TargetId == targetId)
+                    {
+                        condition.Progress += value;
+                        OnUpdateQuestProgress?.Invoke(quest);
+                    }
         }
         
         public bool IsCompleted(string questId)
@@ -126,13 +126,13 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 
         public bool TryGetQuestData(string questId, out QuestData quest)
         {
-            if (MainQuests.TryGetValue(questId, out var main))
+            if (_mainQuests.TryGetValue(questId, out var main))
             {
                 quest = main;
                 return true;
             }
 
-            if (SubQuests.TryGetValue(questId, out var sub))
+            if (_subQuests.TryGetValue(questId, out var sub))
             {
                 quest = sub;
                 return true;
@@ -141,6 +141,22 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             return false;
         }
 
+        public void CompleteQuest(Quest quest)
+        {
+            if (!_activeQuests.Contains(quest)) return;
+            
+            _activeQuests.Remove(quest);
+            _completedQuestIds.Add(quest.Data.Id);
+            OnQuestCompleted?.Invoke(quest);
+            if (quest.Data.RewardIds != null && quest.Data.RewardIds.Count > 0)
+            {
+                foreach (var rewardId in quest.Data.RewardIds)
+                {
+                    // 보상 지급
+                }
+            }
+        }
+        
 #region QuestDataUpdateTest
 
         [ContextMenu("AcceptQuestTest")]
@@ -150,7 +166,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             QuestAccept("quest_001");
         }
 
-        [ContextMenu("EnemyKillTest")]
+        /*[ContextMenu("EnemyKillTest")]
         private void QuestProgressUpdate()
         {
             foreach (Quest quest in _activeQuests)
@@ -160,10 +176,12 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                         condition.Progress++;
                         OnUpdateQuestProgress?.Invoke(quest);
                     }
-        }
+        }*/
         
         
 
 #endregion
+
+
     }
 }

@@ -7,89 +7,50 @@ using UnityEngine.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 { 
-    public struct QuestUIStruct
-    {
-        public GameObject Panel;
-        public  TextMeshProUGUI NameText;
-        public List<TextMeshProUGUI> ConditionTexts;
-
-        public QuestUIStruct(GameObject panel, TextMeshProUGUI nameText, List<TextMeshProUGUI> conditionTexts)
-        {
-            Panel = panel;
-            NameText = nameText;
-            ConditionTexts = conditionTexts;
-        }
-    }
-
     public class ActiveQuestUIManager : MonoBehaviour
     {
-        [SerializeField] private GameObject layOutGroup;
+        [SerializeField] private GameObject layoutGroup;
         [SerializeField] private GameObject questPanelPrefab;
-        [SerializeField] private GameObject conditionTextPrefab;
 
-        private Dictionary<Quest, QuestUIStruct> _activeQuests = new();
+        private Dictionary<Quest, QuestPanelUI> _activePanels = new();
 
         private void Awake()
         {
-            QuestManager.Instance.OnQuestAccepted += AcceptQuest;
-            QuestManager.Instance.OnUpdateQuestProgress += UpdateEnemyKillProgress;
+            QuestManager.Instance.OnQuestAccepted += OnQuestAccepted;
+            QuestManager.Instance.OnUpdateQuestProgress += OnUpdateQuestProgress;
+            QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
         }
 
-        private void AcceptQuest(Quest quest)
+        private void OnQuestCompleted(Quest quest)
         {
-            GameObject panel = Instantiate(questPanelPrefab, layOutGroup.transform);
-            StartCoroutine(LayoutRebuild());
+            if (!_activePanels.TryGetValue(quest, out QuestPanelUI panelUI)) return;
+    
+            _activePanels.Remove(quest);
             
-            TextMeshProUGUI nameText = panel.GetComponentInChildren<TextMeshProUGUI>();
-            nameText.text = quest.Data.Name;
-            
-
-            List<TextMeshProUGUI> conditionTexts = new List<TextMeshProUGUI>();
-            foreach (QuestCondition condition in quest.Conditions)
-            {
-                GameObject condObj = Instantiate(conditionTextPrefab, panel.transform);
-                TextMeshProUGUI condText = condObj.GetComponent<TextMeshProUGUI>();
-                condText.text = $"{condition.TargetId}: {condition.Progress} / {condition.Required}";
-                conditionTexts.Add(condText);
-            }
-
-            _activeQuests.Add(quest, new QuestUIStruct(panel, nameText, conditionTexts));
         }
 
-        private IEnumerator LayoutRebuild()
+        private void OnQuestAccepted(Quest quest)
         {
-            yield return null;
-            LayoutRebuilder.ForceRebuildLayoutImmediate(layOutGroup.GetComponent<RectTransform>());
+            GameObject panel = Instantiate(questPanelPrefab, layoutGroup.transform);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(panel.GetComponent<RectTransform>());
+            QuestPanelUI panelUI = panel.GetComponent<QuestPanelUI>();
+            Debug.Log($"{panelUI == null} +  :  + {quest == null}");
+            panelUI.Initialize(quest);
+            panelUI.OnClaimed += OnPanelClaimed;
+            _activePanels.Add(quest, panelUI);
+            
         }
 
-
-        private void UpdateEnemyKillProgress(Quest quest)
+        private void OnPanelClaimed(Quest obj)
         {
-            QuestUIStruct questUIs = _activeQuests[quest];
+            _activePanels.Remove(obj);
+        }
 
-            for (int i = 0; i < quest.Conditions.Count; i++)
-            {
-                QuestCondition condition = quest.Conditions[i];
-                questUIs.ConditionTexts[i].text = $"{condition.TargetId}: {condition.Progress} / {condition.Required}";
-
-                if (condition.Progress >= condition.Required)
-                    questUIs.ConditionTexts[i].color = Color.green;
-            }
-            
-            if (quest.IsCompleted)
-                questUIs.NameText.color = Color.green;
+        private void OnUpdateQuestProgress(Quest quest)
+        {
+            if (_activePanels.TryGetValue(quest, out QuestPanelUI panelUI))
+                panelUI.UpdateProgress();
         }
         
-        
-        private static string QuestConditionString(Quest quest)
-        {
-            string questConditionString = "";
-            foreach (QuestCondition condition in quest.Conditions)
-            {
-                questConditionString += $"{condition.TargetId}: {condition.Progress} / {condition.Required}\n";
-            }
-
-            return questConditionString;
-        }
     }
 }

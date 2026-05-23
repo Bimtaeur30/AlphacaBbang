@@ -72,9 +72,11 @@ public class Magazine : MonoBehaviour
         if (_loading)
             return false;
 
-        int inventoryBulletCount = inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
-        if (_gun.WeaponHandleModule.IsBulletInfinity())
+        int inventoryBulletCount = 0;
+        if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
+        else
+            inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
@@ -91,8 +93,11 @@ public class Magazine : MonoBehaviour
         }
 
         int reloadBulletCount = Mathf.Min(emptySpace, inventoryBulletCount);
-        for (int i = 0; i < reloadBulletCount; i++)
-            inventoryContainer.UseItem(emptySpace, null);
+        if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
+        {
+            for (int i = 0; i < reloadBulletCount; i++)
+                inventoryContainer.UseItem(emptySpace, null);
+        }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
         return true;

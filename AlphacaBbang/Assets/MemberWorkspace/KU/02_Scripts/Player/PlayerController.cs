@@ -1,6 +1,4 @@
 using JJH._02_Scripts_Systems.AnimationSystems;
-using JJH._02_Scripts_Systems.EventSystems;
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -24,6 +22,7 @@ public class PlayerController : Agent
 
     private AgentMovement _agentMovement;
 
+    private PlayerSaveData _saveData;
     private PlayerStaminaGaugeSystem _stamina;
     private PlayerStatSystem _stat;
     private WeaponHandleModule weaponHandleModule;
@@ -84,6 +83,9 @@ public class PlayerController : Agent
         _playerCollider = GetComponent<CapsuleCollider>();
 
         UpdateColliderState();
+
+        _saveData = GetComponent<PlayerSaveData>();
+        HealthModule.InitHealth(_saveData.MaxHealth);
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;

@@ -26,5 +26,6 @@ public class Agent : ModuleOwner, IDamageable
 
     public virtual void TakeDamage(float damage)
     {
+        HealthModule.MinusHealth(damage);
     }
 }

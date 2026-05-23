@@ -16,6 +16,9 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             foreach (EnemySpawnPoint spawnPoint in spawnPoints)
             {
+                if (Random.value > spawnPoint.SpawnPercent / 100f)
+                    continue;
+
                 if (spawnPoint.EnemyPrefabs == null || spawnPoint.EnemyPrefabs.Length == 0)
                 {
                     Debug.LogWarning($"{spawnPoint.name}에 EnemyPrefabs가 없습니다.");

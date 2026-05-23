@@ -73,7 +73,7 @@ public class Magazine : MonoBehaviour
             return false;
 
         int inventoryBulletCount = 0;
-        if (_gun.WeaponHandleModule.IsBulletInfinity())
+        if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
             inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
@@ -93,8 +93,11 @@ public class Magazine : MonoBehaviour
         }
 
         int reloadBulletCount = Mathf.Min(emptySpace, inventoryBulletCount);
-        for (int i = 0; i < reloadBulletCount; i++)
-            inventoryContainer.UseItem(emptySpace, null);
+        if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
+        {
+            for (int i = 0; i < reloadBulletCount; i++)
+                inventoryContainer.UseItem(emptySpace, null);
+        }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
         return true;

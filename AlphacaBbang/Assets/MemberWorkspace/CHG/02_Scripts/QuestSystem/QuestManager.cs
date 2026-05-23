@@ -148,7 +148,13 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             _activeQuests.Remove(quest);
             _completedQuestIds.Add(quest.Data.Id);
             OnQuestCompleted?.Invoke(quest);
-            //보상 지급 
+            if (quest.Data.RewardIds != null && quest.Data.RewardIds.Count > 0)
+            {
+                foreach (var rewardId in quest.Data.RewardIds)
+                {
+                    // 보상 지급
+                }
+            }
         }
         
 #region QuestDataUpdateTest

@@ -10,7 +10,6 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     {
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private GameObject conditionTextPrefab;
-        [SerializeField] private Transform conditionLayout;
         [SerializeField] private Button rewardButton;
 
         public event Action<Quest> OnClaimed;
@@ -27,7 +26,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             
             foreach (QuestCondition condition in quest.Conditions)
             {
-                GameObject obj = Instantiate(conditionTextPrefab, conditionLayout);
+                GameObject obj = Instantiate(conditionTextPrefab, transform);
                 TextMeshProUGUI text = obj.GetComponent<TextMeshProUGUI>();
                 text.text = $"{condition.TargetId}: {condition.Progress} / {condition.Required}";
                 _conditionTexts.Add(text);

@@ -11,13 +11,11 @@ public class BulletCountHandleEvent : GameEvent
 {
     public WeaponSlotIndex Slot { get; private set; }
     public string Text { get; private set; }
-    public bool Show { get; private set; }
 
-    public BulletCountHandleEvent Init(WeaponSlotIndex slot, string text, bool show)
+    public BulletCountHandleEvent Init(WeaponSlotIndex slot, string text)
     {
         Slot = slot;
         Text = text;
-        Show = show;
         return this;
     }
 }

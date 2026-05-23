@@ -98,6 +98,10 @@ public class InventoryContextMenu : MonoBehaviour
         if (slot == null || slot.IsEmpty) return;
 
         bool isEquipItem = slot.ItemData.EquipType != EquipType.None;
+        bool ignoreEquipFiltering = container is LootBoxContainer || container.ContainerType == ContainerType.Storage;
+        if (ignoreEquipFiltering)
+            isEquipItem = false;
+
         if (isEquipItem != _handleEquipmentItems) return;
 
         _openHandled = true;

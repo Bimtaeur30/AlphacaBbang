@@ -26,7 +26,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
             _lastUseTime = Time.time;
 
-            Enemy.Value.DashAttack();
+            Enemy.Value.EnemySkill.UseSkill<EnemyDashAttackSkill>();
 
             return Status.Running;
         }

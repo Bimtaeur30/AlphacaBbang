@@ -1,15 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MemberWorkspace.CHG._02_Scripts.SettingUI;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-//[RequireComponent(typeof(UIDocument))]
 public class ScreenSetting : AbstractSettingUI
 {
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
@@ -17,13 +12,9 @@ public class ScreenSetting : AbstractSettingUI
     private Resolution _resolution;
     private FullScreenMode _screenMode;
     
-    //private UIDocument _document;
-    //private VisualElement _root;
     
     public override void Awake()
     {
-        //_document = GetComponent<UIDocument>();
-       // _root = _document.rootVisualElement;
         _resolutionDropdown.options.Clear();
        foreach (Resolution resolution in GetResolutions())
            _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData(resolution.width + "x" + resolution.height));
@@ -119,25 +110,25 @@ public class ScreenSetting : AbstractSettingUI
         }
 
         foreach (Camera cam in Camera.allCameras)
-        {
             cam.rect = camRect;
-        }
 
-        foreach (CanvasScaler canvasScaler in FindObjectsOfType<CanvasScaler>())
+        foreach (Canvas canvas in FindObjectsOfType<Canvas>())
         {
-            canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            canvasScaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
-            canvasScaler.matchWidthOrHeight = 0.5f;
+            if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                int sw = Screen.width;
+                int sh = Screen.height;
+
+                float padLeft   = camRect.x * sw;
+                float padBottom = camRect.y * sh;
+                float padRight  = (1f - camRect.xMax) * sw;
+                float padTop    = (1f - camRect.yMax) * sh;
+
+                RectTransform rt = canvas.GetComponent<RectTransform>();
+                rt.offsetMin = new Vector2(padLeft, padBottom);
+                rt.offsetMax = new Vector2(-padRight, -padTop);
+            }
         }
-        
-    
-        /*if (_root != null)
-        {
-            _root.style.paddingLeft   = new StyleLength(camRect.x * deviceWidth);
-            _root.style.paddingBottom = new StyleLength(camRect.y * deviceHeight);
-            _root.style.paddingRight  = new StyleLength((1f - camRect.width - camRect.x) * deviceWidth);
-            _root.style.paddingTop    = new StyleLength((1f - camRect.height - camRect.y) * deviceHeight);
-        }*/
     }
 
     #region Test

@@ -212,7 +212,7 @@ public class InventoryContextMenu : MonoBehaviour
                         if (otherSlot != null && otherSlot.ItemData is WeaponItemData)
                         {
                             WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-                            //gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex, false));
+                            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex, false));
                         }
                     }
                 }
@@ -387,7 +387,7 @@ public class InventoryContextMenu : MonoBehaviour
             if (itemData is WeaponItemData && slotIndex < 2)
             {
                 WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-                //gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
             }
         }
         else
@@ -408,7 +408,7 @@ public class InventoryContextMenu : MonoBehaviour
         if (itemData is WeaponItemData && slotIndex < 2)
         {
             WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-            //gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+            gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
         }
         
         Close();

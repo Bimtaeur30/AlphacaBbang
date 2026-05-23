@@ -9,11 +9,13 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     [Header("Gun")]
     [SerializeField] private IWeapon firstSlotGun;
     [SerializeField] private IWeapon secondSlotGun;
+    private WeaponSlotIndex currentGunIndex;
     //[SerializeField] private Gun TEST_GUN1;
     //[SerializeField] private Gun TEST_GUN2;
 
     [Header("System")]
     [SerializeField] private EventChannelSO gunChannel;
+    [SerializeField] private EventChannelSO uiChannel;
 
     public PlayerController PlayerController { get; private set; }
 
@@ -59,10 +61,12 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
             case WeaponSlotIndex.First:
                 if (firstSlotGun == null) return;
                 SetCurrentGun(firstSlotGun);
+                currentGunIndex = WeaponSlotIndex.First;
                 break;
             case WeaponSlotIndex.Second:
                 if (secondSlotGun == null) return;
                 SetCurrentGun(secondSlotGun);
+                currentGunIndex = WeaponSlotIndex.Second;
                 break;
         }
     }
@@ -105,5 +109,10 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     protected override bool CanFire()
     {
         return PlayerController.IsPureAiming;
+    }
+
+    public override void OnCurrentBulletChanged(string current, string max)
+    {
+        uiChannel.RaiseEvent(UIEvents.BulletCountHandleEvent.Init(currentGunIndex, (current + "/" + max), true));
     }
 }

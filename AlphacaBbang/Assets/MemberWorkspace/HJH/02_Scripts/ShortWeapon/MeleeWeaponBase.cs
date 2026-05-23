@@ -1,13 +1,12 @@
 using JJH._02_Scripts.Weapons;
-using JJH._02_Scripts_Systems.AnimationSystems;
 using UnityEngine;
 
-public abstract class 
-    MeleeWeaponBase : MonoBehaviour,IWeapon
+public abstract class
+    MeleeWeaponBase : WeaponBase, IWeapon
 {
     public CharacterState characterState;
 
-    [field:SerializeField]public GunDataSO WeaponData { get; private set; }
+    [field: SerializeField] public GunDataSO WeaponData { get; private set; }
     [SerializeField] protected ShortWeaponSO[] data;
     protected IRenderer characterRenderer;
     protected int currentLevel = 0;

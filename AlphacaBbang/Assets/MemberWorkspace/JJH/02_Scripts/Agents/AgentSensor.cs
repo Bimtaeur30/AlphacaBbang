@@ -51,12 +51,19 @@ namespace JJH._02_Scripts.Agents
                 return false;
 
             if (target != null)
+                return !Physics.Raycast(startPosition, direction, distance, ObstacleLayer);
+            else
             {
-                if (Physics.Raycast(startPosition, direction, distance, ObstacleLayer))
-                    return false;
-            }
+                Collider hit = Physics.OverlapSphere(startPosition, distance, TargetLayer).FirstOrDefault();
+                if (hit == null) return
+                        false;
 
-            return true;
+                Vector3 toTarget = (hit.transform.position - startPosition).normalized;
+                if (Vector3.Angle(_owner.transform.forward, toTarget) > viewAngle * 0.5f)
+                    return false;
+
+                return !Physics.Raycast(startPosition, toTarget, Vector3.Distance(startPosition, hit.transform.position), ObstacleLayer);
+            }
         }
 
         public bool CheckAgentInSmoke()

@@ -47,7 +47,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             if (_quest.IsCompleted)
             {
                 nameText.color = Color.green;
-                rewardButton.interactable = true;  // 완료 시 버튼 활성화
+                rewardButton.interactable = true;  
             }
         }
 

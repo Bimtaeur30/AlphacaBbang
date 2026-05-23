@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,20 +12,23 @@ public class SlidePanelController : MonoBehaviour
 {
     public enum SlideDirection { Left, Right, Up, Down }
 
-    [Header("½½¶óÀÌµå ¼³Á¤")]
+    public event Action OnEndMoving;
+
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private SlideDirection slideDirection = SlideDirection.Left;
     [SerializeField] private float slideDuration = 0.4f;
     [SerializeField] private Ease easeOut = Ease.InOutCubic;
     [SerializeField] private Ease easeIn = Ease.InOutCubic;
+    [SerializeField] private bool isHidden = false;
 
-    [Header("¿ÀÇÁ¼Â")]
-    [Tooltip("È­¸é Å×µÎ¸®·ÎºÎÅÍ µé¾î¿Ã ¶§ÀÇ ¸ØÃã °Å¸® (¾ç¼ö = Å×µÎ¸®¿¡¼­ ´õ ¾ÈÂÊ¿¡ ¸ØÃã, À½¼ö = Å×µÎ¸® ¹Û¿¡ °ÉÄ¡°Ô)")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")]
+    [Tooltip("È­ï¿½ï¿½ ï¿½×µÎ¸ï¿½ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ (ï¿½ï¿½ï¿½ = ï¿½×µÎ¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ = ï¿½×µÎ¸ï¿½ ï¿½Û¿ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½)")]
     [SerializeField] private float edgeOffset = 0f;
 
-    [Header("°íÁ¤ Ãà ¼³Á¤")]
-    [Tooltip("Ã¼Å©ÇÏ¸é °íÁ¤ Ãà °ªÀ» ¾Æ·¡ ¼öµ¿ ÀÔ·Â°ªÀ¸·Î »ç¿ë. Ã¼Å© ÇØÁ¦ ½Ã ·±Å¸ÀÓ¿¡ ÀÚµ¿À¸·Î ÀÐÀ½")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
+    [Tooltip("Ã¼Å©ï¿½Ï¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½. Ã¼Å© ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½Ó¿ï¿½ ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     [SerializeField] private bool overrideFixedAxis = false;
-    [Tooltip("XÃà ÀÌµ¿ ½Ã Y °íÁ¤°ª / YÃà ÀÌµ¿ ½Ã X °íÁ¤°ª (overrideFixedAxis Ã¼Å© ½Ã »ç¿ë)")]
+    [Tooltip("Xï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ Y ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ / Yï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ X ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (overrideFixedAxis Ã¼Å© ï¿½ï¿½ ï¿½ï¿½ï¿½)")]
     [SerializeField] private float fixedAxisOverrideValue = 0f;
 
     private RectTransform _rectTransform;
@@ -34,11 +38,10 @@ public class SlidePanelController : MonoBehaviour
     private float _fixedAxisValue;
     private float _hiddenAxisValue;
 
-    private bool _isHidden = false;
     private bool _initialized = false;
     private Tweener _currentTween;
 
-    // ¿¡µðÅÍ¿¡¼­ ÂüÁ¶ÇÒ ¼ö ÀÖµµ·Ï publicÀ¸·Î ³ëÃâ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Í¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ publicï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public bool IsXAxis => slideDirection == SlideDirection.Left || slideDirection == SlideDirection.Right;
 
     private void Awake()
@@ -66,8 +69,8 @@ public class SlidePanelController : MonoBehaviour
 
         _visibleAxisValue = (IsXAxis ? initialPos.x : initialPos.y) + GetOffsetForDirection();
 
-        _rectTransform.anchoredPosition = VisiblePosition;
         CalculateHiddenAxisValue();
+        _rectTransform.anchoredPosition = isHidden ? HiddenPosition : VisiblePosition;
     }
 
     private float GetOffsetForDirection()
@@ -140,13 +143,13 @@ public class SlidePanelController : MonoBehaviour
         ? new Vector2(_hiddenAxisValue, _fixedAxisValue)
         : new Vector2(_fixedAxisValue, _hiddenAxisValue);
 
-    // ¦¡¦¡ Public API ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // ï¿½ï¿½ï¿½ï¿½ Public API ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     public void SlideOut()
     {
         if (!_initialized) Initialize();
-        if (_isHidden) return;
-        _isHidden = true;
+        if (isHidden) return;
+        isHidden = true;
         CalculateHiddenAxisValue();
         PlayTween(HiddenPosition, easeOut);
     }
@@ -154,12 +157,12 @@ public class SlidePanelController : MonoBehaviour
     public void SlideIn()
     {
         if (!_initialized) Initialize();
-        if (!_isHidden) return;
-        _isHidden = false;
+        if (!isHidden) return;
+        isHidden = false;
         PlayTween(VisiblePosition, easeIn);
     }
 
-    public void Toggle() { if (_isHidden) SlideIn(); else SlideOut(); }
+    public void Toggle() { if (isHidden) SlideIn(); else SlideOut(); }
 
     private void PlayTween(Vector2 target, Ease ease)
     {
@@ -167,13 +170,14 @@ public class SlidePanelController : MonoBehaviour
         _currentTween = _rectTransform
             .DOAnchorPos(target, slideDuration)
             .SetEase(ease)
-            .SetUpdate(true);
+            .SetUpdate(true)
+            .OnComplete(() => OnEndMoving?.Invoke());
     }
 
     private void OnDestroy() => _currentTween?.Kill();
 }
 
-// ¦¡¦¡ Ä¿½ºÅÒ ÀÎ½ºÆåÅÍ ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+// ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #if UNITY_EDITOR
 [CustomEditor(typeof(SlidePanelController))]
 public class SlidePanelControllerEditor : Editor
@@ -191,11 +195,11 @@ public class SlidePanelControllerEditor : Editor
     {
         serializedObject.Update();
 
-        // °íÁ¤ Ãà ¼³Á¤ ÇÊµå Á¦¿ÜÇÏ°í ±âº» ÀÎ½ºÆåÅÍ ±×¸®±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½âº» ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½
         DrawPropertiesExcluding(serializedObject, "overrideFixedAxis", "fixedAxisOverrideValue");
 
         EditorGUILayout.Space(4);
-        EditorGUILayout.LabelField("°íÁ¤ Ãà ¼³Á¤", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(_overrideFixedAxis, new GUIContent("Override Fixed Axis"));
 
         EditorGUI.BeginDisabledGroup(!_overrideFixedAxis.boolValue);
@@ -204,7 +208,7 @@ public class SlidePanelControllerEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
 
-        // ÇÃ·¹ÀÌ Áß ÇöÀç °ª ÈùÆ®
+        // ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ®
         if (Application.isPlaying)
         {
             var ctrl = (SlidePanelController)target;
@@ -212,13 +216,13 @@ public class SlidePanelControllerEditor : Editor
             float hint = ctrl.IsXAxis ? rt.anchoredPosition.y : rt.anchoredPosition.x;
             string axis = ctrl.IsXAxis ? "Y" : "X";
             EditorGUILayout.HelpBox(
-                $"ÇöÀç anchoredPosition: {rt.anchoredPosition}\n" +
-                $"°íÁ¤ Ãà({axis})¿¡ ³ÖÀ» °ª: {hint}",
+                $"ï¿½ï¿½ï¿½ï¿½ anchoredPosition: {rt.anchoredPosition}\n" +
+                $"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½({axis})ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½: {hint}",
                 MessageType.Info);
         }
 
         EditorGUILayout.Space(8);
-        EditorGUILayout.LabelField("Å×½ºÆ® (ÇÃ·¹ÀÌ ¸ðµå Àü¿ë)", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("ï¿½×½ï¿½Æ® (ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)", EditorStyles.boldLabel);
 
         EditorGUI.BeginDisabledGroup(!Application.isPlaying);
         EditorGUILayout.BeginHorizontal();
@@ -230,7 +234,7 @@ public class SlidePanelControllerEditor : Editor
         EditorGUI.EndDisabledGroup();
 
         if (!Application.isPlaying)
-            EditorGUILayout.HelpBox("ÇÃ·¹ÀÌ ¸ðµå¿¡¼­¸¸ Å×½ºÆ®ÇÒ ¼ö ÀÖ½À´Ï´Ù.", MessageType.Info);
+            EditorGUILayout.HelpBox("ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.", MessageType.Info);
     }
 }
 #endif

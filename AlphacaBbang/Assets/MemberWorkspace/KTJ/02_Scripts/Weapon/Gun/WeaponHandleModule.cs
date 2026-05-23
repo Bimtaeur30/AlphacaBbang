@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 
 public class WeaponHandleModule : MonoBehaviour, IModule
 {
@@ -85,4 +86,6 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     {
         return false;
     }
+
+    public virtual void OnCurrentBulletChanged(string current, string max) { }
 }

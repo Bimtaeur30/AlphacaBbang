@@ -1,4 +1,4 @@
-﻿namespace MemberWorkspace.CHG._02_Scripts.Bunker
+﻿namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 {
     public enum PlayerStatType
     {

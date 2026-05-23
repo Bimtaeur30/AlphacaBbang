@@ -3,12 +3,17 @@ using UnityEngine;
 
 public static class MapEvents
 {
+    public static readonly StartPlayEvent StartPlayEvent = new StartPlayEvent();
     public static readonly PlayerPointEvent PlayerPointEvent = new PlayerPointEvent();
     public static readonly PlayerActionEvent PlayerActionEvent = new PlayerActionEvent();
     public static readonly RoutRecordEndEvent RoutRecordEndEvent = new RoutRecordEndEvent();
     public static readonly RoutRecordStartEvent RoutRecordStartEvent = new RoutRecordStartEvent();
+    public static readonly StartRecordEvent StartRecordEvent = new StartRecordEvent();
 }
 
+public class StartRecordEvent : GameEvent
+{
+}
 public class PlayerPointEvent : GameEvent
 {
     public Vector3 PlayerPoint { get; private set; }
@@ -40,5 +45,8 @@ public class RoutRecordEndEvent : GameEvent
 }
 
 public class RoutRecordStartEvent : GameEvent
+{
+}
+public class StartPlayEvent : GameEvent
 {
 }

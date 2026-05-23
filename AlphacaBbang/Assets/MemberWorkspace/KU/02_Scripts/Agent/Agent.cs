@@ -22,11 +22,11 @@ public class Agent : ModuleOwner, IDamageable
         Movement = GetModule<IControllerMovement>();
         Weapon = GetModule<IEnemyWeaponModule>();
         Armor = GetModule<IAgentArmor>();
-        HealthModule = GetModule<IHealth>();
         AgentSoundPlayer = GetModule<IAgentSoundPlayer>();
+        HealthModule = GetModule<IHealth>();
     }
 
-    public virtual void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         HealthModule.MinusHealth(damage);
     }

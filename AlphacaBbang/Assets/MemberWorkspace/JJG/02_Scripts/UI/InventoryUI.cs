@@ -66,6 +66,10 @@ public class InventoryUI : MonoBehaviour
             return;
 
         inventory = container;
+
+        for (int i = 0; i < _slotUIList.Count; i++)
+            _slotUIList[i].SetContainer(inventory);
+
         RefreshUI();
     }
 

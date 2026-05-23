@@ -79,7 +79,13 @@ public class EquipmentContainer : ItemContainer
         if (equipmentSlot == null)
             return false;
 
-        return itemData is ArmorItemData;
+        // 장착 가능한지 판정: 아이템이 Armor이고 슬롯의 allowedEquipType과 일치해야 함
+        if (itemData is ArmorItemData)
+        {
+            return equipmentSlot.allowedEquipType == itemData.EquipType;
+        }
+
+        return false;
     }
 
     public bool Equip(int index, ItemData itemData)

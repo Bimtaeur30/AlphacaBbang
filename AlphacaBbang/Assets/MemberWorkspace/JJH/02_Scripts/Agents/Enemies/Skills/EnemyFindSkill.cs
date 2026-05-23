@@ -14,7 +14,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
         public void UseSkill()
         {
             _owner.EnemyInterface.EnemyTalk.ShowText();
-            _owner.EnemySoundPlayer.PlaySound(_owner.EnemyData.FindSound);
+            _owner.AgentSoundPlayer.PlaySound(_owner.EnemyData.FindSound);
         }
     }
 }

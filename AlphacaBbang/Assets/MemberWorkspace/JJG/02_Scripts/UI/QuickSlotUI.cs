@@ -4,34 +4,39 @@ using UnityEngine;
 
 public class QuickSlotUI : MonoBehaviour
 {
-    [SerializeField] private QuickSlotContainer quickSlotContainer;
     [SerializeField] private List<ItemSlotUI> slotUIList;
+    [SerializeField] private Sprite _emptyIcon;
+    [SerializeField] private List<Sprite> _slotEmptyIcons = new();
+    
+    private QuickSlotContainer _quickSlotContainer;
 
     private void OnEnable()
     {
-        if (quickSlotContainer != null)
-            quickSlotContainer.OnContainerChanged += RefreshUI;
+        if (_quickSlotContainer != null)
+            _quickSlotContainer.OnContainerChanged += RefreshUI;
     }
 
     private void OnDisable()
     {
-        if (quickSlotContainer != null)
-            quickSlotContainer.OnContainerChanged -= RefreshUI;
+        if (_quickSlotContainer != null)
+            _quickSlotContainer.OnContainerChanged -= RefreshUI;
     }
 
     private void Start()
     {
+        _quickSlotContainer = GetComponent<QuickSlotContainer>();
+        
         RefreshUI();
     }
 
     private void RefreshUI()
     {
-        if (quickSlotContainer == null)
+        if (_quickSlotContainer == null)
             return;
 
         for (int i = 0; i < slotUIList.Count; i++)
         {
-            ItemSlot slot = quickSlotContainer.GetSlot(i);
+            ItemSlot slot = _quickSlotContainer.GetSlot(i);
 
             if (slot != null && !slot.IsEmpty)
             {
@@ -39,7 +44,8 @@ public class QuickSlotUI : MonoBehaviour
             }
             else
             {
-                slotUIList[i].ClearSlot();
+                Sprite slotIcon = (i < _slotEmptyIcons.Count && _slotEmptyIcons[i] != null) ? _slotEmptyIcons[i] : _emptyIcon;
+                slotUIList[i].ClearSlotWithDefault(slotIcon);
             }
         }
     }

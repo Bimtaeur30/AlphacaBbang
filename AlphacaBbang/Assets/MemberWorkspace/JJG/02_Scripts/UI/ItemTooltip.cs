@@ -55,7 +55,7 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
         _nameText.color = GetGradeColor(data.GradeType);
         _typeText.text  = GetTypeLabel(data);
         _statsText.text = GetStatsText(data);
-        _descText.text  = data.description;
+        _descText.text  = GetDescriptionText(data);
 
         _panel.gameObject.SetActive(true);
         transform.SetAsLastSibling();
@@ -101,13 +101,79 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
 
     private string GetStatsText(ItemData data)
     {
-        //if (data is WeaponItemData weapon)
-            //return $"공격력: {weapon.Damage}\n탄약: {weapon.Ammo}\n장전 속도: {weapon.ReloadSpeed:F1}s";
-
         if (data is CountableItemData countable)
             return $"최대 수량: {countable.MaxAmount}";
 
         return string.Empty;
+    }
+
+    private string GetDescriptionText(ItemData data)
+    {
+        if (data is WeaponItemData weapon)
+        {
+            string weaponInfo = GetWeaponDescription(weapon);
+            if (string.IsNullOrEmpty(data.description))
+                return weaponInfo;
+
+            return string.IsNullOrEmpty(weaponInfo)
+                ? data.description
+                : data.description + "\n\n" + weaponInfo;
+        }
+
+        return data.description;
+    }
+
+    private string GetWeaponDescription(WeaponItemData weapon)
+    {
+        if (!string.IsNullOrEmpty(weapon.MeleeWeaponId))
+        {
+            MeleeWeaponBase meleeWeapon = FindMeleeWeapon(weapon.MeleeWeaponId);
+            if (meleeWeapon != null && meleeWeapon.WeaponData != null)
+            {
+                return $"피해량: {meleeWeapon.WeaponData.Damage}";
+            }
+
+            return "피해량: 알 수 없음";
+        }
+
+        if (weapon.Gun == null)
+            return string.Empty;
+
+        Gun gunComp = weapon.Gun.GetComponent<Gun>();
+        if (gunComp == null || gunComp.WeaponData == null)
+            return string.Empty;
+
+        GunDataSO weaponData = gunComp.WeaponData;
+        string bulletType = weaponData.BulletType != null ? weaponData.BulletType.ItemName : "없음";
+
+        return
+            $"탄창: {bulletType}\n" +
+            $"반동: {weaponData.SpreadAngle}\n" +
+            $"탄창 용량: {weaponData.MagCapacity}\n" +
+            $"재장전 시간: {weaponData.ReloadDuration:F1}s\n" +
+            $"피해량: {weaponData.Damage}\n" +
+            $"연사 속도: {weaponData.FireInterval:F2}s\n" +
+            $"발사 모드: {GetFireModeLabel(weaponData.FireMode)}";
+    }
+
+    private string GetFireModeLabel(FireMode fireMode)
+    {
+        return fireMode switch
+        {
+            FireMode.Single => "단발",
+            FireMode.Auto   => "연사",
+            FireMode.Spread => "산탄",
+            _               => fireMode.ToString()
+        };
+    }
+
+    private MeleeWeaponBase FindMeleeWeapon(string meleeId)
+    {
+        WeaponHolder holder = FindObjectOfType<WeaponHolder>();
+        if (holder == null)
+            return null;
+
+        return holder.FindMeleeWeapon(meleeId);
     }
 
     private Color GetGradeColor(GradeType grade)

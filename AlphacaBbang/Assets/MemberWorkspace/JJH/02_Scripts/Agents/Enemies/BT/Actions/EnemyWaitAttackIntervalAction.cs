@@ -11,27 +11,25 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
     public partial class EnemyWaitAttackIntervalAction : Action
     {
         [SerializeReference] public BlackboardVariable<AbstractEnemy> Enemy;
-        [SerializeReference] public BlackboardVariable<float> AttackTimer;
+
+        private float _time;
 
         protected override Status OnStart()
         {
             if (Enemy.Value == null || Enemy.Value.EnemyData == null)
                 return Status.Failure;
 
-            AttackTimer.Value = 0;
+            _time = 0;
 
             return Status.Running;
         }
 
         protected override Status OnUpdate()
         {
-            AttackTimer.Value += Time.deltaTime;
+            _time += Time.deltaTime;
 
-            if (AttackTimer.Value >= Enemy.Value.EnemyData.AttackInterval)
-            {
-                AttackTimer.Value = 0f;
+            if (Enemy.Value.EnemyData.AttackInterval <= _time)
                 return Status.Success;
-            }
 
             return Status.Running;
         }

@@ -122,8 +122,8 @@ Shader "Custom/FloorFog"
                 float maskRange = GetViewMask(IN.positionWS);
 
                 float finalMask = maskRange;
-                //float finalMask = blurredMaskObstacle * maskRange;
 
+                float alpha = _FogColor.a * (1.0 - finalMask);
                 InputData inputData = (InputData)0;
                 inputData.positionWS      = IN.positionWS;
                 inputData.normalWS        = normalize(IN.normalWS);
@@ -139,9 +139,9 @@ Shader "Custom/FloorFog"
                 float3 fogged = lit * (1.0 - _FogColor.a) + _FogColor.rgb * _FogColor.a;
                 float3 final  = lerp(fogged, lit, finalMask);
                 
+                float3 shadedFog = _FogColor.rgb * shadow;
 
-                float alpha = _FogColor.a * (1.0 - finalMask);
-                return float4(_FogColor.rgb, alpha);
+                return float4(shadedFog, alpha);
             }
             ENDHLSL
         }

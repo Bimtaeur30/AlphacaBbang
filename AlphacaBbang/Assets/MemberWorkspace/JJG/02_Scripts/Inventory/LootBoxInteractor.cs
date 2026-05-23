@@ -22,6 +22,11 @@ public class LootBoxInteractor : MonoBehaviour
         InventoryChannel.AddListener<InventoryToggleEvt>(HandleInventoryToggle);
     }
 
+    private void OnDestroy()
+    {
+        InventoryChannel.RemoveListener<InventoryToggleEvt>(HandleInventoryToggle);
+    }
+
     private void HandleInventoryToggle(InventoryToggleEvt evt)
     {
         if (!evt.Value)

@@ -21,6 +21,12 @@ public class BulletCountUI : MonoBehaviour
         bulletCountLabel.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        gunChannel.RemoveListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+        uiChannel.RemoveListener<BulletCountHandleEvent>(HandleBulletCountChanged);
+    }
+
     private void HandleWeaponSlotEquipEvent(WeaponSlotEquipEvent @event)
     {
         if (@event.SlotIndex != index) return;

@@ -12,7 +12,6 @@ public abstract class Gun : WeaponBase, IWeapon
     public bool IsReloading { get; private set; }
 
     [field: SerializeField] public GunDataSO WeaponData { get; private set; }
-    [field: SerializeField] public LayerMask TargetLayer { get; private set; }
     [field: SerializeField] public Magazine Magazine { get; private set; }
     [field:SerializeField] public WeaponHandleModule WeaponHandleModule { get; private set; }
 
@@ -191,7 +190,7 @@ public abstract class Gun : WeaponBase, IWeapon
 
         Debug.DrawRay(origin, direction * rayDistance, Color.red, 0.2f);
 
-        if (Physics.Raycast(origin, direction, out RaycastHit hit, rayDistance, TargetLayer))
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, rayDistance, WeaponHandleModule.TargetLayer))
         {
             endPoint = hit.point;
 

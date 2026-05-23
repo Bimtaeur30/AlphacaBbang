@@ -1,3 +1,4 @@
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -17,7 +18,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             if (Enemy.Value == null || Enemy.Value.EnemyInterface == null)
                 return Status.Failure;
 
-            Enemy.Value.EnemyInterface.EnemyTalk.ShowText();
+            Enemy.Value.EnemySkill.UseSkill<EnemyFindSkill>();
 
             return Status.Success;
         }

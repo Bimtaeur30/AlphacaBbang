@@ -19,7 +19,6 @@ public partial class CheckEnemyAttackRangeCloserThanCloseRangeToTargetCondition 
         float distance = Vector3.Distance(Enemy.Value.transform.position, Target.Value.transform.position);
         float distanceToAttackRange = Mathf.Abs(distance - Enemy.Value.EnemyData.AttackRange);
         float distanceToCloseRange = Mathf.Abs(distance - CloseRange.Value);
-        Debug.Log($"{distance} {distanceToAttackRange} {distanceToCloseRange}");
 
         return distanceToAttackRange < distanceToCloseRange;
     }

@@ -10,6 +10,8 @@ public class WeaponHandleModule : MonoBehaviour, IModule
 
     [Header("Gun")]
     [field: SerializeField] public IWeapon CurrentWeapon { get; private set; }
+    [field: SerializeField] public LayerMask TargetLayer { get; private set; }
+
 
     [Header("Transform")]
     [SerializeField] protected Transform gunHoldParent_1;

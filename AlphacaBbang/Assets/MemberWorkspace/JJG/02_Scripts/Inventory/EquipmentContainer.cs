@@ -58,6 +58,18 @@ public class EquipmentContainer : ItemContainer
         return equipmentSlots[index];
     }
 
+    public override bool CanPlaceItem(int index, ItemData itemData)
+    {
+        if (itemData == null)
+            return false;
+
+        if (index < 0 || index >= equipmentSlots.Count)
+            return false;
+
+        // ArmorItemData만 들어올 수 있음
+        return itemData is ArmorItemData;
+    }
+
     public bool CanEquip(int index, ItemData itemData)
     {
         if (itemData == null)

@@ -162,8 +162,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         [ContextMenu("AcceptQuestTest")]
         private void AcceptQuestTest()
         {
-            QuestAccept("quest_002");
-            QuestAccept("quest_001");
+            QuestAccept("quest_003");
         }
 
         /*[ContextMenu("EnemyKillTest")]

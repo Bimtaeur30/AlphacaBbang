@@ -11,6 +11,8 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [Header("Hover")]
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Color _hoverColor = new Color(1f, 1f, 1f, 0.15f);
+    [Header("Empty Slot")]
+    [SerializeField] private Sprite _emptyIcon;
 
     private int _slotIndex;
     private ItemContainer _container;
@@ -39,6 +41,11 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _container = container;
     }
 
+    public void SetEmptyIcon(Sprite emptyIcon)
+    {
+        _emptyIcon = emptyIcon;
+    }
+
     public void SetSlot(ItemSlot slot)
     {
         if (slot == null || slot.IsEmpty || slot.ItemData == null)
@@ -60,15 +67,37 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void ClearSlot()
     {
         _currentSlot = null;
-        _iconImage.sprite = null;
-        _iconImage.enabled = false;
+        // show configured empty icon if available, otherwise hide
+        if (_emptyIcon != null)
+        {
+            _iconImage.sprite = _emptyIcon;
+            _iconImage.enabled = true;
+        }
+        else
+        {
+            _iconImage.sprite = null;
+            _iconImage.enabled = false;
+        }
+        _amountText.text = "";
+    }
+
+    public void ClearSlotWithDefault(UnityEngine.Sprite defaultIcon)
+    {
+        _currentSlot = null;
+        _iconImage.sprite = defaultIcon;
+        _iconImage.enabled = defaultIcon != null;
         _amountText.text = "";
     }
 
     public void SetSelected(bool selected)
     {
+        // if (_selectedOverlay != null)
+        //     _selectedOverlay.enabled = selected;
+        
         if (_selectedOverlay != null)
+        {
             _selectedOverlay.enabled = selected;
+        }
     }
 
     public void SetItem(Sprite itemSprite)

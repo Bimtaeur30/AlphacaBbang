@@ -136,7 +136,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
                 _hitTargets.Add(hit);
 
-                _owner.EnemySoundPlayer.PlaySound(dashAttackSound);
+                _owner.AgentSoundPlayer.PlaySound(dashAttackSound);
 
                 Vector3 hitPoint = transform.position + Vector3.up;
                 float distance = Vector3.Distance(hitPoint, hit.transform.position);

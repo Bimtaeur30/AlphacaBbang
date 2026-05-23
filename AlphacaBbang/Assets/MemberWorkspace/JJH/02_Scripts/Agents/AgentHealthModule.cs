@@ -1,4 +1,5 @@
 ﻿using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace JJH._02_Scripts.Agents
 {
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
+        [SerializeField] private SoundClipSO hitSound;
+        [SerializeField] private SoundClipSO deadSound;
         [SerializeField] private Slider slider;
 
         public float Health
@@ -21,6 +24,7 @@ namespace JJH._02_Scripts.Agents
                 {
                     _health = 0;
                     _agentEventChannel.RaiseEvent(AgentEvents.AgentDeadEvent.Init(_owner));
+                    _owner.AgentSoundPlayer.PlaySound(deadSound);
                     return;
                 }
 
@@ -79,6 +83,7 @@ namespace JJH._02_Scripts.Agents
                 }
             Health -= damage;
             _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(damage));
+            _owner.AgentSoundPlayer.PlaySound(hitSound);
         }
 
         public void Heal(float amount)

@@ -1,9 +1,10 @@
-﻿using JJH._02_Scripts.Systems.ObjectPoolSystems;
+﻿using JJH._02_Scripts.Agents.Enemies.BT;
+using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies.Skills
 {
-    public class EnemyBombSkill : MonoBehaviour, IEnemySkill
+    public class EnemySuicideSkill : MonoBehaviour, IEnemySkill
     {
         [SerializeField] private PoolManagerSO poolManager;
         [SerializeField] private PoolItemSO explosionPref;
@@ -21,6 +22,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             ExplosionPrefab effect = poolManager.Pop<ExplosionPrefab>(explosionPref);
             effect.transform.position = _owner.transform.position;
             effect.Active(5f, explosionDamage, _owner.Sensor.TargetLayer);
+            _owner.StateChannel.Value.SendEventMessage(EnemyState.DEAD);
         }
     }
 }

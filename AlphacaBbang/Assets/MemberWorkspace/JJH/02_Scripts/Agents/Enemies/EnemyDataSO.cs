@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using JJH._02_Scripts.Systems.SoundSystems;
+using UnityEngine;
 
 namespace JJH._02_Scripts.Agents.Enemies
 {
@@ -11,6 +12,8 @@ namespace JJH._02_Scripts.Agents.Enemies
         [field: SerializeField] public float EnemyHealth { get; private set; }
         [field: SerializeField] public float EnemySpeed { get; private set; }
         [field: SerializeField] public GameObject EnemyInventoryPrefab { get; private set; }
+        [field: SerializeField] public LayerMask DeadLayer { get; private set; }
+        [field: SerializeField] public SoundClipSO FindSound { get; private set; }
 
         [Header("Attack")]
         [field: SerializeField] public float AttackRange { get; private set; }

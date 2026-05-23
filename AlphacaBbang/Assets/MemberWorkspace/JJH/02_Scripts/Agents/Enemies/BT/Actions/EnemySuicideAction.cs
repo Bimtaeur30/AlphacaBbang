@@ -1,3 +1,4 @@
+using JJH._02_Scripts.Agents.Enemies.Skills;
 using System;
 using Unity.Behavior;
 using Unity.Properties;
@@ -17,7 +18,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             if (Enemy.Value == null)
                 return Status.Failure;
 
-            Enemy.Value.Suicide();
+            Enemy.Value.EnemySkill.UseSkill<EnemySuicideSkill>();
 
             return Status.Success;
         }

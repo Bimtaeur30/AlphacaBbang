@@ -236,6 +236,8 @@ public class InventoryContextMenu : MonoBehaviour
                 return;
             }
             
+            Debug.Log("Equip Armor");
+            
             int targetSlotIndex = -1;
             for (int i = 0; i < equipmentContainer.SlotCount; i++)
             {

@@ -9,6 +9,17 @@ public static class SystemEvents
     public static readonly SaveFileEvent SaveFileEvent = new SaveFileEvent();
     public static readonly LoadFileEvent LoadFileEvent = new LoadFileEvent();
     public static readonly StartNewGameEvent StartNewGameEvent = new StartNewGameEvent();
+    public static readonly OnGameEnd OnGameEnd = new OnGameEnd();
+}
+
+public class OnGameEnd : GameEvent
+{
+    public bool IsPlayerAlive { get; private set; }
+    public OnGameEnd Init(bool isPlayerAlive)
+    {
+        IsPlayerAlive = isPlayerAlive;
+        return this;
+    }
 }
 
 public class SavePrefEvent : GameEvent { }

@@ -40,11 +40,7 @@ public class LootBoxInteractor : MonoBehaviour
         if (!evt.Value)
             SlidePanelController.SlideOut();
     }
- 
-    /// <summary>
-    /// 상자 오브젝트의 LootBox 컴포넌트를 넘겨주세요.
-    /// 거기 붙어있는 LootTableSO로 아이템을 생성하고 열기 루틴을 실행합니다.
-    /// </summary>
+    
     public void StartOpen(LootBox lootBox)
     {
         if (_isOpening) return;

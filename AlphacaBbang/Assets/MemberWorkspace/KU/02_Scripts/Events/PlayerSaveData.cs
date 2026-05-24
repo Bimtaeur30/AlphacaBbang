@@ -2,7 +2,6 @@ using JJH._02_Scripts_Systems.EventSystems;
 using Reflex.Core;
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
 {
@@ -13,29 +12,21 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     [field: SerializeField] public float MaxHealth { get; private set; } = 100f;
     [field: SerializeField] public float MaxStamina { get; private set; } = 10f;
     [field: SerializeField] public float MaxAimStamina { get; private set; } = 5f;
+    [field: SerializeField] public int Gold { get; private set; } = 0;
 
     private void OnEnable()
     {
         playerStatChannel.AddListener<AddMaxHealth>(HandleAddMaxHealth);
         playerStatChannel.AddListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.AddListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
+        playerStatChannel.AddListener<AddGold>(HandleAddGold);
 
         Debug.Log("MaxHealth" + MaxHealth);
         Debug.Log("MaxStamina" + MaxStamina);
         Debug.Log("MaxAimStamina" + MaxAimStamina);
+        Debug.Log("Gold" + Gold);
+    }
 
-    }
-    private void Update()
-    {
-        if (Keyboard.current.tKey.wasPressedThisFrame)
-            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxHealth.Init(10));
-        if (Keyboard.current.yKey.wasPressedThisFrame)
-            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxAimStamina.Init(1));
-        if (Keyboard.current.uKey.wasPressedThisFrame)
-            playerStatChannel.RaiseEvent(PlayerStateEvents.AddMaxStamina.Init(1));
-        if (Keyboard.current.iKey.wasPressedThisFrame)
-            systemChannel.RaiseEvent(SystemEvents.SaveFileEvent);
-    }
     public string GetSaveData()
     {
         Debug.Log("aaaaaa");
@@ -50,6 +41,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
             playerMaxHpSave = MaxHealth,
             playerMaxRunStaminaSave = MaxStamina,
             playerMaxAimStaminaSave = MaxAimStamina,
+            playerGoldSave = Gold
         };
         return JsonUtility.ToJson(saveData);
     }
@@ -57,7 +49,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     public void RestoreData(string data)
     {
         Debug.Log("aaa");
-        
+
         var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
@@ -88,13 +80,18 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         Debug.Log($"최대 에임 스태미나 증가 : {evt.val}");
     }
 
-
+    private void HandleAddGold(AddGold evt)
+    {
+        Gold += evt.val;
+        Debug.Log($"골드 증가 : {evt.val}");
+    }
 
     private void OnDisable()
     {
         playerStatChannel.RemoveListener<AddMaxHealth>(HandleAddMaxHealth);
         playerStatChannel.RemoveListener<AddMaxStamina>(HandleAddMaxStamina);
         playerStatChannel.RemoveListener<AddMaxAimStamina>(HandleAddMaxAimStamina);
+        playerStatChannel.RemoveListener<AddGold>(HandleAddGold);
 
     }
 
@@ -110,4 +107,5 @@ public struct PlayerStateSaveData
     public float playerMaxHpSave;
     public float playerMaxRunStaminaSave;
     public float playerMaxAimStaminaSave;
+    public int playerGoldSave;
 }

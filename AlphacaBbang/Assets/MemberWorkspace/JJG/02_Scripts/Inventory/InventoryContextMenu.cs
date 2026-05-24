@@ -11,7 +11,7 @@ public class InventoryContextMenu : MonoBehaviour
 {
     [SerializeField] private bool _handleEquipmentItems = false;
     [SerializeField] private GameObject rootPanel;
-
+    
     public static bool IsOpen { get; private set; }
 
     private static InventoryContextMenu _currentOpenMenu;
@@ -368,15 +368,24 @@ public class InventoryContextMenu : MonoBehaviour
             Close();
             return;
         }
-        
-        Debug.Log($"_container: {_container.name}, storageContainer: {storageContainer.name}");
-        Debug.Log($"item: {slot.ItemData.name}, amount: {slot.Amount}");
-    
-        bool result = storageContainer.AddItem(slot.ItemData, slot.Amount);
-        Debug.Log($"AddItem result: {result}");
 
-        if (storageContainer != null && storageContainer.AddItem(slot.ItemData, slot.Amount))
+        if (storageContainer == null) { Close(); return; }
+
+        // 무기를 창고에 넣을 때 퀵슬롯 이벤트 발송
+        ItemData itemData = slot.ItemData;
+        int slotIndex = _slotIndex;
+
+        if (storageContainer.AddItem(itemData, slot.Amount))
+        {
             _container.ClearSlot(_slotIndex);
+
+            if (itemData is WeaponItemData && slotIndex < 2)
+            {
+                WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
+            }
+        }
         else
             Debug.LogWarning("창고가 가득 찼습니다.");
 
@@ -389,32 +398,17 @@ public class InventoryContextMenu : MonoBehaviour
         if (slot == null || slot.IsEmpty || inventoryContainer == null) { Close(); return; }
 
         ItemData itemData = slot.ItemData;
-        int slotIndex = _slotIndex;
 
-        // if (inventoryContainer.AddItem(itemData, slot.Amount))
-        // {
-        //     _container.ClearSlot(_slotIndex);
-        //     
-        //     // 퀵슬롯에서 무기 제거 시 이벤트 발송
-        //     if (itemData is WeaponItemData && slotIndex < 2)
-        //     {
-        //         WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-        //         gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-        //         // Also notify slot-level change so holstered gun object is removed
-        //         gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
-        //     }
-        // }
         if (inventoryContainer.AddItem(itemData, slot.Amount))
         {
             _container.ClearSlot(_slotIndex);
-    
-            if (slotIndex < 2)
+
+            // 퀵슬롯에서 꺼낼 때만 이벤트 발송 (창고에서 꺼낼 땐 불필요)
+            if (_container is MemberWorkspace.JJG._02_Scripts.QuickSlotContainer && _slotIndex < 2)
             {
-                WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+                WeaponSlotIndex weaponSlot = _slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
                 if (itemData is WeaponItemData)
-                {
                     gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-                }
                 gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
             }
         }

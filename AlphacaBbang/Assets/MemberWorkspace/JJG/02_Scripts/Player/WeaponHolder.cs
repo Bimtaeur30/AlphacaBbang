@@ -15,6 +15,7 @@ public class WeaponHolder : MonoBehaviour
 
     public ThrowingItemData CurrentThrowingItem { get; private set; }
     public int CurrentThrowingSlotIndex { get; private set; } = -1;
+    public event Action OnWeaponRemoved;
 
     public event Action<WeaponItemData> OnWeaponChanged;
     public event Action<ThrowingItemData> OnThrowingItemChanged;
@@ -66,6 +67,7 @@ public class WeaponHolder : MonoBehaviour
         CurrentSlotIndex = -1;
         CurrentWeapon = null;
         OnMeleeWeaponChanged?.Invoke(null);
+        OnWeaponRemoved?.Invoke();
         Debug.Log("[WeaponHolder] 근접무기 해제");
     }
 
@@ -119,6 +121,7 @@ public class WeaponHolder : MonoBehaviour
         CurrentSlotIndex = -1;
         CurrentWeapon = null;
         OnWeaponChanged?.Invoke(null);
+        OnWeaponRemoved?.Invoke();
         Debug.Log("[WeaponHolder] 무기 해제");
     }
 
@@ -144,6 +147,7 @@ public class WeaponHolder : MonoBehaviour
         CurrentThrowingSlotIndex = -1;
         CurrentThrowingItem = null;
         OnThrowingItemChanged?.Invoke(null);
+        OnWeaponRemoved?.Invoke();
         Debug.Log("[WeaponHolder] 투척류 해제");
     }
 }

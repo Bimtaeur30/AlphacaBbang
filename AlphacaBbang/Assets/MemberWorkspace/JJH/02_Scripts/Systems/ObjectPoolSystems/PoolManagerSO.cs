@@ -31,7 +31,7 @@ namespace JJH._02_Scripts.Systems.ObjectPoolSystems
         {
             Debug.Assert(_rootTrm != null, "Pool must be initialized before use");
 
-            if (_pools.TryGetValue(type, out Pool pool))
+                if (_pools.TryGetValue(type, out Pool pool))
             {
                 return (T)pool.Pop();
             }

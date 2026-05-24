@@ -20,7 +20,12 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     private static readonly Key[] ItemKeys = { Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7 };
 
     private int _currentThrowingSlotIndex = -1;
-
+    private void Awake()
+    {
+        _throwingController = throwingWeapon as IThrowingWeapon;
+        if (_throwingController == null)
+            Debug.LogError("[QuickSlotHotkeyHandler] throwingWeapon이 IThrowingWeapon을 구현하지 않습니다.");
+    }
     private void OnEnable()
     {
         if (weaponHolder != null)
@@ -107,6 +112,7 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             if (slot != null && slot.ItemData is ThrowingItemData throwingData)
             {
                 weaponHolder.EquipThrowingItem(slotIndex, throwingData);
+                SetThrowingSlotIndex(slotIndex);
                 return;
             }
 

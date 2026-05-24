@@ -18,7 +18,7 @@ public class GrenadeTrail : MonoBehaviour
 
     void Awake()
     {
-        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer = GetComponentInParent<LineRenderer>();
         if (lineRenderer == null)
         {
             Debug.LogError("LineRenderer component is missing on GrenadeTrail.");

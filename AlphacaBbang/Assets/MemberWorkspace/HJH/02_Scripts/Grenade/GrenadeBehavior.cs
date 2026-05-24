@@ -23,10 +23,8 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
     [SerializeField] private int lineSegmentCount = 30;
     [SerializeField] private float lineTimeStep = 0.1f;
 
-    [Header("수류탄")]
-    [SerializeField] protected GrenadeSO grenadeSO;
+    private GrenadeSO _grenadeSO;
 
-    // IWeapon 구현
     public GunDataSO WeaponData => null;
     public bool IsFiring => false;
     public bool IsAiming => _isAiming;
@@ -48,6 +46,11 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
 
     public virtual void Initialize(WeaponHandleModule owner) { }
 
+    public void Setup(GrenadeSO grenadeSO)
+    {
+        _grenadeSO = grenadeSO;
+    }
+
     public void SetAim(bool isAim)
     {
         _isAiming = isAim;
@@ -61,19 +64,24 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
 
     public void StartFire(bool isAim)
     {
-        if (grenadeSO == null)
+        if (_grenadeSO == null)
         {
             Debug.LogWarning("[GrenadeBehavior] grenadeSO가 null입니다.");
             return;
         }
 
-        StartCoroutine(FireAndDestroy(_targetWorldPos, grenadeSO));
-        OnFired?.Invoke();
-    }
+        Vector3 spawnPos = startPoint.position;
+        Vector3 targetPos = _targetWorldPos;
 
-    private IEnumerator FireAndDestroy(Vector3 targetPos, GrenadeSO grenade)
-    {
-        yield return StartCoroutine(SimulateProjectile(targetPos, grenade));
+        ClearTargetPoint();
+        if (lineRenderer != null)
+            lineRenderer.positionCount = 0;
+
+        OnFired?.Invoke();
+
+        // 본체 삭제 전에 폭탄 발사 정보를 넘겨줌
+        GrenadeProjectileLauncher.Launch(_grenadeSO, spawnPos, targetPos, firingAngle, gravity, this);
+
         Destroy(gameObject);
     }
 
@@ -98,34 +106,14 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         DrawTrajectory(_targetWorldPos);
     }
 
-    private IEnumerator SimulateProjectile(Vector3 targetPos, GrenadeSO grenade)
-    {
-        GameObject projectile = Instantiate(grenade.prefab, startPoint.position, Quaternion.identity);
-        Rigidbody rb = projectile.GetComponent<Rigidbody>();
-
-        Vector3 direction = (targetPos - startPoint.position).normalized;
-        float distance = Vector3.Distance(startPoint.position, targetPos);
-
-        float angleRad = firingAngle * Mathf.Deg2Rad;
-        float sinValue = Mathf.Sin(2 * angleRad);
-        if (Mathf.Abs(sinValue) < 0.01f) yield break;
-
-        float velocity = distance * gravity / sinValue;
-        float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
-        float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
-
-        projectile.transform.rotation = Quaternion.LookRotation(direction);
-        rb.linearVelocity = new Vector3(direction.x * Vx, Vy, direction.z * Vx);
-
-        yield return null;
-    }
-
     private void DrawTrajectory(Vector3 targetPos)
     {
         if (targetPoint == null) return;
 
-        Vector3 direction = (targetPos - startPoint.position).normalized;
-        float distance = Vector3.Distance(startPoint.position, targetPos);
+        Vector3 direction = (targetPos - startPoint.position);
+        direction.y = 0;
+        float distance = direction.magnitude;
+        direction = direction.normalized;
 
         float angleRad = firingAngle * Mathf.Deg2Rad;
         float sinValue = Mathf.Sin(2 * angleRad);
@@ -136,11 +124,15 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
 
         Vector3 velocityVector = new Vector3(direction.x * Vx, Vy, direction.z * Vx);
+
+        float totalTime = distance / Vx;
+        float timeStep = totalTime / lineSegmentCount;
+
         lineRenderer.positionCount = lineSegmentCount;
 
         for (int i = 0; i < lineSegmentCount; i++)
         {
-            float t = i * lineTimeStep;
+            float t = i * timeStep;
             Vector3 point = startPoint.position
                             + velocityVector * t
                             + Vector3.down * (0.5f * gravity * t * t);

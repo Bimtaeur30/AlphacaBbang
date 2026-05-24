@@ -14,13 +14,12 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     [SerializeField] protected int slotCount = 20;
     [SerializeField] protected List<ItemSlot> slots = new();
     [SerializeField] private ItemDatabase itemDatabase;
+    [SerializeField] private GrenadeBehavior throwingWeapon;
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
 
     [Header("Item Setting")]
-    [SerializeField] private GrenadeFirePos grenadeFirePos;
     [SerializeField] private AgentArmorModule agentArmorModule;
-
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
@@ -293,8 +292,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             }
             else if (itemData is ThrowingItemData throwingData)
             {
-                Vector3 direction = grenadeFirePos.targetMark.transform.position;
-                StartCoroutine(grenadeFirePos.SimulateProjectile(direction, true, throwingData.Grenade));
+
             }
             else if (itemData is ArmorItemData armorData)
             { 

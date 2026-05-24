@@ -368,6 +368,12 @@ public class InventoryContextMenu : MonoBehaviour
             Close();
             return;
         }
+        
+        Debug.Log($"_container: {_container.name}, storageContainer: {storageContainer.name}");
+        Debug.Log($"item: {slot.ItemData.name}, amount: {slot.Amount}");
+    
+        bool result = storageContainer.AddItem(slot.ItemData, slot.Amount);
+        Debug.Log($"AddItem result: {result}");
 
         if (storageContainer != null && storageContainer.AddItem(slot.ItemData, slot.Amount))
             _container.ClearSlot(_slotIndex);

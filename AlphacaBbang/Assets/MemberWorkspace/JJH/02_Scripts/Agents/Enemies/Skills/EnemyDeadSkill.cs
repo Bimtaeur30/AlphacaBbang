@@ -24,7 +24,7 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
 
             GameObject lootBoxObject = Instantiate(_owner.EnemyData.EnemyInventoryPrefab, _owner.transform.position, Quaternion.identity);
             LootBox lootBox = lootBoxObject.GetComponent<LootBox>();
-            lootBox.Init(_owner.LootTables[_owner.WeaponNum]);
+            lootBox.Init(_owner.LootTables[_owner.WeaponNum], "전리품");
             _owner.gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
             Destroy(_owner.gameObject);
         }

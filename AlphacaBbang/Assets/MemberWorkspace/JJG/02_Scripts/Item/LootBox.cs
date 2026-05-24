@@ -7,9 +7,10 @@ public class LootBox : MonoBehaviour
     [SerializeField] private string boxDisplayName = "상자";
     [SerializeField] private EventChannelSO systemChannel;
 
-    public void Init(LootTable lootTable)
+    public void Init(LootTable lootTable, string boxDisplayName)
     {
         this.lootTable = lootTable;
+        this.boxDisplayName = boxDisplayName;
     }
 
     public void Open()

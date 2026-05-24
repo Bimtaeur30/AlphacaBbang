@@ -209,6 +209,21 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             return true;
         }
     }
+    
+    public bool ConsumeBulletByName(string bulletName, int amount = 1)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].IsEmpty) continue;
+            if (slots[i].ItemData.name == bulletName)
+            {
+                return RemoveAmount(i, amount);
+            }
+        }
+    
+        Debug.LogWarning($"총알을 찾을 수 없습니다: {bulletName}");
+        return false;
+    }
 
     public virtual bool RemoveAmount(int index, int amount = 1)
     {

@@ -17,6 +17,6 @@ public partial class CheckEnemyInSmokeCondition : Condition
 
         bool isInSmoke = Enemy.Value.Sensor.CheckAgentInSmoke();
 
-        return In ? isInSmoke : !isInSmoke;
+        return In.Value ? isInSmoke : !isInSmoke;
     }
 }

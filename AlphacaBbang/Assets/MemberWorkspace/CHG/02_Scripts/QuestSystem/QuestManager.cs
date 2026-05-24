@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JJH._02_Scripts_Systems.EventSystems;
+using JJH._02_Scripts.Systems.EventSystems;
 using UnityEngine;
 
 namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
 {
     public class QuestManager : MonoSingleton<QuestManager>
     {
+        [SerializeField] private EventChannelSO _agentDeadEvent;
         
         //in game all quest
         private Dictionary<string, QuestData> _mainQuests = new Dictionary<string, QuestData>();
@@ -27,6 +30,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         {
             //base.Awake();
             LoadQuestDB();
+            _agentDeadEvent.AddListener<AgentDeadEvent>(QuestProgressUpdate);
         }
 
         private void LoadQuestDB()
@@ -120,6 +124,16 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                         OnUpdateQuestProgress?.Invoke(quest);
                     }
         }
+        public void QuestProgressUpdate(AgentDeadEvent evt)
+        {
+            foreach (Quest quest in _activeQuests)
+                foreach (QuestCondition condition in quest.Conditions)
+                    if (condition.TargetId == evt.EnemyName)
+                    {
+                        condition.Progress++;
+                        OnUpdateQuestProgress?.Invoke(quest);
+                    }
+        }
         
         public bool IsCompleted(string questId)
             => _completedQuestIds.Contains(questId);
@@ -162,6 +176,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         [ContextMenu("AcceptQuestTest")]
         private void AcceptQuestTest()
         {
+            QuestAccept("quest_001");
             QuestAccept("quest_003");
         }
 

@@ -28,6 +28,6 @@ public class Agent : ModuleOwner, IDamageable
 
     public void TakeDamage(float damage)
     {
-        HealthModule.MinusHealth(damage);
+        HealthModule.Damage(damage);
     }
 }

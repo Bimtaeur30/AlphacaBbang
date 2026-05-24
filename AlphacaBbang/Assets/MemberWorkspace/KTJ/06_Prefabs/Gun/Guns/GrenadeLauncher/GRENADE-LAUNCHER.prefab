@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5195835519583793424}
   - component: {fileID: 2814050041609603207}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: GRENADE-LAUNCHER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,13 +50,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bazooka
   <WeaponData>k__BackingField: {fileID: 11400000, guid: beb1a89184a9f584d8e549bc6dd96dfa, type: 2}
-  <TargetLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 65
   <Magazine>k__BackingField: {fileID: 6043078189476603266}
+  <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 2091129478084708939}
   rayDistance: 10
-  damage: 10
   singleFireAnimParam: {fileID: 11400000, guid: cfbd7ddb4adcb2145ba67f2565343722, type: 2}
   autoFireAnimParam: {fileID: 11400000, guid: 7d85b264385ea064f89fc439454a30f0, type: 2}
   idleAnimParam: {fileID: 11400000, guid: 3927465fcebed484caee057622876667, type: 2}
@@ -78,7 +75,7 @@ GameObject:
   - component: {fileID: 8190203013438148617}
   - component: {fileID: 9063365610219277710}
   - component: {fileID: 584950531647873210}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8806163401289833744}
   - component: {fileID: 6043078189476603266}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <CurrentBulletCount>k__BackingField: 0
   <MaxBulletCount>k__BackingField: 1
   bulletCountTxt: {fileID: 2322137041142164505}
   reloadUI: {fileID: 4452390413375525624}
@@ -187,7 +183,7 @@ GameObject:
   - component: {fileID: 2654897091120917255}
   - component: {fileID: 1574551460058429966}
   - component: {fileID: 995347561204866875}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -260,7 +256,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4452390413375525624}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Reload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,7 +295,7 @@ GameObject:
   - component: {fileID: 3204973754831294919}
   - component: {fileID: 2322137041142164505}
   - component: {fileID: 1107876662556179121}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,7 +446,7 @@ GameObject:
   - component: {fileID: 7262694982336594963}
   - component: {fileID: 5615482706726959445}
   - component: {fileID: 4505667025490975830}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -521,7 +517,7 @@ GameObject:
   - component: {fileID: 5464176561659341961}
   - component: {fileID: 2034870921270871400}
   - component: {fileID: 3753759246918149643}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GunModuleCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -633,7 +629,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2091129478084708939}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: FirePos
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -666,7 +662,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3933005317309446936}
   - component: {fileID: 795022775399955074}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -730,7 +726,7 @@ GameObject:
   m_Component:
   - component: {fileID: 935985953058823557}
   - component: {fileID: 8317775866981099923}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: LineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -872,7 +868,7 @@ GameObject:
   - component: {fileID: 3083751069633713829}
   - component: {fileID: 5852669894743047419}
   - component: {fileID: 6345052902474713317}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5784,7 +5780,7 @@ GameObject:
   - component: {fileID: 5554963317257582460}
   - component: {fileID: 5315867616423423940}
   - component: {fileID: 4685347099143581783}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5900,6 +5896,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GunSoundPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5920,19 +5920,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 141899303092244266, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 1070052391636566240, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 1563894702518369710, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 2244674737687206110, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 2244674737687206110, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_IsActive
@@ -5940,11 +5940,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4660579546148184031, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 5138327959545768043, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 7622646813435896494, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_RootOrder
@@ -6008,15 +6008,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8096301856387045000, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8608531265168019330, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8746591860802055674, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 9165364159613029445, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Name
@@ -6024,7 +6024,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9165364159613029445, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 9165364159613029445, guid: 281eb5d4a38d1d24ebca9bfc81b51d6c, type: 3}
       propertyPath: m_IsActive

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using MemberWorkspace.CHG._02_Scripts.QuestSystem;
 using TMPro;
@@ -21,9 +22,18 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         private List<QuestData> _choiceQuestDatas = new();
         private Dictionary<string, GameObject> _questChoiceBtnDict = new();
         private string _currentQuestId = "";
+        private SlidePanelController _slidePanelController;
 
-        private void Start()
+        private void Awake()
         {
+            _slidePanelController = GetComponent<SlidePanelController>();
+        }
+
+        private IEnumerator Start()
+        {
+            yield return null;
+            yield return null;
+            //transform.GetComponent<RectTransform>().position = _slidePanelController.HiddenPosition;
             EmptyingContent();
         }
 
@@ -116,7 +126,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public void TestQuestAdd()
         {
             AddQuestData("quest_001");
-            AddQuestData("quest_002");
+            AddQuestData("quest_003");
             AddQuestBtn();
         }
 

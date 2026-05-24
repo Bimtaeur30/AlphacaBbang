@@ -4,6 +4,7 @@ using JJH._02_Scripts_Systems.EventSystems;
 using Reflex.Attributes;
 using Reflex.Core;
 using Reflex.Injectors;
+using System;
 using UnityEngine;
 
 public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
@@ -19,7 +20,6 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     [SerializeField] private EventChannelSO gunChannel;
     [SerializeField] private EventChannelSO uiChannel;
 
-
     public PlayerController PlayerController { get; private set; }
 
     [Inject] private Container _container;
@@ -34,28 +34,48 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     {
         gunChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
         gunChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+        //gunChannel.AddListener<WeaponDropEvent>(HandleWeaponDropEvent);
     }
 
     private void OnDestroy()
     {
         gunChannel.RemoveListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
         gunChannel.RemoveListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+        //gunChannel.RemoveListener<WeaponDropEvent>(HandleWeaponDropEvent);
     }
-    
+
     private void Start()
     {
         //// �׽�Ʈ �ڵ�
         //gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, WeaponSlotIndex.First, false));
-        ////gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
+        //gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, WeaponSlotIndex.First));
         //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First, false));
         // �������
     }
+
+    //private void HandleWeaponDropEvent(WeaponDropEvent @event)
+    //{
+    //    Transform gunParent = gunHoldParent_1;
+    //    switch (@event.Index)
+    //    {
+    //        case WeaponSlotIndex.First:
+    //            gunParent = gunHoldParent_1;
+    //            break;
+    //        case WeaponSlotIndex.Second:
+    //            gunParent = gunHoldParent_2;
+    //            break;
+    //    }
+    //    if (gunParent.childCount > 0)
+    //        Destroy(gunParent.GetChild(0).gameObject);
+    //}
 
     public override void SetCurrentGun(IWeapon gun) // ������ �߻��� ���� ���Ѵ�. �� ���Կ��� 1,2�� �����ϸ� ���� �߻�� ������ ������.
     {
         base.SetCurrentGun(gun);
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentWeapon.WeaponData));
     }
+
+
 
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
     {

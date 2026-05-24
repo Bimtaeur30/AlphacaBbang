@@ -385,16 +385,30 @@ public class InventoryContextMenu : MonoBehaviour
         ItemData itemData = slot.ItemData;
         int slotIndex = _slotIndex;
 
+        // if (inventoryContainer.AddItem(itemData, slot.Amount))
+        // {
+        //     _container.ClearSlot(_slotIndex);
+        //     
+        //     // 퀵슬롯에서 무기 제거 시 이벤트 발송
+        //     if (itemData is WeaponItemData && slotIndex < 2)
+        //     {
+        //         WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+        //         gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+        //         // Also notify slot-level change so holstered gun object is removed
+        //         gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
+        //     }
+        // }
         if (inventoryContainer.AddItem(itemData, slot.Amount))
         {
             _container.ClearSlot(_slotIndex);
-            
-            // 퀵슬롯에서 무기 제거 시 이벤트 발송
-            if (itemData is WeaponItemData && slotIndex < 2)
+    
+            if (slotIndex < 2)
             {
                 WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-                // Also notify slot-level change so holstered gun object is removed
+                if (itemData is WeaponItemData)
+                {
+                    gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                }
                 gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
             }
         }
@@ -410,14 +424,26 @@ public class InventoryContextMenu : MonoBehaviour
         ItemData itemData = slot?.ItemData;
         int slotIndex = _slotIndex;
         
-        _container.ClearSlot(_slotIndex);
+        // _container.ClearSlot(_slotIndex);
+        //
+        // // 퀵슬롯에서 무기 버릴 때 이벤트 발송
+        // if (itemData is WeaponItemData && slotIndex < 2)
+        // {
+        //     WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
+        //     gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+        //     // Also remove holstered gun object
+        //     gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
+        // }
         
-        // 퀵슬롯에서 무기 버릴 때 이벤트 발송
-        if (itemData is WeaponItemData && slotIndex < 2)
+        _container.ClearSlot(_slotIndex);
+
+        if (slotIndex < 2)
         {
             WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-            gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-            // Also remove holstered gun object
+            if (itemData is WeaponItemData)
+            {
+                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+            }
             gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
         }
         

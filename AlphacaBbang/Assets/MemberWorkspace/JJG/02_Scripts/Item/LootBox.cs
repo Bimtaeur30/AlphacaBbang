@@ -1,9 +1,16 @@
+using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
 
 public class LootBox : MonoBehaviour
 {
     [SerializeField] private LootTable lootTable;
     [SerializeField] private string boxDisplayName = "상자";
+    [SerializeField] private EventChannelSO systemChannel;
+    
+    public void Open()
+    {
+        systemChannel.RaiseEvent(SystemEvents.LootboxDataSendEvent.Init(this));
+    }
  
     public LootTable LootTable => lootTable;
     public string BoxDisplayName => boxDisplayName;

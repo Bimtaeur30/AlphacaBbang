@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacterStateOwner
+public class GrenadeFirePos : MonoBehaviour, IModule, IWeapon, ICharacterStateOwner
 {
     [SerializeField] private CharacterState characterState;
     public CharacterState CharacterState => characterState;
@@ -17,6 +17,8 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
     [Header("위치")]
     public Transform startPoint;
     private Transform targetPoint;
+    public bool HasTarget => targetPoint != null;
+    public Vector3 TargetWorldPos => _targetWorldPos;
 
     [Header("프리팹")]
     public GameObject targetMark;
@@ -33,8 +35,18 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
 
     private int currentIndex = 0;
     private Vector3 _targetWorldPos;
+    private bool _isAiming;
+    public GunDataSO WeaponData => null;
+    public bool IsFiring => false;
+    public bool IsAiming => _isAiming;
+    public bool IsReloading => false;
+    public void Initialize(WeaponHandleModule owner) { }
+    public void TickFire() { }
+    public void StopFire(bool isAim) { }
 
     public bool IsReady => currentGrenade != null && currentGrenade.count > 0;
+
+    public event System.Action OnFired;
 
     private void Start()
     {
@@ -44,25 +56,57 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
 
     private void Update()
     {
-        switch (characterState)
-        {
-            case CharacterState.None:
-                Debug.Log($"상태가 None이라서 바꿔줘야함.{gameObject.name}");
-                break;
-            case CharacterState.Player:
-                break;
-            case CharacterState.Enemy:
-                break;
-        }
-    }
+        if (characterState != CharacterState.Player) return;
+        if (!_isAiming) return;
 
-    public void SetAim(bool val)
-    {
-        if (!val)
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        if (mouse.rightButton.isPressed)
+        {
+            Vector3? targetPos = GetMouseWorldPosition();
+            if (targetPos.HasValue)
+                SetTarget(targetPos.Value);
+
+            if (mouse.leftButton.wasPressedThisFrame)
+            {
+                StartFire(true);
+            }
+        }
+        else
         {
             lineRenderer.positionCount = 0;
             ClearTargetPoint();
         }
+    }
+    public void SetAim(bool isAim)
+    {
+        //Debug.Log($"@@@@@@@@@@@@@@@@@@@@@@@@@[GrenadeFirePos] SetAim 호출됨: {isAim}");
+        _isAiming = isAim;
+        if (!isAim)
+        {
+            lineRenderer.positionCount = 0;
+            ClearTargetPoint();
+        }
+    }
+    public void StartFire(bool isAim)
+    {
+        if (!IsReady)
+        {
+            Debug.LogWarning("[GrenadeFirePos] 사용할 수 있는 수류탄 없음");
+            SetAim(false);
+            return;
+        }
+
+        StartCoroutine(SimulateProjectile(_targetWorldPos, true, currentGrenade));
+        OnFired?.Invoke();
+
+        if (!IsReady)
+            SetAim(false);
+    }
+    public void SetCurrentGrenade(GrenadeSO grenade)
+    {
+        currentGrenade = grenade;
     }
 
     public void SetTarget(Vector3 worldPosition)
@@ -84,16 +128,6 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
         }
 
         DrawTrajectory(_targetWorldPos);
-    }
-
-    public void Fire()
-    {
-        if (!IsReady)
-        {
-            Debug.Log("사용할 수 있는 폭탄 없음");
-            return;
-        }
-        StartCoroutine(SimulateProjectile(_targetWorldPos, true, currentGrenade));
     }
 
     public void Attack(Vector3 vector, bool val)
@@ -154,7 +188,7 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
         float Vx = Mathf.Sqrt(velocity) * Mathf.Cos(angleRad);
         float Vy = Mathf.Sqrt(velocity) * Mathf.Sin(angleRad);
 
-        Vector3 velocityVector = new Vector3(direction.x * Vx, Vy - 0.5f, direction.z * Vx);
+        Vector3 velocityVector = new Vector3(direction.x * Vx, Vy, direction.z * Vx);
 
         lineRenderer.positionCount = lineSegmentCount;
 
@@ -163,9 +197,17 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
             float t = i * lineTimeStep;
             Vector3 point = startPoint.position
                             + velocityVector * t
-                            + 0.5f * Physics.gravity * t * t;
+                            + Vector3.down * (0.5f * gravity * t * t);
             lineRenderer.SetPosition(i, point);
         }
+    }
+
+    private Vector3? GetMouseWorldPosition()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layermask))
+            return hit.point;
+        return null;
     }
 
     private void ClearTargetPoint()
@@ -185,17 +227,13 @@ public class GrenadeFirePos : MonoBehaviour, IModule, IThrowingWeapon, ICharacte
             if (grenadeList[currentIndex].count > 0)
             {
                 currentGrenade = grenadeList[currentIndex];
-                Debug.Log("다음 무기로 변경: " + currentGrenade.grenadeName);
                 return;
             }
         }
-
         currentGrenade = null;
-        Debug.Log("폭탄 없어");
     }
 
     public void Initialize(ModuleOwner owner) { }
-
     public void Init() { }
 
     private void OnDrawGizmos()

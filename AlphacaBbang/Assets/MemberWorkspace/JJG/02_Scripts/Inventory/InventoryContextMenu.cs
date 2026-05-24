@@ -166,7 +166,7 @@ public class InventoryContextMenu : MonoBehaviour
         unequipButton?.gameObject.SetActive(isGearEquip && !isExternal && HasEquippedItemOfType(item.EquipType));
         storeButton?.gameObject.SetActive(!isExternal && !isLootBox && storageContainer != null);
         retrieveButton?.gameObject.SetActive(isExternal || isLootBox);
-        dropButton?.gameObject.SetActive(true);
+        dropButton?.gameObject.SetActive(!isLootBox && !isStorage);
     }
 
     private bool HasEquippedItemOfType(EquipType equipType)

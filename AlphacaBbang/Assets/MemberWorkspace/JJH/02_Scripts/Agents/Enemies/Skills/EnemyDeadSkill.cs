@@ -22,7 +22,9 @@ namespace JJH._02_Scripts.Agents.Enemies.Skills
             effect.transform.position = _owner.transform.position;
             effect.PlayBoomParticle();
 
-            Instantiate(_owner.EnemyData.EnemyInventoryPrefab, _owner.transform.position, Quaternion.identity);
+            GameObject lootBoxObject = Instantiate(_owner.EnemyData.EnemyInventoryPrefab, _owner.transform.position, Quaternion.identity);
+            LootBox lootBox = lootBoxObject.GetComponent<LootBox>();
+            lootBox.Init(_owner.LootTables[_owner.WeaponNum]);
             _owner.gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
             Destroy(_owner.gameObject);
         }

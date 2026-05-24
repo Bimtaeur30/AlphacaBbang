@@ -6,20 +6,25 @@ public class LootBox : MonoBehaviour
     [SerializeField] private LootTable lootTable;
     [SerializeField] private string boxDisplayName = "상자";
     [SerializeField] private EventChannelSO systemChannel;
-    
+
+    public void Init(LootTable lootTable)
+    {
+        this.lootTable = lootTable;
+    }
+
     public void Open()
     {
         systemChannel.RaiseEvent(SystemEvents.LootboxDataSendEvent.Init(this));
     }
- 
+
     public LootTable LootTable => lootTable;
     public string BoxDisplayName => boxDisplayName;
- 
+
     private bool _isOpened = false;
     public bool IsOpened => _isOpened;
- 
+
     public void MarkAsOpened() => _isOpened = true;
- 
+
 #if UNITY_EDITOR
     private void OnValidate()
     {

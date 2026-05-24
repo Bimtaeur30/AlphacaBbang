@@ -15,10 +15,10 @@ namespace MemberWorkspace.JJG._02_Scripts
             if (itemData == null)
                 return false;
 
-            if (itemData is WeaponItemData)
+            if (itemData is WeaponItemData || itemData is ThrowingItemData)
                 return index < 3;
 
-            if (itemData is FoodItemData || itemData is MedicineItemData || itemData is ThrowingItemData)
+            if (itemData is FoodItemData || itemData is MedicineItemData)
                 return index >= 1;
 
             return false;

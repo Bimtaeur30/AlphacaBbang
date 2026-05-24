@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2625992425715187470}
   - component: {fileID: 4907566727985491640}
   - component: {fileID: -6403202131463391004}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Grenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,6 +175,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4e032cb8d3238d419c3987cdb420767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NormalGrenade
+  firingAngle: 45
+  gravity: 9.8
+  throwingDistance: 5
+  startPoint: {fileID: 0}
+  layermask:
+    serializedVersion: 2
+    m_Bits: 2048
+  targetMarkPrefab: {fileID: 1264165220301592963, guid: 4a32aa4d8eef8a2449ea0f126159e446, type: 3}
+  lineRenderer: {fileID: 4907566727985491640}
+  lineSegmentCount: 30
+  lineTimeStep: 0.1
+  grenadeSO: {fileID: 11400000, guid: b1a8dbb66c488e94bbfce3ddeb7cf857, type: 2}
+  blinkMaterial: {fileID: 2100000, guid: e157ca0e628047f439a7e98187804e55, type: 2}
+  blinkStartTime: 1
+  maxBlinkSpeed: 10
   poolManager: {fileID: 11400000, guid: abdb3652d1fd41943a3ec3fbfa0f34a1, type: 2}
   explosionPref: {fileID: 11400000, guid: 74002f5c784bf0a45bdc5d575c99edfd, type: 2}
   enemyLayer:
@@ -304,3 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2e6ac0ff93bebc4f9637034c368fe68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  maxPoints: 30
+  minDistance: 0.1
+  maxWidth: 0.15
+  minWidth: 0.01

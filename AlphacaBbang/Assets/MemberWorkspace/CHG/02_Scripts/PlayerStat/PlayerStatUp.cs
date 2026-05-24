@@ -29,6 +29,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         [SerializeField] private EventChannelSO systemChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
         [SerializeField] private PlayerStatViewUI[] _statViews;
+        
+        [SerializeField] private InventoryContainer inventory;
 
         private PlayerSaveData _playerSaveData;
         private SlidePanelController _slidePanelController;
@@ -71,6 +73,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
         public void AddStat(PlayerStatType type)
         {
+            //if (inventory)
             //아이템 없으면 취소 추가
             int idx = (int)type;
             int cur = (int)GetCurrentStat(type);

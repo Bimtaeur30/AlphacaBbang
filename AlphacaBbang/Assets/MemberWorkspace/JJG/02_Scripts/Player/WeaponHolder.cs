@@ -20,9 +20,7 @@ public class WeaponHolder : MonoBehaviour
     public event Action<ThrowingItemData> OnThrowingItemChanged;
     public event Action<MeleeWeaponBase> OnMeleeWeaponChanged;
 
-
     private readonly WeaponItemData[] _slotCache = new WeaponItemData[2];
-
     private AgentAttack _agentAttack;
 
     private void Awake()
@@ -70,6 +68,7 @@ public class WeaponHolder : MonoBehaviour
         OnMeleeWeaponChanged?.Invoke(null);
         Debug.Log("[WeaponHolder] 근접무기 해제");
     }
+
     private void OnQuickSlotChanged()
     {
         for (int i = 0; i < 2; i++)
@@ -120,7 +119,6 @@ public class WeaponHolder : MonoBehaviour
         CurrentSlotIndex = -1;
         CurrentWeapon = null;
         OnWeaponChanged?.Invoke(null);
-
         Debug.Log("[WeaponHolder] 무기 해제");
     }
 
@@ -138,6 +136,15 @@ public class WeaponHolder : MonoBehaviour
         CurrentThrowingItem = throwingData;
         OnThrowingItemChanged?.Invoke(CurrentThrowingItem);
 
+        WeaponSlotIndex targetSlot = (CurrentSlotIndex == 0)
+            ? WeaponSlotIndex.Second
+            : WeaponSlotIndex.First;
+
+        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(
+            throwingData.GrenadeBehaviorPrefab.gameObject,
+            targetSlot
+        ));
+
         Debug.Log($"[WeaponHolder] 투척류 장착: {throwingData?.ItemName ?? "없음"} (슬롯 {slotIndex})");
     }
 
@@ -146,6 +153,16 @@ public class WeaponHolder : MonoBehaviour
         CurrentThrowingSlotIndex = -1;
         CurrentThrowingItem = null;
         OnThrowingItemChanged?.Invoke(null);
+
+        WeaponSlotIndex targetSlot = (CurrentSlotIndex == 0)
+            ? WeaponSlotIndex.Second
+            : WeaponSlotIndex.First;
+
+        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(
+            null,
+            targetSlot, 
+            false
+        ));
 
         Debug.Log("[WeaponHolder] 투척류 해제");
     }

@@ -269,6 +269,15 @@ public class InventoryContextMenu : MonoBehaviour
                 equipmentContainer.NotifyEquipmentChanged();
             }
         }
+        else if (itemData is ThrowingItemData throwingData)
+        {
+            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            if (targetSlotIndex >= 0 && weaponHolder != null)
+            {
+                weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);
+                hotkeyHandler.SetThrowingSlotIndex(targetSlotIndex);
+            }
+        }
         else if (itemData.EquipType != EquipType.None)
         {
             if (equipmentContainer == null)
@@ -278,15 +287,6 @@ public class InventoryContextMenu : MonoBehaviour
                 return;
             }
             equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
-        }
-        else if (itemData is ThrowingItemData throwingData)
-        {
-            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
-            if (targetSlotIndex >= 0 && weaponHolder != null)
-            {
-                weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);
-                hotkeyHandler.SetThrowingSlotIndex(targetSlotIndex);
-            }
         }
         else if (itemData is FoodItemData || itemData is MedicineItemData)
         {

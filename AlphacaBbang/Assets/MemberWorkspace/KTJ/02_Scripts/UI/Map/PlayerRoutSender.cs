@@ -55,13 +55,13 @@ public class PlayerRoutSender : MonoBehaviour
     private void SendPlayerAction()
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerActionEvent.Init("테스트 액션이 발동되었습니다."));
-        Debug.Log("[PlayerRoutSender] 테스트 액션 발송");
+        //Debug.Log("[PlayerRoutSender] 테스트 액션 발송");
     }
 
     private void SendPlayerPosition()
     {
         mapEventChannel.RaiseEvent(MapEvents.PlayerPointEvent.Init(transform.position));
-        Debug.Log($"[PlayerRoutSender] 포인트 발송 | recordTime: {_recordTime:F2}s");
+        //Debug.Log($"[PlayerRoutSender] 포인트 발송 | recordTime: {_recordTime:F2}s");
     }
 
     public void OnEndRecording(StartPlayEvent @event)

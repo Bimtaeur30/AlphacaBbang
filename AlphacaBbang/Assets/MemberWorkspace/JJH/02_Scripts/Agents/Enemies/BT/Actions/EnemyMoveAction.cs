@@ -3,6 +3,7 @@ using System;
 using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.AI;
 using Action = Unity.Behavior.Action;
 using Random = UnityEngine.Random;
 
@@ -30,16 +31,28 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _moveTime = 0;
             _moveDuration = Random.Range(1f, 2f);
 
-            Vector3 move = Random.insideUnitSphere;
-            move.y = 0f;
-            move.Normalize();
-            _direction = move;
+            Vector3 randomDirection = Random.insideUnitSphere * 10f;
+            randomDirection += Enemy.Value.transform.position;
 
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(randomDirection, out hit, 10f, NavMesh.AllAreas))
+            {
+                NavMeshPath path = new NavMeshPath();
 
-            _navMeshAgent.KeepChase(true);
-            _navMeshAgent.MoveTo(Enemy.Value.transform.position + move * 10f);
+                if (NavMesh.CalculatePath(Enemy.Value.transform.position, hit.position, NavMesh.AllAreas, path)
+                    && path.status == NavMeshPathStatus.PathComplete)
+                {
+                    _direction = (hit.position - Enemy.Value.transform.position).normalized;
+                    _direction.y = 0f;
 
-            return Status.Running;
+                    _navMeshAgent.KeepChase(true);
+                    _navMeshAgent.MoveTo(hit.position);
+
+                    return Status.Running;
+                }
+            }
+
+            return Status.Failure;
         }
 
         protected override Status OnUpdate()

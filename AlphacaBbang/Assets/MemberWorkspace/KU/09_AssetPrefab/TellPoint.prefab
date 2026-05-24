@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3319747766757316906}
   - component: {fileID: 8877079563106472987}
   - component: {fileID: 5698097195884612596}
+  - component: {fileID: 4832180215857290455}
   m_Layer: 0
   m_Name: Meshy_Model
   m_TagString: Untagged
@@ -90,6 +91,29 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!136 &4832180215857290455
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51466801465343910}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.009535275
+  m_Height: 0.019079905
+  m_Direction: 1
+  m_Center: {x: 0.000019315165, y: 0.0000008991921, z: -0.000012106672}
 --- !u!1 &943760093426470133
 GameObject:
   m_ObjectHideFlags: 0
@@ -235,7 +259,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dad956d4c0de934cb4a35b9137c4e35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TellPointAnimation
-  _clip: {fileID: 7400000, guid: be0cfc568a4727f4f93402fd3a1713bf, type: 2}
 --- !u!1 &2323857879137738918
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,9 +818,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1192438915143771420}
-        m_TargetAssemblyTypeName: EscapeHole, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 6938806253280814475}
+        m_TargetAssemblyTypeName: TellPointAnimation, Assembly-CSharp
+        m_MethodName: PlayerOpenAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

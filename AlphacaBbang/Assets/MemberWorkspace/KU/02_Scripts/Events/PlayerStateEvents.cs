@@ -1,12 +1,11 @@
 using JJH._02_Scripts_Systems.EventSystems;
-using System.Collections;
-using UnityEngine;
 
 public static class PlayerStateEvents
 {
     public static readonly AddMaxHealth AddMaxHealth = new AddMaxHealth();
     public static readonly AddMaxStamina AddMaxStamina = new AddMaxStamina();
     public static readonly AddMaxStamina AddMaxAimStamina = new AddMaxStamina();
+    public static readonly AddGold AddGold = new AddGold();
     public static readonly PlayerHpHeal PlayerHpHeal = new PlayerHpHeal();
     public static readonly AddPlayerMoveSpeed AddPlayerMoveSpeed = new AddPlayerMoveSpeed();
 
@@ -37,6 +36,17 @@ public class AddMaxAimStamina : GameEvent
     public int val { get; private set; }
 
     public AddMaxAimStamina Init(int val)
+    {
+        this.val = val;
+        return this;
+    }
+}
+
+public class AddGold : GameEvent
+{
+    public int val { get; private set; }
+
+    public AddGold Init(int val)
     {
         this.val = val;
         return this;

@@ -1,11 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using JJH._02_Scripts_Systems.EventSystems;
 using JJH._02_Scripts.Agents;
+using JJH._02_Scripts_Systems.EventSystems;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
@@ -20,10 +20,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
     [Header("Item Setting")]
     [SerializeField] private AgentArmorModule agentArmorModule;
-    
+
     [Header("Dont Setting")]
     [SerializeField] private List<PartItemData> requiredParts;
-    
+
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
@@ -47,7 +47,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     {
         InitializeSlots();
     }
-    
+
     public bool CanEscape()
     {
         foreach (var key in requiredParts)
@@ -77,10 +77,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             slots.Add(new ItemSlot());
         }
     }
-    
+
     private void HandlePlayerHpHeal(PlayerHpHeal evt)
     {
-        
+
     }
 
     public virtual ItemSlot GetSlot(int index)
@@ -222,7 +222,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             return true;
         }
     }
-    
+
     public bool ConsumeBulletByName(string bulletName, int amount = 1)
     {
         for (int i = 0; i < slots.Count; i++)
@@ -233,7 +233,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 return RemoveAmount(i, amount);
             }
         }
-    
+
         Debug.LogWarning($"총알을 찾을 수 없습니다: {bulletName}");
         return false;
     }
@@ -309,7 +309,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
             }
             else if (itemData is ArmorItemData armorData)
-            { 
+            {
                 Debug.Log($"agentArmorModule: {agentArmorModule}");
                 Debug.Log($"armorData: {armorData}");
                 Debug.Log($"armorData.Armor: {armorData?.Armor}");
@@ -413,7 +413,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
         return -1;
     }
-    
+
     public int GetItemCount(ItemData itemData)
     {
         if (itemData == null)
@@ -450,7 +450,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     }
 
     //public SaveIdData SaveId { get; }
-    
+
     [Serializable]
     private struct InventorySaveData
     {

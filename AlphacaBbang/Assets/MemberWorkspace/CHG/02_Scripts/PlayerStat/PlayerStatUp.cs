@@ -95,6 +95,9 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
                 case PlayerStatType.AimStamina:
                     systemChannel.RaiseEvent(new AddMaxAimStamina().Init(next));
                     break;
+                case PlayerStatType.Gold:
+                    systemChannel.RaiseEvent(new AddGold().Init(next));
+                    break;
                 default:
                     Debug.LogWarning("NOoo");
                     return;

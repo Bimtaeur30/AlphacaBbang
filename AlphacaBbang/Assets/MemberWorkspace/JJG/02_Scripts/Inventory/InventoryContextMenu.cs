@@ -353,6 +353,7 @@ public class InventoryContextMenu : MonoBehaviour
     }
     private void OnClickStore()
     {
+        Debug.Log("onclickstor");
         ItemSlot slot = _container.GetSlot(_slotIndex);
         if (slot == null || slot.IsEmpty) { Close(); return; }
 
@@ -368,6 +369,12 @@ public class InventoryContextMenu : MonoBehaviour
             Close();
             return;
         }
+        
+        Debug.Log($"_container: {_container.name}, storageContainer: {storageContainer.name}");
+        Debug.Log($"item: {slot.ItemData.name}, amount: {slot.Amount}");
+    
+        bool result = storageContainer.AddItem(slot.ItemData, slot.Amount);
+        Debug.Log($"AddItem result: {result}");
 
         if (storageContainer != null && storageContainer.AddItem(slot.ItemData, slot.Amount))
             _container.ClearSlot(_slotIndex);
@@ -420,6 +427,7 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void OnClickDrop()
     {
+        Debug.Log("OnClickDrop");
         ItemSlot slot = _container.GetSlot(_slotIndex);
         ItemData itemData = slot?.ItemData;
         int slotIndex = _slotIndex;

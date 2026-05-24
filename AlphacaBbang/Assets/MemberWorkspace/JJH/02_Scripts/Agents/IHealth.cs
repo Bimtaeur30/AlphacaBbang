@@ -3,6 +3,7 @@
     public interface IHealth
     {
         public void InitHealth(float maxHealth);
-        public void MinusHealth(float health);
+        public void Damage(float health);
+        public void Heal(float amount);
     }
 }

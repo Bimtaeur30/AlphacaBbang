@@ -1,3 +1,4 @@
+using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using UnityEngine;
@@ -7,21 +8,19 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
     [SerializeField] private EventChannelSO systemChannel;
+    [SerializeField] private EventChannelSO agentChannel;
 
-    public float MaxHealth = 100f; 
-    public float CurrentHealth { get; private set; }
-
-    public float MaxStamina = 10f; 
+    public float MaxHealth = 100f;
+    public float MaxStamina = 10f;
     public float CurrentStamina { get; private set; }
 
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
-    private PlayerController _controller; 
+    private PlayerController _controller;
     public bool IsRunning { get; private set; }
-    public event Action<float> OnHealthChanged;
     public event Action<float> OnStaminaChanged;
 
-    public PlayerSaveData SaveData {get; private set;}
+    public PlayerSaveData SaveData { get; private set; }
 
     protected override void Awake()
     {
@@ -34,41 +33,48 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
             MaxStamina = Mathf.Max(1, SaveData.MaxStamina);
         }
 
-        CurrentHealth = MaxHealth;
         CurrentStamina = MaxStamina;
 
-        OnHealthChanged += UpdateHealthUI;
+        agentChannel.AddListener<AgentDeadEvent>(OnAgentDead);
+        agentChannel.AddListener<AgentHealthChangeEvent>(UpdateHealthUI);
         OnStaminaChanged += UpdateStaminaUI;
     }
+
+    private void OnDestroy()
+    {
+        agentChannel.RemoveListener<AgentDeadEvent>(OnAgentDead);
+        agentChannel.RemoveListener<AgentHealthChangeEvent>(UpdateHealthUI);
+        OnStaminaChanged -= UpdateStaminaUI;
+    }
+
+    private void OnAgentDead(AgentDeadEvent evt)
+    {
+        if (evt.Agent == _controller)
+        {
+            systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
+        }
+    }
+
     private void Update()
     {
         UpdateStamina();
     }
+
     public void TakeDamage(float damage)
     {
-        CurrentHealth -= damage;
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
-        OnHealthChanged?.Invoke(CurrentHealth);
-        if (CurrentHealth <= 0)
-        {
-            Die();
-        }
+        _controller.HealthModule.Damage(damage);
     }
+
     public void Heal(float amount)
     {
-        CurrentHealth += amount;
-        CurrentHealth = Mathf.Clamp(CurrentHealth, 0, MaxHealth);
-        OnHealthChanged?.Invoke(CurrentHealth);
+        _controller.HealthModule.Heal(amount);
     }
-    private void Die()
-    {
-        Debug.Log("플레이어 사망");
-        systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
-    }
+
     public void SetRunning(bool isRunning)
     {
         IsRunning = isRunning;
     }
+
     private void UpdateStamina()
     {
         if (IsRunning && CurrentStamina > 0f)
@@ -88,14 +94,15 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina);
         OnStaminaChanged?.Invoke(CurrentStamina);
     }
-    private void UpdateHealthUI(float value)
+    private void UpdateHealthUI(AgentHealthChangeEvent evt)
     {
         if (_healthBar != null)
-            _healthBar.size = value / MaxHealth;
+            _healthBar.size = evt.CurrentHealth / MaxHealth;
     }
     private void UpdateStaminaUI(float value)
     {
-        if (_staminaBar != null) _staminaBar.size = value / MaxStamina;
+        if (_staminaBar != null)
+            _staminaBar.size = value / MaxStamina;
     }
     public bool CanRun()
     {

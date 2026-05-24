@@ -205,7 +205,7 @@ public class InventoryContextMenu : MonoBehaviour
         {
             if (weaponData.Gun != null)
             {
-                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 3);
+                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
                 
                 // 기존 퀵슬롯의 다른 무기 제거 이벤트 발송
                 for (int i = 0; i < 3; i++)
@@ -271,7 +271,7 @@ public class InventoryContextMenu : MonoBehaviour
         }
         else if (itemData is ThrowingItemData throwingData)
         {
-            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
             if (targetSlotIndex >= 0 && weaponHolder != null)
             {
                 weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);
@@ -368,6 +368,12 @@ public class InventoryContextMenu : MonoBehaviour
             Close();
             return;
         }
+        
+        Debug.Log($"_container: {_container.name}, storageContainer: {storageContainer.name}");
+        Debug.Log($"item: {slot.ItemData.name}, amount: {slot.Amount}");
+    
+        bool result = storageContainer.AddItem(slot.ItemData, slot.Amount);
+        Debug.Log($"AddItem result: {result}");
 
         if (storageContainer != null && storageContainer.AddItem(slot.ItemData, slot.Amount))
             _container.ClearSlot(_slotIndex);

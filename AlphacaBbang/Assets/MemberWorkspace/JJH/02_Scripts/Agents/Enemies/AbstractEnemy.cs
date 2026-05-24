@@ -15,14 +15,19 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [SerializeField] private WeaponBase[] Weapons;
+        [field: SerializeField] public LootTable[] LootTables { get; private set; }
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
         public INavMeshAgent EnemyNavMeshAgent { get; private set; }
 
-        private BehaviorGraphAgent _btAgent;
         public BlackboardVariable<StateChannel> StateChannel => _stateChannel;
         private BlackboardVariable<StateChannel> _stateChannel;
+
+        public int WeaponNum => _weaponNum;
+        private int _weaponNum;
+
+        private BehaviorGraphAgent _btAgent;
 
         private Coroutine _hitCoroutine;
         private Color _originColor;
@@ -33,18 +38,18 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            int rand = Random.Range(0, Weapons.Length);
+            _weaponNum = Random.Range(0, Weapons.Length);
             if (Weapon is EnemyWeaponHandleModule)
             {
-                Weapons[rand].gameObject.SetActive(true);
+                Weapons[_weaponNum].gameObject.SetActive(true);
                 EnemyWeaponHandleModule gunHandleModule = (EnemyWeaponHandleModule)Weapon;
-                gunHandleModule.SetCurrentGun((Gun)Weapons[rand]);
+                gunHandleModule.SetCurrentGun((Gun)Weapons[_weaponNum]);
             }
             else if (Weapon is AgentAttack)
             {
-                Weapons[rand].gameObject.SetActive(true);
+                Weapons[_weaponNum].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
-                //gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[rand]);
+                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[_weaponNum]);
             }
             if (Weapon != null)
                 Weapon.Init();

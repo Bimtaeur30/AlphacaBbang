@@ -55,20 +55,33 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
         {
             Vector3 sideDirection = Random.Range(0, 2) == 0 ? -_enemyTrans.right : _enemyTrans.right;
 
-            Vector3 rawTargetPosition = _enemyTrans.position + sideDirection * SidestepDistance;
-            if (NavMesh.SamplePosition(rawTargetPosition, out NavMeshHit hit, 2f, NavMesh.AllAreas))
-            {
-                targetPosition = hit.position;
+            if (TryGetValidPosition(sideDirection, out targetPosition))
                 return true;
-            }
 
             sideDirection = -sideDirection;
 
-            rawTargetPosition = _enemyTrans.position + sideDirection * SidestepDistance;
-            if (NavMesh.SamplePosition(rawTargetPosition, out hit, 2f, NavMesh.AllAreas))
-            {
-                targetPosition = hit.position;
+            if (TryGetValidPosition(sideDirection, out targetPosition))
                 return true;
+
+            targetPosition = Vector3.zero;
+
+            return false;
+        }
+
+        private bool TryGetValidPosition(Vector3 sideDirection, out Vector3 targetPosition)
+        {
+            Vector3 rawTargetPosition = _enemyTrans.position + sideDirection * SidestepDistance;
+
+            if (NavMesh.SamplePosition(rawTargetPosition, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                NavMeshPath path = new NavMeshPath();
+
+                if (NavMesh.CalculatePath(_enemyTrans.position, hit.position, NavMesh.AllAreas, path)
+                    && path.status == NavMeshPathStatus.PathComplete)
+                {
+                    targetPosition = hit.position;
+                    return true;
+                }
             }
 
             targetPosition = Vector3.zero;

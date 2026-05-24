@@ -35,6 +35,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
                 GameObject itemChoiceBtn = Instantiate(itemChoiceBtnPrefab, layOut);
                 PawnItemUI itemUI = itemChoiceBtn.GetComponent<PawnItemUI>();
                 itemUI.SaleItemDataSO = itemData;
+                itemUI.itemImage.sprite = itemData.Icon;
+                itemUI.itemName.text = itemData.ItemName;
                 itemChoiceBtns.Add(itemUI);
                 itemUI.btn.onClick.AddListener(() => ChangeContent(itemData));
             }
@@ -64,6 +66,24 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             evt.Init(_curItemData.Price * (int)itemCountSlider.value);
             AddGoldChannel.RaiseEvent(evt);
             ChangeContent(_curItemData);
+        }
+
+        [ContextMenu("ADDItem")]
+        private void AddItem()
+        {
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
+            inventory.AddItem(_curItemData);
         }
     }
 }

@@ -12,7 +12,7 @@ public class GunRenderer : MonoBehaviour
 
     public void PlayClip(int clipHash, float normalizedTime, float crossFadeDuration, int layerIndex = 0, float speed = 1)
     {
-        Animator.CrossFadeInFixedTime(clipHash, crossFadeDuration, layerIndex, normalizedTime);
-        Animator.SetFloat("SPEED", speed);
+        //Animator.CrossFadeInFixedTime(clipHash, crossFadeDuration, layerIndex, normalizedTime);
+        //Animator.SetFloat("SPEED", speed);
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class FadeTarget
@@ -23,6 +24,7 @@ public class FadeGroup
 public class CutsceneManager : MonoBehaviour
 {
     [SerializeField] private List<FadeGroup> fadeGroups = new List<FadeGroup>();
+    [SerializeField] private UnityEvent OnEnd;
 
     private int currentGroupIndex = 0;
     private bool isFading = false;
@@ -94,6 +96,7 @@ public class CutsceneManager : MonoBehaviour
         if (currentGroupIndex >= fadeGroups.Count)
         {
             Debug.Log("ÄÆ½Å ³¡");
+            OnEnd?.Invoke();
         }
     }
 }

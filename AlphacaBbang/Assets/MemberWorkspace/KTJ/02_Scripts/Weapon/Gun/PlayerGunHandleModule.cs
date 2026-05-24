@@ -44,14 +44,14 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     
     private void Start()
     {
-        //// ≈◊Ω∫∆Æ ƒ⁄µÂ
+        //// ÔøΩ◊ΩÔøΩ∆Æ ÔøΩ⁄µÔøΩ
         //gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, WeaponSlotIndex.First, false));
         ////gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(TEST_GUN2, WeaponSlotIndex.Second));
         //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First, false));
-        // ø©±‚±Ó¡ˆ
+        // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ
     }
 
-    public override void SetCurrentGun(IWeapon gun) // Ω«¡¶∑Œ πﬂªÁ«“ √—¿ª ¡§«—¥Ÿ. ƒ¸ ΩΩ∑‘ø°º≠ 1,2π¯ º±≈√«œ∏È «ˆ¿Á πﬂªÁµ… √—¿∏∑Œ ¡ˆ¡§µ .
+    public override void SetCurrentGun(IWeapon gun) // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩﬂªÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩ—¥ÔøΩ. ÔøΩÔøΩ ÔøΩÔøΩÔøΩ‘øÔøΩÔøΩÔøΩ 1,2ÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩœ∏ÔøΩ ÔøΩÔøΩÔøΩÔøΩ ÔøΩﬂªÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ.
     {
         base.SetCurrentGun(gun);
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentWeapon.WeaponData));
@@ -73,7 +73,7 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
                 break;
         }
     }
-    // ºˆ¡§
+    // ÔøΩÔøΩÔøΩÔøΩ
     private void HandleWeaponSlotEquipEvent(WeaponSlotEquipEvent @event)
     {
         Transform gunParent = gunHoldParent_1;
@@ -86,22 +86,34 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
                 gunParent = gunHoldParent_2;
                 break;
         }
+        // Removal case: if no gun provided or explicit unequip, just destroy existing child and clear cache
+        if (@event.Gun == null || @event.IsEquip == false)
+        {
+            if (gunParent.childCount > 0)
+                Destroy(gunParent.GetChild(0).gameObject);
+
+            switch (@event.SlotIndex)
+            {
+                case WeaponSlotIndex.First: firstSlotGun = null; break;
+                case WeaponSlotIndex.Second: secondSlotGun = null; break;
+            }
+
+            return;
+        }
 
         if (gunParent.childCount > 0)
             Destroy(gunParent.GetChild(0).gameObject);
-        // IWeapon gun = Instantiate(@event.Gun, gunParent);
-        
 
         GameObject gunObj = Instantiate(@event.Gun, gunParent);
         IWeapon gun = gunObj.GetComponent<IWeapon>();
-        Debug.Assert(gun != null, "gun¿Ã IWeapon¿ª ±∏«ˆ«œ¡ˆ æ æ“Ω¿¥œ¥Ÿ.");
+        Debug.Assert(gun != null, "gun must implement IWeapon.");
 
         gunObj.transform.localPosition = Vector3.zero;
         gunObj.transform.localRotation = Quaternion.identity;
         gunObj.transform.localScale = Vector3.one;
         GameObjectInjector.InjectRecursive(gunObj, _container);
 
-        // ¿ŒΩ∫≈œΩ∫∏¶ ΩΩ∑‘ø° ¿˙¿Â
+        // cache reference for equip
         switch (@event.SlotIndex)
         {
             case WeaponSlotIndex.First: firstSlotGun = gun; break;

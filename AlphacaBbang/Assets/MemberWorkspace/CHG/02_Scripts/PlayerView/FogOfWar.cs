@@ -72,14 +72,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
                 MaskTexture.Release();
                 MaskTexture = null;
             }
-        }
-        
-        private void OnGUI()
-        {
-            if (MaskTexture != null)
-            {
-                GUI.DrawTexture(new Rect(0, 0, 300, 300), MaskTexture);
-            }
-        }
+        }   
     }
 }

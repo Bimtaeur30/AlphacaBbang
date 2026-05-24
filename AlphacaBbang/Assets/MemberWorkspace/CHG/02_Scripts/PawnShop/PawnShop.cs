@@ -85,5 +85,16 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
         }
+        
+        [ContextMenu("CheckSlots")]
+        private void CheckSlots()
+        {
+            for (int i = 0; i < inventory.SlotCount; i++)
+            {
+                var slot = inventory.GetSlot(i);
+                if (slot != null && !slot.IsEmpty)
+                    Debug.Log($"슬롯 {i}: {slot.ItemData.name} x{slot.Amount}");
+            }
+        }
     }
 }

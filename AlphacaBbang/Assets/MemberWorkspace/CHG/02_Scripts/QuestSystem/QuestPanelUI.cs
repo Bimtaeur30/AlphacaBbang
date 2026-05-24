@@ -10,19 +10,18 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     {
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private GameObject conditionTextPrefab;
-        [SerializeField] private Button rewardButton;
 
         public event Action<Quest> OnClaimed;
         
+        public Quest Quest => _quest;
+        
         private Quest _quest;
         private List<TextMeshProUGUI> _conditionTexts = new List<TextMeshProUGUI>();
-
+        
         public void Initialize(Quest quest)
         {
             _quest = quest;
             nameText.text = quest.Data.Name;
-            rewardButton.interactable = false;
-            rewardButton.onClick.AddListener(OnRewardClaimed);
             
             foreach (QuestCondition condition in quest.Conditions)
             {
@@ -47,15 +46,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             if (_quest.IsCompleted)
             {
                 nameText.color = Color.green;
-                rewardButton.interactable = true;  
             }
-        }
-
-        private void OnRewardClaimed()
-        {
-            QuestManager.Instance.CompleteQuest(_quest);
-            OnClaimed?.Invoke(_quest);
-            Destroy(gameObject);
         }
     }
 }

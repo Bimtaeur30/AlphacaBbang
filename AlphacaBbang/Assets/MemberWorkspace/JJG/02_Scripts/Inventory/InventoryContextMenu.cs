@@ -353,7 +353,6 @@ public class InventoryContextMenu : MonoBehaviour
     }
     private void OnClickStore()
     {
-        Debug.Log("onclickstor");
         ItemSlot slot = _container.GetSlot(_slotIndex);
         if (slot == null || slot.IsEmpty) { Close(); return; }
 
@@ -427,7 +426,6 @@ public class InventoryContextMenu : MonoBehaviour
 
     private void OnClickDrop()
     {
-        Debug.Log("OnClickDrop");
         ItemSlot slot = _container.GetSlot(_slotIndex);
         ItemData itemData = slot?.ItemData;
         int slotIndex = _slotIndex;

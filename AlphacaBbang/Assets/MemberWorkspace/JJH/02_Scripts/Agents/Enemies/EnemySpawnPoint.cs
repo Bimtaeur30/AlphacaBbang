@@ -4,8 +4,43 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
 {
     public class EnemySpawnPoint : MonoBehaviour
     {
-        public Vector3 Position => transform.position;
-        public GameObject[] EnemyPrefabs;
-        [Range(0, 100)] public int SpawnPercent = 100;
+        [SerializeField][Range(0, 100)] private int SpawnPercent = 100;
+        [SerializeField] private GameObject[] EnemyPrefabs;
+        [SerializeField] private LayerMask TargetLayer;
+        [SerializeField] private float spawnCheckRadius = 50f;
+
+        private Vector3 _position => transform.position;
+        private bool _isSpawned = false;
+
+        private void Update()
+        {
+            if (Physics.CheckSphere(transform.position, spawnCheckRadius, TargetLayer) && !_isSpawned)
+            {
+                SpawnEnemy();
+                _isSpawned = true;
+            }
+        }
+
+        private void SpawnEnemy()
+        {
+            if (Random.value > SpawnPercent / 100f)
+                return;
+
+            if (EnemyPrefabs == null || EnemyPrefabs.Length == 0)
+            {
+                Debug.LogWarning($"{name}에 EnemyPrefabs가 없습니다.");
+                return;
+            }
+
+            int random = Random.Range(0, EnemyPrefabs.Length);
+            GameObject enemyPrefab = EnemyPrefabs[random];
+            Instantiate(enemyPrefab, _position, Quaternion.identity);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, spawnCheckRadius);
+        }
     }
 }

@@ -65,7 +65,18 @@ public class InventoryUI : MonoBehaviour
         if (container == null)
             return;
 
-        inventory = container;
+        if (Application.isPlaying)
+        {
+            if (inventory != null)
+                inventory.OnContainerChanged -= RefreshUI;
+
+            inventory = container;
+            inventory.OnContainerChanged += RefreshUI;
+        }
+        else
+        {
+            inventory = container;
+        }
 
         for (int i = 0; i < _slotUIList.Count; i++)
             _slotUIList[i].SetContainer(inventory);

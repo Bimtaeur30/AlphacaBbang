@@ -11,13 +11,14 @@ public class InventoryToggleUI : MonoBehaviour
     [SerializeField] private CanvasGroup InventoryGroup;
     [SerializeField] private EventChannelSO InventoryChannel;
     [SerializeField] private CanvasGroup bg;
+    [SerializeField] private StorageOpener storageOpener;
     [SerializeField] private float AnimDuration = 1f;
     private RectTransform inventory;
 
     private void Awake()
     {
         inventory = InventoryGroup.GetComponent<RectTransform>();
-        Debug.Assert(inventory != null, "ÀÎº¥Åä¸® ±×·ì¿¡ RecTransformÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.");
+        Debug.Assert(inventory != null, "ï¿½Îºï¿½ï¿½ä¸® ï¿½×·ì¿¡ RecTransformï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê½ï¿½ï¿½Ï´ï¿½.");
 
         InventoryChannel.AddListener<InventoryToggleEvt>(HandleInventoryToggle);
     }
@@ -31,7 +32,7 @@ public class InventoryToggleUI : MonoBehaviour
         InventoryGroup.alpha = 0f;
         InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
     }
-    private void Update() // Å×½ºÆ® ÄÚµå
+    private void Update() // ï¿½×½ï¿½Æ® ï¿½Úµï¿½
     {
         if (Keyboard.current.iKey.wasPressedThisFrame)
             InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));

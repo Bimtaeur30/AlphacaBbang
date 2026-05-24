@@ -20,6 +20,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
     [Header("Item Setting")]
     [SerializeField] private AgentArmorModule agentArmorModule;
+    
+    [Header("Dont Setting")]
+    [SerializeField] private List<PartItemData> requiredParts;
+    
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
 
@@ -42,6 +46,16 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
     protected virtual void Awake()
     {
         InitializeSlots();
+    }
+    
+    public bool CanEscape()
+    {
+        foreach (var key in requiredParts)
+        {
+            if (GetItemCount(key) <= 0)
+                return false;
+        }
+        return true;
     }
 
     protected void InitializeSlots()

@@ -7,7 +7,7 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
         [SerializeField][Range(0, 100)] private int SpawnPercent = 100;
         [SerializeField] private GameObject[] EnemyPrefabs;
         [SerializeField] private LayerMask TargetLayer;
-        [SerializeField] private float spawnCheckRadius = 5f;
+        [SerializeField] private float spawnCheckRadius = 50f;
 
         private Vector3 _position => transform.position;
         private bool _isSpawned = false;

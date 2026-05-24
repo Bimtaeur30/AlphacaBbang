@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +19,29 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         {
             QuestManager.Instance.OnQuestAccepted += OnQuestAccepted;
             QuestManager.Instance.OnUpdateQuestProgress += OnUpdateQuestProgress;
-            QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+            QuestManager.Instance.OnClearAllQuests += OnClearAllQueast;
+        }
+        
+        private void OnDestroy()
+        {
+            QuestManager.Instance.OnQuestAccepted -= OnQuestAccepted;
+            QuestManager.Instance.OnUpdateQuestProgress -= OnUpdateQuestProgress;
+            QuestManager.Instance.OnClearAllQuests -= OnClearAllQueast;
+        }
+        
+        private void OnClearAllQueast()
+        {
+            foreach (QuestPanelUI panel in _activePanels.Values)
+            {
+               if (panel.Quest.IsCompleted)
+                   QuestManager.Instance.CompleteQuest(panel.Quest);
+               
+               Destroy(panel.gameObject);
+            }            
+            _activePanels.Clear();
         }
 
-        private void OnQuestCompleted(Quest quest)
-        {
-            if (!_activePanels.TryGetValue(quest, out QuestPanelUI panelUI)) return;
-    
-            _activePanels.Remove(quest);
-            
-        }
+        
 
         private void OnQuestAccepted(Quest quest)
         {

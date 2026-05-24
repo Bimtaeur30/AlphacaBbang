@@ -11,6 +11,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     public class QuestManager : MonoSingleton<QuestManager>
     {
         [SerializeField] private EventChannelSO _agentDeadEvent;
+        [SerializeField] private InventoryContainer inventory;
+        [SerializeField] private ItemDatabase itemDatabase;
         
         //in game all quest
         private Dictionary<string, QuestData> _mainQuests = new Dictionary<string, QuestData>();
@@ -19,6 +21,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         public event Action<Quest> OnQuestAccepted;
         public event Action<Quest> OnUpdateQuestProgress;
         public event Action<Quest> OnQuestCompleted;
+        public event Action OnClearAllQuests;
         // now active/completed quest
         private List<Quest> _activeQuests = new List<Quest>();
         private List<string> _completedQuestIds = new List<string>();
@@ -31,6 +34,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             //base.Awake();
             LoadQuestDB();
             _agentDeadEvent.AddListener<AgentDeadEvent>(QuestProgressUpdate);
+            //보유중인 아이템?
+            
         }
 
         private void LoadQuestDB()
@@ -124,6 +129,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                         OnUpdateQuestProgress?.Invoke(quest);
                     }
         }
+        
         public void QuestProgressUpdate(AgentDeadEvent evt)
         {
             foreach (Quest quest in _activeQuests)
@@ -166,9 +172,16 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             {
                 foreach (var rewardId in quest.Data.RewardIds)
                 {
-                    // 보상 지급
+                    itemDatabase.TryGetItem(rewardId, out var item);
+                    inventory.AddItem(item);
                 }
             }
+        }
+
+        public void ClearAllActiveQuests()
+        {
+            _activeQuests.Clear();
+            OnClearAllQuests?.Invoke(); 
         }
         
 #region QuestDataUpdateTest

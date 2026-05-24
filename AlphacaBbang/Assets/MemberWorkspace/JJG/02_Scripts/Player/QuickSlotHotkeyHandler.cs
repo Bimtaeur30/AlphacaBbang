@@ -133,6 +133,16 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
                 return;
             }
 
+            // Throwing 아이템 처리 추가
+            if (slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                weaponHolder.EquipThrowingItem(i, throwingData);
+                SetThrowingSlotIndex(i);
+                return;
+            }
+
             if (slot.ItemData is WeaponItemData weaponData)
             {
                 if (weaponData.Gun != null)

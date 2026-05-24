@@ -51,12 +51,13 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
         // �������
     }
 
-    public override void SetCurrentGun(IWeapon gun) // ������ �߻��� ���� ���Ѵ�. �� ���Կ��� 1,2�� �����ϸ� ���� �߻�� ������ ������.
+    public override void SetCurrentGun(IWeapon gun)
     {
         base.SetCurrentGun(gun);
+        if (CurrentWeapon.WeaponData == null)
+            return;
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentWeapon.WeaponData));
     }
-
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
     {
         switch (@event.SlotIndex)

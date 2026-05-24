@@ -290,7 +290,7 @@ public class InventoryContextMenu : MonoBehaviour
         }
         else if (itemData is FoodItemData || itemData is MedicineItemData)
         {
-            TryMoveToQuickSlot(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            TryMoveToQuickSlot(itemData, minIndex: 2, maxIndex: quickSlotContainer.SlotCount);
         }
 
         Close();

@@ -21,7 +21,7 @@ namespace JJH._02_Scripts.Systems.EventSystems
             Agent = agent;
 
             if (Agent is AbstractEnemy enemy)
-                EnemyName = enemy.EnemyData.EnemyName;
+                EnemyName = enemy.EnemyData.EnemyID;
 
             return this;
         }

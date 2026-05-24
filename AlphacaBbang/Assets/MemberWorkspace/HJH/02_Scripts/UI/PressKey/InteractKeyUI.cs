@@ -32,6 +32,7 @@ public class InteractKeyUI : MonoBehaviour
     private bool isCompleted = false;
     //private IInteractable currentTarget;
 
+    private bool canInteract;
 
     private float pressedTime = 0f;
 
@@ -55,6 +56,7 @@ public class InteractKeyUI : MonoBehaviour
         //actionText.text = target.ActionText;
         fillAmount = 0f;
         isCompleted = false;
+        canInteract = true;
         rootCanvas.SetActive(true);
     }
 
@@ -63,6 +65,7 @@ public class InteractKeyUI : MonoBehaviour
         //currentTarget = null;
         fillAmount = 0f;
         isCompleted = false;
+        canInteract = false;
         rootCanvas.SetActive(false);
     }
 
@@ -78,8 +81,12 @@ public class InteractKeyUI : MonoBehaviour
 
             if (fillAmount >= 1f)
             {
-                isCompleted = true;
-                OnInteract?.Invoke();
+                if (canInteract)
+                {
+                    isCompleted = true;
+                    OnInteract?.Invoke();
+
+                }
                 //currentTarget.Interact();
             }
         }

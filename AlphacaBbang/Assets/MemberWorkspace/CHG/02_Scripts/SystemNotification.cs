@@ -27,7 +27,12 @@ namespace MemberWorkspace.CHG._02_Scripts
             
             _slidePanelController.OnEndMoving += OnEndMoveing;
         }
-        
+
+        private void OnDestroy()
+        {
+            eventChannel.RemoveListener<SystemNotificationEvent>(OnShowNotification);
+        }
+
         private IEnumerator Start()
         {
             yield return null; 

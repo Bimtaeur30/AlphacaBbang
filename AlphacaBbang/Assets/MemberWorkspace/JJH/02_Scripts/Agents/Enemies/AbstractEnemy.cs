@@ -14,7 +14,6 @@ namespace JJH._02_Scripts.Agents.Enemies
     public abstract class AbstractEnemy : Agent
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
-        [SerializeField] private WeaponBase[] Weapons;
         [field: SerializeField] public LootTable[] LootTables { get; private set; }
 
         public IEnemySkillModule EnemySkill { get; private set; }
@@ -38,21 +37,26 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            _weaponNum = Random.Range(0, Weapons.Length);
+            _weaponNum = Random.Range(0, EnemyData.Weapons.Length);
             if (Weapon is EnemyWeaponHandleModule)
             {
-                Weapons[_weaponNum].gameObject.SetActive(true);
+                EnemyData.Weapons[_weaponNum].gameObject.SetActive(true);
                 EnemyWeaponHandleModule gunHandleModule = (EnemyWeaponHandleModule)Weapon;
-                gunHandleModule.SetCurrentGun((Gun)Weapons[_weaponNum]);
+                gunHandleModule.SetCurrentGun((Gun)EnemyData.Weapons[_weaponNum]);
             }
             else if (Weapon is AgentAttack)
             {
-                Weapons[_weaponNum].gameObject.SetActive(true);
+                EnemyData.Weapons[_weaponNum].gameObject.SetActive(true);
                 AgentAttack gunHandleModule = (AgentAttack)Weapon;
-                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)Weapons[_weaponNum]);
+                gunHandleModule.SetCurrentWeapon((MeleeWeaponBase)EnemyData.Weapons[_weaponNum]);
             }
             if (Weapon != null)
                 Weapon.Init();
+
+            if (EnemyData.HelmetArmor != null)
+                Armor.ArmorEquip(true, ArmorType.Helmet, EnemyData.HelmetArmor);
+            if (EnemyData.ShieldArmor != null)
+                Armor.ArmorEquip(true, ArmorType.Body, EnemyData.ShieldArmor);
 
             EnemyNavMeshAgent = GetModule<INavMeshAgent>();
             EnemySkill = GetModule<IEnemySkillModule>();

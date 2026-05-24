@@ -18,10 +18,12 @@ public class PlayerController : Agent
 
     [SerializeField] private float _releaseDuration = 1.1f;
     [SerializeField] private float _shortClickThreshold = 0.65f;
+    [SerializeField] private float footStepInterval = 0.4f;
 
     [Reflex.Attributes.Inject] private CursorController _cursorController;
 
     [SerializeField] private SoundClipSO equipSoundClip;
+    [SerializeField] private SoundClipSO walkSoundClip;
     [SerializeField] private EventChannelSO soundChannel;
 
 
@@ -36,6 +38,8 @@ public class PlayerController : Agent
 
     private Vector2 _movementInput;
     private float _additionalSpeedMultiplier = 1f;
+    private float _footStepTimer;
+    private bool _isWalkSoundPlaying;
 
     private PlayerAimState _aimState = PlayerAimState.Idle;
 
@@ -96,11 +100,13 @@ public class PlayerController : Agent
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;
+
     }
 
     private void Update()
     {
         HandleAimInput();
+        HandleFootStep();
         UpdateAimState();
 
         if (IsAiming)
@@ -110,7 +116,40 @@ public class PlayerController : Agent
 
         UpdateAnimation();
     }
+    private void HandleFootStep()
+    {
+        bool isMoving = _movementInput.sqrMagnitude > 0.01f;
 
+        if (!isMoving)
+        {
+            if (_isWalkSoundPlaying)
+            {
+                soundChannel.RaiseEvent(
+                    SoundEvents.StopSoundEvent
+                );
+
+                _isWalkSoundPlaying = false;
+            }
+
+            _footStepTimer = 0f;
+            return;
+        }
+
+        _footStepTimer -= Time.deltaTime;
+
+        if (_footStepTimer <= 0f)
+        {
+            soundChannel.RaiseEvent(
+                SoundEvents.PlaySoundEvent.Init(
+                    walkSoundClip,
+                    transform
+                )
+            );
+
+            _isWalkSoundPlaying = true;
+            _footStepTimer = walkSoundClip.clip.length;
+        }
+    }
     private void HandleAimInput()
     {
         bool isPressed = Mouse.current.rightButton.isPressed;

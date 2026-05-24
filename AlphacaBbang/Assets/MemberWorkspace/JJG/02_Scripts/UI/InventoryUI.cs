@@ -98,6 +98,7 @@ public class InventoryUI : MonoBehaviour
 
             if (_weaponHolder != null)
             {
+                _weaponHolder.OnWeaponRemoved += OnWeaponRemoved;
                 _weaponHolder.OnWeaponChanged += OnWeaponChanged;
                 _weaponHolder.OnThrowingItemChanged += OnThrowingItemChanged;
             }
@@ -116,6 +117,12 @@ public class InventoryUI : MonoBehaviour
 #endif
     }
 
+    private void OnWeaponRemoved()
+    {
+        _selectedSlotIndex = -1;
+        UpdateSelectionUI();
+    }
+
     private void OnDisable()
     {
         if (Application.isPlaying)
@@ -125,6 +132,7 @@ public class InventoryUI : MonoBehaviour
 
             if (_weaponHolder != null)
             {
+                _weaponHolder.OnWeaponRemoved -= OnWeaponRemoved;
                 _weaponHolder.OnWeaponChanged -= OnWeaponChanged;
                 _weaponHolder.OnThrowingItemChanged -= OnThrowingItemChanged;
             }

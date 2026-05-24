@@ -11,7 +11,7 @@ public class InventoryContextMenu : MonoBehaviour
 {
     [SerializeField] private bool _handleEquipmentItems = false;
     [SerializeField] private GameObject rootPanel;
-
+    
     public static bool IsOpen { get; private set; }
 
     private static InventoryContextMenu _currentOpenMenu;

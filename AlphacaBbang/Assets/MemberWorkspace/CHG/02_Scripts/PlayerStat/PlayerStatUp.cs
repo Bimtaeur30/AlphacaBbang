@@ -71,6 +71,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
         public void AddStat(PlayerStatType type)
         {
+            InventoryContainer
             //아이템 없으면 취소 추가
             int idx = (int)type;
             int cur = (int)GetCurrentStat(type);

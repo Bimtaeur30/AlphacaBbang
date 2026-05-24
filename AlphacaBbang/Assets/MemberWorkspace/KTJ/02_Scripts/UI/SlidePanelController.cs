@@ -135,11 +135,11 @@ public class SlidePanelController : MonoBehaviour
             : canvasRect != null ? canvasRect.rect.size : new Vector2(Screen.width, Screen.height);
     }
 
-    private Vector2 VisiblePosition => IsXAxis
+    public Vector2 VisiblePosition => IsXAxis
         ? new Vector2(_visibleAxisValue, _fixedAxisValue)
         : new Vector2(_fixedAxisValue, _visibleAxisValue);
 
-    private Vector2 HiddenPosition => IsXAxis
+    public Vector2 HiddenPosition => IsXAxis
         ? new Vector2(_hiddenAxisValue, _fixedAxisValue)
         : new Vector2(_fixedAxisValue, _hiddenAxisValue);
 

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2244752224337094954}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: FirePos
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2545796836590872607}
   - component: {fileID: 3382555758418697965}
   - component: {fileID: 7876442128600906948}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7836956914408048553}
   - component: {fileID: 7567593277095254996}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <CurrentBulletCount>k__BackingField: 0
   <MaxBulletCount>k__BackingField: 30
   bulletCountTxt: {fileID: 3382555758418697965}
   reloadUI: {fileID: 3508251915823316362}
@@ -244,7 +243,7 @@ GameObject:
   - component: {fileID: 3626167401759857519}
   - component: {fileID: 1619453544440006901}
   - component: {fileID: 4111036321856116141}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -313,7 +312,7 @@ GameObject:
   - component: {fileID: 3188608527214535775}
   - component: {fileID: 547146370452122319}
   - component: {fileID: 3974641420804164726}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -373,7 +372,7 @@ GameObject:
   - component: {fileID: 3891159783202315620}
   - component: {fileID: 6102753589117758392}
   - component: {fileID: 55250330861486307}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: BulletShellParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5265,7 +5264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3508251915823316362}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Reload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5302,7 +5301,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8105084106245482567}
   - component: {fileID: 5121966240883953994}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCountLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5367,7 +5366,7 @@ GameObject:
   - component: {fileID: 1777759653620229966}
   - component: {fileID: 1386516925540946982}
   - component: {fileID: 8355637844225187134}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5441,7 +5440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 64674686728561472}
   - component: {fileID: 7907555658598575076}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: VZ61
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5481,13 +5480,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
   <WeaponData>k__BackingField: {fileID: 11400000, guid: 58aaa7cac6793ff4ba129d2c11663593, type: 2}
-  <TargetLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 65
   <Magazine>k__BackingField: {fileID: 7567593277095254996}
+  <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 2244752224337094954}
   rayDistance: 50
-  damage: 10
   singleFireAnimParam: {fileID: 11400000, guid: cfbd7ddb4adcb2145ba67f2565343722, type: 2}
   autoFireAnimParam: {fileID: 11400000, guid: 7d85b264385ea064f89fc439454a30f0, type: 2}
   idleAnimParam: {fileID: 11400000, guid: 3927465fcebed484caee057622876667, type: 2}
@@ -5509,7 +5505,7 @@ GameObject:
   - component: {fileID: 376644471511884434}
   - component: {fileID: 7197232259326488534}
   - component: {fileID: 2498888905285427405}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GunModuleCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5622,7 +5618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5139373929307943074}
   - component: {fileID: 6410688281120392199}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: LineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5764,7 +5760,7 @@ GameObject:
   - component: {fileID: 1520127292336101598}
   - component: {fileID: 8523396126724328814}
   - component: {fileID: 2021177636234741294}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5836,6 +5832,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3626167401759857519}
     m_Modifications:
+    - target: {fileID: 416781673243256706, guid: 5acd0acbbb543a44fb5c2a055ac99ba4, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 498475961359663497, guid: 5acd0acbbb543a44fb5c2a055ac99ba4, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 2728270762016938914, guid: 5acd0acbbb543a44fb5c2a055ac99ba4, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 2907646037852164317, guid: 5acd0acbbb543a44fb5c2a055ac99ba4, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5900,6 +5908,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gun_SMG_016
       objectReference: {fileID: 0}
+    - target: {fileID: 7629381979386585095, guid: 5acd0acbbb543a44fb5c2a055ac99ba4, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5961,6 +5973,10 @@ PrefabInstance:
     - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
       propertyPath: m_Name
       value: GunSoundPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

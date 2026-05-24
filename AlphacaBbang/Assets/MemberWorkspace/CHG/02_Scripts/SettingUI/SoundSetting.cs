@@ -33,7 +33,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             float t = Mathf.InverseLerp(-80f, 0f, _lastVolume);
             int result = Mathf.RoundToInt(t * 100f);
 
-            volumeLabel.text = $"{UpperParam}: {result}";
+            volumeLabel.text = $"{result}";
             volumeSlider.value = 0;
             muteToggle.isOn = false;
         }
@@ -53,7 +53,8 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             _currentVolume = 0f;
             audioMixer.SetFloat(audioMixerParam, _lastVolume);
             _isMute = false;
-            volumeLabel.text = $"{UpperParam}: {_lastVolume}";
+            volumeLabel.text = $"{_lastVolume}";
+            volumeSlider.value = _lastVolume;
         }
 
         private void ChangeVolume(float volume)
@@ -62,7 +63,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             float t = Mathf.InverseLerp(-80f, 0f, volume);
             int result = Mathf.RoundToInt(t * 100f);
 
-            volumeLabel.text = $"{UpperParam}: {result}";
+            volumeLabel.text = $"{result}";
         }
 
 

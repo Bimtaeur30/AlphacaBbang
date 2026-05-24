@@ -72,6 +72,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
                 MaskTexture.Release();
                 MaskTexture = null;
             }
-        }
+        }   
     }
 }

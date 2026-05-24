@@ -10,7 +10,7 @@ using UnityEngine;
 namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 {
     [Serializable]
-    struct PlayerStatViewUI
+    struct PlayerStatStruct
     {
         public PlayerStatType StatType;
         public PlayerStatUpUI statUpUi;
@@ -28,7 +28,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         [SerializeField] private EventChannelSO playerStatChannel;
         [SerializeField] private EventChannelSO systemChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
-        [SerializeField] private PlayerStatViewUI[] _statViews;
+        [SerializeField] private PlayerStatStruct[] _statViews;
         
         [SerializeField] private InventoryContainer inventory;
 
@@ -54,27 +54,32 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             }
 
             var sb = new StringBuilder("필요한 재료\n");
-            foreach (PlayerStatViewUI statView in _statViews)
+            foreach (PlayerStatStruct pStruct in _statViews)
             {
-                int idx = (int)statView.StatType;
-                int cur = (int)GetCurrentStat(statView.StatType);
-                statView.statUpUi.StatTextChange(cur.ToString(), (cur + statView.statUpValue).ToString());
-                sb.AppendLine($"{StatLabels[idx]}: {statView.needItem.ItemName}X{statView.needItemCount}");
+                int idx = (int)pStruct.StatType;
+                int cur = (int)GetCurrentStat(pStruct.StatType);
+                pStruct.statUpUi.StatTextChange(cur.ToString(), (cur + pStruct.statUpValue).ToString());
+                sb.AppendLine($"{StatLabels[idx]}: {pStruct.needItem.ItemName}X{pStruct.needItemCount}");
             }
             needItemText.text = sb.ToString();
             
-            foreach (PlayerStatViewUI statView in _statViews)
+            foreach (PlayerStatStruct pStruct in _statViews)
             {
                 
-                int curStat = (int)GetCurrentStat(statView.StatType);
-                statView.statUpUi.StatTextChange(curStat.ToString(), (curStat + statView.statUpValue).ToString());
+                int curStat = (int)GetCurrentStat(pStruct.StatType);
+                pStruct.statUpUi.StatTextChange(curStat.ToString(), (curStat + pStruct.statUpValue).ToString());
             }
         }
 
-        public void AddStat(PlayerStatType type)
+        public void AddStat(int index)
         {
-            //if (inventory)
-            //아이템 없으면 취소 추가
+            PlayerStatType type  = (PlayerStatType)index;
+            PlayerStatStruct pStruct = _statViews[index];
+            
+            if (inventory.GetItemCount(pStruct.needItem) < pStruct.needItemCount)
+            {
+                return;
+            }
             int idx = (int)type;
             int cur = (int)GetCurrentStat(type);
             int next = cur + _statViews[idx].statUpValue;
@@ -98,7 +103,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             int updated = (int)GetCurrentStat(type);
             _statViews[idx].statUpUi.StatTextChange(updated.ToString(), (updated + _statViews[idx].statUpValue).ToString());
             _statViews[idx].needItemCount +=  _statViews[idx].needValueIncrease;
-            //아이템 감소 추가
+            
+            inventory.ConsumeBulletByName(pStruct.needItem.Id, pStruct.needItemCount);
         }
 
         private float GetCurrentStat(PlayerStatType type) => type switch

@@ -10,8 +10,18 @@ public static class SystemEvents
     public static readonly LoadFileEvent LoadFileEvent = new LoadFileEvent();
     public static readonly StartNewGameEvent StartNewGameEvent = new StartNewGameEvent();
     public static readonly OnGameENd OnGameEnd = new OnGameENd();
+    public static readonly LootboxDataSendEvent LootboxDataSendEvent = new LootboxDataSendEvent();
 }
 
+public class LootboxDataSendEvent : GameEvent
+{
+    public LootBox LootBox { get; private set; }
+    public LootboxDataSendEvent Init(LootBox lootbox)
+    {
+        LootBox = lootbox;
+        return this;
+    }
+}
 public class OnGameENd : GameEvent
 {
     public bool IsPlayerAlive { get; private set; }

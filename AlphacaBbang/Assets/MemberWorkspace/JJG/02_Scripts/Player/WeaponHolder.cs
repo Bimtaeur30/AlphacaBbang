@@ -136,15 +136,6 @@ public class WeaponHolder : MonoBehaviour
         CurrentThrowingItem = throwingData;
         OnThrowingItemChanged?.Invoke(CurrentThrowingItem);
 
-        WeaponSlotIndex targetSlot = (CurrentSlotIndex == 0)
-            ? WeaponSlotIndex.Second
-            : WeaponSlotIndex.First;
-
-        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(
-            throwingData.GrenadeBehaviorPrefab.gameObject,
-            targetSlot
-        ));
-
         Debug.Log($"[WeaponHolder] 투척류 장착: {throwingData?.ItemName ?? "없음"} (슬롯 {slotIndex})");
     }
 
@@ -153,17 +144,6 @@ public class WeaponHolder : MonoBehaviour
         CurrentThrowingSlotIndex = -1;
         CurrentThrowingItem = null;
         OnThrowingItemChanged?.Invoke(null);
-
-        WeaponSlotIndex targetSlot = (CurrentSlotIndex == 0)
-            ? WeaponSlotIndex.Second
-            : WeaponSlotIndex.First;
-
-        gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(
-            null,
-            targetSlot, 
-            false
-        ));
-
         Debug.Log("[WeaponHolder] 투척류 해제");
     }
 }

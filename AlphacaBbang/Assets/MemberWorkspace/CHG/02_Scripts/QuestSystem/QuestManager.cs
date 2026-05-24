@@ -31,6 +31,8 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             //base.Awake();
             LoadQuestDB();
             _agentDeadEvent.AddListener<AgentDeadEvent>(QuestProgressUpdate);
+            //보유중인 아이템?
+            
         }
 
         private void LoadQuestDB()
@@ -124,6 +126,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
                         OnUpdateQuestProgress?.Invoke(quest);
                     }
         }
+        
         public void QuestProgressUpdate(AgentDeadEvent evt)
         {
             foreach (Quest quest in _activeQuests)

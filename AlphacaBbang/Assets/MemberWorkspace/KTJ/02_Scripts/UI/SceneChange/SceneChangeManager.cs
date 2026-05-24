@@ -64,9 +64,9 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
             SceneType.TITLE => 0,
             SceneType.BASE => 1,
             SceneType.STAGE => 2,
-            SceneType.TUTORIAL => 3,
-            SceneType.START_SCENE  => 4,
-            SceneType.END_SCENE => 5,
+            SceneType.START_SCENE  => 3,
+            SceneType.END_SCENE => 4,
+            SceneType.TUTORIAL => 5,
             _ => 0
         };
     }
@@ -78,9 +78,9 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
             SceneType.TITLE => "메인 타이틀로 이동중",
             SceneType.BASE => "기지로 돌아가는중",
             SceneType.STAGE => "밖으로 탐사를 떠나는중",
-            SceneType.TUTORIAL => "튜토리얼로 이동중",
             SceneType.START_SCENE => "시작컷씬으로 이동중",
             SceneType.END_SCENE => "엔딩씬으로 이동중",
+            SceneType.TUTORIAL => "튜토리얼로 이동중",
             _ => "씬 이동중"
         };
     }

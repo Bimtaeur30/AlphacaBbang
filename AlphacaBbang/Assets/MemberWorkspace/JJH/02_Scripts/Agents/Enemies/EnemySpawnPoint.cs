@@ -7,14 +7,14 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
         [SerializeField][Range(0, 100)] private int SpawnPercent = 100;
         [SerializeField] private GameObject[] EnemyPrefabs;
         [SerializeField] private LayerMask TargetLayer;
-        [SerializeField] private float spawnCheckRadius = 50f;
+        [SerializeField] private float SpawnCheckDistance = 50f;
 
         private Vector3 _position => transform.position;
         private bool _isSpawned = false;
 
         private void Update()
         {
-            if (Physics.CheckSphere(transform.position, spawnCheckRadius, TargetLayer) && !_isSpawned)
+            if (Physics.CheckSphere(transform.position, SpawnCheckDistance, TargetLayer) && !_isSpawned)
             {
                 SpawnEnemy();
                 _isSpawned = true;
@@ -40,7 +40,7 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, spawnCheckRadius);
+            Gizmos.DrawWireSphere(transform.position, SpawnCheckDistance);
         }
     }
 }

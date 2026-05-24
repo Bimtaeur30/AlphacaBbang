@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 7621661672308722056}
   - component: {fileID: 4636902195668414869}
   - component: {fileID: 7546276197391912648}
-  m_Layer: 18
+  m_Layer: 0
   m_Name: FireGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,10 +175,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b219f7c3ceb54514a926b6a5cf151aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FireGrenade
+  firingAngle: 45
+  gravity: 9.8
+  throwingDistance: 5
+  startPoint: {fileID: 0}
+  layermask:
+    serializedVersion: 2
+    m_Bits: 0
+  targetMarkPrefab: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  lineSegmentCount: 30
+  lineTimeStep: 0.1
   blinkMaterial: {fileID: 2100000, guid: fa409e44aee85164d808072e09d330c3, type: 2}
   blinkStartTime: 1
   maxBlinkSpeed: 10
-  Grenade: {fileID: 11400000, guid: dd70dd9ffefd49f4a8752f27a3bc34cc, type: 2}
   fireZonePrefab: {fileID: 100000, guid: 2aeb421170308b946bd9a970beaf9c64, type: 3}
 --- !u!114 &4636902195668414869
 MonoBehaviour:

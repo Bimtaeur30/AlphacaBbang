@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2695455737622783458}
   - component: {fileID: 6201214141725727297}
-  m_Layer: 18
+  m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 3323506925365250391}
   - component: {fileID: -7083943197559942298}
   - component: {fileID: -6733805880937565435}
-  m_Layer: 18
+  m_Layer: 0
   m_Name: SmokeGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -229,10 +229,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba6d8299b42b7bb4e906c9aee4091a2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmokeGrenade
+  firingAngle: 45
+  gravity: 9.8
+  throwingDistance: 5
+  startPoint: {fileID: 0}
+  layermask:
+    serializedVersion: 2
+    m_Bits: 0
+  targetMarkPrefab: {fileID: 0}
+  lineRenderer: {fileID: 0}
+  lineSegmentCount: 30
+  lineTimeStep: 0.1
   blinkMaterial: {fileID: 2100000, guid: fa409e44aee85164d808072e09d330c3, type: 2}
   blinkStartTime: 1
   maxBlinkSpeed: 10
-  Grenade: {fileID: 11400000, guid: f5ff75a0dc4b8454e8473da7a789cabe, type: 2}
   smokeZonePrefab: {fileID: 6318521201675055664, guid: 6454ce3347f505547940fb5687f05456, type: 3}
 --- !u!114 &-7083943197559942298
 MonoBehaviour:

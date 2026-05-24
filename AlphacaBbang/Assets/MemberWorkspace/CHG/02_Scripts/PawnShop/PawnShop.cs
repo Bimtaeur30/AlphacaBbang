@@ -24,7 +24,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [SerializeField] private TextMeshProUGUI itemCountText;
         [SerializeField] private Slider itemCountSlider;
         
-        private InventoryContainer inventory;
+        [SerializeField] private InventoryContainer inventory;
         private SaleItemDataSO _curItemData;
         
         private List<PawnItemUI> itemChoiceBtns =  new List<PawnItemUI>();
@@ -40,7 +40,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
                 itemChoiceBtns.Add(itemUI);
                 itemUI.btn.onClick.AddListener(() => ChangeContent(itemData));
             }
-            inventory = FindFirstObjectByType<InventoryContainer>();
+            //inventory = FindFirstObjectByType<InventoryContainer>();
             ChangeContent(itemChoiceBtns[0].SaleItemDataSO);
         }
 
@@ -84,6 +84,17 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
+        }
+        
+        [ContextMenu("CheckSlots")]
+        private void CheckSlots()
+        {
+            for (int i = 0; i < inventory.SlotCount; i++)
+            {
+                var slot = inventory.GetSlot(i);
+                if (slot != null && !slot.IsEmpty)
+                    Debug.Log($"슬롯 {i}: {slot.ItemData.name} x{slot.Amount}");
+            }
         }
     }
 }

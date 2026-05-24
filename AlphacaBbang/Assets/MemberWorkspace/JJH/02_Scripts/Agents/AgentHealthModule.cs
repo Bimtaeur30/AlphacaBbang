@@ -73,7 +73,7 @@ namespace JJH._02_Scripts.Agents
             ChangeHealthText();
         }
 
-        public void MinusHealth(float value)
+        public void Damage(float value)
         {
             float damage = value;
             if (armors != null)
@@ -82,7 +82,7 @@ namespace JJH._02_Scripts.Agents
                     damage *= 1f - armor.DamageReductionRate;
                 }
             Health -= damage;
-            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(damage));
+            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(Health, damage));
             _owner.AgentSoundPlayer.PlaySound(hitSound);
         }
 

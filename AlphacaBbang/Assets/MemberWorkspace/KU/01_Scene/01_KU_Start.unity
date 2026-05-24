@@ -554,6 +554,8 @@ MonoBehaviour:
   _rotationSpeed: 9
   _releaseDuration: 0.67
   _shortClickThreshold: 1
+  equipSoundClip: {fileID: 0}
+  soundChannel: {fileID: 0}
   playerInputSO: {fileID: 11400000, guid: 7f331cee3fc0b2a4bae901ec427a6542, type: 2}
 --- !u!54 &141946312
 Rigidbody:
@@ -770,15 +772,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a48715bc65d740f99148fb680bc9243c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.Bunker.PlayerStatUp
+  needItem: []
   playerStatChannel: {fileID: 0}
   systemChannel: {fileID: 0}
-  healthUpValue: 0
-  speedUpValue: 0
-  staminaUpValue: 0
-  aimStaminaUpValue: 0
-  StatUpPointText: {fileID: 0}
-  LevelText: {fileID: 0}
-  statView: []
+  needItemText: {fileID: 0}
+  _statViews: []
 --- !u!1 &241385549 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: e6eb9321b823efb478e299b9538867cd, type: 3}
@@ -4514,9 +4512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.PlayerView.FogOfWarManager
   maskCamera: {fileID: 1283209220}
-  fogColor: {r: 0.25, g: 0.25, b: 0.25, a: 0.85}
-  fogMaterial: {fileID: 2100000, guid: f81e285094c979346ad7b4f5afd8ecd7, type: 2}
-  player: {fileID: 0}
+  player: {fileID: 241749398}
 --- !u!4 &1289027512
 Transform:
   m_ObjectHideFlags: 0
@@ -6015,6 +6011,14 @@ PrefabInstance:
     - target: {fileID: 5725605643701183242, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.000038497838
+      objectReference: {fileID: 0}
+    - target: {fileID: 5756053464737576533, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5756053464737576533, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5764455776621210235, guid: 6b1e7860453791e4785cf3f3d81aa5d8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -11456,6 +11460,8 @@ MonoBehaviour:
   _rotationSpeed: 100
   _releaseDuration: 0.67
   _shortClickThreshold: 1
+  equipSoundClip: {fileID: 0}
+  soundChannel: {fileID: 0}
   playerInputSO: {fileID: 11400000, guid: 7f331cee3fc0b2a4bae901ec427a6542, type: 2}
 --- !u!1 &5523204830189360429
 GameObject:

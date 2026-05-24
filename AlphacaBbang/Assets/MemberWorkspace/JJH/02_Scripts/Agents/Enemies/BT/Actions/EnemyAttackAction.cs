@@ -30,7 +30,7 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
 
             return Status.Running;
         }
-
+        
         protected override Status OnUpdate()
         {
             _time += Time.deltaTime;

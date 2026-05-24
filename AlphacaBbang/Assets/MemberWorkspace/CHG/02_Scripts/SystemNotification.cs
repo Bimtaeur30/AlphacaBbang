@@ -19,6 +19,7 @@ namespace MemberWorkspace.CHG._02_Scripts
         private SlidePanelController _slidePanelController;
         private bool _isMoving = false;
         private bool _isShowing = false;
+        private bool _loopoing = false;
         
         private void Awake()
         {
@@ -27,7 +28,12 @@ namespace MemberWorkspace.CHG._02_Scripts
             
             _slidePanelController.OnEndMoving += OnEndMoveing;
         }
-        
+
+        private void OnDestroy()
+        {
+            eventChannel.RemoveListener<SystemNotificationEvent>(OnShowNotification);
+        }
+
         private IEnumerator Start()
         {
             yield return null; 
@@ -38,33 +44,41 @@ namespace MemberWorkspace.CHG._02_Scripts
         {
             _notifications.Enqueue(obj);
             Debug.Log(obj.MainMessage);
-            if (!_isMoving)
+            if (!_loopoing)
                 StartCoroutine(ShowingNotification());
-
+            
         }
 
         private IEnumerator ShowingNotification()
         {
-            _isMoving = true;
-            _isShowing = true;
-            
-            yield return null;
-            
-            _slidePanelController.Toggle();
-            yield return new WaitUntil(() => !_isShowing);
-            yield return new WaitForSeconds(stopDelay);
-            _slidePanelController.Toggle();
-            yield return new WaitUntil(() => !_isMoving);
+            _loopoing = true;
+            while (_notifications.Count > 0)
+            {
+                SystemNotificationEvent text = _notifications.Dequeue();
+                _isMoving = true;
+
+
+                mainText.text = text.MainMessage;
+                subText.text = text.SubMessage;
+
+                yield return null;
+
+                _slidePanelController.Toggle();
+                yield return new WaitUntil(() => !_isMoving);
+                yield return new WaitForSeconds(stopDelay);
+
+                _isMoving = true;
+                _slidePanelController.Toggle();
+                yield return new WaitUntil(() => !_isMoving);
+                yield return new WaitForSeconds(stopDelay);
+            }
+            _loopoing = false;
             
         }
 
         private void OnEndMoveing()
         {
-            Debug.Log("AAAAAAA");
-            if (_isShowing)
-                _isShowing = false;
-            else 
-                _isMoving = false;
+            _isMoving = false;
         }
         
         #if UNITY_EDITOR

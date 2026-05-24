@@ -8,6 +8,7 @@ public class LootBoxInteractor : MonoBehaviour
     [SerializeField] private SlidePanelController SlidePanelController;
  
     [SerializeField] private PlayerController playerController;
+    [SerializeField] private EventChannelSO systemChannel;
     
     private LootBoxContainer lootBoxContainer;
  
@@ -19,10 +20,16 @@ public class LootBoxInteractor : MonoBehaviour
  
     private void Awake()
     {
+        systemChannel.AddListener<LootboxDataSendEvent>(HandleLootboxDataSendEvent);
         lootBoxContainer = GetComponent<LootBoxContainer>();
         InventoryChannel.AddListener<InventoryToggleEvt>(HandleInventoryToggle);
     }
- 
+
+    private void HandleLootboxDataSendEvent(LootboxDataSendEvent obj)
+    {
+        StartOpen(obj.LootBox);
+    }
+
     private void OnDestroy()
     {
         InventoryChannel.RemoveListener<InventoryToggleEvt>(HandleInventoryToggle);

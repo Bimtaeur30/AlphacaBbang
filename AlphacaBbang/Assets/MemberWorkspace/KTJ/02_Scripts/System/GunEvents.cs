@@ -53,4 +53,11 @@ public class WeaponEquipDataEvent : GameEvent
 
 public class WeaponDropEvent : GameEvent
 {
+    public WeaponSlotIndex Index { get; private set; }
+
+    public WeaponDropEvent Init(WeaponSlotIndex index)
+    {
+        Index = index;
+        return this;
+    }
 }

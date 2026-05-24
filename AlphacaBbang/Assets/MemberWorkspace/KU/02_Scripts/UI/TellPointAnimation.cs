@@ -7,8 +7,9 @@ public class TellPointAnimation : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
     }
-    public void PlayerOenAnimation()
+    public void PlayerOpenAnimation()
     {
         _animator.SetTrigger("Play");
+        Debug.Log("PlayClip");
     }
 }

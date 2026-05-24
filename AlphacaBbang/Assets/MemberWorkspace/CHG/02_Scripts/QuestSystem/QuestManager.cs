@@ -12,7 +12,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
     {
         [SerializeField] private EventChannelSO _agentDeadEvent;
         [SerializeField] private InventoryContainer inventory;
-        [SerializeField] private ItemDatabase itemDatabase;
+        [SerializeField] private ItemDatabase[] itemDatabase;
         
         //in game all quest
         private Dictionary<string, QuestData> _mainQuests = new Dictionary<string, QuestData>();
@@ -172,8 +172,15 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
             {
                 foreach (var rewardId in quest.Data.RewardIds)
                 {
-                    itemDatabase.TryGetItem(rewardId, out var item);
-                    inventory.AddItem(item);
+                    foreach (ItemDatabase itemDatabase in itemDatabase)
+                    {
+                        if (itemDatabase.TryGetItem(rewardId, out var item))
+                        {
+                            inventory.AddItem(item);
+                            break;
+                        }
+                        
+                    }
                 }
             }
         }

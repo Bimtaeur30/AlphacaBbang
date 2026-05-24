@@ -1,56 +1,61 @@
 using System;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MemberWorkspace.CHG._02_Scripts.SettingUI
 {
+    [Serializable]
+    public struct TabButton
+    {
+        public Button button;
+        public TextMeshProUGUI text;
+    }
+    
     public class SettingUITabChanger : MonoBehaviour
     {
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private TabButton[] tabButtons;
         [SerializeField] private CanvasGroup[] groups;
-        [SerializeField] private float hideAlpha;
+        [SerializeField] private RectTransform curTapImgRect;
+        [SerializeField] private float hideAlpha = 0.3f;
 
         private void Awake()
         {
-            ChangeTab(0);
+            //ChangeTab(0);
         }
 
         public void ChangeTab(int index)
         {
-            for (int i = 0; i <  groups.Length; i++)
+            for (int i = 0; i < groups.Length; i++)
             {
                 if (i == index)
                 {
-                    ShowTab(buttons[i], groups[i]);
+                    ShowTab(tabButtons[i], groups[i]);
                     continue;
                 }
-                HideTab(buttons[i], groups[i]);
+                HideTab(tabButtons[i], groups[i]);
             }
         }
 
-        private void ShowTab(Button button, CanvasGroup group)
+        private void ShowTab(TabButton tabButton, CanvasGroup group)
         {
-            button.interactable = false;
-            button.transform.SetAsLastSibling();
-            Color color = button.image.color;
-            /*color.a = hideAlpha;
-            button.image.color = color;*/
+            tabButton.button.interactable = false;
+            Color color = tabButton.text.color;
             color.a = 1;
-            button.image.color = color;
+            tabButton.text.color = color;
+            curTapImgRect.DOMoveX(tabButton.text.rectTransform.position.x, 0.3f);
             group.alpha = 1;
             group.interactable = true;
             group.blocksRaycasts = true;
         }
         
-        private void HideTab(Button button, CanvasGroup group)
+        private void HideTab(TabButton tabButton, CanvasGroup group)
         {
-            button.interactable = true;
-            button.transform.SetAsFirstSibling();
-            Color color = button.image.color;
-            /*color.a = 255;
-            button.image.color = color;*/
+            tabButton.button.interactable = true;
+            Color color = tabButton.text.color;
             color.a = hideAlpha;
-            button.image.color = color;
+            tabButton.text.color = color;
             group.alpha = 0;
             group.interactable = false;
             group.blocksRaycasts = false;

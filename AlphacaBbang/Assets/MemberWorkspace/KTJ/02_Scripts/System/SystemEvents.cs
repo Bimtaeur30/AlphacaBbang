@@ -1,4 +1,5 @@
 using JJH._02_Scripts_Systems.EventSystems;
+using MemberWorkspace.CHG._02_Scripts;
 using UnityEngine;
 
 public static class SystemEvents
@@ -11,6 +12,7 @@ public static class SystemEvents
     public static readonly StartNewGameEvent StartNewGameEvent = new StartNewGameEvent();
     public static readonly OnGameENd OnGameEnd = new OnGameENd();
     public static readonly LootboxDataSendEvent LootboxDataSendEvent = new LootboxDataSendEvent();
+    public static readonly SystemNotificationEvent SystemNotificationEvent = new SystemNotificationEvent();
 }
 
 public class LootboxDataSendEvent : GameEvent

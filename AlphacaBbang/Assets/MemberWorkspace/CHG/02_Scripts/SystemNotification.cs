@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
+﻿using System.Collections;
 using JJH._02_Scripts_Systems.EventSystems;
 using TMPro;
 using UnityEngine;
@@ -13,91 +10,104 @@ namespace MemberWorkspace.CHG._02_Scripts
         [SerializeField] private EventChannelSO eventChannel;
         [SerializeField] private TextMeshProUGUI mainText;
         [SerializeField] private TextMeshProUGUI subText;
-        [SerializeField] private float stopDelay;
-        
-        private Queue<SystemNotificationEvent> _notifications = new Queue<SystemNotificationEvent>();
+        [Tooltip("알림이 표시되는 유지 시간")]
+        [SerializeField] private float showDuration = 2f;
+
         private SlidePanelController _slidePanelController;
         private bool _isMoving = false;
-        private bool _isShowing = false;
-        private bool _loopoing = false;
-        
+        private Coroutine _currentCoroutine;
+
         private void Awake()
         {
             _slidePanelController = GetComponent<SlidePanelController>();
             eventChannel.AddListener<SystemNotificationEvent>(OnShowNotification);
-            
-            _slidePanelController.OnEndMoving += OnEndMoveing;
+            _slidePanelController.OnEndMoving += OnEndMoving;
         }
 
         private void OnDestroy()
         {
             eventChannel.RemoveListener<SystemNotificationEvent>(OnShowNotification);
+            if (_slidePanelController != null)
+                _slidePanelController.OnEndMoving -= OnEndMoving;
         }
 
         private IEnumerator Start()
         {
-            yield return null; 
+            yield return null;
             _slidePanelController.SlideOut();
         }
 
-        private void OnShowNotification(SystemNotificationEvent obj)
+        private void OnShowNotification(SystemNotificationEvent notification)
         {
-            _notifications.Enqueue(obj);
-            Debug.Log(obj.MainMessage);
-            if (!_loopoing)
-                StartCoroutine(ShowingNotification());
-            
+            // 기존 코루틴 즉시 중단
+            if (_currentCoroutine != null)
+                StopCoroutine(_currentCoroutine);
+
+            _currentCoroutine = StartCoroutine(ShowingNotification(notification));
         }
 
-        private IEnumerator ShowingNotification()
+        private IEnumerator ShowingNotification(SystemNotificationEvent notification)
         {
-            _loopoing = true;
-            while (_notifications.Count > 0)
+            mainText.text = notification.MainMessage;
+            subText.text = notification.SubMessage;
+
+            yield return null;
+
+            // 패널이 열려있으면 먼저 닫기
+            if (!_slidePanelController.IsHidden)
             {
-                SystemNotificationEvent text = _notifications.Dequeue();
                 _isMoving = true;
-
-
-                mainText.text = text.MainMessage;
-                subText.text = text.SubMessage;
-
-                yield return null;
-
-                _slidePanelController.Toggle();
+                _slidePanelController.SlideOut();
                 yield return new WaitUntil(() => !_isMoving);
-                yield return new WaitForSeconds(stopDelay);
-
-                _isMoving = true;
-                _slidePanelController.Toggle();
-                yield return new WaitUntil(() => !_isMoving);
-                yield return new WaitForSeconds(stopDelay);
             }
-            _loopoing = false;
-            
+
+            // 텍스트 갱신 후 열기
+            if (_slidePanelController.IsHidden)
+            {
+                _isMoving = true;
+                _slidePanelController.SlideIn();
+                yield return new WaitUntil(() => !_isMoving);
+            }
+
+            // 알림 표시 유지
+            yield return new WaitForSeconds(showDuration);
+
+            // 닫기
+            if (!_slidePanelController.IsHidden)
+            {
+                _isMoving = true;
+                _slidePanelController.SlideOut();
+                yield return new WaitUntil(() => !_isMoving);
+            }
+
+            _currentCoroutine = null;
         }
 
-        private void OnEndMoveing()
+        private void OnEndMoving()
         {
             _isMoving = false;
         }
-        
-        #if UNITY_EDITOR
 
+#if UNITY_EDITOR
         [ContextMenu("TestNotification")]
         private void TestNotification()
         {
-            SystemNotificationEvent text = new SystemNotificationEvent();
-            text.Init("testMainMessage", "testsubstring");
-            OnShowNotification(text);
+            SystemNotificationEvent notification = new SystemNotificationEvent();
+            notification.Init("testMainMessage", "testSubMessage");
+            OnShowNotification(notification);
         }
 
-        [ContextMenu("TestToggle")]
-        private void TestToggle()
+        [ContextMenu("TestSlideIn")]
+        private void TestSlideIn()
         {
-            _slidePanelController.Toggle();
+            _slidePanelController.SlideIn();
         }
-        
-        #endif
-        
+
+        [ContextMenu("TestSlideOut")]
+        private void TestSlideOut()
+        {
+            _slidePanelController.SlideOut();
+        }
+#endif
     }
 }

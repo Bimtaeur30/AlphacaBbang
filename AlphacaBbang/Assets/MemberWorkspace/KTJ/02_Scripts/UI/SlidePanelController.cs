@@ -9,26 +9,25 @@ using UnityEditor;
 
 [RequireComponent(typeof(RectTransform))]
 public class SlidePanelController : MonoBehaviour
-{
+{// SlidePanelController.cs 에 추가
+    public bool IsHidden => isHidden;
     public enum SlideDirection { Left, Right, Up, Down }
 
     public event Action OnEndMoving;
 
-    [Header("�����̵� ����")]
+    [Header("슬라이드 설정")]
     [SerializeField] private SlideDirection slideDirection = SlideDirection.Left;
     [SerializeField] private float slideDuration = 0.4f;
     [SerializeField] private Ease easeOut = Ease.InOutCubic;
     [SerializeField] private Ease easeIn = Ease.InOutCubic;
     [SerializeField] private bool isHidden = false;
 
-    [Header("������")]
-    [Tooltip("ȭ�� �׵θ��κ��� ���� ���� ���� �Ÿ� (��� = �׵θ����� �� ���ʿ� ����, ���� = �׵θ� �ۿ� ��ġ��)")]
+    [Header("오프셋")]
+    [Tooltip("화면 가장자리로부터 얼마나 떨어진 위치에 멈출지 거리")]
     [SerializeField] private float edgeOffset = 0f;
 
-    [Header("���� �� ����")]
-    [Tooltip("üũ�ϸ� ���� �� ���� �Ʒ� ���� �Է°����� ���. üũ ���� �� ��Ÿ�ӿ� �ڵ����� ����")]
+    [Header("고정 축 설정")]
     [SerializeField] private bool overrideFixedAxis = false;
-    [Tooltip("X�� �̵� �� Y ������ / Y�� �̵� �� X ������ (overrideFixedAxis üũ �� ���)")]
     [SerializeField] private float fixedAxisOverrideValue = 0f;
 
     private RectTransform _rectTransform;
@@ -41,7 +40,6 @@ public class SlidePanelController : MonoBehaviour
     private bool _initialized = false;
     private Tweener _currentTween;
 
-    // �����Ϳ��� ������ �� �ֵ��� public���� ����
     public bool IsXAxis => slideDirection == SlideDirection.Left || slideDirection == SlideDirection.Right;
 
     private void Awake()
@@ -73,6 +71,23 @@ public class SlidePanelController : MonoBehaviour
         _rectTransform.anchoredPosition = isHidden ? HiddenPosition : VisiblePosition;
     }
 
+    /// <summary>
+    /// Slide 직전마다 호출 — RectTransform의 Width/Height가 바뀌었을 수 있으므로
+    /// Hidden/Fixed 위치 값을 재계산합니다.
+    /// </summary>
+    private void RefreshLayout()
+    {
+        // Fixed 축 갱신 (override 아닐 때만)
+        if (!overrideFixedAxis)
+        {
+            Vector2 currentPos = _rectTransform.anchoredPosition;
+            _fixedAxisValue = IsXAxis ? currentPos.y : currentPos.x;
+        }
+
+        // Hidden 위치는 Width/Height에 의존하므로 항상 재계산
+        CalculateHiddenAxisValue();
+    }
+
     private float GetOffsetForDirection()
     {
         return slideDirection switch
@@ -96,7 +111,7 @@ public class SlidePanelController : MonoBehaviour
     private void CalculateHiddenAxisValue()
     {
         Vector2 canvasSize = GetCanvasSize();
-        Rect rect = _rectTransform.rect;
+        Rect rect = _rectTransform.rect;           // 매 호출마다 최신 Width/Height 반영
         Vector2 anchor = _rectTransform.anchorMin;
         Vector2 pivot = _rectTransform.pivot;
 
@@ -143,14 +158,14 @@ public class SlidePanelController : MonoBehaviour
         ? new Vector2(_hiddenAxisValue, _fixedAxisValue)
         : new Vector2(_fixedAxisValue, _hiddenAxisValue);
 
-    // ���� Public API ��������������������������������������������������������������������
+    // ── Public API ────────────────────────────────────────────────
 
     public void SlideOut()
     {
         if (!_initialized) Initialize();
         if (isHidden) return;
         isHidden = true;
-        CalculateHiddenAxisValue();
+        RefreshLayout();                  // Width/Height 재측정
         PlayTween(HiddenPosition, easeOut);
     }
 
@@ -159,6 +174,7 @@ public class SlidePanelController : MonoBehaviour
         if (!_initialized) Initialize();
         if (!isHidden) return;
         isHidden = false;
+        RefreshLayout();                  // Width/Height 재측정
         PlayTween(VisiblePosition, easeIn);
     }
 
@@ -177,7 +193,7 @@ public class SlidePanelController : MonoBehaviour
     private void OnDestroy() => _currentTween?.Kill();
 }
 
-// ���� Ŀ���� �ν����� ��������������������������������������������������������������������
+// ── 커스텀 인스펙터 ────────────────────────────────────────────────
 #if UNITY_EDITOR
 [CustomEditor(typeof(SlidePanelController))]
 public class SlidePanelControllerEditor : Editor
@@ -195,11 +211,10 @@ public class SlidePanelControllerEditor : Editor
     {
         serializedObject.Update();
 
-        // ���� �� ���� �ʵ� �����ϰ� �⺻ �ν����� �׸���
         DrawPropertiesExcluding(serializedObject, "overrideFixedAxis", "fixedAxisOverrideValue");
 
         EditorGUILayout.Space(4);
-        EditorGUILayout.LabelField("���� �� ����", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("고정 축 설정", EditorStyles.boldLabel);
         EditorGUILayout.PropertyField(_overrideFixedAxis, new GUIContent("Override Fixed Axis"));
 
         EditorGUI.BeginDisabledGroup(!_overrideFixedAxis.boolValue);
@@ -208,7 +223,6 @@ public class SlidePanelControllerEditor : Editor
 
         serializedObject.ApplyModifiedProperties();
 
-        // �÷��� �� ���� �� ��Ʈ
         if (Application.isPlaying)
         {
             var ctrl = (SlidePanelController)target;
@@ -216,13 +230,13 @@ public class SlidePanelControllerEditor : Editor
             float hint = ctrl.IsXAxis ? rt.anchoredPosition.y : rt.anchoredPosition.x;
             string axis = ctrl.IsXAxis ? "Y" : "X";
             EditorGUILayout.HelpBox(
-                $"���� anchoredPosition: {rt.anchoredPosition}\n" +
-                $"���� ��({axis})�� ���� ��: {hint}",
+                $"현재 anchoredPosition: {rt.anchoredPosition}\n" +
+                $"고정 축({axis})의 현재 값: {hint}",
                 MessageType.Info);
         }
 
         EditorGUILayout.Space(8);
-        EditorGUILayout.LabelField("�׽�Ʈ (�÷��� ��� ����)", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("테스트 (플레이 모드 전용)", EditorStyles.boldLabel);
 
         EditorGUI.BeginDisabledGroup(!Application.isPlaying);
         EditorGUILayout.BeginHorizontal();
@@ -234,7 +248,7 @@ public class SlidePanelControllerEditor : Editor
         EditorGUI.EndDisabledGroup();
 
         if (!Application.isPlaying)
-            EditorGUILayout.HelpBox("�÷��� ��忡���� �׽�Ʈ�� �� �ֽ��ϴ�.", MessageType.Info);
+            EditorGUILayout.HelpBox("플레이 모드에서만 테스트할 수 있습니다.", MessageType.Info);
     }
 }
 #endif

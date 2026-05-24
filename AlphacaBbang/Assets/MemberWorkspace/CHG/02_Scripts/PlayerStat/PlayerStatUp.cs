@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
@@ -27,23 +29,24 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         [SerializeField] private EventChannelSO systemChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
         [SerializeField] private PlayerStatViewUI[] _statViews;
+        
+        [SerializeField] private InventoryContainer inventory;
 
-        private CanvasGroup _canvasGroup;
-        private Tween _tween;
         private PlayerSaveData _playerSaveData;
-
+        private SlidePanelController _slidePanelController;
+        
         private void Awake()
         {
-            _canvasGroup = GetComponent<CanvasGroup>();
+            _slidePanelController = GetComponent<SlidePanelController>();
             _playerSaveData = PlayerStatSystem.Instance.SaveData;
         }
 
-        private void Start()
+        private IEnumerator Start()
         {
-            _tween = _canvasGroup.DOFade(0, 0f);
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
-
+            yield return null;
+            yield return null;
+            
+            
             for (int i = 0; i < _statViews.Length; i++)
             {
                 _statViews[i].StatType = (PlayerStatType)i;
@@ -59,10 +62,18 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
                 sb.AppendLine($"{StatLabels[idx]}: {statView.needItem.ItemName}X{statView.needItemCount}");
             }
             needItemText.text = sb.ToString();
+            
+            foreach (PlayerStatViewUI statView in _statViews)
+            {
+                
+                int curStat = (int)GetCurrentStat(statView.StatType);
+                statView.statUpUi.StatTextChange(curStat.ToString(), (curStat + statView.statUpValue).ToString());
+            }
         }
 
         public void AddStat(PlayerStatType type)
         {
+            //if (inventory)
             //아이템 없으면 취소 추가
             int idx = (int)type;
             int cur = (int)GetCurrentStat(type);
@@ -98,20 +109,13 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             _                         => 0f
         };
 
-        public void ShowUI()
+        [ContextMenu("ddd")]
+        private void ddd()
         {
-            _tween?.Kill();
-            _tween = _canvasGroup.DOFade(1, 0.5f);
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
-        }
-
-        public void HideUI()
-        {
-            _tween?.Kill();
-            _tween = _canvasGroup.DOFade(0, 0.5f);
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
+            transform.GetComponent<RectTransform>().position = _slidePanelController.HiddenPosition;            
+            
         }
     }
+    
+    
 }

@@ -151,7 +151,8 @@ public class InventoryContextMenu : MonoBehaviour
 
         ItemData item = slot.ItemData;
 
-        bool isConsumable = item is FoodItemData || item is MedicineItemData || item is ThrowingItemData;
+        bool isConsumable = item is FoodItemData || item is MedicineItemData;
+        bool isThrowing = item is ThrowingItemData;
         bool isWeapon = item is WeaponItemData;
         bool isGearEquip = !isWeapon && item.EquipType != EquipType.None;
         bool isEquippable = isWeapon || isGearEquip;
@@ -162,7 +163,7 @@ public class InventoryContextMenu : MonoBehaviour
         bool isExternal = isStorage || isQuickSlot;
 
         useButton?.gameObject.SetActive(isConsumable && !isExternal);
-        equipButton?.gameObject.SetActive((isEquippable || isConsumable) && !isExternal);
+        equipButton?.gameObject.SetActive((isEquippable || isConsumable || isThrowing) && !isExternal);
         unequipButton?.gameObject.SetActive(isGearEquip && !isExternal && HasEquippedItemOfType(item.EquipType));
         storeButton?.gameObject.SetActive(!isExternal && !isLootBox && storageContainer != null);
         retrieveButton?.gameObject.SetActive(isExternal || isLootBox);
@@ -423,17 +424,6 @@ public class InventoryContextMenu : MonoBehaviour
         ItemSlot slot = _container.GetSlot(_slotIndex);
         ItemData itemData = slot?.ItemData;
         int slotIndex = _slotIndex;
-        
-        // _container.ClearSlot(_slotIndex);
-        //
-        // // 퀵슬롯에서 무기 버릴 때 이벤트 발송
-        // if (itemData is WeaponItemData && slotIndex < 2)
-        // {
-        //     WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-        //     gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-        //     // Also remove holstered gun object
-        //     gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
-        // }
         
         _container.ClearSlot(_slotIndex);
 

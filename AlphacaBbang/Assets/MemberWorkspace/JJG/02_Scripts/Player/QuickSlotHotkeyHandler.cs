@@ -10,6 +10,7 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     [SerializeField] private GameObject itemUser;
     [SerializeField] private AgentAttack agentAttack;
     [SerializeField] private PlayerGunHandleModule playerGunHandleModule;
+    [SerializeField] private Transform grenadeHoldParent; // 방법 2: 인스펙터에서 직접 연결
 
     private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2, Key.Digit3 };
     private static readonly Key[] ItemKeys = { Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7 };
@@ -44,9 +45,12 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
     private void OnThrowingItemChanged(ThrowingItemData throwingData)
     {
+        // 기존 수류탄 정리
         if (_currentGrenade != null)
         {
             _currentGrenade.OnFired -= HandleOnFired;
+            if (_currentGrenade != null)
+                Destroy(_currentGrenade.gameObject);
             _currentGrenade = null;
         }
 
@@ -56,20 +60,23 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
 
-        StartCoroutine(WaitAndSubscribe());
-    }
-
-    private System.Collections.IEnumerator WaitAndSubscribe()
-    {
-        yield return null;
-
-        IWeapon weapon = playerGunHandleModule.CurrentWeapon;
-        if (weapon is GrenadeBehavior grenade)
+        if (throwingData.GrenadeBehaviorPrefab == null)
         {
-            _currentGrenade = grenade;
-            _currentGrenade.OnFired += HandleOnFired;
-            _currentGrenade.SetAim(true);
+            Debug.LogWarning("[QuickSlotHotkeyHandler] GrenadeBehaviorPrefab이 null입니다.");
+            return;
         }
+
+        // 본체 Instantiate → grenadeHoldParent에 배치
+        GrenadeBehavior grenade = Instantiate(
+            throwingData.GrenadeBehaviorPrefab,
+            grenadeHoldParent.position,
+            grenadeHoldParent.rotation,
+            grenadeHoldParent
+        );
+
+        grenade.Setup(throwingData.Grenade);
+        _currentGrenade = grenade;
+        _currentGrenade.OnFired += HandleOnFired;
     }
 
     private void HandleOnFired()
@@ -90,25 +97,26 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     private void HandleThrowingInput()
     {
         if (_currentGrenade == null) return;
-        if (!_currentGrenade.IsAiming) return;
 
         var mouse = Mouse.current;
         if (mouse == null) return;
 
         if (mouse.rightButton.isPressed)
         {
+            if (!_currentGrenade.IsAiming)
+                _currentGrenade.SetAim(true);
+
             Vector3? targetPos = GetMouseWorldPosition();
             if (targetPos.HasValue)
                 _currentGrenade.SetTarget(targetPos.Value);
         }
         else
         {
-            if (_currentGrenade.lineRenderer != null)
-                _currentGrenade.lineRenderer.positionCount = 0;
-            return;
+            if (_currentGrenade.IsAiming)
+                _currentGrenade.SetAim(false);
         }
 
-        if (mouse.leftButton.wasPressedThisFrame)
+        if (mouse.leftButton.wasPressedThisFrame && _currentGrenade.IsAiming)
         {
             _currentGrenade.StartFire(true);
         }
@@ -133,7 +141,6 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
                 return;
             }
 
-            // Throwing 아이템 처리 추가
             if (slot.ItemData is ThrowingItemData throwingData)
             {
                 weaponHolder.Unequip();
@@ -200,4 +207,4 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return hit.point;
         return null;
     }
-}   
+}

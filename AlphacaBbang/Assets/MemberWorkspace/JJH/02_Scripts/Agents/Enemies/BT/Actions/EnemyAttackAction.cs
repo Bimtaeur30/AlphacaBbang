@@ -26,11 +26,13 @@ namespace JJH._02_Scripts.Agents.Enemies.BT.Actions
             _weapon = Enemy.Value.Weapon;
 
             _time = 0;
-            _weapon.Attack(Target.Value.transform.position, true);
+
+            Vector3 targetPos = Target.Value.GetComponentInChildren<AgentRenderer>().transform.position;
+            _weapon.Attack(targetPos, true);
 
             return Status.Running;
         }
-        
+
         protected override Status OnUpdate()
         {
             _time += Time.deltaTime;

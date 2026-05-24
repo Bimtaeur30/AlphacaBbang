@@ -8,6 +8,7 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _amountText;
     [SerializeField] private Image _selectedOverlay;
+    [SerializeField] private TextMeshProUGUI _slotIndexText;
     [Header("Hover")]
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Color _hoverColor = new Color(1f, 1f, 1f, 0.15f);
@@ -29,6 +30,9 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         if (_backgroundImage == null)
             _backgroundImage = GetComponent<Image>();
 
+        if (_slotIndexText != null)
+            _slotIndexText.text = (index + 1).ToString();
+
         if (_backgroundImage != null)
             _originalBgColor = _backgroundImage.color;
 
@@ -43,6 +47,9 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void SetSlotIndex(int index)
     {
         _slotIndex = index;
+        
+        if (_slotIndexText != null)
+            _slotIndexText.text = (index + 1).ToString();
     }
 
     public void SetContainer(ItemContainer container)

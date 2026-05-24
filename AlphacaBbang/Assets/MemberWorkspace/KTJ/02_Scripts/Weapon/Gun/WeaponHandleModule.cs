@@ -22,13 +22,13 @@ public class WeaponHandleModule : MonoBehaviour, IModule
         Owner = owner;
     }
 
-    public virtual void SetCurrentGun(IWeapon gun)  
+    public virtual void SetCurrentGun(IWeapon gun)
     {
         CurrentWeapon = gun;
         CurrentWeapon.Initialize(this);
-        Debug.Assert(CurrentWeapon.WeaponData != null, "CurrentWeapon.WeaponData가 할당되지 않았습니다.");
+        if (CurrentWeapon.WeaponData != null)
+            Debug.Assert(CurrentWeapon.WeaponData != null, "CurrentWeapon.WeaponData가 할당되지 않았습니다.");
     }
-
     private void Update()
     {
         if (CanFire() == false)

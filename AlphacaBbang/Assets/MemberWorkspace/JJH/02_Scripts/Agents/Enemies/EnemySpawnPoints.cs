@@ -12,6 +12,11 @@ namespace JJH._02_Scripts.Agents.Enemies
             SpawnEnemies();
         }
 
+        private void Update()
+        {
+
+        }
+
         private void SpawnEnemies()
         {
             foreach (EnemySpawnPoint spawnPoint in spawnPoints)

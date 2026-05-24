@@ -394,6 +394,8 @@ public class InventoryContextMenu : MonoBehaviour
             {
                 WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
                 gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                // Also notify slot-level change so holstered gun object is removed
+                gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
             }
         }
         else
@@ -415,6 +417,8 @@ public class InventoryContextMenu : MonoBehaviour
         {
             WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
             gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+            // Also remove holstered gun object
+            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
         }
         
         Close();

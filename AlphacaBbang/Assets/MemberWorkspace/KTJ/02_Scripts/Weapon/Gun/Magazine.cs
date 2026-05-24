@@ -76,7 +76,7 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
-            inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
+            inventoryContainer.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 

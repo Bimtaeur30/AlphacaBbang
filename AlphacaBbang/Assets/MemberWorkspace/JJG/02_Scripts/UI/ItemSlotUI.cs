@@ -13,7 +13,9 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [SerializeField] private Color _hoverColor = new Color(1f, 1f, 1f, 0.15f);
     [Header("Empty Slot")]
     [SerializeField] private Sprite _emptyIcon;
+    [SerializeField] private GameObject _emptyIconObject;
 
+    private Image _emptyIconImage;
     private int _slotIndex;
     private ItemContainer _container;
     private ItemSlot _currentSlot;
@@ -29,6 +31,13 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
         if (_backgroundImage != null)
             _originalBgColor = _backgroundImage.color;
+
+        if (_emptyIconObject != null)
+        {
+            _emptyIconImage = _emptyIconObject.GetComponent<Image>();
+            if (_emptyIconImage != null && _emptyIcon != null)
+                _emptyIconImage.sprite = _emptyIcon;
+        }
     }
 
     public void SetSlotIndex(int index)
@@ -44,6 +53,15 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void SetEmptyIcon(Sprite emptyIcon)
     {
         _emptyIcon = emptyIcon;
+
+        if (_emptyIconImage != null)
+        {
+            _emptyIconImage.sprite = emptyIcon;
+            _emptyIconImage.enabled = emptyIcon != null;
+        }
+
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(emptyIcon != null);
     }
 
     public void SetSlot(ItemSlot slot)
@@ -58,6 +76,8 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _iconImage.sprite = slot.ItemData.Icon;
         _iconImage.enabled = slot.ItemData.Icon != null;
 
+        SetEmptyIconVisibility(false);
+
         if (slot.Amount > 1)
             _amountText.text = slot.Amount.ToString();
         else
@@ -67,17 +87,24 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void ClearSlot()
     {
         _currentSlot = null;
-        // show configured empty icon if available, otherwise hide
+        _iconImage.sprite = null;
+        _iconImage.enabled = false;
+
         if (_emptyIcon != null)
         {
-            _iconImage.sprite = _emptyIcon;
-            _iconImage.enabled = true;
+            if (_emptyIconObject != null)
+                SetEmptyIconVisibility(true);
+            else
+            {
+                _iconImage.sprite = _emptyIcon;
+                _iconImage.enabled = true;
+            }
         }
         else
         {
-            _iconImage.sprite = null;
-            _iconImage.enabled = false;
+            SetEmptyIconVisibility(false);
         }
+
         _amountText.text = "";
     }
 
@@ -86,6 +113,12 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _currentSlot = null;
         _iconImage.sprite = defaultIcon;
         _iconImage.enabled = defaultIcon != null;
+
+        if (defaultIcon == null)
+            SetEmptyIconVisibility(false);
+        else
+            SetEmptyIconVisibility(false);
+
         _amountText.text = "";
     }
 
@@ -104,6 +137,17 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         _iconImage.sprite = itemSprite;
         _iconImage.enabled = itemSprite != null;
+
+        SetEmptyIconVisibility(false);
+    }
+
+    private void SetEmptyIconVisibility(bool visible)
+    {
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(visible);
+
+        if (_emptyIconImage != null)
+            _emptyIconImage.enabled = visible;
     }
 
     public void OnPointerEnter(PointerEventData eventData)

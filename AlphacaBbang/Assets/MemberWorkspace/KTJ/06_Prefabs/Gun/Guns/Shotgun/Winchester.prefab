@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7539113820909692661}
   - component: {fileID: 3483119449141155530}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Winchester
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,13 +51,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShotGun
   <WeaponData>k__BackingField: {fileID: 11400000, guid: aca2e835bad3e894c8bc32f9e27c24b7, type: 2}
-  <TargetLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 65
   <Magazine>k__BackingField: {fileID: 6518642353732159612}
+  <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 2106047062795461130}
   rayDistance: 50
-  damage: 10
   singleFireAnimParam: {fileID: 11400000, guid: cfbd7ddb4adcb2145ba67f2565343722, type: 2}
   autoFireAnimParam: {fileID: 11400000, guid: 7d85b264385ea064f89fc439454a30f0, type: 2}
   idleAnimParam: {fileID: 11400000, guid: 3927465fcebed484caee057622876667, type: 2}
@@ -76,7 +73,7 @@ GameObject:
   - component: {fileID: 978182284220903491}
   - component: {fileID: 7434871928965047553}
   - component: {fileID: 2335081187810603152}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +149,7 @@ GameObject:
   - component: {fileID: 8521950404517939102}
   - component: {fileID: 4208692240307143084}
   - component: {fileID: 1622576775540333698}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,7 +299,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6190053335798185636}
   - component: {fileID: 8598950168062830662}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCountLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +364,7 @@ GameObject:
   - component: {fileID: 3163287397203517548}
   - component: {fileID: 1629726092639853230}
   - component: {fileID: 4147094871352470989}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +432,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2415360612204269157}
   - component: {fileID: 2386850002955396418}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: LineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -577,7 +574,7 @@ GameObject:
   - component: {fileID: 1415952783960476119}
   - component: {fileID: 7222097941573331817}
   - component: {fileID: 7225040987073827601}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -654,7 +651,7 @@ GameObject:
   - component: {fileID: 6787150563172306536}
   - component: {fileID: 3477189255992210577}
   - component: {fileID: 5493019840955465360}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GunModuleCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -768,7 +765,7 @@ GameObject:
   - component: {fileID: 7330316608459353569}
   - component: {fileID: 8367645975511962374}
   - component: {fileID: 7617265370730626061}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: BulletShellParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5661,7 +5658,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7711831977444837380}
   - component: {fileID: 6518642353732159612}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5695,7 +5692,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <CurrentBulletCount>k__BackingField: 0
   <MaxBulletCount>k__BackingField: 30
   bulletCountTxt: {fileID: 4208692240307143084}
   reloadUI: {fileID: 3621583427293001048}
@@ -5709,7 +5705,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2106047062795461130}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: FirePos
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -5741,7 +5737,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7540479361894691748}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: HandlePos
   m_TagString: Untagged
   m_Icon: {fileID: -5487077368411116049, guid: 0000000000000000d000000000000000, type: 0}
@@ -5772,7 +5768,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3621583427293001048}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Reload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5810,7 +5806,7 @@ GameObject:
   - component: {fileID: 1602967540034152821}
   - component: {fileID: 4346721827522444061}
   - component: {fileID: 226666790145373486}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5911,6 +5907,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GunSoundPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5932,6 +5932,14 @@ PrefabInstance:
     - target: {fileID: 6072999166974311047, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
       propertyPath: m_Name
       value: SM_Gun_Shotgun_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 6072999166974311047, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 6850275585594173046, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 8004484036042694931, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
       propertyPath: m_RootOrder
@@ -5992,6 +6000,10 @@ PrefabInstance:
     - target: {fileID: 8004484036042694931, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8857188742795055484, guid: 2a8bbf5a7b280f047b58ece21df3093f, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

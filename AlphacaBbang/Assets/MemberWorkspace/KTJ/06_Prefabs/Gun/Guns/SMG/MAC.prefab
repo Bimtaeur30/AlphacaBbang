@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9200833486981968445}
   - component: {fileID: 7513768756594715566}
   - component: {fileID: 6738766946416569474}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8175072108267398330}
   - component: {fileID: 8911882808779115149}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <CurrentBulletCount>k__BackingField: 0
   <MaxBulletCount>k__BackingField: 30
   bulletCountTxt: {fileID: 8044009411480325538}
   reloadUI: {fileID: 7026527124783019071}
@@ -136,7 +135,7 @@ GameObject:
   - component: {fileID: 4730189294303240419}
   - component: {fileID: 8044009411480325538}
   - component: {fileID: 4355940527101762625}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -287,7 +286,7 @@ GameObject:
   - component: {fileID: 705406992119397353}
   - component: {fileID: 5952477340728274761}
   - component: {fileID: 5361486615387728957}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +355,7 @@ GameObject:
   - component: {fileID: 3000958719023341187}
   - component: {fileID: 1543668236505122205}
   - component: {fileID: 1310897762402857234}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: BulletShellParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5249,7 +5248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1383122476458071449}
   - component: {fileID: 3728839365489644375}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: MAC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5289,13 +5288,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
   <WeaponData>k__BackingField: {fileID: 11400000, guid: 8f6d03d835897e0468e84106e1868961, type: 2}
-  <TargetLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 65
   <Magazine>k__BackingField: {fileID: 8911882808779115149}
+  <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 5901332587066880401}
   rayDistance: 50
-  damage: 10
   singleFireAnimParam: {fileID: 11400000, guid: cfbd7ddb4adcb2145ba67f2565343722, type: 2}
   autoFireAnimParam: {fileID: 11400000, guid: 7d85b264385ea064f89fc439454a30f0, type: 2}
   idleAnimParam: {fileID: 11400000, guid: 3927465fcebed484caee057622876667, type: 2}
@@ -5314,7 +5310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8989955233786241473}
   - component: {fileID: 8586868257673695761}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCountLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5377,7 +5373,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7026527124783019071}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Reload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5413,7 +5409,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5901332587066880401}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: FirePos
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -5447,7 +5443,7 @@ GameObject:
   - component: {fileID: 5908491491329683742}
   - component: {fileID: 4325481067860581662}
   - component: {fileID: 917545440564609407}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5506,7 +5502,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2670683170072707963}
   - component: {fileID: 1611972057411082625}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: LineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5650,7 +5646,7 @@ GameObject:
   - component: {fileID: 1686013509091466662}
   - component: {fileID: 2278379198096127574}
   - component: {fileID: 1591891582667563708}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GunModuleCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5764,7 +5760,7 @@ GameObject:
   - component: {fileID: 6002817679181872069}
   - component: {fileID: 3001381785200575552}
   - component: {fileID: 5119733970559825436}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5840,6 +5836,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Gun_SMG_02
       objectReference: {fileID: 0}
+    - target: {fileID: 1102990135550724960, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 1498755134487727293, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 3677623643671999548, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -5899,6 +5903,14 @@ PrefabInstance:
     - target: {fileID: 3677623643671999548, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4814902146817896316, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7327910656201426122, guid: 30f4be4ed09ee5347a8e0ae988f8038b, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5961,6 +5973,10 @@ PrefabInstance:
     - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
       propertyPath: m_Name
       value: GunSoundPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

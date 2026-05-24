@@ -35,19 +35,19 @@ public class RoutRecorder : MonoBehaviour
     {
         Routs.Clear();
         _currentActions = new List<ActionInfo>();
-        Debug.Log($"[RoutRecorder] Clear 호출 → Routs 초기화 완료");
+        //Debug.Log($"[RoutRecorder] Clear 호출 → Routs 초기화 완료");
     }
 
     private void OnPlayerActionEvent(PlayerActionEvent @event)
     {
         _currentActions.Add(new ActionInfo(@event.Action));
-        Debug.Log($"[RoutRecorder] 액션 추가: '{@event.Action}' | 현재 누적 액션 수: {_currentActions.Count}");
+        //Debug.Log($"[RoutRecorder] 액션 추가: '{@event.Action}' | 현재 누적 액션 수: {_currentActions.Count}");
     }
 
     private void OnPlayerPointEvent(PlayerPointEvent @event)
     {
         Routs.Add((@event.PlayerPoint, _currentActions));
-        Debug.Log($"[RoutRecorder] 포인트 추가: {_currentActions.Count}개 액션 포함 | 총 Routs 수: {Routs.Count}");
+        //Debug.Log($"[RoutRecorder] 포인트 추가: {_currentActions.Count}개 액션 포함 | 총 Routs 수: {Routs.Count}");
         _currentActions = new List<ActionInfo>();
     }
 }

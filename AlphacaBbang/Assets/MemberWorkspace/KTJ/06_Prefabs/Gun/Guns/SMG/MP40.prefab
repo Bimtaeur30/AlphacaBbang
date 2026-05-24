@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6815484125849220370}
   - component: {fileID: 4000096333815070419}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Magazine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <CurrentBulletCount>k__BackingField: 0
   <MaxBulletCount>k__BackingField: 30
   bulletCountTxt: {fileID: 9001114086094661973}
   reloadUI: {fileID: 4702585401054899162}
@@ -58,7 +57,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6752501565347541266}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: FirePos
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -93,7 +92,7 @@ GameObject:
   - component: {fileID: 8857565177871585105}
   - component: {fileID: 9001114086094661973}
   - component: {fileID: 6718954948950508636}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +243,7 @@ GameObject:
   - component: {fileID: 2264715573598024705}
   - component: {fileID: 7432570405543361441}
   - component: {fileID: 8535784591643503343}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: BulletShellParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5137,7 +5136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7485324131426269108}
   - component: {fileID: 6894072289143194488}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: BulletCountLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5200,7 +5199,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4702585401054899162}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Reload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5237,7 +5236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5769224551481296519}
   - component: {fileID: 281480307645772088}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: MP40
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5277,13 +5276,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExampleGun
   <WeaponData>k__BackingField: {fileID: 11400000, guid: 73a17b523184c9349b61bf433e0aba1c, type: 2}
-  <TargetLayer>k__BackingField:
-    serializedVersion: 2
-    m_Bits: 65
   <Magazine>k__BackingField: {fileID: 4000096333815070419}
+  <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 6752501565347541266}
   rayDistance: 50
-  damage: 10
   singleFireAnimParam: {fileID: 11400000, guid: cfbd7ddb4adcb2145ba67f2565343722, type: 2}
   autoFireAnimParam: {fileID: 11400000, guid: 7d85b264385ea064f89fc439454a30f0, type: 2}
   idleAnimParam: {fileID: 11400000, guid: 3927465fcebed484caee057622876667, type: 2}
@@ -5302,7 +5298,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5019844620477000720}
   - component: {fileID: 4970945449538343035}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: LineRenderer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5444,7 +5440,7 @@ GameObject:
   - component: {fileID: 5756658094228455693}
   - component: {fileID: 2919679621734998853}
   - component: {fileID: 5103783616294726870}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5506,7 +5502,7 @@ GameObject:
   - component: {fileID: 7950099272262523790}
   - component: {fileID: 1916029593666109764}
   - component: {fileID: 4677780823614862232}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: GunModuleCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5620,7 +5616,7 @@ GameObject:
   - component: {fileID: 1874253483200408149}
   - component: {fileID: 1873217873709751898}
   - component: {fileID: 3607638549152320624}
-  m_Layer: 0
+  m_Layer: 19
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5689,7 +5685,7 @@ GameObject:
   - component: {fileID: 5586927230153407655}
   - component: {fileID: 6933034861324069575}
   - component: {fileID: 3969950126561542107}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5764,7 +5760,7 @@ GameObject:
   - component: {fileID: 4597173306381613552}
   - component: {fileID: 2885978344890876992}
   - component: {fileID: 4658680783593919392}
-  m_Layer: 5
+  m_Layer: 19
   m_Name: Image (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5836,6 +5832,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1874253483200408149}
     m_Modifications:
+    - target: {fileID: 2862011432013363045, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 7202476740533368231, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 7650238703908028088, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.54499996
@@ -5876,9 +5880,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7859359975443199496, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
+      propertyPath: m_Layer
+      value: 19
+      objectReference: {fileID: 0}
     - target: {fileID: 8393352495131862252, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
       propertyPath: m_Name
       value: SM_Gun_SMG_010
+      objectReference: {fileID: 0}
+    - target: {fileID: 8393352495131862252, guid: 91b60248c8d4114498ab02170d25f53c, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5941,6 +5953,10 @@ PrefabInstance:
     - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
       propertyPath: m_Name
       value: GunSoundPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 9005701857363587773, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
+      propertyPath: m_Layer
+      value: 19
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

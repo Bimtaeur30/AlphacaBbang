@@ -65,11 +65,13 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
                 if (firstSlotGun == null) return;
                 SetCurrentGun(firstSlotGun);
                 currentGunIndex = WeaponSlotIndex.First;
+                //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.Second, false));
                 break;
             case WeaponSlotIndex.Second:
                 if (secondSlotGun == null) return;
                 SetCurrentGun(secondSlotGun);
                 currentGunIndex = WeaponSlotIndex.Second;
+                //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First, false))
                 break;
         }
     }

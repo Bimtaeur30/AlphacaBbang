@@ -27,7 +27,7 @@ public class ScreenBrightnessSetting : AbstractSettingUI
         float t = Mathf.InverseLerp(-4, 2f, _lastBrightness);
         int result = Mathf.RoundToInt(t * 100f);
         
-        _brightnessText.text = $"밝기: {result}";
+        _brightnessText.text = $"{result}";
         
     }
 
@@ -49,6 +49,11 @@ public class ScreenBrightnessSetting : AbstractSettingUI
         
         _currentBrightness = 0;
         _lastBrightness = 0;
+        _brightnessSlider.value = _lastBrightness;
+        float t = Mathf.InverseLerp(-4, 2f, _lastBrightness);
+        int result = Mathf.RoundToInt(t * 100f);
+
+        _brightnessText.text = $"{result}";
         //ChangeBrightness();
         
     }
@@ -59,7 +64,7 @@ public class ScreenBrightnessSetting : AbstractSettingUI
         float t = Mathf.InverseLerp(-4, 2f, value);
         int result = Mathf.RoundToInt(t * 100f);
 
-        _brightnessText.text = $"밝기: {result}";
+        _brightnessText.text = $"{result}";
 
     }
 }

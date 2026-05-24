@@ -22,7 +22,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
     {
         private static readonly string[] StatLabels = { "체력", "지구력", "집중력" };
 
-        [SerializeField] private ItemData[] needItem;
         [SerializeField] private EventChannelSO playerStatChannel;
         [SerializeField] private EventChannelSO systemChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
@@ -48,10 +47,9 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             for (int i = 0; i < _statViews.Length; i++)
             {
                 _statViews[i].StatType = (PlayerStatType)i;
-                _statViews[i].needItem = needItem[i];
             }
 
-            var sb = new StringBuilder("필요한 재료\n");
+            var sb = new StringBuilder("");
             foreach (PlayerStatStruct pStruct in _statViews)
             {
                 int idx = (int)pStruct.StatType;

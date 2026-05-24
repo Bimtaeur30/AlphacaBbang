@@ -1,9 +1,5 @@
 using UnityEngine;
- 
-/// <summary>
-/// 상자 오브젝트에 붙이는 컴포넌트.
-/// 인스펙터에서 이 상자에 해당하는 LootTable SO를 연결하세요.
-/// </summary>
+
 public class LootBox : MonoBehaviour
 {
     [SerializeField] private LootTable lootTable;
@@ -15,10 +11,7 @@ public class LootBox : MonoBehaviour
     private bool _isOpened = false;
     public bool IsOpened => _isOpened;
  
-    public void MarkAsOpened()
-    {
-        _isOpened = true;
-    }
+    public void MarkAsOpened() => _isOpened = true;
  
 #if UNITY_EDITOR
     private void OnValidate()

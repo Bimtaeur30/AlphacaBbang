@@ -1,9 +1,11 @@
-using JJH._02_Scripts.Weapons;
 using System.Collections;
 using UnityEngine;
 
-public abstract class GrenadeBehavior : WeaponBase, IWeapon
+public abstract class Bomb : MonoBehaviour, IWeapon, IModule, ICharacterStateOwner
 {
+    [SerializeField] private CharacterState characterState;
+    public CharacterState CharacterState => characterState;
+
     [Header("발사 설정")]
     [SerializeField] private float firingAngle = 45.0f;
     [SerializeField] private float gravity = 9.8f;
@@ -19,18 +21,16 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
     private Vector3 _targetWorldPos;
 
     [Header("포물선 라인렌더러")]
-    [SerializeField] public LineRenderer lineRenderer;
+    [field: SerializeField] public LineRenderer lineRenderer { get; private set; }
     [SerializeField] private int lineSegmentCount = 30;
     [SerializeField] private float lineTimeStep = 0.1f;
 
-    [Header("수류탄")]
-    [SerializeField] protected GrenadeSO grenadeSO;
-
-    // IWeapon 구현
+    // IWeapon 빈 구현
     public GunDataSO WeaponData => null;
     public bool IsFiring => false;
-    public bool IsAiming => _isAiming;
     public bool IsReloading => false;
+    public bool IsAiming => _isAiming;
+    public void Initialize(WeaponHandleModule owner) { }
     public void TickFire() { }
     public void StopFire(bool isAim) { }
 
@@ -40,17 +40,14 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
     public bool HasTarget => targetPoint != null;
     public Vector3 TargetWorldPos => _targetWorldPos;
 
-    protected virtual void Awake()
-    {
-        if (startPoint == null)
-            startPoint = transform;
-    }
+    // 자식이 어떤 SO 쓸지 결정
+    protected abstract GrenadeSO GetGrenade();
 
-    public virtual void Initialize(WeaponHandleModule owner) { }
-
+    // IWeapon - 조준
     public void SetAim(bool isAim)
     {
         _isAiming = isAim;
+
         if (!isAim)
         {
             if (lineRenderer != null)
@@ -59,22 +56,19 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         }
     }
 
+    // IWeapon - 발사
     public void StartFire(bool isAim)
     {
-        if (grenadeSO == null)
+        GrenadeSO grenade = GetGrenade();
+
+        if (grenade == null)
         {
-            Debug.LogWarning("[GrenadeBehavior] grenadeSO가 null입니다.");
+            Debug.LogWarning("[Bomb] GrenadeSO가 null입니다.");
             return;
         }
 
-        StartCoroutine(FireAndDestroy(_targetWorldPos, grenadeSO));
+        StartCoroutine(SimulateProjectile(_targetWorldPos, grenade));
         OnFired?.Invoke();
-    }
-
-    private IEnumerator FireAndDestroy(Vector3 targetPos, GrenadeSO grenade)
-    {
-        yield return StartCoroutine(SimulateProjectile(targetPos, grenade));
-        Destroy(gameObject);
     }
 
     public void SetTarget(Vector3 worldPosition)
@@ -157,45 +151,16 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         }
     }
 
-    [Header("Blink Settings")]
-    [SerializeField] private Material blinkMaterial;
-    [SerializeField] private float blinkStartTime = 1f;
-    [SerializeField] private float maxBlinkSpeed = 10f;
-    private Material originalMaterial;
-    private Renderer grenadeRenderer;
-
-    public IEnumerator Boom(GameObject projectile, float boomTime)
+    // 적이 사용할 때
+    public void Attack(Vector3 targetPos)
     {
-        grenadeRenderer = projectile.GetComponent<Renderer>();
-        if (grenadeRenderer != null)
-            originalMaterial = grenadeRenderer.material;
-
-        float waitTime = boomTime - blinkStartTime;
-        if (waitTime > 0)
-            yield return new WaitForSeconds(waitTime);
-        yield return StartCoroutine(BlinkRoutine(blinkStartTime));
-        OnExplode();
-        Destroy(projectile);
+        GrenadeSO grenade = GetGrenade();
+        if (grenade == null) return;
+        StartCoroutine(SimulateProjectile(targetPos, grenade));
     }
 
-    private IEnumerator BlinkRoutine(float duration)
-    {
-        float timer = 0f;
-        bool isBlink = false;
-        while (timer < duration)
-        {
-            float t = timer / duration;
-            float blinkSpeed = Mathf.Lerp(1f, maxBlinkSpeed, t);
-            float interval = 1f / blinkSpeed;
-            isBlink = !isBlink;
-            grenadeRenderer.material = isBlink ? blinkMaterial : originalMaterial;
-            timer += interval;
-            yield return new WaitForSeconds(interval);
-        }
-        grenadeRenderer.material = originalMaterial;
-    }
-
-    protected abstract void OnExplode();
+    public void Initialize(ModuleOwner owner) { }
+    public void Init() { }
 
     private void OnDrawGizmos()
     {

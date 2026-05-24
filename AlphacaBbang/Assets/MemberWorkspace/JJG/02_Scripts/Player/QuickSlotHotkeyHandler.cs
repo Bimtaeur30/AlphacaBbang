@@ -1,4 +1,3 @@
-using Assets.MemberWorkspace.HJH._02_Scripts.Grenade;
 using MemberWorkspace.JJG._02_Scripts;
 using MemberWorkspace.JJG._02_Scripts.Item.Data;
 using UnityEngine;
@@ -9,23 +8,15 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     [SerializeField] private QuickSlotContainer quickSlotContainer;
     [SerializeField] private WeaponHolder weaponHolder;
     [SerializeField] private GameObject itemUser;
-    [SerializeField] private GrenadeFirePos throwingWeapon;
-    [SerializeField] private LayerMask groundLayerMask;
     [SerializeField] private AgentAttack agentAttack;
-
-    private IThrowingWeapon _throwingController;
-    private bool _isAiming;
+    [SerializeField] private PlayerGunHandleModule playerGunHandleModule;
 
     private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2, Key.Digit3 };
     private static readonly Key[] ItemKeys = { Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7 };
 
     private int _currentThrowingSlotIndex = -1;
-    private void Awake()
-    {
-        _throwingController = throwingWeapon as IThrowingWeapon;
-        if (_throwingController == null)
-            Debug.LogError("[QuickSlotHotkeyHandler] throwingWeapon이 IThrowingWeapon을 구현하지 않습니다.");
-    }
+    private GrenadeBehavior _currentGrenade;
+
     private void OnEnable()
     {
         if (weaponHolder != null)
@@ -38,6 +29,12 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             weaponHolder.OnThrowingItemChanged -= OnThrowingItemChanged;
     }
 
+    private void OnDestroy()
+    {
+        if (_currentGrenade != null)
+            _currentGrenade.OnFired -= HandleOnFired;
+    }
+
     private void Update()
     {
         HandleWeaponKeys();
@@ -45,14 +42,76 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         HandleThrowingInput();
     }
 
-
     private void OnThrowingItemChanged(ThrowingItemData throwingData)
     {
-        _isAiming = throwingData != null;
-        _throwingController?.SetAim(_isAiming);
+        if (_currentGrenade != null)
+        {
+            _currentGrenade.OnFired -= HandleOnFired;
+            _currentGrenade = null;
+        }
 
         if (throwingData == null)
+        {
             _currentThrowingSlotIndex = -1;
+            return;
+        }
+
+        StartCoroutine(WaitAndSubscribe());
+    }
+
+    private System.Collections.IEnumerator WaitAndSubscribe()
+    {
+        yield return null;
+
+        IWeapon weapon = playerGunHandleModule.CurrentWeapon;
+        if (weapon is GrenadeBehavior grenade)
+        {
+            _currentGrenade = grenade;
+            _currentGrenade.OnFired += HandleOnFired;
+            _currentGrenade.SetAim(true);
+        }
+    }
+
+    private void HandleOnFired()
+    {
+        bool success = quickSlotContainer.UseItem(_currentThrowingSlotIndex, itemUser);
+
+        if (!success)
+        {
+            weaponHolder.UnequipThrowingItem();
+            return;
+        }
+
+        ItemSlot slot = quickSlotContainer.GetSlot(_currentThrowingSlotIndex);
+        if (slot == null || slot.IsEmpty)
+            weaponHolder.UnequipThrowingItem();
+    }
+
+    private void HandleThrowingInput()
+    {
+        if (_currentGrenade == null) return;
+        if (!_currentGrenade.IsAiming) return;
+
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        if (mouse.rightButton.isPressed)
+        {
+            Vector3? targetPos = GetMouseWorldPosition();
+            if (targetPos.HasValue)
+                _currentGrenade.SetTarget(targetPos.Value);
+        }
+        else
+        {
+            if (_currentGrenade.lineRenderer != null)
+                _currentGrenade.lineRenderer.positionCount = 0;
+            return;
+        }
+
+        if (mouse.leftButton.wasPressedThisFrame)
+        {
+            _currentGrenade.StartFire(true);
+        }
     }
 
     private void HandleWeaponKeys()
@@ -91,10 +150,12 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
     }
+
     public void SetThrowingSlotIndex(int index)
     {
         _currentThrowingSlotIndex = index;
     }
+
     private void HandleItemKeys()
     {
         var keyboard = Keyboard.current;
@@ -120,36 +181,13 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
     }
-    private void HandleThrowingInput()
-    {
-        if (_throwingController == null) return;
-        if (!_isAiming) return;
-
-        var mouse = Mouse.current;
-        if (mouse == null) return;
-
-        if (mouse.leftButton.isPressed)
-        {
-            Vector3? targetPos = GetMouseWorldPosition();
-            if (targetPos.HasValue)
-                _throwingController.SetTarget(targetPos.Value);
-        }
-        else
-        {
-            _throwingController.SetAim(false);
-        }
-
-        if (mouse.rightButton.wasPressedThisFrame)
-        {
-            quickSlotContainer.UseItem(_currentThrowingSlotIndex, itemUser);
-        }
-    }
 
     private Vector3? GetMouseWorldPosition()
     {
+        if (_currentGrenade == null) return null;
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayerMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _currentGrenade.layermask))
             return hit.point;
         return null;
     }
-}
+}   

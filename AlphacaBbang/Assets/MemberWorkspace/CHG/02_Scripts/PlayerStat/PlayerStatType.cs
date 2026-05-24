@@ -2,8 +2,9 @@
 {
     public enum PlayerStatType
     {
-        Health, 
-        Stamina, 
-        AimStamina 
+        Health,
+        Stamina,
+        AimStamina,
+        Gold
     }
 }

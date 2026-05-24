@@ -4,7 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ItemDatabase", menuName = "SO/Item/ItemDatabase")]
 public class ItemDatabase : ScriptableObject
 {
-    [SerializeField] private List<ItemData> items = new();
+    [field: SerializeField] public List<ItemData> Items { get; private set; }  = new List<ItemData>();
 
     private Dictionary<string, ItemData> _itemMap;
 
@@ -12,7 +12,7 @@ public class ItemDatabase : ScriptableObject
     {
         _itemMap = new Dictionary<string, ItemData>();
 
-        foreach (ItemData item in items)
+        foreach (ItemData item in Items)
         {
             if (item == null)
                 continue;

@@ -1,11 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
 {
     public class EnemySpawnPoint : MonoBehaviour
     {
-        [SerializeField][Range(0, 100)] private int SpawnPercent = 100;
-        [SerializeField] private GameObject[] EnemyPrefabs;
+        [SerializeField] private EnemySpawnData[] EnemySpawnDatas;
         [SerializeField] private LayerMask TargetLayer;
         [SerializeField] private float SpawnCheckDistance = 50f;
 
@@ -23,18 +24,31 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
 
         private void SpawnEnemy()
         {
-            if (Random.value > SpawnPercent / 100f)
-                return;
-
-            if (EnemyPrefabs == null || EnemyPrefabs.Length == 0)
+            if (EnemySpawnDatas == null || EnemySpawnDatas.Length == 0)
             {
-                Debug.LogWarning($"{name}에 EnemyPrefabs가 없습니다.");
+                Debug.LogWarning($"{name}에 EnemySpawnDatas가 없습니다.");
                 return;
             }
 
-            int random = Random.Range(0, EnemyPrefabs.Length);
-            GameObject enemyPrefab = EnemyPrefabs[random];
-            Instantiate(enemyPrefab, _position, Quaternion.identity);
+            float totalPercent = 0f;
+            for (int i = 0; i < EnemySpawnDatas.Length; i++)
+            {
+                totalPercent += EnemySpawnDatas[i].EnemySpawnPercent;
+            }
+
+            float random = Random.Range(0f, totalPercent);
+            float currentPercent = 0f;
+
+            for (int i = 0; i < EnemySpawnDatas.Length; i++)
+            {
+                currentPercent += EnemySpawnDatas[i].EnemySpawnPercent;
+
+                if (random <= currentPercent)
+                {
+                    Instantiate(EnemySpawnDatas[i].EnemyPrefab, _position, Quaternion.identity);
+                    return;
+                }
+            }
         }
 
         private void OnDrawGizmos()
@@ -42,5 +56,12 @@ namespace Assets.MemberWorkspace.JJH._02_Scripts.Agents.Enemies
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, SpawnCheckDistance);
         }
+    }
+
+    [Serializable]
+    public struct EnemySpawnData
+    {
+        public GameObject EnemyPrefab;
+        [Range(0f, 100f)] public float EnemySpawnPercent;
     }
 }

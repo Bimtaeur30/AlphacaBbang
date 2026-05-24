@@ -112,6 +112,7 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             if (slot != null && slot.ItemData is ThrowingItemData throwingData)
             {
                 weaponHolder.EquipThrowingItem(slotIndex, throwingData);
+                SetThrowingSlotIndex(slotIndex);
                 return;
             }
 

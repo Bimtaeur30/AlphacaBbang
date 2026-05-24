@@ -662,7 +662,7 @@ GameObject:
   - component: {fileID: 7057925352724836701}
   - component: {fileID: 5428621937661179215}
   - component: {fileID: 5823509768392659990}
-  - component: {fileID: 1254022997667945965}
+  - component: {fileID: 3645022809620277930}
   - component: {fileID: 5598999929187972529}
   - component: {fileID: 7332532898021816215}
   m_Layer: 8
@@ -742,8 +742,8 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 100
   <MaxStamina>k__BackingField: 10
   <MaxAimStamina>k__BackingField: 5
---- !u!136 &1254022997667945965
-CapsuleCollider:
+--- !u!65 &3645022809620277930
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -760,11 +760,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.2623897
-  m_Height: 3.3329775
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.68328416, z: -0.030088425}
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.9879954, z: 2.287623}
+  m_Center: {x: 0, y: 0.5652374, z: -0.08272004}
 --- !u!54 &5598999929187972529
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2633,6 +2631,14 @@ PrefabInstance:
     - target: {fileID: 5277406163405581002, guid: cac59196fc6ef70438bd3a6ca325a52f, type: 3}
       propertyPath: m_Name
       value: AgentHealthModule
+      objectReference: {fileID: 0}
+    - target: {fileID: 7430711969324160731, guid: cac59196fc6ef70438bd3a6ca325a52f, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7430711969324160731, guid: cac59196fc6ef70438bd3a6ca325a52f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -55,7 +55,13 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _emptyIcon = emptyIcon;
 
         if (_emptyIconImage != null)
+        {
             _emptyIconImage.sprite = emptyIcon;
+            _emptyIconImage.enabled = emptyIcon != null;
+        }
+
+        if (_emptyIconObject != null)
+            _emptyIconObject.SetActive(emptyIcon != null);
     }
 
     public void SetSlot(ItemSlot slot)
@@ -84,14 +90,19 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _iconImage.sprite = null;
         _iconImage.enabled = false;
 
-        if (_emptyIconObject != null)
+        if (_emptyIcon != null)
         {
-            SetEmptyIconVisibility(true);
+            if (_emptyIconObject != null)
+                SetEmptyIconVisibility(true);
+            else
+            {
+                _iconImage.sprite = _emptyIcon;
+                _iconImage.enabled = true;
+            }
         }
-        else if (_emptyIcon != null)
+        else
         {
-            _iconImage.sprite = _emptyIcon;
-            _iconImage.enabled = true;
+            SetEmptyIconVisibility(false);
         }
 
         _amountText.text = "";
@@ -103,7 +114,10 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         _iconImage.sprite = defaultIcon;
         _iconImage.enabled = defaultIcon != null;
 
-        SetEmptyIconVisibility(false);
+        if (defaultIcon == null)
+            SetEmptyIconVisibility(false);
+        else
+            SetEmptyIconVisibility(false);
 
         _amountText.text = "";
     }

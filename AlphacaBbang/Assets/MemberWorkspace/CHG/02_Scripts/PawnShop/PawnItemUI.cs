@@ -9,6 +9,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [field: SerializeField] public Button btn;
         [field: SerializeField] public Image itemImage;
         [field: SerializeField] public TextMeshProUGUI itemName;
-        public SaleItemDataSO SaleItemDataSO;
+        [HideInInspector] public SaleItemDataSO SaleItemDataSO;
     }
 }

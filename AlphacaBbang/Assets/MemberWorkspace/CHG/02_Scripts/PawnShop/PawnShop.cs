@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JJH._02_Scripts_Systems.EventSystems;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,6 +11,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
     
     public class PawnShop : MonoBehaviour
     {
+        [SerializeField] private EventChannelSO AddGoldChannel;
+        
         [SerializeField] private Transform layOut;
         [SerializeField] private ItemDatabase itemDatabase;
         [SerializeField] private GameObject itemChoiceBtnPrefab;
@@ -36,7 +39,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
                 itemUI.btn.onClick.AddListener(() => ChangeContent(itemData));
             }
             inventory = FindFirstObjectByType<InventoryContainer>();
-            
             ChangeContent(itemChoiceBtns[0].SaleItemDataSO);
         }
 
@@ -53,13 +55,15 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountSlider.value = 0;
         }
 
-        public void SellItem()
+        public void SaleItem()
         {
             if (inventory.GetItemCount(_curItemData) < itemCountSlider.value) return;
             
             inventory.ConsumeBulletByName(_curItemData.ItemName, (int)itemCountSlider.value);
+            AddGold evt = new AddGold();
+            evt.Init(_curItemData.Price * (int)itemCountSlider.value);
+            AddGoldChannel.RaiseEvent(evt);
             ChangeContent(_curItemData);
-            //플레이어 골드 추가
         }
     }
 }

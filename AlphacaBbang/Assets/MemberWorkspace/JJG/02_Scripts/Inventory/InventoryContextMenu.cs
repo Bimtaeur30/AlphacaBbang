@@ -281,7 +281,7 @@ public class InventoryContextMenu : MonoBehaviour
         }
         else if (itemData is ThrowingItemData throwingData)
         {
-            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
             if (targetSlotIndex >= 0 && weaponHolder != null)
             {
                 weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);

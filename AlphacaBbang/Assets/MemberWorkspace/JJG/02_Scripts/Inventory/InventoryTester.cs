@@ -64,7 +64,7 @@ public class InventoryTest : MonoBehaviour
 
         if (_keyboard.f1Key.wasPressedThisFrame)
         {
-            bool result = inventoryContainer.AddItem(normalItem, 1);
+            bool result = inventoryContainer.AddItem(countableItem, 1);
             Debug.Log($"[TEST] 일반 아이템 1개 추가: {result}");
             PrintContainerState(inventoryContainer, "Inventory");
         }

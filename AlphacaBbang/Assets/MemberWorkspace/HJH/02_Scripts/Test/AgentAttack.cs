@@ -1,4 +1,3 @@
-using Reflex.Attributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,15 +9,17 @@ public enum CharacterState
 }
 
 public class AgentAttack : MonoBehaviour, IModule, IEnemyWeaponModule, ICharacterStateOwner
-{   
+{
     [SerializeField] private MeleeWeaponBase weapon;
     [SerializeField] private WeaponHolder weaponHolder;
-    [Inject][SerializeField] private Camera mainCamera;
     [SerializeField] private CharacterState characterState;
     public CharacterState CharacterState => characterState;
 
+    private Camera _mainCamera;
+
     private void OnEnable()
     {
+        _mainCamera = Camera.main;
         if (weaponHolder != null)
             weaponHolder.OnMeleeWeaponChanged += SetCurrentWeapon;
     }
@@ -61,7 +62,7 @@ public class AgentAttack : MonoBehaviour, IModule, IEnemyWeaponModule, ICharacte
 
     private Vector3 GetMouseWorldPoint()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         Plane plane = new Plane(Vector3.up, transform.position);
         if (plane.Raycast(ray, out float enter))
             return ray.GetPoint(enter);

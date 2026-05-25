@@ -1,4 +1,4 @@
-﻿using JJH._02_Scripts_Systems.EventSystems;
+﻿    using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using System.Collections;
 using System.Text;
@@ -53,7 +53,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             foreach (PlayerStatStruct pStruct in _statViews)
             {
                 int idx = (int)pStruct.StatType;
-                int cur = (int)GetCurrentStat(pStruct.StatType);
+                int cur = (int)GetCurrentStatValue(pStruct.StatType);
                 pStruct.statUpUi.StatTextChange(cur.ToString(), (cur + pStruct.statUpValue).ToString());
                 sb.AppendLine($"{StatLabels[idx]}: {pStruct.needItem.ItemName}X{pStruct.needItemCount}");
             }
@@ -61,7 +61,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
             foreach (PlayerStatStruct pStruct in _statViews)
             {
-                int curStat = (int)GetCurrentStat(pStruct.StatType);
+                int curStat = (int)GetCurrentStatValue(pStruct.StatType);
                 pStruct.statUpUi.StatTextChange(curStat.ToString(), (curStat + pStruct.statUpValue).ToString());
             }
         }
@@ -71,42 +71,48 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             PlayerStatType type = (PlayerStatType)index;
             PlayerStatStruct pStruct = _statViews[index];
 
+            Debug.Log($"원하는 아이템수: {inventory.GetItemCount(pStruct.needItem)}, 필요한 수: {pStruct.needItemCount}");
             if (inventory.GetItemCount(pStruct.needItem) < pStruct.needItemCount)
             {
+                Debug.Log("Item이 부족합니다.");
                 return;
             }
+
+            if (_playerSaveData.Gold < needGold) return;
+            
+            
             int idx = (int)type;
-            int cur = (int)GetCurrentStat(type);
+            int cur = (int)GetCurrentStatValue(type);
             int next = cur + _statViews[idx].statUpValue;
 
             switch (type)
             {
                 case PlayerStatType.Health:
-                    playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next));
+                    playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next-cur));
                     break;
                 case PlayerStatType.Stamina:
-                    playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next));
+                    playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next-cur));
                     break;
                 case PlayerStatType.AimStamina:
-                    playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next));
+                    playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next-cur));
                     break;
                 case PlayerStatType.Gold:
-                    playerStatChannel.RaiseEvent(new AddGold().Init(next));
+                    playerStatChannel.RaiseEvent(new AddGold().Init(next-cur));
                     break;
                 default:
                     Debug.LogWarning("NOoo");
                     return;
             }
 
-            int updated = (int)GetCurrentStat(type);
+            int updated = (int)GetCurrentStatValue(type);
             _statViews[idx].statUpUi.StatTextChange(updated.ToString(), (updated + _statViews[idx].statUpValue).ToString());
             _statViews[idx].needItemCount += _statViews[idx].needValueIncrease;
 
-            inventory.ConsumeBulletByName(pStruct.needItem.Id, pStruct.needItemCount);
+            inventory.ConsumeBulletByName(pStruct.needItem.ItemName, pStruct.needItemCount);
             playerStatChannel.RaiseEvent(new AddGold().Init(-needGold));
         }
 
-        private float GetCurrentStat(PlayerStatType type) => type switch
+        private float GetCurrentStatValue(PlayerStatType type) => type switch
         {
             PlayerStatType.Health => _playerSaveData.MaxHealth,
             PlayerStatType.Stamina => _playerSaveData.MaxStamina,

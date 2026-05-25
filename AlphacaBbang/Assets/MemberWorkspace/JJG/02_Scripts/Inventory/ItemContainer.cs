@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
+public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISaveable
 {
     [SerializeField] protected ContainerType containerType;
     [SerializeField] protected int slotCount = 20;

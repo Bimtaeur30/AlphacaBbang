@@ -159,7 +159,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &403320063538798302
 Transform:
   m_ObjectHideFlags: 0
@@ -416,7 +416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5725705364123337259
 Transform:
   m_ObjectHideFlags: 0
@@ -455,15 +455,15 @@ MonoBehaviour:
   throwingWeapon: {fileID: 0}
   playerStateChannel: {fileID: 11400000, guid: d655508e55a436b4a951a0330a6935d3, type: 2}
   systemChannel: {fileID: 11400000, guid: 4fa04cb7e0c323f4197c5741b5741fb1, type: 2}
-  agentArmorModule: {fileID: 0}
+  agentArmorModule: {fileID: 8585145849213389178}
   requiredParts: []
   <SaveId>k__BackingField: {fileID: 11400000, guid: f54b2d67ae3b5e94c87495ec3fd46051, type: 2}
   equipmentSlots:
-  - allowedEquipType: 0
+  - allowedEquipType: 3
     slot:
       itemData: {fileID: 0}
       amount: 0
-  - allowedEquipType: 0
+  - allowedEquipType: 4
     slot:
       itemData: {fileID: 0}
       amount: 0
@@ -689,7 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edf8cbd884ff4390a9af25588df598eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.PlayerVisibility
-  viewRadius: 9.98
+  viewRadius: 30
   closeViewRadius: 3
   viewAngle: 70
   obstacleLayerMask:
@@ -1458,7 +1458,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5756945346557505184
 Transform:
   m_ObjectHideFlags: 0
@@ -1587,15 +1587,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1953424199023587017, guid: c13030e908f92744c9269c9f79be680f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.058599472
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1953424199023587017, guid: c13030e908f92744c9269c9f79be680f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.33527
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1953424199023587017, guid: c13030e908f92744c9269c9f79be680f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.06638
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1953424199023587017, guid: c13030e908f92744c9269c9f79be680f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3303,6 +3303,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4366403015053303859, guid: f13b5852f5f2719429ca91e840e56610, type: 3}
   m_PrefabInstance: {fileID: 2954067973171718407}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8585145849213389178 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6906944589560193149, guid: f13b5852f5f2719429ca91e840e56610, type: 3}
+  m_PrefabInstance: {fileID: 2954067973171718407}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 007af3f75e270324baa5bb1061c7574c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.Agents.AgentArmorModule
 --- !u!1001 &4553205925185688889
 PrefabInstance:
   m_ObjectHideFlags: 0

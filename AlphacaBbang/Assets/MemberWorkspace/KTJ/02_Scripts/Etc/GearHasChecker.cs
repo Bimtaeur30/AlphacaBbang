@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GearHasChecker : MonoBehaviour
 {
-    [Inject] private SceneChangeManager _sceneChangeManager;
+    [SerializeField] private SceneChangeManager _sceneChangeManager;
     [SerializeField] private InventoryContainer InventoryContainer;
     [SerializeField] private EventChannelSO systemChannel;
     public void Check()

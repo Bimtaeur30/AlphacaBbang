@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
+public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISaveable
 {
     [SerializeField] protected ContainerType containerType;
     [SerializeField] protected int slotCount = 20;
@@ -45,7 +45,8 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
 
     protected virtual void Start()
     {
-        InitializeSlots();
+        //InitializeSlots();
+        StartCoroutine(InitializeSlots());
     }
 
     public bool CanEscape()
@@ -58,8 +59,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         return true;
     }
 
-    protected void InitializeSlots()
+    protected IEnumerator InitializeSlots()
     {
+        yield return new WaitForFixedUpdate();
+        
         if (slots.Count == slotCount)
         {
             for (int i = 0; i < slots.Count; i++)
@@ -67,7 +70,8 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 if (slots[i] == null)
                     slots[i] = new ItemSlot();
             }
-            return;
+
+            yield return null;
         }
 
         slots.Clear();
@@ -77,6 +81,26 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             slots.Add(new ItemSlot());
         }
     }
+    
+    // protected void InitializeSlots()
+    // {
+    //     if (slots.Count == slotCount)
+    //     {
+    //         for (int i = 0; i < slots.Count; i++)
+    //         {
+    //             if (slots[i] == null)
+    //                 slots[i] = new ItemSlot();
+    //         }
+    //         return;
+    //     }
+    //
+    //     slots.Clear();
+    //
+    //     for (int i = 0; i < slotCount; i++)
+    //     {
+    //         slots.Add(new ItemSlot());
+    //     }
+    // }
 
     private void HandlePlayerHpHeal(PlayerHpHeal evt)
     {

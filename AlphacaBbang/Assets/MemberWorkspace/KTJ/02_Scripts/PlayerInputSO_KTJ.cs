@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.InputSystem;
 [CreateAssetMenu(fileName = "PlayerInputSO", menuName = "KTJ/Input/PlayerInputSO")]

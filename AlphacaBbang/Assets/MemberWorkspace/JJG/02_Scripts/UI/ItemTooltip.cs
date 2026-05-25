@@ -72,13 +72,30 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
         _isVisible = false;
     }
     
+    // private void FollowMouse()
+    // {
+    //     var mouse = Mouse.current;
+    //     if (mouse == null) return;
+    //
+    //     Vector2 mouseScreenPos = mouse.position.ReadValue();
+    //     
+    //     RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    //         _canvasRT,
+    //         mouseScreenPos,
+    //         null,
+    //         out Vector2 localPoint
+    //     );
+    //
+    //     _panel.anchoredPosition = localPoint + _offset;
+    // }
+    
     private void FollowMouse()
     {
         var mouse = Mouse.current;
         if (mouse == null) return;
 
         Vector2 mouseScreenPos = mouse.position.ReadValue();
-        
+    
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _canvasRT,
             mouseScreenPos,
@@ -86,7 +103,12 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
             out Vector2 localPoint
         );
 
-        _panel.anchoredPosition = localPoint + _offset;
+        Vector2 panelSize = _panel.rect.size;
+        Vector2 canvasSize = _canvasRT.rect.size;
+
+        Vector2 offset = new Vector2(_offset.x + panelSize.x / 2, _offset.y + panelSize.y / 2);
+        
+        _panel.anchoredPosition = localPoint + offset;
     }
 
     private string GetTypeLabel(ItemData data)

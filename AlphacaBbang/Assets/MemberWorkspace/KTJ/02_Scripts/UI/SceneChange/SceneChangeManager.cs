@@ -26,6 +26,7 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
     private void Awake()
     {
         SceneEnterEffect();
+        systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
     }
 
     public void SceneLoad(SceneType sceneType)

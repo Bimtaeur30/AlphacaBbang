@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JJH._02_Scripts_Systems.EventSystems;
+using MemberWorkspace.JJG._02_Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace MemberWorkspace.CHG._02_Scripts.PawnShop
 {
@@ -57,7 +60,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemImage.sprite = itemData.Icon;
             itemNameText.text = itemData.ItemName;
             itemGradeText.text = itemData.GradeType.ToString();
-            itemPriceText.text = itemData.Price.ToString();
+            itemPriceText.text = GetPrice(itemData).ToString();
             int itemCount = inventory.GetItemCount(itemData);
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;
@@ -71,7 +74,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             
             inventory.ConsumeBulletByName(_curItemData.ItemName, (int)itemCountSlider.value);
             AddGold evt = new AddGold();
-            evt.Init(_curItemData.Price * (int)itemCountSlider.value);
+            evt.Init(GetPrice(_curItemData) * (int)itemCountSlider.value);
             AddGoldChannel.RaiseEvent(evt);
             ChangeContent(_curItemData);
         }
@@ -92,6 +95,18 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
+        }
+
+        private int GetPrice(SaleItemDataSO itemData)
+        {
+            return itemData.GradeType switch
+            {
+                GradeType.Common => 3,
+                GradeType.UnCommon => 5,
+                GradeType.Rare => 9,
+                GradeType.Epic => 15,
+                GradeType.Legendary => 25
+            };
         }
         
         [ContextMenu("CheckSlots")]

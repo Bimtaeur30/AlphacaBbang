@@ -4,6 +4,7 @@ using UnityEngine;
 public class WeaponHandleModule : MonoBehaviour, IModule
 {
     public ModuleOwner Owner { get; private set; }
+
     [Header("State")]
     [field: SerializeField] public bool IsInputAim { get; private set; }
     [field: SerializeField] public bool IsInputFire { get; private set; }
@@ -12,10 +13,12 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     [field: SerializeField] public IWeapon CurrentWeapon { get; private set; }
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
 
-
     [Header("Transform")]
     [SerializeField] protected Transform gunHoldParent_1;
     [SerializeField] protected Transform gunHoldParent_2;
+
+    private bool _pendingFireStart = false;
+    private bool _pendingFireStop = false;
 
     public virtual void Initialize(ModuleOwner owner)
     {
@@ -29,16 +32,32 @@ public class WeaponHandleModule : MonoBehaviour, IModule
         if (CurrentWeapon.WeaponData != null)
             Debug.Assert(CurrentWeapon.WeaponData != null, "CurrentWeapon.WeaponData가 할당되지 않았습니다.");
     }
+
     private void LateUpdate()
     {
-        if (CanFire() == false)
-            return;
-        if (CurrentWeapon == null)
-            return;
-
-        if (IsInputAim && IsInputFire)
+        if (CanFire() && CurrentWeapon != null)
         {
-            CurrentWeapon.TickFire();
+            if (_pendingFireStop)
+            {
+                CurrentWeapon.StopFire(IsInputAim);
+                _pendingFireStop = false;
+            }
+
+            if (_pendingFireStart)
+            {
+                CurrentWeapon.StartFire(IsInputAim);
+                _pendingFireStart = false;
+            }
+
+            if (IsInputAim && IsInputFire)
+            {
+                CurrentWeapon.TickFire();
+            }
+        }
+        else
+        {
+            _pendingFireStart = false;
+            _pendingFireStop = false;
         }
     }
 
@@ -46,20 +65,14 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     {
         IsInputFire = value;
 
-        if (CanFire() == false)
-            return;
-        if (CurrentWeapon == null)
-            return;
-
         if (value)
-            CurrentWeapon.StartFire(IsInputAim);
+            _pendingFireStart = true;
         else
-            CurrentWeapon.StopFire(IsInputAim);
+            _pendingFireStop = true;
     }
 
     public virtual void OnFire() { }
 
-    // 장전 완료 콜백 — 기본은 아무것도 안 함 (플레이어: 다시 입력해야 발사)
     public virtual void OnReloadStart() { }
     public virtual void OnReloadEnd() { }
 

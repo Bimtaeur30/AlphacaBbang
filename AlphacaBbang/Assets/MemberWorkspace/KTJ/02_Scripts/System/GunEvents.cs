@@ -7,6 +7,7 @@ public static class GunEvents
     public static readonly WeaponEquipEvent WeaponEquipEvent = new WeaponEquipEvent();
     public static readonly WeaponSlotEquipEvent WeaponSlotEquipEvent = new WeaponSlotEquipEvent();
     public static readonly WeaponDropEvent WeaponDropEvent = new WeaponDropEvent();
+    public static readonly WeaponReloadEvent WeaponReloadEvent = new WeaponReloadEvent();
 }
 
 public class WeaponEquipEvent : GameEvent // CurrentGun에 장착(1,2번 중 선택)
@@ -58,6 +59,17 @@ public class WeaponDropEvent : GameEvent
     public WeaponDropEvent Init(WeaponSlotIndex index)
     {
         Index = index;
+        return this;
+    }
+}
+
+public class WeaponReloadEvent : GameEvent
+{
+    public bool IsRealoading { get; private set; }
+
+    public WeaponReloadEvent Init(bool isRealoading)
+    {
+        IsRealoading = isRealoading;
         return this;
     }
 }

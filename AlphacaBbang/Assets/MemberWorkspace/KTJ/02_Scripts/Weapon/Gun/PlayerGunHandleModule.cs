@@ -147,6 +147,12 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     {
         return PlayerController.IsPureAiming;
     }
+    public override void OnReloadStart()
+    {
+        base.OnReloadStart();
+        uiChannel.RaiseEvent(UIEvents.BulletCountHandleEvent.Init(currentGunIndex, ("재장전중!")));
+    }
+
 
     public override void OnCurrentBulletChanged(string current, string max)
     {

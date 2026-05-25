@@ -134,7 +134,7 @@ namespace MemberWorkspace.CHG._02_Scripts.QuestSystem
         {
             foreach (Quest quest in _activeQuests)
                 foreach (QuestCondition condition in quest.Conditions)
-                    if (condition.TargetId == evt.EnemyName)
+                    if (condition.TargetId == evt.EnemyID)
                     {
                         condition.Progress++;
                         OnUpdateQuestProgress?.Invoke(quest);

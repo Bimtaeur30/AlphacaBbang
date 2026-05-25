@@ -14,14 +14,14 @@ namespace JJH._02_Scripts.Systems.EventSystems
     public class AgentDeadEvent : GameEvent
     {
         public Agent Agent { get; private set; }
-        public string EnemyName { get; private set; }
+        public string EnemyID { get; private set; }
 
         public AgentDeadEvent Init(Agent agent)
         {
             Agent = agent;
 
             if (Agent is AbstractEnemy enemy)
-                EnemyName = enemy.EnemyData.EnemyID;
+                EnemyID = enemy.EnemyData.EnemyID;
 
             return this;
         }

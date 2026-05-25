@@ -228,7 +228,7 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i].IsEmpty) continue;
-            if (slots[i].ItemData.name == bulletName)
+            if (slots[i].ItemData.ItemName == bulletName)
             {
                 return RemoveAmount(i, amount);
             }

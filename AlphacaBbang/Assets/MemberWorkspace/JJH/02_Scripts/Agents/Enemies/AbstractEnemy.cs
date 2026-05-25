@@ -4,6 +4,7 @@ using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Weapons;
+using JJH._02_Scripts_Systems.EventSystems;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [field: SerializeField] public LootTable[] LootTables { get; private set; }
+        [SerializeField] private EventChannelSO mapChnnel;
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -84,6 +86,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (evt.Agent == this)
             {
                 _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+                mapChnnel.RaiseEvent(MapEvents.PlayerActionEvent.Init("테스트 액션이 발동되었습니다."));
                 EnemyInterface.SetInterfaceShow(false);
             }
         }

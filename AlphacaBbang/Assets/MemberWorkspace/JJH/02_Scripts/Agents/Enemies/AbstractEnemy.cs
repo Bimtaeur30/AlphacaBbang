@@ -26,7 +26,7 @@ namespace JJH._02_Scripts.Agents.Enemies
         private BlackboardVariable<StateChannel> _stateChannel;
 
         public int WeaponNum => _weaponNum;
-        private int _weaponNum;
+        private int _weaponNum = 0;
 
         private BehaviorGraphAgent _btAgent;
 
@@ -39,7 +39,8 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            _weaponNum = Random.Range(0, EnemyData.Weapons.Length);
+            if (EnemyData.Weapons != null && EnemyData.Weapons.Length != 0)
+                _weaponNum = Random.Range(0, EnemyData.Weapons.Length);
             if (Weapon is EnemyWeaponHandleModule)
             {
                 EnemyData.Weapons[_weaponNum].gameObject.SetActive(true);

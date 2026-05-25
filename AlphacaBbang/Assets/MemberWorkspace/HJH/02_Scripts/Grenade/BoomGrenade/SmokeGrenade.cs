@@ -6,6 +6,6 @@ public class SmokeGrenade : GrenadeBehavior
 
     protected override void OnExplode()
     {
-        Instantiate(smokeZonePrefab, transform.position, Quaternion.identity);
+        Instantiate(smokeZonePrefab, transform.position + new Vector3(0,2,0), Quaternion.identity);
     }
 }

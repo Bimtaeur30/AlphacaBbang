@@ -43,10 +43,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             playerStateChannel.RemoveListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
-        //InitializeSlots();
-        StartCoroutine(InitializeSlots());
+        InitializeSlots();
+        //StartCoroutine(InitializeSlots());
     }
 
     public bool CanEscape()
@@ -58,11 +58,9 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         }
         return true;
     }
-
-    protected IEnumerator InitializeSlots()
+    
+    protected void InitializeSlots()
     {
-        yield return new WaitForFixedUpdate();
-        
         if (slots.Count == slotCount)
         {
             for (int i = 0; i < slots.Count; i++)
@@ -70,37 +68,16 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 if (slots[i] == null)
                     slots[i] = new ItemSlot();
             }
-
-            yield return null;
+            return;
         }
-
+    
         slots.Clear();
-
+    
         for (int i = 0; i < slotCount; i++)
         {
             slots.Add(new ItemSlot());
         }
     }
-    
-    // protected void InitializeSlots()
-    // {
-    //     if (slots.Count == slotCount)
-    //     {
-    //         for (int i = 0; i < slots.Count; i++)
-    //         {
-    //             if (slots[i] == null)
-    //                 slots[i] = new ItemSlot();
-    //         }
-    //         return;
-    //     }
-    //
-    //     slots.Clear();
-    //
-    //     for (int i = 0; i < slotCount; i++)
-    //     {
-    //         slots.Add(new ItemSlot());
-    //     }
-    // }
 
     private void HandlePlayerHpHeal(PlayerHpHeal evt)
     {

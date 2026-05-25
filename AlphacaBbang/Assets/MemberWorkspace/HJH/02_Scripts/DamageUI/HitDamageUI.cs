@@ -2,7 +2,6 @@ using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class HitDamageUI : MonoBehaviour
 {
@@ -13,13 +12,6 @@ public class HitDamageUI : MonoBehaviour
 
     private Agent Agent;
 
-    private void Update()
-    {
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            ShowDamage(Random.Range(10f, 999f));
-        }
-    }
     private void OnEnable()
     {
         Agent = GetComponentInParent<Agent>();
@@ -31,10 +23,10 @@ public class HitDamageUI : MonoBehaviour
         agentEventChannel.RemoveListener<AgentHealthChangeEvent>(OnDamageReceived);
     }
 
-    private void OnDamageReceived(AgentHealthChangeEvent e)
+    private void OnDamageReceived(AgentHealthChangeEvent evt)
     {
-        if (e.Agent == Agent)
-            ShowDamage(e.Damage);
+        if (evt.Agent == Agent)
+            ShowDamage(evt.Damage);
     }
 
     private void ShowDamage(float damage)

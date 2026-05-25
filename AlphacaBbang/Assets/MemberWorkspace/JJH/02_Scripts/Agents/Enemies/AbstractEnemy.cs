@@ -31,7 +31,7 @@ namespace JJH._02_Scripts.Agents.Enemies
         private BehaviorGraphAgent _btAgent;
 
         private Coroutine _hitCoroutine;
-        private Color _originColor;
+        private Color[] _originColors;
         private Color _hitColor = new Color32(255, 255, 255, 255);
         private float _hitDuration = 0.15f;
 
@@ -66,8 +66,11 @@ namespace JJH._02_Scripts.Agents.Enemies
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
 
+            _originColors = new Color[Renderer.Materials.Length];
+            for (int i = 0; i < Renderer.Materials.Length; i++)
+                _originColors[i] = Renderer.Materials[i].color;
+
             _btAgent = GetComponent<BehaviorGraphAgent>();
-            _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
             _btAgent.SetVariableValue("Enemy", this);
 
@@ -93,6 +96,9 @@ namespace JJH._02_Scripts.Agents.Enemies
 
         private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
         {
+            if (evt.Agent != this)
+                return;
+
             if (_hitCoroutine != null)
                 StopCoroutine(_hitCoroutine);
 
@@ -108,11 +114,16 @@ namespace JJH._02_Scripts.Agents.Enemies
                 time += Time.deltaTime;
                 float t = Mathf.Sin(time / _hitDuration * Mathf.PI);
 
-                Renderer.Renderer.material.color = Color.Lerp(_originColor, _hitColor, t);
+                for (int i = 0; i < Renderer.Materials.Length; i++)
+                    Renderer.Materials[i].color = Color.Lerp(_originColors[i], _hitColor, t);
+
                 yield return null;
             }
 
-            Renderer.Renderer.material.color = _originColor;
+            for (int i = 0; i < Renderer.Materials.Length; i++)
+            {
+                Renderer.Materials[i].color = _originColors[i];
+            }
         }
     }
 }

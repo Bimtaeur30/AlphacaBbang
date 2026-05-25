@@ -11,9 +11,9 @@ public class EquipmentContainer : ItemContainer
 
     public event Action OnEquipmentChanged;
 
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        //base.Awake();
         SyncEquipmentSlots();
     }
 

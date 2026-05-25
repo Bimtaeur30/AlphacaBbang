@@ -16,9 +16,9 @@ public class LootBoxContainer : ItemContainer
  
     public float RequiredOpenTime { get; private set; }
  
-    protected override void Awake()
+    protected override void Start()
     {
-        base.Awake();
+        //base.Awake();
  
         // 인스펙터에서 직접 LootTable을 할당한 경우 Awake에서 바로 초기화
         if (lootTable != null)

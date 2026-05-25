@@ -50,6 +50,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
         }
 
+        private void OnEnable()
+        {
+            ChangeContent(_curItemData);
+        }
+
         private void OnSliderValueChange(float value)
         {
             sliderValueText.text = ((int)value).ToString();
@@ -100,14 +105,14 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         }
 
         private int GetPrice(CountableItemData itemData)
-        {
+        {   
             return itemData.GradeType switch
             {
                 GradeType.Common => 3,
                 GradeType.UnCommon => 5,
                 GradeType.Rare => 15,
-                GradeType.Epic => 30,
-                GradeType.Legendary => 50
+                GradeType.Epic => 50,
+                GradeType.Legendary => 100
             };
         }
         

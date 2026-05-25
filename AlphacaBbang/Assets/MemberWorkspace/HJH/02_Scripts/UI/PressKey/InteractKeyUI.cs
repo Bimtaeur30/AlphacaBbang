@@ -33,7 +33,7 @@ public class InteractKeyUI : MonoBehaviour
     //private IInteractable currentTarget;
 
     private bool canInteract;
-
+    private bool waitForRelease = true;
     private float pressedTime = 0f;
 
     void OnEnable() => InteractDetector.Register(this);
@@ -74,7 +74,13 @@ public class InteractKeyUI : MonoBehaviour
         //if (currentTarget == null) return;
         bool isPressed = Keyboard.current[pressKey].isPressed;
 
-        if (isPressed && !isCompleted)
+        if (waitForRelease)
+        {
+            if (!isPressed) waitForRelease = false;
+            // fill 복원은 아래서 처리
+        }
+        
+        if (isPressed && !isCompleted && !waitForRelease)
         {
             pressedTime += Time.deltaTime;   // ������ ���ȸ� ����
             fillAmount = Mathf.Clamp01(pressedTime / fillDuration);
@@ -84,6 +90,7 @@ public class InteractKeyUI : MonoBehaviour
                 if (canInteract)
                 {
                     isCompleted = true;
+                    waitForRelease = true;
                     OnInteract?.Invoke();
 
                 }

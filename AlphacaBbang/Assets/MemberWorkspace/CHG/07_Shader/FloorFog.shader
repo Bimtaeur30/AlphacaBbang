@@ -54,28 +54,35 @@ Shader "Custom/FloorFog"
                 float3 positionWS : TEXCOORD1;
             };
 
-            float GetViewMask(float3 worldPos)
-            {
-                float3 toTarget = worldPos - _PlayerPos.xyz;
-                toTarget.y = 0;
-                float dist = length(toTarget);
+float GetViewMask(float3 worldPos)
+{
+    float3 toTarget = worldPos - _PlayerPos.xyz;
+    toTarget.y = 0;
+    float dist = length(toTarget);
 
-                float closeMask = 1.0 - smoothstep(_CloseViewRadius - 1.0, _CloseViewRadius, dist);
+    if (dist > _ViewRadius) 
+        return 0.0;
 
-                if (dist > _ViewRadius) 
-                    return closeMask;
+    // 원형 마스크 (부드럽게)
+    float closeMask = 1.0 - smoothstep(_CloseViewRadius - 0.5, _CloseViewRadius + 0.5, dist);
 
-                float distMask = 1.0 - smoothstep(_ViewRadius - _ViewDistanceSoftness, _ViewRadius, dist); 
+    // 거리 마스크
+    float distMask = 1.0 - smoothstep(_ViewRadius - _ViewDistanceSoftness, _ViewRadius, dist);
 
-                float3 forward = normalize(_PlayerForward.xyz);
-                float3 dir     = normalize(toTarget);
-                float  angle   = degrees(acos(clamp(dot(forward, dir), -1.0, 1.0)));
-                
-                float halfAngle = _ViewAngle * 0.5;
-                float angleMask = 1.0 - smoothstep(halfAngle - _ViewAngleSoftness, halfAngle, angle); 
-                
-                return saturate(max(distMask * angleMask, closeMask));
-            }
+    // 각도 마스크
+    float3 forward = normalize(_PlayerForward.xyz);
+    float3 dir     = normalize(toTarget);
+    float  angle   = degrees(acos(clamp(dot(forward, dir), -1.0, 1.0)));
+    
+    float halfAngle = _ViewAngle * 0.5;
+    float angleMask = 1.0 - smoothstep(halfAngle - _ViewAngleSoftness, halfAngle, angle);
+
+    // 콘 마스크
+    float coneMask = distMask * angleMask;
+    
+    // 부드럽게 블렌딩 ✅
+    return max(closeMask, coneMask);
+}
 
             Varyings vert(Attributes IN)
             {

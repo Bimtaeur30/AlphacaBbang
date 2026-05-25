@@ -49,14 +49,7 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
         });
     }
 
-    //private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
-    //{
-    //    SceneManager.sceneLoaded -= HandleSceneLoaded;
 
-    //    // 새 씬의 ISaveable 오브젝트들이 생성된 뒤 로드
-    //    systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
-    //    Debug.Log("씬 메니저에서 로드 파일을 요청함");
-    //}
 
     private int GetSceneIndex(SceneType sceneType)
     {

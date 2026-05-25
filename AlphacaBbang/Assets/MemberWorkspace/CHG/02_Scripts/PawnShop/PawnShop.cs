@@ -26,15 +26,16 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [SerializeField] private TextMeshProUGUI itemPriceText;
         [SerializeField] private TextMeshProUGUI itemCountText;
         [SerializeField] private TextMeshProUGUI sliderValueText;
+        [SerializeField] private TextMeshProUGUI itemDescriptionText;
         [SerializeField] private Slider itemCountSlider;
         
         [SerializeField] private InventoryContainer inventory;
-        private SaleItemDataSO _curItemData;
+        private CountableItemData _curItemData;
         
         private List<PawnItemUI> itemChoiceBtns =  new List<PawnItemUI>();
         private void Awake()
         {
-            foreach (SaleItemDataSO itemData in itemDatabase.Items)
+            foreach (CountableItemData itemData in itemDatabase.Items)
             {
                 GameObject itemChoiceBtn = Instantiate(itemChoiceBtnPrefab, layOut);
                 PawnItemUI itemUI = itemChoiceBtn.GetComponent<PawnItemUI>();
@@ -54,13 +55,14 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             sliderValueText.text = ((int)value).ToString();
         }
 
-        private void ChangeContent(SaleItemDataSO itemData)
+        private void ChangeContent(CountableItemData itemData)
         {
             _curItemData = itemData;
             itemImage.sprite = itemData.Icon;
             itemNameText.text = itemData.ItemName;
             itemGradeText.text = itemData.GradeType.ToString();
             itemPriceText.text = GetPrice(itemData).ToString();
+            itemDescriptionText.text = itemData.description;
             int itemCount = inventory.GetItemCount(itemData);
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;
@@ -97,15 +99,15 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             inventory.AddItem(_curItemData);
         }
 
-        private int GetPrice(SaleItemDataSO itemData)
+        private int GetPrice(CountableItemData itemData)
         {
             return itemData.GradeType switch
             {
                 GradeType.Common => 3,
                 GradeType.UnCommon => 5,
-                GradeType.Rare => 9,
-                GradeType.Epic => 15,
-                GradeType.Legendary => 25
+                GradeType.Rare => 15,
+                GradeType.Epic => 30,
+                GradeType.Legendary => 50
             };
         }
         

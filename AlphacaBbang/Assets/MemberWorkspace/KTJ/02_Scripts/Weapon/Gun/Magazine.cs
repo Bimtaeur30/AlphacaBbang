@@ -1,3 +1,5 @@
+using JJH._02_Scripts_Systems.EventSystems;
+using MemberWorkspace.CHG._02_Scripts;
 using Reflex.Attributes;
 using Reflex.Core;
 using System;
@@ -23,10 +25,11 @@ public class Magazine : MonoBehaviour
     }
     [field: SerializeField] public int MaxBulletCount { get; private set; } = 20;
 
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI bulletCountTxt;
-    [SerializeField] private RectTransform reloadUI;
-    [SerializeField] private RectTransform bulletUI;
+    //[Header("UI")]
+    //[SerializeField] private TextMeshProUGUI bulletCountTxt;
+    //[SerializeField] private RectTransform reloadUI;
+    //[SerializeField] private RectTransform bulletUI;
+    [SerializeField] private EventChannelSO systemChannel;
 
     private Gun _gun;
     private bool _loading = false;
@@ -48,8 +51,8 @@ public class Magazine : MonoBehaviour
         MaxBulletCount = gun.WeaponData.MagCapacity;
         Debug.Assert(_gun != null, "Gun을 가져오지 못했습니다.");
 
-        if (reloadUI != null)
-            reloadUI.gameObject.SetActive(false);
+        //if (reloadUI != null)
+        //    reloadUI.gameObject.SetActive(false);
 
         RefreshUI();
     }
@@ -89,6 +92,7 @@ public class Magazine : MonoBehaviour
         if (inventoryBulletCount <= 0)
         {
             Debug.Log("인벤토리에 총알이 없어요!");
+            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("탄알부족", "인벤토리에 탄약이 부족해요"));
             return false;
         }
 
@@ -109,21 +113,21 @@ public class Magazine : MonoBehaviour
 
         _loading = true;
 
-        if (bulletUI != null)
-            bulletUI.gameObject.SetActive(false);
+        //if (bulletUI != null)
+        //    bulletUI.gameObject.SetActive(false);
 
-        if (reloadUI != null)
-        {
-            reloadUI.gameObject.SetActive(true);
-            reloadUI.localRotation = Quaternion.identity;
-        }
+        //if (reloadUI != null)
+        //{
+        //    reloadUI.gameObject.SetActive(true);
+        //    reloadUI.localRotation = Quaternion.identity;
+        //}
 
         while (currentTime < _reloadDuration)
         {
             currentTime += Time.deltaTime;
 
-            if (reloadUI != null)
-                reloadUI.Rotate(0f, 0f, -_rotationSpeed * Time.deltaTime);
+            //if (reloadUI != null)
+            //    reloadUI.Rotate(0f, 0f, -_rotationSpeed * Time.deltaTime);
 
             yield return null;
         }
@@ -131,11 +135,11 @@ public class Magazine : MonoBehaviour
         CurrentBulletCount += reloadBulletCount;
         CurrentBulletCount = Mathf.Clamp(CurrentBulletCount, 0, MaxBulletCount);
 
-        if (bulletUI != null)
-            bulletUI.gameObject.SetActive(true);
+        //if (bulletUI != null)
+        //    bulletUI.gameObject.SetActive(true);
 
-        if (reloadUI != null)
-            reloadUI.gameObject.SetActive(false);
+        //if (reloadUI != null)
+        //    reloadUI.gameObject.SetActive(false);
 
         _loading = false;
         RefreshUI();
@@ -146,7 +150,7 @@ public class Magazine : MonoBehaviour
 
     private void RefreshUI()
     {
-        if (bulletCountTxt != null)
-            bulletCountTxt.text = $"{CurrentBulletCount}/{MaxBulletCount}";
+        //if (bulletCountTxt != null)
+        //    bulletCountTxt.text = $"{CurrentBulletCount}/{MaxBulletCount}";
     }
 }

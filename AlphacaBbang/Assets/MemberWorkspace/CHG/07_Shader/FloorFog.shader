@@ -3,7 +3,10 @@ Shader "Custom/FloorFog"
     Properties
     {   
         _FogColor ("Fog Color", Color) = (0.25, 0.25, 0.25, 0.85)
+        _ViewDistanceSoftness ("View Distance Softness", Range(0.1, 5.0)) = 2.0 
+        _ViewAngleSoftness ("View Angle Softness", Range(1.0, 20.0)) = 5.0      
     }
+    
 
     SubShader
     {
@@ -28,6 +31,8 @@ Shader "Custom/FloorFog"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _FogColor;
+                float _ViewDistanceSoftness; 
+                float _ViewAngleSoftness;
             CBUFFER_END
 
             float4 _PlayerPos;
@@ -55,22 +60,21 @@ Shader "Custom/FloorFog"
                 toTarget.y = 0;
                 float dist = length(toTarget);
 
-                if (dist <= _CloseViewRadius)
-                    return 1.0;
+                float closeMask = 1.0 - smoothstep(_CloseViewRadius - 1.0, _CloseViewRadius, dist);
 
                 if (dist > _ViewRadius) 
-                    return 0.0;
+                    return closeMask;
+
+                float distMask = 1.0 - smoothstep(_ViewRadius - _ViewDistanceSoftness, _ViewRadius, dist); 
 
                 float3 forward = normalize(_PlayerForward.xyz);
                 float3 dir     = normalize(toTarget);
                 float  angle   = degrees(acos(clamp(dot(forward, dir), -1.0, 1.0)));
                 
                 float halfAngle = _ViewAngle * 0.5;
+                float angleMask = 1.0 - smoothstep(halfAngle - _ViewAngleSoftness, halfAngle, angle); 
                 
-                if (angle > halfAngle)
-                    return 0.0;
-                
-                return 1.0;
+                return saturate(max(distMask * angleMask, closeMask));
             }
 
             Varyings vert(Attributes IN)

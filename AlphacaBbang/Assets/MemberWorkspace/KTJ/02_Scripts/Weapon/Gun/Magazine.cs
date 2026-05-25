@@ -36,7 +36,7 @@ public class Magazine : MonoBehaviour
     private float _reloadDuration = 2f;
     private float _rotationSpeed = 360f;
 
-    [Inject] private InventoryContainer inventoryContainer;
+    [SerializeField] private InventoryContainer inventoryContainer;
 
     public bool IsReloading
     {

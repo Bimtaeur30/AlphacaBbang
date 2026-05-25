@@ -20,7 +20,7 @@ public class PlayerController : Agent
     [SerializeField] private float _shortClickThreshold = 0.65f;
     [SerializeField] private float footStepInterval = 0.4f;
 
-    [Reflex.Attributes.Inject] private CursorController _cursorController;
+    [SerializeField] private CursorController _cursorController;
 
     [SerializeField] private SoundClipSO equipSoundClip;
     [SerializeField] private SoundClipSO walkSoundClip;

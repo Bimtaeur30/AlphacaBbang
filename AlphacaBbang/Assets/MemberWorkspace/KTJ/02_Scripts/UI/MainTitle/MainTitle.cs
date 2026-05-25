@@ -10,34 +10,39 @@ public class MainTitle : MonoBehaviour
     [SerializeField] private Button startBtn;
     [SerializeField] private Button settingBtn;
     [SerializeField] private Button exitBtn;
-    [Inject] private DataManager dataManager;
+    [SerializeField] private DataManager dataManager;
 
     private SceneType targetScene = SceneType.BASE;
-    [Inject] private SceneChangeManager sceneChangeManager;
+    [SerializeField] private SceneChangeManager sceneChangeManager;
 
-    private void Awake()
-    {
-        startBtn.onClick.AddListener(HandleStartBtn);
-        settingBtn.onClick.AddListener(HandleSettingBtn);
-        exitBtn.onClick.AddListener(HandleExitBtn);
-    }
+    //private void Start()
+    //{
+    //    startBtn.onClick.AddListener(HandleStartBtn);
+    //    settingBtn.onClick.AddListener(HandleSettingBtn);
+    //    exitBtn.onClick.AddListener(HandleExitBtn);
+    //}
 
-    private void HandleExitBtn()
+    public void HandleExitBtn()
     {
         Application.Quit();
     }
 
-    private void HandleSettingBtn()
+    public void HandleSettingBtn()
     {
     }
 
-    private void HandleStartBtn()
+    public void HandleStartBtn()
     {
         sceneChangeManager.SceneLoad(targetScene);
     }
 
     private void Start()
     {
+
+        //startBtn.onClick.AddListener(HandleStartBtn);
+        //settingBtn.onClick.AddListener(HandleSettingBtn);
+        //exitBtn.onClick.AddListener(HandleExitBtn);
+
         bool hasPlayed = dataManager.HasSaveData();
         startGameTxt.text = hasPlayed ? "이어하기" : "시작하기";
         if (hasPlayed)

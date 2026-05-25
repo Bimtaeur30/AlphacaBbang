@@ -12,7 +12,7 @@ public class Esc : MonoBehaviour
     [SerializeField] private Button SettingBtn;
     [SerializeField] private Button QuitBtn;
 
-    [Inject] SceneChangeManager sceneChangeManager;
+    [SerializeField] SceneChangeManager sceneChangeManager;
 
     bool isActive = false;
     private void Start()

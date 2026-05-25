@@ -22,7 +22,7 @@ public class CrossHairModule : MonoBehaviour, IModule
     private Image crossHairImg;
     private bool _isCrossHairActive;
     private PlayerController _player;
-    [Reflex.Attributes.Inject] private CursorController _cursorController;
+    [SerializeField] private CursorController _cursorController;
 
     private Vector2 _mousePos;
     private Vector2 _recoilOffset;

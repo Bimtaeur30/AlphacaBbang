@@ -22,6 +22,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [SerializeField] private TextMeshProUGUI itemGradeText;
         [SerializeField] private TextMeshProUGUI itemPriceText;
         [SerializeField] private TextMeshProUGUI itemCountText;
+        [SerializeField] private TextMeshProUGUI sliderValueText;
         [SerializeField] private Slider itemCountSlider;
         
         [SerializeField] private InventoryContainer inventory;
@@ -42,6 +43,12 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             }
             //inventory = FindFirstObjectByType<InventoryContainer>();
             ChangeContent(itemChoiceBtns[0].SaleItemDataSO);
+            itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
+        }
+
+        private void OnSliderValueChange(float value)
+        {
+            sliderValueText.text = ((int)value).ToString();
         }
 
         private void ChangeContent(SaleItemDataSO itemData)
@@ -55,6 +62,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;
             itemCountSlider.value = 0;
+            OnSliderValueChange(itemCountSlider.value);
         }
 
         public void SaleItem()

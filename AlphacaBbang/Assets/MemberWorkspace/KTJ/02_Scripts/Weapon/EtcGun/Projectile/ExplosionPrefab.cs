@@ -1,10 +1,15 @@
+using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
+using JJH._02_Scripts.Systems.SoundSystems;
+using JJH._02_Scripts_Systems.EventSystems;
 using Unity.Cinemachine;
 using UnityEngine;
 
 [RequireComponent(typeof(CinemachineImpulseSource))]
 public class ExplosionPrefab : PoolableMono
 {
+    [SerializeField] private EventChannelSO SoundChannel;
+    [SerializeField] private SoundClipSO _explosionSound;
     [SerializeField] private ParticleSystem _particleSystem;
     private CinemachineImpulseSource _impulseSource;
 
@@ -20,7 +25,7 @@ public class ExplosionPrefab : PoolableMono
         _particleSystem.gameObject.transform.localScale = multiplyScale;
 
         _particleSystem.Play();
-
+        SoundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(_explosionSound, this.transform));
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
             range,

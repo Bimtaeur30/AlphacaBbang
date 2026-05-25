@@ -39,6 +39,7 @@ namespace JJH._02_Scripts.Agents
         private float _maxHealth;
         private float _health;
 
+        public float MaxHealth => _maxHealth;
         public void Initialize(ModuleOwner owner)
         {
             _owner = owner as Agent;

@@ -47,11 +47,14 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         OnStaminaChanged -= UpdateStaminaUI;
     }
 
+    bool isDead = false;
     private void OnAgentDead(AgentDeadEvent evt)
     {
-        if (evt.Agent == _controller)
+        if (evt.Agent == _controller && !isDead)
         {
+            isDead = true;
             systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
+            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("사망", "인벤토리가 청산되었습니다."));
         }
     }
 

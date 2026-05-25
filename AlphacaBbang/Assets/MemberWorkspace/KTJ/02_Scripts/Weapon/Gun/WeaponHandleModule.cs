@@ -74,6 +74,7 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     public virtual void OnFire() { }
 
     public virtual void OnReloadStart() { }
+
     public virtual void OnReloadEnd() { }
 
     public void Aim(bool value)

@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 3669536553453546895}
   - component: {fileID: 6913007871223719625}
   - component: {fileID: 7637038186335119841}
+  - component: {fileID: 4905290044968083796}
   m_Layer: 5
   m_Name: EnemyNameText
   m_TagString: Untagged
@@ -131,9 +132,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6857992400869001222}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 52, y: -50}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &6913007871223719625
@@ -161,7 +162,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6703538047915099655, guid: c90001a888d6bec4cb4849a13e7acde5, type: 2}
+  - {fileID: 1556246502517384678, guid: 1e0dfbf6b16d0ca4eb9be5aac3cd8294, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -207,8 +208,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC801\n"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c90001a888d6bec4cb4849a13e7acde5, type: 2}
-  m_sharedMaterial: {fileID: -6703538047915099655, guid: c90001a888d6bec4cb4849a13e7acde5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1e0dfbf6b16d0ca4eb9be5aac3cd8294, type: 2}
+  m_sharedMaterial: {fileID: 1556246502517384678, guid: 1e0dfbf6b16d0ca4eb9be5aac3cd8294, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -232,8 +233,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -280,6 +281,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 6913007871223719625}
   m_maskType: 0
+--- !u!114 &4905290044968083796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4721777014920316152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.ContentSizeFitter
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!1 &5041649102476663205
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,7 +330,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 3, y: 3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &45506640231844172
 CanvasRenderer:
@@ -557,7 +572,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -1.86}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7234731474949840809
@@ -581,8 +596,8 @@ MonoBehaviour:
   m_Spacing: 1
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 1
-  m_ChildControlHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0

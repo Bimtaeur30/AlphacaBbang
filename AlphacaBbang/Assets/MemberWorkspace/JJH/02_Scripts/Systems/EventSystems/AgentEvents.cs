@@ -29,11 +29,13 @@ namespace JJH._02_Scripts.Systems.EventSystems
 
     public class AgentHealthChangeEvent : GameEvent
     {
+        public Agent Agent { get; private set; }
         public float CurrentHealth { get; private set; }
         public float Damage { get; private set; }
 
-        public AgentHealthChangeEvent Init(float currentHealth, float damage)
+        public AgentHealthChangeEvent Init(Agent agent, float currentHealth, float damage)
         {
+            Agent = agent;
             Damage = damage;
             CurrentHealth = currentHealth;
             return this;

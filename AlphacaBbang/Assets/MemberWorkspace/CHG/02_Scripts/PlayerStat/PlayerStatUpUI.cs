@@ -8,15 +8,15 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
     {
         [SerializeField] private TextMeshProUGUI beforeStatText;
         [SerializeField] private TextMeshProUGUI afterStatText;
-        [SerializeField] private Button statUpButton;
         
         public void StatTextChange(string before, string after)
         {
+            Debug.Log("TextChange");
             beforeStatText.text = before;
             afterStatText.text = after;
         }
         
-        public void StatUpButtonInteractableChange(bool value) => statUpButton.interactable = value;
+        //public void StatUpButtonInteractableChange(bool value) => statUpButton.interactable = value;
         
     }
 }

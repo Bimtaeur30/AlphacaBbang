@@ -72,13 +72,30 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
         _isVisible = false;
     }
     
+    // private void FollowMouse()
+    // {
+    //     var mouse = Mouse.current;
+    //     if (mouse == null) return;
+    //
+    //     Vector2 mouseScreenPos = mouse.position.ReadValue();
+    //     
+    //     RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    //         _canvasRT,
+    //         mouseScreenPos,
+    //         null,
+    //         out Vector2 localPoint
+    //     );
+    //
+    //     _panel.anchoredPosition = localPoint + _offset;
+    // }
+    
     private void FollowMouse()
     {
         var mouse = Mouse.current;
         if (mouse == null) return;
 
         Vector2 mouseScreenPos = mouse.position.ReadValue();
-        
+    
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _canvasRT,
             mouseScreenPos,
@@ -86,7 +103,21 @@ public class ItemTooltip : MonoSingleton<ItemTooltip>
             out Vector2 localPoint
         );
 
-        _panel.anchoredPosition = localPoint + _offset;
+        Vector2 panelSize = _panel.rect.size;
+        Vector2 canvasSize = _canvasRT.rect.size;
+
+        // 기본 오프셋: 마우스 우측 하단
+        Vector2 offset = new Vector2(_offset.x, _offset.y);
+
+        // 우측 경계 초과 시 왼쪽으로
+        if (localPoint.x + offset.x + panelSize.x > canvasSize.x / 2f)
+            offset.x = -_offset.x - panelSize.x;
+
+        // 하단 경계 초과 시 위쪽으로
+        if (localPoint.y + offset.y - panelSize.y < -canvasSize.y / 2f)
+            offset.y = _offset.y + panelSize.y;  // 양수로 위로 올림
+
+        _panel.anchoredPosition = localPoint + offset;
     }
 
     private string GetTypeLabel(ItemData data)

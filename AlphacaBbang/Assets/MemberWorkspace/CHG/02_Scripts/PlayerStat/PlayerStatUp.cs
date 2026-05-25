@@ -61,7 +61,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
             foreach (PlayerStatStruct pStruct in _statViews)
             {
-
                 int curStat = (int)GetCurrentStat(pStruct.StatType);
                 pStruct.statUpUi.StatTextChange(curStat.ToString(), (curStat + pStruct.statUpValue).ToString());
             }
@@ -119,7 +118,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         [ContextMenu("ddd")]
         private void ddd()
         {
-            transform.GetComponent<RectTransform>().position = _slidePanelController.HiddenPosition;
+            inventory.AddItem(_statViews[0].needItem, 40);
 
         }
     }

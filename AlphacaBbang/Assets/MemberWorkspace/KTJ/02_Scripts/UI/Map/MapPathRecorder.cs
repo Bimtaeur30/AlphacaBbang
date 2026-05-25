@@ -44,7 +44,7 @@ public class MapPathRecorder : MonoBehaviour
         Vector3 pos = target.position;
 
         // yÃà ¹«½Ã
-        pos.y = 0f;
+        pos.y = transform.position.y;
         gameObject.transform.position = pos;
 
         _lineRenderer.positionCount++;

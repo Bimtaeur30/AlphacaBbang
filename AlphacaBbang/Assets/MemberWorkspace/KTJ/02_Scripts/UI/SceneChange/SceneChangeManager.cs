@@ -23,7 +23,7 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
     [SerializeField] private float transitionDuration = 1f;
     [SerializeField] private string[] tipMessages;
 
-    private void Awake()
+    private void Start()
     {
         SceneEnterEffect();
         systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
@@ -44,19 +44,19 @@ public class SceneChangeManager : MonoBehaviour, IInstaller
 
         SceneExitEffect(() =>
         {
-            SceneManager.sceneLoaded += HandleSceneLoaded;
+            //SceneManager.sceneLoaded += HandleSceneLoaded;
             SceneManager.LoadScene(idx);
         });
     }
 
-    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        SceneManager.sceneLoaded -= HandleSceneLoaded;
+    //private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    SceneManager.sceneLoaded -= HandleSceneLoaded;
 
-        // 새 씬의 ISaveable 오브젝트들이 생성된 뒤 로드
-        systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
-        Debug.Log("씬 메니저에서 로드 파일을 요청함");
-    }
+    //    // 새 씬의 ISaveable 오브젝트들이 생성된 뒤 로드
+    //    systemChannel.RaiseEvent(SystemEvents.LoadFileEvent);
+    //    Debug.Log("씬 메니저에서 로드 파일을 요청함");
+    //}
 
     private int GetSceneIndex(SceneType sceneType)
     {

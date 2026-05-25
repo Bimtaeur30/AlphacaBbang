@@ -2,7 +2,6 @@ using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.ObjectPoolSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class HitDamageUI : MonoBehaviour
 {
@@ -11,15 +10,11 @@ public class HitDamageUI : MonoBehaviour
     [SerializeField] private EventChannelSO agentEventChannel;
     [SerializeField] private Transform spawnPos;
 
-    private void Update()
-    {
-        if (Keyboard.current.mKey.wasPressedThisFrame)
-        {
-            ShowDamage(Random.Range(10f, 999f));
-        }
-    }
+    private Agent Agent;
+
     private void OnEnable()
     {
+        Agent = GetComponentInParent<Agent>();
         agentEventChannel.AddListener<AgentHealthChangeEvent>(OnDamageReceived);
     }
 
@@ -28,9 +23,10 @@ public class HitDamageUI : MonoBehaviour
         agentEventChannel.RemoveListener<AgentHealthChangeEvent>(OnDamageReceived);
     }
 
-    private void OnDamageReceived(AgentHealthChangeEvent e)
+    private void OnDamageReceived(AgentHealthChangeEvent evt)
     {
-        ShowDamage(e.Damage);
+        if (evt.Agent == Agent)
+            ShowDamage(evt.Damage);
     }
 
     private void ShowDamage(float damage)

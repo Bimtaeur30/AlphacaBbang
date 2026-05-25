@@ -18,13 +18,16 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         {
             if (renderingData.cameraData.cameraType != CameraType.Game) return;
             if (!renderingData.cameraData.camera.CompareTag("MainCamera")) return;
+    
+            if (FogOfWar.PlayerTransform == null || FogOfWar.PlayerVisibility == null) return; 
 
             if (FogOfWar.PlayerTransform == null) return;
 
             Vector3 forward = FogOfWar.PlayerTransform.forward;
             forward.y = 0;
             forward.Normalize();
-
+            Debug.Log($"ViewRadius: {FogOfWar.PlayerVisibility.ViewRadius}");
+            Debug.Log($"CloseViewRadius: {FogOfWar.PlayerVisibility.CloseViewRadius}");
             
             Shader.SetGlobalVector("_PlayerPos",       FogOfWar.PlayerTransform.position);
             Shader.SetGlobalVector("_PlayerForward",   forward);

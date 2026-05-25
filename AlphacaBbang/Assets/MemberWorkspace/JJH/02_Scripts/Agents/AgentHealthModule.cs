@@ -83,8 +83,8 @@ namespace JJH._02_Scripts.Agents
                     damage *= 1f - armor.DamageReductionRate;
                 }
             Health -= damage;
-            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(Health, damage));
-            _owner.AgentSoundPlayer.PlaySound(hitSound);
+            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(_owner, Health, damage));
+            //_owner.AgentSoundPlayer.PlaySound(hitSound);
         }
 
         public void Heal(float amount)

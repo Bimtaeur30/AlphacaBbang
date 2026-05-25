@@ -86,7 +86,7 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (evt.Agent == this)
             {
                 _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
-                mapChnnel.RaiseEvent(MapEvents.PlayerActionEvent.Init("테스트 액션이 발동되었습니다."));
+                mapChnnel.RaiseEvent(MapEvents.PlayerActionEvent.Init($"플레이어가 {EnemyData.EnemyName}을/를 처치했습니다."));
                 EnemyInterface.SetInterfaceShow(false);
             }
         }

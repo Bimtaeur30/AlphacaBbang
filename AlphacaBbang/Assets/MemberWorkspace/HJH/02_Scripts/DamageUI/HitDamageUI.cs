@@ -11,6 +11,8 @@ public class HitDamageUI : MonoBehaviour
     [SerializeField] private EventChannelSO agentEventChannel;
     [SerializeField] private Transform spawnPos;
 
+    private Agent Agent;
+
     private void Update()
     {
         if (Keyboard.current.mKey.wasPressedThisFrame)
@@ -20,6 +22,7 @@ public class HitDamageUI : MonoBehaviour
     }
     private void OnEnable()
     {
+        Agent = GetComponentInParent<Agent>();
         agentEventChannel.AddListener<AgentHealthChangeEvent>(OnDamageReceived);
     }
 
@@ -30,7 +33,8 @@ public class HitDamageUI : MonoBehaviour
 
     private void OnDamageReceived(AgentHealthChangeEvent e)
     {
-        ShowDamage(e.Damage);
+        if (e.Agent == Agent)
+            ShowDamage(e.Damage);
     }
 
     private void ShowDamage(float damage)

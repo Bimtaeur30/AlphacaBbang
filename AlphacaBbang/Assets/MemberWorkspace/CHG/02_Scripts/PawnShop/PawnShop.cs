@@ -27,6 +27,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [SerializeField] private TextMeshProUGUI itemCountText;
         [SerializeField] private TextMeshProUGUI sliderValueText;
         [SerializeField] private TextMeshProUGUI itemDescriptionText;
+        [SerializeField] private TextMeshProUGUI currentGoldText;
         [SerializeField] private Slider itemCountSlider;
         
         [SerializeField] private InventoryContainer inventory;
@@ -68,6 +69,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemGradeText.text = itemData.GradeType.ToString();
             itemPriceText.text = GetPrice(itemData).ToString();
             itemDescriptionText.text = itemData.description;
+            currentGoldText.text = PlayerStatSystem.Instance.SaveData.Gold.ToString();
             int itemCount = inventory.GetItemCount(itemData);
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;

@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
+public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISaveable
 {
     [SerializeField] protected ContainerType containerType;
     [SerializeField] protected int slotCount = 20;
@@ -43,9 +43,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             playerStateChannel.RemoveListener<PlayerHpHeal>(HandlePlayerHpHeal);
     }
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
-        InitializeSlots();
+        //InitializeSlots();
+        StartCoroutine(InitializeSlots());
     }
 
     public bool CanEscape()
@@ -58,8 +59,10 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
         return true;
     }
 
-    protected void InitializeSlots()
+    protected IEnumerator InitializeSlots()
     {
+        yield return new WaitForFixedUpdate();
+        
         if (slots.Count == slotCount)
         {
             for (int i = 0; i < slots.Count; i++)
@@ -67,7 +70,8 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
                 if (slots[i] == null)
                     slots[i] = new ItemSlot();
             }
-            return;
+
+            yield return null;
         }
 
         slots.Clear();
@@ -77,6 +81,26 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             slots.Add(new ItemSlot());
         }
     }
+    
+    // protected void InitializeSlots()
+    // {
+    //     if (slots.Count == slotCount)
+    //     {
+    //         for (int i = 0; i < slots.Count; i++)
+    //         {
+    //             if (slots[i] == null)
+    //                 slots[i] = new ItemSlot();
+    //         }
+    //         return;
+    //     }
+    //
+    //     slots.Clear();
+    //
+    //     for (int i = 0; i < slotCount; i++)
+    //     {
+    //         slots.Add(new ItemSlot());
+    //     }
+    // }
 
     private void HandlePlayerHpHeal(PlayerHpHeal evt)
     {
@@ -222,20 +246,38 @@ public class ItemContainer : MonoBehaviour, IItemContainer, ISaveable
             return true;
         }
     }
-
+    
     public bool ConsumeBulletByName(string bulletName, int amount = 1)
     {
+        // 먼저 총 보유량 확인
+        int totalCount = 0;
         for (int i = 0; i < slots.Count; i++)
         {
             if (slots[i].IsEmpty) continue;
             if (slots[i].ItemData.ItemName == bulletName)
-            {
-                return RemoveAmount(i, amount);
-            }
+                totalCount += slots[i].Amount;
         }
 
-        Debug.LogWarning($"총알을 찾을 수 없습니다: {bulletName}");
-        return false;
+        if (totalCount < amount)
+        {
+            Debug.LogWarning($"총알이 부족합니다: {bulletName} (보유: {totalCount}, 필요: {amount})");
+            return false;
+        }
+
+        // 여러 슬롯에 걸쳐 제거
+        int remaining = amount;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (remaining <= 0) break;
+            if (slots[i].IsEmpty) continue;
+            if (slots[i].ItemData.ItemName != bulletName) continue;
+
+            int removeAmount = Mathf.Min(slots[i].Amount, remaining);
+            RemoveAmount(i, removeAmount);
+            remaining -= removeAmount;
+        }
+
+        return true;
     }
 
     public virtual bool RemoveAmount(int index, int amount = 1)

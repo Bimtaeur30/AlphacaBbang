@@ -3,7 +3,7 @@ using UnityEngine;
 namespace MemberWorkspace.JJG._02_Scripts.Item.Data
 {
     [CreateAssetMenu(fileName = "HotMedicineItemData", menuName = "JJK/HotMedicineItemData", order = 8)]
-    public class HotMedicineItemData : CountableItemData
+    public class HotMedicineItemData : MedicineItemData
     {
         [field: SerializeField] public int HealAmountPerTick { get; private set; }
         [field: SerializeField] public int TickCount { get; private set; } = 5;

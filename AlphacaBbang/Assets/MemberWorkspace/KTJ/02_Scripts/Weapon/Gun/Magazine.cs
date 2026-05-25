@@ -36,8 +36,6 @@ public class Magazine : MonoBehaviour
     private float _reloadDuration = 2f;
     private float _rotationSpeed = 360f;
 
-    [SerializeField] private InventoryContainer inventoryContainer;
-
     public bool IsReloading
     {
         get { return _loading; }
@@ -79,7 +77,7 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
-            inventoryBulletCount = inventoryContainer.GetItemCount(_gun.WeaponData.BulletType);
+            inventoryBulletCount = InventoryContainer.Instance.GetItemCount(_gun.WeaponData.BulletType);
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
@@ -100,7 +98,7 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
         {
             for (int i = 0; i < reloadBulletCount; i++)
-                inventoryContainer.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
+                InventoryContainer.Instance.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
         }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));

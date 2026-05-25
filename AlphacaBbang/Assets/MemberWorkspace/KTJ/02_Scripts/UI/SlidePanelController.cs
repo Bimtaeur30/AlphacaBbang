@@ -59,7 +59,9 @@ public class SlidePanelController : MonoBehaviour
         if (_initialized) return;
         _initialized = true;
 
-        Vector2 initialPos = _rectTransform.anchoredPosition;
+        Vector2 initialPos = Vector2.zero;
+        if(_rectTransform != null) //
+            initialPos = _rectTransform.anchoredPosition;   
 
         _fixedAxisValue = overrideFixedAxis
             ? fixedAxisOverrideValue
@@ -68,6 +70,7 @@ public class SlidePanelController : MonoBehaviour
         _visibleAxisValue = (IsXAxis ? initialPos.x : initialPos.y) + GetOffsetForDirection();
 
         CalculateHiddenAxisValue();
+        if(_rectTransform != null) //
         _rectTransform.anchoredPosition = isHidden ? HiddenPosition : VisiblePosition;
     }
 
@@ -80,7 +83,9 @@ public class SlidePanelController : MonoBehaviour
         // Fixed 축 갱신 (override 아닐 때만)
         if (!overrideFixedAxis)
         {
-            Vector2 currentPos = _rectTransform.anchoredPosition;
+            Vector2 currentPos = Vector2.zero;
+            if(_rectTransform != null) //
+                currentPos = _rectTransform.anchoredPosition;
             _fixedAxisValue = IsXAxis ? currentPos.y : currentPos.x;
         }
 
@@ -111,9 +116,15 @@ public class SlidePanelController : MonoBehaviour
     private void CalculateHiddenAxisValue()
     {
         Vector2 canvasSize = GetCanvasSize();
-        Rect rect = _rectTransform.rect;           // 매 호출마다 최신 Width/Height 반영
-        Vector2 anchor = _rectTransform.anchorMin;
-        Vector2 pivot = _rectTransform.pivot;
+        Rect rect = new Rect();
+        Vector2 anchor = Vector2.zero;
+        Vector2 pivot = Vector2.zero;
+        if (_rectTransform != null) //
+        {
+            rect = _rectTransform.rect;           // 매 호출마다 최신 Width/Height 반영
+            anchor = _rectTransform.anchorMin;
+            pivot = _rectTransform.pivot;
+        }
 
         switch (slideDirection)
         {
@@ -183,6 +194,7 @@ public class SlidePanelController : MonoBehaviour
     private void PlayTween(Vector2 target, Ease ease)
     {
         _currentTween?.Kill();
+        if(_rectTransform != null)
         _currentTween = _rectTransform
             .DOAnchorPos(target, slideDuration)
             .SetEase(ease)

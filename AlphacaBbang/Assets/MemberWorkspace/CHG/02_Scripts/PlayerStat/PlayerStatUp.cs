@@ -23,11 +23,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         private static readonly string[] StatLabels = { "체력", "지구력", "집중력" };
 
         [SerializeField] private EventChannelSO playerStatChannel;
-        [SerializeField] private EventChannelSO systemChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
         [SerializeField] private PlayerStatStruct[] _statViews;
 
         [SerializeField] private InventoryContainer inventory;
+        [SerializeField] private int needGold;
 
         private PlayerSaveData _playerSaveData;
         private SlidePanelController _slidePanelController;
@@ -86,13 +86,13 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
                     playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next));
                     break;
                 case PlayerStatType.Stamina:
-                    systemChannel.RaiseEvent(new AddMaxStamina().Init(next));
+                    playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next));
                     break;
                 case PlayerStatType.AimStamina:
-                    systemChannel.RaiseEvent(new AddMaxAimStamina().Init(next));
+                    playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next));
                     break;
                 case PlayerStatType.Gold:
-                    systemChannel.RaiseEvent(new AddGold().Init(next));
+                    playerStatChannel.RaiseEvent(new AddGold().Init(next));
                     break;
                 default:
                     Debug.LogWarning("NOoo");
@@ -104,6 +104,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             _statViews[idx].needItemCount += _statViews[idx].needValueIncrease;
 
             inventory.ConsumeBulletByName(pStruct.needItem.Id, pStruct.needItemCount);
+            playerStatChannel.RaiseEvent(new AddGold().Init(-needGold));
         }
 
         private float GetCurrentStat(PlayerStatType type) => type switch

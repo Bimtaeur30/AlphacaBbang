@@ -32,17 +32,33 @@ namespace MemberWorkspace.CHG._02_Scripts.TalkSystem
                 _typingCoroutine = null;
             }
             _mainTypewriter.StopShowingText();
-             _typingCoroutine = StartCoroutine(BattleTalk());
+             _typingCoroutine = StartCoroutine(BattleTalk(""));
+        }
+        public void ShowText(string text)
+        {
+            if (_typingCoroutine != null)
+            {
+                StopCoroutine(_typingCoroutine);
+                _typingCoroutine = null;
+            }
+            _mainTypewriter.StopShowingText();
+             _typingCoroutine = StartCoroutine(BattleTalk(text));
         }
 
-        private IEnumerator BattleTalk()
+        private IEnumerator BattleTalk(string text)
         {
             mainTalkBox.SetActive(true);
 
-            int rand = Random.Range(0, battleTexts.Length);
-
-            _mainTypewriter.ShowText(battleTexts[rand].Text);
-
+            if (text == null)
+            {
+                int rand = Random.Range(0, battleTexts.Length);
+                _mainTypewriter.ShowText(battleTexts[rand].Text);
+                
+            }
+            else
+            {
+                _mainTypewriter.ShowText(text);
+            }            
             yield return new WaitForSeconds(showTime);
             mainTalkBox.SetActive(false);
         }

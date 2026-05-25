@@ -340,7 +340,8 @@ public class PlayerController : Agent
             return;
         }
 
-        Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
+        //Vector3 worldDir = Quaternion.Euler(0, -45f, 0) * new Vector3(input.x, 0, input.y);
+        Vector3 worldDir = new Vector3(input.x, 0, input.y);
 
         Vector3 localDir = transform.InverseTransformDirection(worldDir);
 

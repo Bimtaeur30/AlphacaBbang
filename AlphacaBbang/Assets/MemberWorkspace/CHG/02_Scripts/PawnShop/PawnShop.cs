@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JJH._02_Scripts_Systems.EventSystems;
+using MemberWorkspace.JJG._02_Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace MemberWorkspace.CHG._02_Scripts.PawnShop
 {
@@ -22,15 +25,17 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
         [SerializeField] private TextMeshProUGUI itemGradeText;
         [SerializeField] private TextMeshProUGUI itemPriceText;
         [SerializeField] private TextMeshProUGUI itemCountText;
+        [SerializeField] private TextMeshProUGUI sliderValueText;
+        [SerializeField] private TextMeshProUGUI itemDescriptionText;
         [SerializeField] private Slider itemCountSlider;
         
         [SerializeField] private InventoryContainer inventory;
-        private SaleItemDataSO _curItemData;
+        private CountableItemData _curItemData;
         
         private List<PawnItemUI> itemChoiceBtns =  new List<PawnItemUI>();
         private void Awake()
         {
-            foreach (SaleItemDataSO itemData in itemDatabase.Items)
+            foreach (CountableItemData itemData in itemDatabase.Items)
             {
                 GameObject itemChoiceBtn = Instantiate(itemChoiceBtnPrefab, layOut);
                 PawnItemUI itemUI = itemChoiceBtn.GetComponent<PawnItemUI>();
@@ -42,19 +47,27 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             }
             //inventory = FindFirstObjectByType<InventoryContainer>();
             ChangeContent(itemChoiceBtns[0].SaleItemDataSO);
+            itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
         }
 
-        private void ChangeContent(SaleItemDataSO itemData)
+        private void OnSliderValueChange(float value)
+        {
+            sliderValueText.text = ((int)value).ToString();
+        }
+
+        private void ChangeContent(CountableItemData itemData)
         {
             _curItemData = itemData;
             itemImage.sprite = itemData.Icon;
             itemNameText.text = itemData.ItemName;
             itemGradeText.text = itemData.GradeType.ToString();
-            itemPriceText.text = itemData.Price.ToString();
+            itemPriceText.text = GetPrice(itemData).ToString();
+            itemDescriptionText.text = itemData.description;
             int itemCount = inventory.GetItemCount(itemData);
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;
             itemCountSlider.value = 0;
+            OnSliderValueChange(itemCountSlider.value);
         }
 
         public void SaleItem()
@@ -63,7 +76,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             
             inventory.ConsumeBulletByName(_curItemData.ItemName, (int)itemCountSlider.value);
             AddGold evt = new AddGold();
-            evt.Init(_curItemData.Price * (int)itemCountSlider.value);
+            evt.Init(GetPrice(_curItemData) * (int)itemCountSlider.value);
             AddGoldChannel.RaiseEvent(evt);
             ChangeContent(_curItemData);
         }
@@ -84,6 +97,18 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
             inventory.AddItem(_curItemData);
+        }
+
+        private int GetPrice(CountableItemData itemData)
+        {
+            return itemData.GradeType switch
+            {
+                GradeType.Common => 3,
+                GradeType.UnCommon => 5,
+                GradeType.Rare => 15,
+                GradeType.Epic => 30,
+                GradeType.Legendary => 50
+            };
         }
         
         [ContextMenu("CheckSlots")]

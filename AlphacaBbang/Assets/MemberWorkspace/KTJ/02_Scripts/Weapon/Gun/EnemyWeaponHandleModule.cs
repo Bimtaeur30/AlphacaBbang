@@ -1,15 +1,23 @@
+using MemberWorkspace.CHG._02_Scripts.TalkSystem;
 using Reflex.Injectors;
 using UnityEngine;
 
 public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
 {
     [SerializeField] private BodyRecoilRotation BodyRecoilController;
+    [SerializeField] private EnemyTalkSystem EnemyTalkSystem;
 
     public override void SetCurrentGun(IWeapon gun)
     {
         HandleWeaponSlotEquipEvent(gun);
     }
 
+
+    public override void Initialize(ModuleOwner owner)
+    {
+        base.Initialize(owner);
+
+    }
     private void Start()
     {
         Init();
@@ -38,6 +46,11 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
     }
 
     // 장전 완료 시 자동으로 발사 재개 (적은 항상 조준 상태이므로)
+    public override void OnReloadStart()
+    {
+        base.OnReloadStart();
+
+    }
     public override void OnReloadEnd()
     {
         if (IsInputAim)
@@ -48,7 +61,7 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
     }
     private void HandleWeaponSlotEquipEvent(IWeapon gun)
     {
-        Transform gunParent = gunHoldParent_1;
+        Transform gunParent = gunHoldParent_2;
 
         if (gunParent.childCount > 0)
             Destroy(gunParent.GetChild(0).gameObject);

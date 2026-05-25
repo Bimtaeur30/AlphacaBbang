@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 24.47, y: -5}
-  m_SizeDelta: {x: 10.58, y: 0}
+  m_SizeDelta: {x: 10.58, y: 5.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5357110568500451070
 CanvasRenderer:
@@ -5308,9 +5308,9 @@ RectTransform:
   - {fileID: 3940425401770014753}
   m_Father: {fileID: 2843886001546072546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 32.54, y: -5}
   m_SizeDelta: {x: 2.44, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3287543732953912347
@@ -5461,7 +5461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4464645513351217956
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5627,8 +5627,8 @@ Transform:
   - {fileID: 3819879664819061889}
   - {fileID: 7125597841510548917}
   - {fileID: 4824687028339248662}
-  - {fileID: 3836824624499005619}
   - {fileID: 4464645513351217956}
+  - {fileID: 4296439726932186449}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5185009249144381474
@@ -5644,7 +5644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bazooka
   <WeaponData>k__BackingField: {fileID: 11400000, guid: e72f2d07c63558c41b4aaf8c9f59b713, type: 2}
-  <Magazine>k__BackingField: {fileID: 6803608189752960805}
+  <Magazine>k__BackingField: {fileID: 1317461527182159299}
   <WeaponHandleModule>k__BackingField: {fileID: 0}
   firePos: {fileID: 4824687028339248662}
   rayDistance: 10
@@ -5722,54 +5722,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &6696080359372918953
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3836824624499005619}
-  - component: {fileID: 6803608189752960805}
-  m_Layer: 19
-  m_Name: Magazine
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3836824624499005619
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6696080359372918953}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 223117552191736740}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6803608189752960805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6696080359372918953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Magazine
-  <MaxBulletCount>k__BackingField: 1
-  bulletCountTxt: {fileID: 94684452167074388}
-  reloadUI: {fileID: 167469639253992517}
-  bulletUI: {fileID: 2843886001546072546}
 --- !u!1 &6890830955378292971
 GameObject:
   m_ObjectHideFlags: 0
@@ -6003,6 +5955,79 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1298476103200853099, guid: 1dc4316c940bea74b956b17a6f5f3f6a, type: 3}
   m_PrefabInstance: {fileID: 2812477574433310954}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3217289340701401421
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 223117552191736740}
+    m_Modifications:
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.69
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -12.20398
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7765209434096921463, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+      propertyPath: m_Name
+      value: Magazine (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+--- !u!114 &1317461527182159299 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4534715649012255886, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+  m_PrefabInstance: {fileID: 3217289340701401421}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9590e77efbb371342bfcf04d6d597847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Magazine
+--- !u!4 &4296439726932186449 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1659047284303934492, guid: e6e4864943590f24d8fcb16a35b064cb, type: 3}
+  m_PrefabInstance: {fileID: 3217289340701401421}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3747459229986542420
 PrefabInstance:

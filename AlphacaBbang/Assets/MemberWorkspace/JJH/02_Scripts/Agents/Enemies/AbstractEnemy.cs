@@ -4,6 +4,7 @@ using JJH._02_Scripts.Agents.Enemies.NavMeshs;
 using JJH._02_Scripts.Agents.Enemies.Skills;
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Weapons;
+using JJH._02_Scripts_Systems.EventSystems;
 using System.Collections;
 using Unity.Behavior;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace JJH._02_Scripts.Agents.Enemies
     {
         [field: SerializeField] public EnemyDataSO EnemyData { get; private set; }
         [field: SerializeField] public LootTable[] LootTables { get; private set; }
+        [SerializeField] private EventChannelSO mapChnnel;
 
         public IEnemySkillModule EnemySkill { get; private set; }
         public IEnemyInterface EnemyInterface { get; private set; }
@@ -24,12 +26,12 @@ namespace JJH._02_Scripts.Agents.Enemies
         private BlackboardVariable<StateChannel> _stateChannel;
 
         public int WeaponNum => _weaponNum;
-        private int _weaponNum;
+        private int _weaponNum = 0;
 
         private BehaviorGraphAgent _btAgent;
 
         private Coroutine _hitCoroutine;
-        private Color _originColor;
+        private Color[] _originColors;
         private Color _hitColor = new Color32(255, 255, 255, 255);
         private float _hitDuration = 0.15f;
 
@@ -37,7 +39,8 @@ namespace JJH._02_Scripts.Agents.Enemies
         {
             base.InitializeComponents();
 
-            _weaponNum = Random.Range(0, EnemyData.Weapons.Length);
+            if (EnemyData.Weapons != null && EnemyData.Weapons.Length != 0)
+                _weaponNum = Random.Range(0, EnemyData.Weapons.Length);
             if (Weapon is EnemyWeaponHandleModule)
             {
                 EnemyData.Weapons[_weaponNum].gameObject.SetActive(true);
@@ -64,8 +67,11 @@ namespace JJH._02_Scripts.Agents.Enemies
 
             HealthModule.InitHealth(EnemyData.EnemyHealth);
 
+            _originColors = new Color[Renderer.Materials.Length];
+            for (int i = 0; i < Renderer.Materials.Length; i++)
+                _originColors[i] = Renderer.Materials[i].color;
+
             _btAgent = GetComponent<BehaviorGraphAgent>();
-            _originColor = Renderer.Renderer.material.color;
             _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
             _btAgent.SetVariableValue("Enemy", this);
 
@@ -84,12 +90,16 @@ namespace JJH._02_Scripts.Agents.Enemies
             if (evt.Agent == this)
             {
                 _stateChannel.Value.SendEventMessage(EnemyState.DEAD);
+                mapChnnel.RaiseEvent(MapEvents.PlayerActionEvent.Init($"플레이어가 {EnemyData.EnemyName}을/를 처치했습니다."));
                 EnemyInterface.SetInterfaceShow(false);
             }
         }
 
         private void HandkeEnemyHealthChangeEvent(AgentHealthChangeEvent evt)
         {
+            if (evt.Agent != this)
+                return;
+
             if (_hitCoroutine != null)
                 StopCoroutine(_hitCoroutine);
 
@@ -105,11 +115,16 @@ namespace JJH._02_Scripts.Agents.Enemies
                 time += Time.deltaTime;
                 float t = Mathf.Sin(time / _hitDuration * Mathf.PI);
 
-                Renderer.Renderer.material.color = Color.Lerp(_originColor, _hitColor, t);
+                for (int i = 0; i < Renderer.Materials.Length; i++)
+                    Renderer.Materials[i].color = Color.Lerp(_originColors[i], _hitColor, t);
+
                 yield return null;
             }
 
-            Renderer.Renderer.material.color = _originColor;
+            for (int i = 0; i < Renderer.Materials.Length; i++)
+            {
+                Renderer.Materials[i].color = _originColors[i];
+            }
         }
     }
 }

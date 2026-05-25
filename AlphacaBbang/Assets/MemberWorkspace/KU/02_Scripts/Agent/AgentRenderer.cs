@@ -1,9 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AgentRenderer : MonoBehaviour, IRenderer, IModule
 {
     public Animator Animator { get; private set; }
-    public Renderer Renderer { get; private set; }
+    [field: SerializeField] public Material[] Materials { get; private set; }
 
     private Agent _owner;
 
@@ -11,7 +12,20 @@ public class AgentRenderer : MonoBehaviour, IRenderer, IModule
     {
         _owner = (Agent)owner;
         Animator = GetComponent<Animator>();
-        Renderer = GetComponentInChildren<Renderer>();
+        CollectAllMaterials();
+    }
+
+    private void CollectAllMaterials()
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        List<Material> materials = new List<Material>();
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            materials.AddRange(renderers[i].materials);
+        }
+
+        Materials = materials.ToArray();
     }
 
     public void PlayClip(int clipHash, float normalizedTime, float crossFadeDuration, int layerIndex = 0)

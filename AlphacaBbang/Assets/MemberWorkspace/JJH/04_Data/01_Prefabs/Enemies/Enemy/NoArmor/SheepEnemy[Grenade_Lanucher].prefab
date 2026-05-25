@@ -62,6 +62,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1662195319341927339}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!1 &7947949024854173402
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5332459650194185922}
+  m_Layer: 0
+  m_Name: TargetTrans
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5332459650194185922
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7947949024854173402}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.13, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5345157579651174054}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9104694624695795640
 GameObject:
   m_ObjectHideFlags: 0
@@ -75,6 +106,7 @@ GameObject:
   - component: {fileID: 3678309179238874892}
   - component: {fileID: 5316233041363471132}
   - component: {fileID: 4150240016038029934}
+  - component: {fileID: 8750366620550944481}
   m_Layer: 6
   m_Name: 'SheepEnemy[Grenade_Lanucher]'
   m_TagString: Enemy
@@ -95,6 +127,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5332459650194185922}
   - {fileID: 8342814400196898596}
   - {fileID: 8080992328742074445}
   - {fileID: 106569404676502487}
@@ -198,6 +231,18 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8750366620550944481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9104694624695795640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928cc06c362143b1809b05cd13a4008b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.CHG._02_Scripts.PlayerView.EnemyVisibility
 --- !u!1001 &49915067961197455
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -406,6 +451,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2704275871332216263, guid: cac59196fc6ef70438bd3a6ca325a52f, type: 3}
+      propertyPath: targetTrans
+      value: 
+      objectReference: {fileID: 5332459650194185922}
     - target: {fileID: 5245331316564751256, guid: cac59196fc6ef70438bd3a6ca325a52f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -604,6 +653,10 @@ PrefabInstance:
       propertyPath: 'battleTexts.Array.data[2]'
       value: 
       objectReference: {fileID: 11400000, guid: 9eb64921c6bfa924183f197355e6988a, type: 2}
+    - target: {fileID: 8079351371532573814, guid: 07a47537502e0f6409ab376d05cb7cf2, type: 3}
+      propertyPath: targetTrans
+      value: 
+      objectReference: {fileID: 5332459650194185922}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

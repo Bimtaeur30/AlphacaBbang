@@ -36,7 +36,7 @@ public class GunDataSO : ScriptableObject
     [field: SerializeField, Range(1f, 100f)] public float SpreadAngle { get; private set; } = 1f; // 탄 퍼짐(샷건전용)
 
     [Header("CAM")]
-    [field: SerializeField, Range(1f, 5f)] public float CameraImpulseMultiply { get; private set; } = 1f; // 조준 이미지
+    [field: SerializeField, Range(1f, 8f)] public float CameraImpulseMultiply { get; private set; } = 1f; // 조준 이미지
 
     [Header("Accuracy")]
     [field: SerializeField, Range(1f, 10f)] public int BulletFireCount { get; private set; } = 1; // 한번에 나가는 총알 개수(샷건전용)

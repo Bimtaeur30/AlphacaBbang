@@ -161,6 +161,7 @@ public abstract class Gun : WeaponBase, IWeapon
     // 장전 시작 시 호출 (서브클래스 확장용)
     protected virtual void OnReloadStart()
     {
+        WeaponHandleModule.OnReloadStart();
         _gunSoundPlayuer.PlaySound(WeaponData.UnLoadClip);
         IsReloading = true;
     }

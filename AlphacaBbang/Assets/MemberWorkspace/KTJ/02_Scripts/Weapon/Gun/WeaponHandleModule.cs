@@ -29,7 +29,7 @@ public class WeaponHandleModule : MonoBehaviour, IModule
         if (CurrentWeapon.WeaponData != null)
             Debug.Assert(CurrentWeapon.WeaponData != null, "CurrentWeapon.WeaponData가 할당되지 않았습니다.");
     }
-    private void Update()
+    private void LateUpdate()
     {
         if (CanFire() == false)
             return;
@@ -60,6 +60,7 @@ public class WeaponHandleModule : MonoBehaviour, IModule
     public virtual void OnFire() { }
 
     // 장전 완료 콜백 — 기본은 아무것도 안 함 (플레이어: 다시 입력해야 발사)
+    public virtual void OnReloadStart() { }
     public virtual void OnReloadEnd() { }
 
     public void Aim(bool value)

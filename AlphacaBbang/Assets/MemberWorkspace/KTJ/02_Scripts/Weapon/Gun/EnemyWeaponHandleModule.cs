@@ -48,7 +48,7 @@ public class EnemyWeaponHandleModule : WeaponHandleModule, IEnemyWeaponModule
     }
     private void HandleWeaponSlotEquipEvent(IWeapon gun)
     {
-        Transform gunParent = gunHoldParent_1;
+        Transform gunParent = gunHoldParent_2;
 
         if (gunParent.childCount > 0)
             Destroy(gunParent.GetChild(0).gameObject);

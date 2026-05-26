@@ -8,8 +8,8 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 {
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
-    [SerializeField] private TextMeshPro _healthText;
-    [SerializeField] private TextMeshPro _staminaText;
+    [SerializeField] private TextMeshProUGUI _healthText;
+    [SerializeField] private TextMeshProUGUI _staminaText;
     [SerializeField] private EventChannelSO systemChannel;
     [SerializeField] private EventChannelSO agentChannel;
 
@@ -33,11 +33,11 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         if (SaveData != null)
         {
             MaxHealth = Mathf.Max(1, SaveData.MaxHealth);
+            _healthBar.size = MaxHealth / MaxHealth;
             MaxStamina = Mathf.Max(1, SaveData.MaxStamina);
         }
 
         CurrentStamina = MaxStamina;
-        _controller.HealthModule.Heal(MaxHealth);
 
         agentChannel.AddListener<AgentDeadEvent>(OnAgentDead);
         agentChannel.AddListener<AgentHealthChangeEvent>(UpdateHealthUI);
@@ -113,7 +113,8 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         if (_staminaBar != null)
             _staminaBar.size = value / MaxStamina;
         if (_healthBar != null)
-            _healthText.text = $"{value} / {MaxHealth}";
+            _healthText.text = $"{value.ToString("F1")} / {MaxStamina}";
+
     }
     public bool CanRun()
     {

@@ -51,7 +51,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
         }
 
-        private void OnEnable()
+        public void FirstChangeContent()
         {
             ChangeContent(_curItemData);
         }

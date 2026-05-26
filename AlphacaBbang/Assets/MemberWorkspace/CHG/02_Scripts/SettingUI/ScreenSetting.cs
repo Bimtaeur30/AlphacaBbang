@@ -50,8 +50,6 @@ public class ScreenSetting : AbstractSettingUI
     
         List<Resolution> resolutions = GetResolutions();
     
-        foreach  (Resolution resolution in resolutions)
-            Debug.Log(resolution.width + "x" + resolution.height);
         
         int defaultIndex = resolutions.FindIndex(r => 
             r.width == Display.main.systemWidth && 

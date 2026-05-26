@@ -13,19 +13,30 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
             Hide();
         }
 
+        private void OnEnable()
+        {
+            Hide(); 
+        }
+
         public void Show()
         {
+            if (renderers == null) return; 
+            
             foreach (var r in renderers)
             {
-                r.enabled = true;
+                if (r != null) 
+                    r.enabled = true;
             }
         }
 
         public void Hide()
         {
+            if (renderers == null) return; 
+            
             foreach (var r in renderers)
             {
-                r.enabled = false;
+                if (r != null) 
+                    r.enabled = false;
             }
         }
     }

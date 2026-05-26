@@ -1,16 +1,14 @@
 ﻿using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using System.Collections;
-using System.Text;
-using TMPro;
 using UnityEngine;
 
 namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 {
     [Serializable]
-    struct PlayerStatStruct
+    public struct PlayerStatStruct
     {
-        public PlayerStatType StatType;
+        public PlayerStatType statType;
         public PlayerStatUpUI statUpUi;
         public ItemData needItem;
         public int statUpValue;
@@ -20,56 +18,28 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
     public class PlayerStatUp : MonoBehaviour
     {
-        private static readonly string[] StatLabels = { "체력", "지구력", "집중력" };
-
         [SerializeField] private EventChannelSO playerStatChannel;
-        [SerializeField] private TextMeshProUGUI needItemText;
-        [SerializeField] private TextMeshProUGUI currentItemText;
         [SerializeField] private PlayerStatStruct[] _statViews;
-
         [SerializeField] private InventoryContainer inventory;
         [SerializeField] private int needGold;
 
         private PlayerSaveData _playerSaveData;
         private SlidePanelController _slidePanelController;
+        private PlayerStatUpUIRefresher _uiRefresher;
 
         private void Awake()
         {
             _slidePanelController = GetComponent<SlidePanelController>();
+            _uiRefresher = GetComponent<PlayerStatUpUIRefresher>();
             _playerSaveData = PlayerStatSystem.Instance.SaveData;
+            
+            for (int i = 0; i < _statViews.Length; i++)
+                _statViews[i].statType = (PlayerStatType)i;
         }
 
-        private IEnumerator Start()
+        public void UIRefresh()
         {
-            yield return null;
-            yield return null;
-
-
-            for (int i = 0; i < _statViews.Length; i++)
-            {
-                _statViews[i].StatType = (PlayerStatType)i;
-            }
-
-            var needSb = new StringBuilder("");
-            var curSB = new StringBuilder("");
-            foreach (PlayerStatStruct pStruct in _statViews)
-            {
-                int idx = (int)pStruct.StatType;
-                int cur = (int)GetCurrentStatValue(pStruct.StatType);
-                pStruct.statUpUi.StatTextChange(cur.ToString(), (cur + pStruct.statUpValue).ToString());
-                needSb.AppendLine($"{StatLabels[idx]}: {pStruct.needItem.ItemName}X{pStruct.needItemCount}");
-                curSB.AppendLine($"{StatLabels[idx]}: {pStruct.needItemCount}");
-            }
-            needItemText.text = needSb.ToString();
-
-            needSb.Clear();
-            
-
-            foreach (PlayerStatStruct pStruct in _statViews)
-            {
-                int curStat = (int)GetCurrentStatValue(pStruct.StatType);
-                pStruct.statUpUi.StatTextChange(curStat.ToString(), (curStat + pStruct.statUpValue).ToString());
-            }
+            _uiRefresher.RefreshAll(_statViews, inventory, _playerSaveData, needGold);
         }
 
         public void AddStat(int index)
@@ -77,63 +47,53 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             PlayerStatType type = (PlayerStatType)index;
             PlayerStatStruct pStruct = _statViews[index];
 
-            Debug.Log($"원하는 아이템수: {inventory.GetItemCount(pStruct.needItem)}, 필요한 수: {pStruct.needItemCount}");
             if (inventory.GetItemCount(pStruct.needItem) < pStruct.needItemCount)
             {
                 Debug.Log("Item이 부족합니다.");
                 return;
             }
-
             if (_playerSaveData.Gold < needGold) return;
-            
-            
-            int idx = (int)type;
+
             int cur = (int)GetCurrentStatValue(type);
-            int next = cur + _statViews[idx].statUpValue;
+            int next = cur + _statViews[index].statUpValue;
 
             switch (type)
             {
                 case PlayerStatType.Health:
-                    playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next-cur));
+                    playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next - cur));
                     break;
                 case PlayerStatType.Stamina:
-                    playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next-cur));
+                    playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next - cur));
                     break;
                 case PlayerStatType.AimStamina:
-                    playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next-cur));
+                    playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next - cur));
                     break;
                 case PlayerStatType.Gold:
-                    playerStatChannel.RaiseEvent(new AddGold().Init(next-cur));
+                    playerStatChannel.RaiseEvent(new AddGold().Init(next - cur));
                     break;
                 default:
                     Debug.LogWarning("NOoo");
                     return;
             }
 
-            int updated = (int)GetCurrentStatValue(type);
-            _statViews[idx].statUpUi.StatTextChange(updated.ToString(), (updated + _statViews[idx].statUpValue).ToString());
-            _statViews[idx].needItemCount += _statViews[idx].needValueIncrease;
-
             inventory.ConsumeBulletByName(pStruct.needItem.ItemName, pStruct.needItemCount);
             playerStatChannel.RaiseEvent(new AddGold().Init(-needGold));
+
+            _statViews[index].needItemCount += _statViews[index].needValueIncrease;
+
+            _uiRefresher.RefreshAll(_statViews, inventory, _playerSaveData, needGold);
         }
 
         private float GetCurrentStatValue(PlayerStatType type) => type switch
         {
-            PlayerStatType.Health => _playerSaveData.MaxHealth,
-            PlayerStatType.Stamina => _playerSaveData.MaxStamina,
+            PlayerStatType.Health     => _playerSaveData.MaxHealth,
+            PlayerStatType.Stamina    => _playerSaveData.MaxStamina,
             PlayerStatType.AimStamina => _playerSaveData.MaxAimStamina,
-            PlayerStatType.Gold => _playerSaveData.Gold,
-            _ => 0f
+            PlayerStatType.Gold       => _playerSaveData.Gold,
+            _                         => 0f
         };
 
         [ContextMenu("ddd")]
-        private void ddd()
-        {
-            inventory.AddItem(_statViews[0].needItem, 40);
-
-        }
+        private void ddd() => inventory.AddItem(_statViews[0].needItem, 40);
     }
-
-
 }

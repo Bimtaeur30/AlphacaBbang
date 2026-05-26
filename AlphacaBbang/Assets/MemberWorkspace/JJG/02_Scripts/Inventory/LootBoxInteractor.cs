@@ -45,6 +45,7 @@ public class LootBoxInteractor : MonoBehaviour
             SlidePanelController.SlideOut();
             _currentLootBox?.gameObject.SetActive(false); // 닫을 때 사라지게
             _currentLootBox = null;
+            lootBoxContainer.Reset();
         }
     }
     

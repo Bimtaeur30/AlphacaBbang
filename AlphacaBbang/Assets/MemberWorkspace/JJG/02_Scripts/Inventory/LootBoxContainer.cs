@@ -39,10 +39,21 @@ public class LootBoxContainer : ItemContainer
             Debug.LogWarning("[LootBoxContainer] InitializeWithLootTable에 null이 전달됐습니다.");
             return;
         }
- 
+
+        // 기존 아이템 초기화 추가
+        for (int i = 0; i < SlotCount; i++)
+            ClearSlot(i);
+
         lootTable = table;
         GenerateLoot(lootTable);
         RequiredOpenTime = CalculateOpenTime();
+    }
+    
+    public void Reset()
+    {
+        lootTable = null;
+        for (int i = 0; i < SlotCount; i++)
+            ClearSlot(i);
     }
  
     private void GenerateLoot(LootTable table)

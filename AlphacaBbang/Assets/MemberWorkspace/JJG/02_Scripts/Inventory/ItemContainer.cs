@@ -349,6 +349,12 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         NotifyContainerChanged();
         return true;
     }
+    
+    public void UnequipArmor(ArmorItemData armorData)
+    {
+        if (agentArmorModule == null || armorData == null) return;
+        agentArmorModule.ArmorEquip(false, armorData.Armor.ArmorType, armorData.Armor);
+    }
 
     public virtual bool MoveItemTo(int fromIndex, ItemContainer targetContainer, int toIndex)
     {

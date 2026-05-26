@@ -26,6 +26,7 @@ public class ScreenBrightnessSetting : AbstractSettingUI
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        _brightnessSlider.onValueChanged.RemoveListener(ChangeBrightness);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

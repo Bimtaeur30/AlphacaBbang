@@ -18,11 +18,11 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
     [field: SerializeField] public EventChannelSO playerStateChannel;
     [field: SerializeField] public EventChannelSO systemChannel;
 
-    [Header("Item Setting")]
-    [SerializeField] private AgentArmorModule agentArmorModule;
+    [Header("Item Setting")] [SerializeField]
+    private AgentArmorModule agentArmorModule;
 
-    [Header("Dont Setting")]
-    [SerializeField] private List<PartItemData> requiredParts;
+    [Header("Dont Setting")] [SerializeField]
+    private List<PartItemData> requiredParts;
 
     public int SlotCount => slots.Count;
     public ContainerType ContainerType => containerType;
@@ -56,9 +56,10 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
             if (GetItemCount(key) <= 0)
                 return false;
         }
+
         return true;
     }
-    
+
     protected void InitializeSlots()
     {
         if (slots.Count == slotCount)
@@ -68,11 +69,12 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
                 if (slots[i] == null)
                     slots[i] = new ItemSlot();
             }
+
             return;
         }
-    
+
         slots.Clear();
-    
+
         for (int i = 0; i < slotCount; i++)
         {
             slots.Add(new ItemSlot());
@@ -146,9 +148,11 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         {
             if (countableItemData.MaxAmount <= 0)
             {
-                Debug.LogWarning($"[ItemContainer] CountableItemData.MaxAmount must be > 0 for {itemData.name}. current={countableItemData.MaxAmount}");
+                Debug.LogWarning(
+                    $"[ItemContainer] CountableItemData.MaxAmount must be > 0 for {itemData.name}. current={countableItemData.MaxAmount}");
                 return false;
             }
+
             for (int i = 0; i < slots.Count; i++)
             {
                 ItemSlot slot = slots[i];
@@ -223,7 +227,7 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
             return true;
         }
     }
-    
+
     public bool ConsumeBulletByName(string bulletName, int amount = 1)
     {
         // 먼저 총 보유량 확인
@@ -320,7 +324,8 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
             }
             else if (itemData is MoveSpeedItemData speedData)
             {
-                playerStateChannel.RaiseEvent(PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
+                playerStateChannel.RaiseEvent(
+                    PlayerStateEvents.AddPlayerMoveSpeed.Init(speedData.SpeedAmount, speedData.Duration));
                 BuffTimerUI.Instance?.AddBuff(itemData.Icon, itemData.ItemName, speedData.Duration);
             }
             else if (itemData is ThrowingItemData throwingData)
@@ -482,6 +487,7 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         public string itemId;
         public int amount;
     }
+
     public string GetSaveData()
     {
         InventorySaveData saveData = new InventorySaveData
@@ -519,12 +525,13 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         InventorySaveData saveData = JsonUtility.FromJson<InventorySaveData>(data);
 
         for (int i = 0; i < SlotCount; i++)
-        {
             ClearSlot(i);
-        }
 
         if (saveData.slots == null)
+        {
+            Debug.LogWarning("[RESTORE] slots가 null");
             return;
+        }
 
         int count = Mathf.Min(saveData.slots.Length, SlotCount);
 
@@ -537,11 +544,12 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
 
             if (!itemDatabase.TryGetItem(slotData.itemId, out ItemData itemData))
             {
-                Debug.LogWarning($"ItemDatabase에서 아이템을 찾을 수 없음: {slotData.itemId}");
+                Debug.LogWarning($"[RESTORE] 아이템 못 찾음: {slotData.itemId}");
                 continue;
             }
 
-            SetSlot(i, itemData, slotData.amount);
+            bool result = SetSlot(i, itemData, slotData.amount);
+            Debug.Log($"[RESTORE] 슬롯 {i} 복원: {slotData.itemId} x{slotData.amount} → {result}");
         }
     }
 }

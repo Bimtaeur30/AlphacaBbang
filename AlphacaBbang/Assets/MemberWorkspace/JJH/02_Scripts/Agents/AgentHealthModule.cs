@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using JJH._02_Scripts.Systems.EventSystems;
+﻿using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts.Systems.SoundSystems;
 using JJH._02_Scripts.Weapons;
 using JJH._02_Scripts_Systems.EventSystems;
@@ -10,22 +9,11 @@ namespace JJH._02_Scripts.Agents
 {
     public class AgentHealthModule : MonoBehaviour, IModule, IHealth
     {
-        [Header("HP Bar")]
-        [SerializeField] private Slider slider;
-        [SerializeField] private Image damageEffectImage;
-        [SerializeField] private RectTransform fillRect;
-        [SerializeField] private RectTransform damageEffectRect;
-
-        [Header("Damage Effect")]
-        [SerializeField] private float damageFadeDelay = 0.15f;
-        [SerializeField] private float damageFadeDuration = 0.35f;
-
-        [Header("Sound")]
         [SerializeField] private SoundClipSO hitSound;
         [SerializeField] private SoundClipSO deadSound;
+        [SerializeField] private Slider slider;
+        [SerializeField] private float sliderSmoothSpeed = 5f;
 
-
-        public float MaxHealth => _maxHealth;
         public float Health
         {
             get => _health;
@@ -41,7 +29,7 @@ namespace JJH._02_Scripts.Agents
                     return;
                 }
 
-                ChangeHealthText();
+                UpdateTargetSliderValue();
             }
         }
 
@@ -49,10 +37,12 @@ namespace JJH._02_Scripts.Agents
         private ArmorSO[] armors;
         private EventChannelSO _agentEventChannel;
 
-        private Tween _damageTween;
-
         private float _maxHealth;
-        [SerializeField] private float _health;
+        private float _health;
+
+        private float _targetSliderValue;
+
+        public float MaxHealth => _maxHealth;
 
         public void Initialize(ModuleOwner owner)
         {
@@ -63,21 +53,23 @@ namespace JJH._02_Scripts.Agents
             _agentEventChannel.AddListener<AgentArmorEquip>(OnAgentArmorEquip);
 
             slider.gameObject.SetActive(true);
+        }
 
-            Color color = damageEffectImage.color;
-            color.a = 0f;
-            damageEffectImage.color = color;
+        private void Update()
+        {
+            slider.value = Mathf.Lerp(slider.value, _targetSliderValue, Time.deltaTime * sliderSmoothSpeed);
+
+            if (Mathf.Abs(slider.value - _targetSliderValue) < 0.001f)
+                slider.value = _targetSliderValue;
         }
 
         private void OnDestroy()
         {
-            if (_agentEventChannel != null)
-            {
-                _agentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
-                _agentEventChannel.RemoveListener<AgentArmorEquip>(OnAgentArmorEquip);
-            }
+            if (_agentEventChannel == null)
+                return;
 
-            _damageTween?.Kill();
+            _agentEventChannel.RemoveListener<AgentDeadEvent>(OnAgentDeadEvent);
+            _agentEventChannel.RemoveListener<AgentArmorEquip>(OnAgentArmorEquip);
         }
 
         private void OnAgentArmorEquip(AgentArmorEquip evt)
@@ -96,63 +88,44 @@ namespace JJH._02_Scripts.Agents
         {
             _maxHealth = maxHealth;
             Health = _maxHealth;
-            ChangeHealthText();
 
-            damageEffectImage.fillAmount = slider.value;
+            slider.value = 1f;
+            _targetSliderValue = 1f;
         }
 
         public void Damage(float value)
         {
             float damage = value;
+
             if (armors != null)
+            {
                 foreach (ArmorSO armor in armors)
                 {
                     damage *= 1f - armor.DamageReductionRate;
                 }
+            }
 
-            float prevHealthRatio = Health / _maxHealth;
             Health -= damage;
-            float currentHealthRatio = Health / _maxHealth;
 
-            ShowDamageEffect(prevHealthRatio, currentHealthRatio);
+            _agentEventChannel.RaiseEvent(
+                AgentEvents.AgentHealthChangeEvent.Init(_owner, Health, damage));
 
-            _agentEventChannel.RaiseEvent(AgentEvents.AgentHealthChangeEvent.Init(_owner, Health, damage));
             //_owner.AgentSoundPlayer.PlaySound(hitSound);
         }
 
         public void Heal(float amount)
         {
             Health = Mathf.Min(Health + amount, _maxHealth);
-            ChangeHealthText();
         }
 
-        private void ChangeHealthText()
+        private void UpdateTargetSliderValue()
         {
-            slider.value = Health / _maxHealth;
+            _targetSliderValue = Health / _maxHealth;
         }
 
-        private void ShowDamageEffect(float prevRatio, float currentRatio)
+        public void SetHealthBarVisible(bool isVisible)
         {
-            _damageTween?.Kill();
-
-            float totalWidth = fillRect.rect.width;
-            float damageWidth = (prevRatio - currentRatio) * totalWidth;
-
-            if (damageWidth <= 0f)
-                return;
-
-            float currentX = currentRatio * totalWidth;
-
-            damageEffectRect.anchoredPosition = new Vector2(currentX, damageEffectRect.anchoredPosition.y);
-            damageEffectRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, damageWidth);
-
-            Color color = damageEffectImage.color;
-            color.a = 1f;
-            damageEffectImage.color = color;
-
-            _damageTween = damageEffectImage
-                                                .DOFade(0f, damageFadeDuration)
-                                                .SetDelay(damageFadeDelay);
+            slider.gameObject.SetActive(isVisible);
         }
     }
 }

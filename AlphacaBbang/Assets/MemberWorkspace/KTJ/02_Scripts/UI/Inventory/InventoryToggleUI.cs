@@ -52,6 +52,8 @@ public class InventoryToggleUI : MonoBehaviour
 
     private void HandleInventoryToggle(InventoryToggleEvt evt)
     {
+        _isOpen = evt.Value;
+        
         if (evt.Value)
         {
             InventoryGroup.DOFade(1f, AnimDuration);

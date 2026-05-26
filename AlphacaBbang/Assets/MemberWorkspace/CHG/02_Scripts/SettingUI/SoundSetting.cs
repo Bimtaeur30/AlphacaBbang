@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -36,6 +37,13 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             volumeLabel.text = $"{result}";
             volumeSlider.value = 0;
             muteToggle.isOn = false;
+        }
+
+        private void OnDestroy()
+        {
+            volumeSlider.onValueChanged.RemoveListener(ChangeVolume);
+            muteToggle.onValueChanged.RemoveListener(Mute);
+            
         }
 
         public override void SettingData()

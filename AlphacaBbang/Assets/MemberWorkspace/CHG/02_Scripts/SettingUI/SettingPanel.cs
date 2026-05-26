@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UIElements;
@@ -80,7 +81,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             };
             _exitButton.clicked += () => UIShowHide();
         }
-
+        
         [ContextMenu("UIShowHide")]
         public void UIShowHide()
         {

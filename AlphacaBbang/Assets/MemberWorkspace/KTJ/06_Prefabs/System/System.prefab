@@ -488,6 +488,7 @@ GameObject:
   - component: {fileID: 5822620386738821180}
   - component: {fileID: 957345639834061783}
   - component: {fileID: 2677737679127331482}
+  - component: {fileID: 6235648620583679511}
   m_Layer: 5
   m_Name: ScreenSettingPanel
   m_TagString: Untagged
@@ -603,6 +604,21 @@ MonoBehaviour:
   _brightnessSlider: {fileID: 1714355106618592460}
   _brightnessText: {fileID: 6313191277279352679}
   profile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
+--- !u!114 &6235648620583679511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 321760212730130560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
+  m_EffectColor: {r: 0.5529412, g: 0.5529412, b: 0.5529412, a: 0.5019608}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &425806416013785792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,8 +1226,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 957345639834061783}
-        m_TargetAssemblyTypeName: ScreenSetting, Assembly-CSharp
+      - m_Target: {fileID: 5147665015739978766}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
         m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
@@ -1222,8 +1239,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2677737679127331482}
-        m_TargetAssemblyTypeName: ScreenBrightnessSetting, Assembly-CSharp
+      - m_Target: {fileID: 2501726690679360388}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
+        m_MethodName: SettingData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8318072846994430772}
+        m_TargetAssemblyTypeName: MemberWorkspace.CHG._02_Scripts.SettingUI.SoundSetting,
+          Assembly-CSharp
         m_MethodName: SettingData
         m_Mode: 1
         m_Arguments:
@@ -7940,6 +7971,7 @@ GameObject:
   - component: {fileID: 5389087341168405692}
   - component: {fileID: 9213194386584585062}
   - component: {fileID: 2855404938938595245}
+  - component: {fileID: 4352070547241621439}
   m_Layer: 5
   m_Name: SoundSettingPanel
   m_TagString: Untagged
@@ -8022,6 +8054,21 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &4352070547241621439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5622457576554532975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
+  m_EffectColor: {r: 0.5529412, g: 0.5529412, b: 0.5529412, a: 0.5019608}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!1 &5690272852397924140
 GameObject:
   m_ObjectHideFlags: 0
@@ -8896,7 +8943,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 84.618195, y: -170}
+  m_AnchoredPosition: {x: 84.618195, y: -153}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3588748649016860429

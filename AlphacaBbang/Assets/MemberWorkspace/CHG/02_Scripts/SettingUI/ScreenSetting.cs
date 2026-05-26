@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,12 @@ public class ScreenSetting : AbstractSettingUI
     
         _resolutionDropdown.value = defaultIndex;
         _fullScreenModeDropdown.value = (int)_screenMode;
+    }
+
+    private void OnDestroy()
+    {
+        _resolutionDropdown.onValueChanged.RemoveListener(SetResolution);
+        _fullScreenModeDropdown.onValueChanged.RemoveListener(SetFullScreenMode);
     }
 
     public override void SettingData()

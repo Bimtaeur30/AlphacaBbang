@@ -11,6 +11,7 @@ public class LootBoxInteractor : MonoBehaviour
     [SerializeField] private EventChannelSO systemChannel;
     
     private LootBoxContainer lootBoxContainer;
+    private LootBox _currentLootBox;
  
     [Header("Post-Open UI")]
     [SerializeField] private GameObject inventoryUIRoot;
@@ -38,7 +39,11 @@ public class LootBoxInteractor : MonoBehaviour
     private void HandleInventoryToggle(InventoryToggleEvt evt)
     {
         if (!evt.Value)
+        {
             SlidePanelController.SlideOut();
+            _currentLootBox?.MarkAsClosed();
+            _currentLootBox = null;
+        }
     }
     
     public void StartOpen(LootBox lootBox)
@@ -62,10 +67,9 @@ public class LootBoxInteractor : MonoBehaviour
             Debug.LogWarning($"[LootBoxInteractor] '{lootBox.BoxDisplayName}'에 LootTable SO가 없습니다.");
             return;
         }
- 
-        // LootBoxContainer에 이 상자의 LootTable을 주입
+        
+        _currentLootBox = lootBox;
         lootBoxContainer.InitializeWithLootTable(lootBox.LootTable);
- 
         lootBox.MarkAsOpened();
  
         StartCoroutine(OpenRoutine(lootBoxContainer));

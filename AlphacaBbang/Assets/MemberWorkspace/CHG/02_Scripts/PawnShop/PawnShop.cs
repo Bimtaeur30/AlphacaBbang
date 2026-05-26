@@ -51,6 +51,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
         }
 
+        private void OnDestroy()
+        {
+            itemCountSlider.onValueChanged.RemoveAllListeners();
+        }
+
         public void FirstChangeContent()
         {
             ChangeContent(_curItemData);

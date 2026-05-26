@@ -14,6 +14,7 @@ public class InventoryToggleUI : MonoBehaviour
     [SerializeField] private StorageOpener storageOpener;
     [SerializeField] private float AnimDuration = 1f;
     private RectTransform inventory;
+    private bool _isOpen = false;
 
     private void Awake()
     {
@@ -34,10 +35,19 @@ public class InventoryToggleUI : MonoBehaviour
     }
     private void Update() // �׽�Ʈ �ڵ�
     {
-        if (Keyboard.current.iKey.wasPressedThisFrame)
-            InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));
-        if (Keyboard.current.oKey.wasPressedThisFrame)
-            InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
+        {
+            if (!_isOpen)
+            {
+                InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));
+                _isOpen = true;
+            }
+            else if (_isOpen)
+            {
+                InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
+                _isOpen = false;
+            }
+        }
     }
 
     private void HandleInventoryToggle(InventoryToggleEvt evt)

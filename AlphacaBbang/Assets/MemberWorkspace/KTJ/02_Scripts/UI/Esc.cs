@@ -26,10 +26,17 @@ public class Esc : MonoBehaviour
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            isActive = true;
-            CanvasGroup.gameObject.SetActive(true);
-            CanvasGroup.DOFade(1f, 0.3f).SetUpdate(true);
-            Time.timeScale = 0f;
+            if (!isActive)
+            {
+                isActive = true;
+                CanvasGroup.gameObject.SetActive(true);
+                CanvasGroup.DOFade(1f, 0.3f).SetUpdate(true);
+                Time.timeScale = 0f;
+            }
+            else if (isActive)
+            {
+                HandleRestartBtn();
+            }
         }
     }
 
@@ -40,7 +47,7 @@ public class Esc : MonoBehaviour
 
     private void HandleSettingBtn()
     {
-        // ¼¼ÆÃ UI ¶ç¿ì±â
+        // ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½ï¿½ï¿½
     }
 
     private void HandleRestartBtn()

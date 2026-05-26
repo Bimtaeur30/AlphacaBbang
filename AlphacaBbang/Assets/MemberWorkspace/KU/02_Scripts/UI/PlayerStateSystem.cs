@@ -103,17 +103,21 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     }
     private void UpdateHealthUI(AgentHealthChangeEvent evt)
     {
+        Debug.Log("업데이트 헐쓰 들어왔어ㅏㅓ다더");
         if (_healthBar != null)
             _healthBar.size = evt.CurrentHealth / MaxHealth;
         if (_healthBar != null)
-            _healthText.text = $"{evt.CurrentHealth} / {MaxHealth}";
+        {
+            _healthText.text = $"{evt.CurrentHealth}";
+            Debug.Log("현제 체력어어어걱ㄱ" + evt.CurrentHealth);
+        }
     }
     private void UpdateStaminaUI(float value)
     {
         if (_staminaBar != null)
             _staminaBar.size = value / MaxStamina;
         if (_healthBar != null)
-            _healthText.text = $"{value.ToString("F1")} / {MaxStamina}";
+            _staminaText.text = $"{value.ToString("F1")} / {MaxStamina}";
 
     }
     public bool CanRun()

@@ -70,10 +70,20 @@ public class Magazine : MonoBehaviour
 
     public bool TryReload(Action OnReloadEnd)
     {
+        if (this == null || gameObject == null || !gameObject.activeInHierarchy)
+            return false;
+
+        if (_gun == null)
+            return false;
+
+        if (_gun.WeaponHandleModule == null)
+            return false;
+
         if (_loading)
             return false;
 
         int inventoryBulletCount = 0;
+
         if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
@@ -84,29 +94,36 @@ public class Magazine : MonoBehaviour
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
         if (emptySpace <= 0)
-        {
-            Debug.Log("�̹� źâ�� ���� á���ϴ�.");
             return false;
-        }
 
         if (inventoryBulletCount <= 0)
         {
-            Debug.Log("�κ��丮�� �Ѿ��� �����!");
-            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("ź�˺���", "�κ��丮�� ź���� �����ؿ�"));
+            systemChannel?.RaiseEvent(
+                SystemEvents.SystemNotificationEvent.Init("탄약부족", "인벤토리에 탄약이 부족해요")
+            );
             return false;
         }
 
         int reloadBulletCount = Mathf.Min(emptySpace, inventoryBulletCount);
+
         if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
         {
             for (int i = 0; i < reloadBulletCount; i++)
+            {
                 (_gun.WeaponHandleModule as PlayerGunHandleModule)
                     ?.InventoryContainer
-                    .ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
+                    ?.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
+            }
         }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
         return true;
+    }
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+        _loading = false;
+        _gun = null;
     }
 
     private IEnumerator Reload(int reloadBulletCount, Action onReloadEnd)

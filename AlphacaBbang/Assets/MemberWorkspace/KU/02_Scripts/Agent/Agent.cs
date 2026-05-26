@@ -13,6 +13,7 @@ public class Agent : ModuleOwner, IDamageable
     public IHealth HealthModule { get; private set; }
     public IAgentArmor Armor { get; private set; }
     public IAgentSoundPlayer AgentSoundPlayer { get; private set; }
+
     protected override void InitializeComponents()
     {
         base.InitializeComponents();

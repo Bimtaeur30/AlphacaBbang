@@ -8,10 +8,10 @@ namespace MemberWorkspace.CHG._02_Scripts
 {
     public struct ViewCastInfo
     {
-        public bool hit;
-        public Vector3 point;
-        public float dst;
-        public float angle;
+        public bool hit; //is hit?
+        public Vector3 point; //hit point
+        public float dst; // distance
+        public float angle; // shout angle
 
         public ViewCastInfo(bool hit, Vector3 point, float dst, float angle)
         {
@@ -22,6 +22,7 @@ namespace MemberWorkspace.CHG._02_Scripts
         }
     }
     
+    //find obstacle edge point
     public struct Edge
     {
         public Vector3 PointA, PointB;
@@ -40,16 +41,19 @@ namespace MemberWorkspace.CHG._02_Scripts
         [Range(0, 360f)]
         [SerializeField] private float viewAngle = 90f;
         
+
         [Header("layer")]
         [SerializeField] private LayerMask obstacleLayerMask;
 
         [Header("Mesh")]
-        public float meshResolution = 5f;
+        public float meshResolution = 5f; //1 angle in ray count
         public int edgeResolveIterations = 4;
         public float edgeDstThreshold = 0.5f;
         
-        [SerializeField] private MeshFilter coneMeshFilter;
-        [SerializeField] private MeshFilter circleMeshFilter;
+        [SerializeField] private MeshFilter coneMeshFilter;        // 3D cone
+        [SerializeField] private MeshFilter flatConeMeshFilter;    // Flat cone
+        [SerializeField] private MeshFilter circleMeshFilter;      // 3D circle
+        [SerializeField] private MeshFilter flatCircleMeshFilter;  // Flat circle
         [SerializeField] private int circleSegments = 36;
 
         [Header("EnemyVisible")] 
@@ -57,21 +61,30 @@ namespace MemberWorkspace.CHG._02_Scripts
         [SerializeField] private float checkDelay;
         
         private Mesh viewMesh;
+        private Mesh flatViewMesh;
         private Mesh circleMesh;
+        private Mesh flatCircleMesh;
         private Collider[] _overlapResults = new Collider[50];
         private readonly HashSet<EnemyVisibility> _previousVisible = new();
         
         public float ViewRadius => viewRadius;
         public float CloseViewRadius => closeViewRadius;
         public float ViewAngle => viewAngle;
+
         
         private IEnumerator Start()
         {
-            viewMesh = new Mesh { name = "View Cone Mesh" };
+            viewMesh = new Mesh { name = "View Cone Mesh 3D" };
             coneMeshFilter.mesh = viewMesh;
+            
+            flatViewMesh = new Mesh { name = "View Cone Mesh Flat" };
+            flatConeMeshFilter.mesh = flatViewMesh;
 
-            circleMesh = new Mesh { name = "Close View Circle Mesh" };
+            circleMesh = new Mesh { name = "Close View Circle Mesh 3D" };
             circleMeshFilter.mesh = circleMesh;
+            
+            flatCircleMesh = new Mesh { name = "Close View Circle Mesh Flat" };
+            flatCircleMeshFilter.mesh = flatCircleMesh;
             
             yield return StartCoroutine(UpdateVisibilityCoroutine());
         }
@@ -120,7 +133,9 @@ namespace MemberWorkspace.CHG._02_Scripts
         private void LateUpdate()
         {
             DrawViewCone();
+            DrawFlatViewCone();
             DrawCloseCircle();
+            DrawFlatCloseCircle();
         }
         
         public bool IsVisible(Vector3 worldPosition)
@@ -128,6 +143,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             Vector3 toTarget = worldPosition - transform.position;
             float distance = toTarget.magnitude;
             
+            // close mesh
             if (distance <= closeViewRadius)
             {
                 bool blocked = Physics.Raycast(
@@ -138,7 +154,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 );
                 if (!blocked) return true;
             }
-            
+            // con mesh
             if (distance <= ViewRadius)
             {
                 float angle = Vector3.Angle(transform.forward, toTarget);
@@ -157,6 +173,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             return false;
         }
         
+        // Draw 3D cone mesh
         private void DrawViewCone()
         {
             int stepCount = Mathf.RoundToInt(ViewAngle * meshResolution);
@@ -187,9 +204,44 @@ namespace MemberWorkspace.CHG._02_Scripts
                 prevViewCast = newViewCast;
             }
 
-            BuildMesh(viewMesh, viewPoints, 0f);
+            BuildMesh(viewMesh, viewPoints, 3f);
         }
         
+        // Draw flat cone mesh
+        private void DrawFlatViewCone()
+        {
+            int stepCount = Mathf.RoundToInt(ViewAngle * meshResolution);
+            float stepAngleSize = ViewAngle / stepCount;
+            List<Vector3> viewPoints = new List<Vector3>();
+            ViewCastInfo prevViewCast = new ViewCastInfo();
+
+            for (int i = 0; i <= stepCount; i++)
+            {
+                float angle = transform.eulerAngles.y - ViewAngle / 2 + stepAngleSize * i;
+                ViewCastInfo newViewCast = ViewCast(angle);
+
+                if (i != 0)
+                {
+                    bool edgeDstThresholdExceed =
+                        Mathf.Abs(prevViewCast.dst - newViewCast.dst) > edgeDstThreshold;
+
+                    if (prevViewCast.hit != newViewCast.hit ||
+                        (prevViewCast.hit && newViewCast.hit && edgeDstThresholdExceed))
+                    {
+                        Edge e = FindEdge(prevViewCast, newViewCast);
+                        if (e.PointA != Vector3.zero) viewPoints.Add(e.PointA);
+                        if (e.PointB != Vector3.zero) viewPoints.Add(e.PointB);
+                    }
+                }
+
+                viewPoints.Add(newViewCast.point);
+                prevViewCast = newViewCast;
+            }
+
+            BuildMesh(flatViewMesh, viewPoints, 0f);
+        }
+        
+        // Draw 3D close circle mesh
         private void DrawCloseCircle()
         {
             List<Vector3> circlePoints = new List<Vector3>();
@@ -205,34 +257,91 @@ namespace MemberWorkspace.CHG._02_Scripts
                 else
                     circlePoints.Add(transform.position + dir * closeViewRadius);
             }
-            BuildMesh(circleMesh, circlePoints, 0.01f);
+            BuildMesh(circleMesh, circlePoints, 3f);
+        }
+        
+        // Draw flat close circle mesh
+        private void DrawFlatCloseCircle()
+        {
+            List<Vector3> circlePoints = new List<Vector3>();
+            float angleStep = 360f / circleSegments;
+
+            for (int i = 0; i <= circleSegments; i++)
+            {
+                float angle = i * angleStep;
+                Vector3 dir = DirFromAngle(angle + transform.eulerAngles.y, true);
+
+                if (Physics.Raycast(transform.position, dir, out RaycastHit hit, closeViewRadius, obstacleLayerMask))
+                    circlePoints.Add(hit.point);
+                else
+                    circlePoints.Add(transform.position + dir * closeViewRadius);
+            }
+            BuildMesh(flatCircleMesh, circlePoints, 0f);
         }
         
         private void BuildMesh(Mesh mesh, List<Vector3> viewPoints, float height)
         {
             int count = viewPoints.Count;
-            Vector3[] vertices = new Vector3[count + 1];
-            List<int> triangles = new List<int>();
-
-            vertices[0] = new Vector3(0, height, 0);
-
-            for (int i = 0; i < count; i++)
+            
+            if (height <= 0.01f) // Flat mesh
             {
-                Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
-                vertices[i + 1] = new Vector3(p.x, height, p.z);
+                Vector3[] vertices = new Vector3[count + 1];
+                List<int> triangles = new List<int>();
 
-                if (i < count - 1) 
+                vertices[0] = new Vector3(0, height, 0);
+
+                for (int i = 0; i < count; i++)
                 {
-                    triangles.Add(0);
-                    triangles.Add(i + 1);
-                    triangles.Add(i + 2);
-                }
-            }
+                    Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
+                    vertices[i + 1] = new Vector3(p.x, height, p.z);
 
-            mesh.Clear();
-            mesh.vertices = vertices;
-            mesh.triangles = triangles.ToArray();
-            mesh.RecalculateNormals();
+                    if (i < count - 1) 
+                    {
+                        triangles.Add(0);
+                        triangles.Add(i + 1);
+                        triangles.Add(i + 2);
+                    }
+                }
+
+                mesh.Clear();
+                mesh.vertices = vertices;
+                mesh.triangles = triangles.ToArray();
+                mesh.RecalculateNormals();
+            }
+            else // 3D mesh
+            {
+                int vertexCount = count * 2 + 2;
+                Vector3[] vertices = new Vector3[vertexCount];
+                List<int> triangles = new List<int>();
+
+                vertices[0] = Vector3.zero;
+                vertices[1] = new Vector3(0, height, 0);
+
+                for (int i = 0; i < count; i++)
+                {
+                    Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
+                    vertices[2 + i * 2] = p;
+                    vertices[2 + i * 2 + 1] = new Vector3(p.x, height, p.z);
+
+                    if (i < count - 1)
+                    {
+                        int a = 2 + i * 2;
+                        int b = 2 + i * 2 + 1;
+                        int c = 2 + (i + 1) * 2;
+                        int d = 2 + (i + 1) * 2 + 1;
+
+                        triangles.Add(0); triangles.Add(a); triangles.Add(c);
+                        triangles.Add(1); triangles.Add(d); triangles.Add(b);
+                        triangles.Add(a); triangles.Add(b); triangles.Add(c);
+                        triangles.Add(b); triangles.Add(d); triangles.Add(c);
+                    }
+                }
+
+                mesh.Clear();
+                mesh.vertices = vertices;
+                mesh.triangles = triangles.ToArray();
+                mesh.RecalculateNormals();
+            }
         }
         
         private Edge FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
@@ -271,7 +380,10 @@ namespace MemberWorkspace.CHG._02_Scripts
 
             if (Physics.Raycast(transform.position, dir, out RaycastHit hit, ViewRadius, obstacleLayerMask))
             {
-                return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
+                Vector3 toHit = (hit.point - transform.position).normalized;
+                Vector3 adjustedPoint = hit.point - toHit * 0.1f;
+        
+                return new ViewCastInfo(true, adjustedPoint, hit.distance - 0.1f, globalAngle);
             }
             else
             {
@@ -288,5 +400,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 Mathf.Sin((-angleDegrees + 90f) * Mathf.Deg2Rad)
             );
         }
+        
+        
     }
 }

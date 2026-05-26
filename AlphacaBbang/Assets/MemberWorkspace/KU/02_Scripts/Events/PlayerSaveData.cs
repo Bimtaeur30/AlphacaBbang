@@ -52,6 +52,7 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
         MaxAimStamina = parsedData.playerMaxAimStaminaSave;
+        Gold = parsedData.playerGoldSave;
 
 
         Debug.Log($"Health: {parsedData.playerMaxHpSave}");

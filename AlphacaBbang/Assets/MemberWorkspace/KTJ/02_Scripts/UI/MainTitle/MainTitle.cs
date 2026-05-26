@@ -36,6 +36,11 @@ public class MainTitle : MonoBehaviour
         sceneChangeManager.SceneLoad(targetScene);
     }
 
+    public void HandleRemoveAllDatas()
+    {
+        dataManager.DeleteAllData();
+    }
+
     private void Start()
     {
 

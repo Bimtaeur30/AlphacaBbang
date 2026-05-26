@@ -246,6 +246,12 @@ public class DataManager : MonoBehaviour, IInstaller
     }
 
     [ContextMenu("Clear Save File")]
+    public void DeleteAllData()
+    {
+        ClearPrefData();
+        DeleteSaveFile();
+        Application.Quit();
+    }
     private void DeleteSaveFile()
     {
         string filePath = Path.Combine(Application.persistentDataPath, saveFileName);

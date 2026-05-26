@@ -23,7 +23,6 @@ public class PlayerController : Agent
     [SerializeField] private CursorController _cursorController;
 
     [SerializeField] private SoundClipSO equipSoundClip;
-    [SerializeField] private SoundClipSO walkSoundClip;
     [SerializeField] private EventChannelSO soundChannel;
 
 
@@ -105,7 +104,6 @@ public class PlayerController : Agent
 
     private void Update()
     {
-        HandleFootStep();
         UpdateAimState();
 
         if (IsAiming)
@@ -114,40 +112,6 @@ public class PlayerController : Agent
             RotateToMovement();
 
         UpdateAnimation();
-    }
-    private void HandleFootStep()
-    {
-        bool isMoving = _movementInput.sqrMagnitude > 0.01f;
-
-        if (!isMoving)
-        {
-            if (_isWalkSoundPlaying)
-            {
-                soundChannel.RaiseEvent(
-                    SoundEvents.StopSoundEvent
-                );
-
-                _isWalkSoundPlaying = false;
-            }
-
-            _footStepTimer = 0f;
-            return;
-        }
-
-        _footStepTimer -= Time.deltaTime;
-
-        if (_footStepTimer <= 0f)
-        {
-            soundChannel.RaiseEvent(
-                SoundEvents.PlaySoundEvent.Init(
-                    walkSoundClip,
-                    transform
-                )
-            );
-
-            _isWalkSoundPlaying = true;
-            _footStepTimer = walkSoundClip.clip.length;
-        }
     }
     private void HandleAimInput(bool isPressed)
     {

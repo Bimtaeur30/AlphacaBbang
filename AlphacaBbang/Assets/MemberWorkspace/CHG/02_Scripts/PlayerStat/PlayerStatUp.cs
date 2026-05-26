@@ -1,4 +1,5 @@
-﻿using JJH._02_Scripts_Systems.EventSystems;
+﻿using JJH._02_Scripts.Systems.EventSystems;
+using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -19,9 +20,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
     public class PlayerStatUp : MonoBehaviour
     {
         [SerializeField] private EventChannelSO playerStatChannel;
+        [SerializeField] private EventChannelSO agentChannel;
         [SerializeField] private PlayerStatStruct[] _statViews;
         [SerializeField] private InventoryContainer inventory;
         [SerializeField] private int needGold;
+        [SerializeField] private Agent agent;
 
         private PlayerSaveData _playerSaveData;
         private SlidePanelController _slidePanelController;
@@ -61,9 +64,11 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             {
                 case PlayerStatType.Health:
                     playerStatChannel.RaiseEvent(new AddMaxHealth().Init(next - cur));
+                    agentChannel.RaiseEvent(new AgentHealthChangeEvent().Init(agent, cur, 0));
                     break;
                 case PlayerStatType.Stamina:
                     playerStatChannel.RaiseEvent(new AddMaxStamina().Init(next - cur));
+                    agentChannel.RaiseEvent(new AgentStaminaChangeEvent().Init(agent, cur));
                     break;
                 case PlayerStatType.AimStamina:
                     playerStatChannel.RaiseEvent(new AddMaxAimStamina().Init(next - cur));

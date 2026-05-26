@@ -41,6 +41,18 @@ namespace JJH._02_Scripts.Systems.EventSystems
             return this;
         }
     }
+    public class AgentStaminaChangeEvent : GameEvent
+    {
+        public Agent Agent { get; private set; }
+        public float CurrentStamina { get; private set; }
+
+        public AgentStaminaChangeEvent Init(Agent agent, float currentStamina)
+        {
+            Agent = agent;
+            CurrentStamina = currentStamina;
+            return this;
+        }
+    }
 
     public class AgentArmorEquip : GameEvent
     {

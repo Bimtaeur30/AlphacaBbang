@@ -33,8 +33,8 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
 
     public void AfterInitalize()
     {
-        gunChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
-        gunChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent);
+        gunChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent); // 총 지정
+        gunChannel.AddListener<WeaponSlotEquipEvent>(HandleWeaponSlotEquipEvent); // 등에 다는거
         //gunChannel.AddListener<WeaponDropEvent>(HandleWeaponDropEvent);
     }
 

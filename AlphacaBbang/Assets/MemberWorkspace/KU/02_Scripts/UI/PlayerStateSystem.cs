@@ -1,12 +1,15 @@
 using JJH._02_Scripts.Systems.EventSystems;
 using JJH._02_Scripts_Systems.EventSystems;
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 {
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
+    [SerializeField] private TextMeshPro _healthText;
+    [SerializeField] private TextMeshPro _staminaText;
     [SerializeField] private EventChannelSO systemChannel;
     [SerializeField] private EventChannelSO agentChannel;
 
@@ -34,6 +37,7 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         }
 
         CurrentStamina = MaxStamina;
+        _controller.HealthModule.Heal(MaxHealth);
 
         agentChannel.AddListener<AgentDeadEvent>(OnAgentDead);
         agentChannel.AddListener<AgentHealthChangeEvent>(UpdateHealthUI);
@@ -101,11 +105,15 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     {
         if (_healthBar != null)
             _healthBar.size = evt.CurrentHealth / MaxHealth;
+        if (_healthBar != null)
+            _healthText.text = $"{evt.CurrentHealth} / {MaxHealth}";
     }
     private void UpdateStaminaUI(float value)
     {
         if (_staminaBar != null)
             _staminaBar.size = value / MaxStamina;
+        if (_healthBar != null)
+            _healthText.text = $"{value} / {MaxHealth}";
     }
     public bool CanRun()
     {

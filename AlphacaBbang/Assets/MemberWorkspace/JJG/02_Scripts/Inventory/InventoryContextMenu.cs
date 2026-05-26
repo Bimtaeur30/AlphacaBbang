@@ -431,6 +431,8 @@ public class InventoryContextMenu : MonoBehaviour
 
         Close();
     }
+    
+    
 
     private void OnClickDrop()
     {

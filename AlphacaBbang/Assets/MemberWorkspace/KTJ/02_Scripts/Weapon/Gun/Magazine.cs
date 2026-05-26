@@ -24,7 +24,6 @@ public class Magazine : MonoBehaviour
         }
     }
     [field: SerializeField] public int MaxBulletCount { get; private set; } = 20;
-    [SerializeField] private InventoryContainer inventory;
 
     //[Header("UI")]
     //[SerializeField] private TextMeshProUGUI bulletCountTxt;
@@ -78,7 +77,9 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
-            inventoryBulletCount = inventory.GetItemCount(_gun.WeaponData.BulletType);
+            inventoryBulletCount = (_gun.WeaponHandleModule as PlayerGunHandleModule)
+                                ?.InventoryContainer
+                                ?.GetItemCount(_gun.WeaponData.BulletType) ?? 0;
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
@@ -99,7 +100,9 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
         {
             for (int i = 0; i < reloadBulletCount; i++)
-                inventory.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
+                (_gun.WeaponHandleModule as PlayerGunHandleModule)
+                    ?.InventoryContainer
+                    .ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
         }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));

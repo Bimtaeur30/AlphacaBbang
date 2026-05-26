@@ -19,6 +19,7 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
     [Header("System")]
     [SerializeField] private EventChannelSO gunChannel;
     [SerializeField] private EventChannelSO uiChannel;
+    [field:SerializeField] public InventoryContainer InventoryContainer { get; private set; }
 
     public PlayerController PlayerController { get; private set; }
 

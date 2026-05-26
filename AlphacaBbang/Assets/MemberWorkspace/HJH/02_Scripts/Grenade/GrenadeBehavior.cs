@@ -96,17 +96,24 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         DrawTrajectory(_targetWorldPos); // targetPoint 관계없이 바로 그리기
     }
 
+    private void Update()
+    {
+        if (_isAiming)
+            DrawTrajectory(_targetWorldPos);
+        else if (lineRenderer != null)
+            lineRenderer.positionCount = 0;
+    }
     private void DrawTrajectory(Vector3 targetPos)
     {
-        // if (targetPoint == null) return; ← 이 줄 삭제
-
         if (lineRenderer == null) return;
+
+        lineRenderer.useWorldSpace = true; // 원복
 
         Vector3 direction = (targetPos - startPoint.position);
         direction.y = 0;
         float distance = direction.magnitude;
 
-        if (distance < 0.01f) return; // 너무 가까우면 스킵
+        if (distance < 0.01f) return;
 
         direction = direction.normalized;
 
@@ -131,6 +138,7 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
             Vector3 point = startPoint.position
                             + velocityVector * t
                             + Vector3.down * (0.5f * gravity * t * t);
+
             lineRenderer.SetPosition(i, point);
         }
     }

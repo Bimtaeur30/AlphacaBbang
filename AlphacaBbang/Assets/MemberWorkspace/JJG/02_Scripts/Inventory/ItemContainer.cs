@@ -60,6 +60,12 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         return true;
     }
 
+    public void ClearAllSlots()
+    {
+        for (int i = 0; i < SlotCount; i++)
+            ClearSlot(i);
+    }
+
     protected void InitializeSlots()
     {
         if (slots.Count == slotCount)

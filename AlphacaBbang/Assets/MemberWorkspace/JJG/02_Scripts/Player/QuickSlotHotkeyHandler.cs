@@ -75,7 +75,9 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         );
 
         grenade.Setup(throwingData.Grenade);
+        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 생성: {grenade.name} at {grenade.transform.position}");
         _currentGrenade = grenade;
+        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 설정 완료: {grenade.name} with GrenadeSO {throwingData.Grenade.name}");
         _currentGrenade.OnFired += HandleOnFired;
     }
 
@@ -96,19 +98,24 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
     private void HandleThrowingInput()
     {
+        Debug.Log("%%%%  = 1");
         if (_currentGrenade == null) return;
-
+        Debug.Log("%%%%  = 2");
         var mouse = Mouse.current;
         if (mouse == null) return;
-
+        Debug.Log("%%%%  = 3");
         if (mouse.rightButton.isPressed)
         {
+            Debug.Log("%%%%  = 4");
             if (!_currentGrenade.IsAiming)
                 _currentGrenade.SetAim(true);
-
+            Debug.Log("%%%%  = 5");
             Vector3? targetPos = GetMouseWorldPosition();
             if (targetPos.HasValue)
+            {
+                Debug.Log($"%%%%  = 6, Target Position: {targetPos.Value}");
                 _currentGrenade.SetTarget(targetPos.Value);
+            }
         }
         else
         {

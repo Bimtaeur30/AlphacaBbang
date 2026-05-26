@@ -93,26 +93,28 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
 
         _targetWorldPos = startPoint.position + dir;
 
-        if (targetPoint == null)
-        {
-            GameObject obj = Instantiate(targetMarkPrefab, _targetWorldPos, Quaternion.identity);
-            targetPoint = obj.transform;
-        }
-        else
-        {
-            targetPoint.position = _targetWorldPos;
-        }
-
-        DrawTrajectory(_targetWorldPos);
+        DrawTrajectory(_targetWorldPos); // targetPoint 관계없이 바로 그리기
     }
 
+    private void Update()
+    {
+        if (_isAiming)
+            DrawTrajectory(_targetWorldPos);
+        else if (lineRenderer != null)
+            lineRenderer.positionCount = 0;
+    }
     private void DrawTrajectory(Vector3 targetPos)
     {
-        if (targetPoint == null) return;
+        if (lineRenderer == null) return;
+
+        lineRenderer.useWorldSpace = true; // 원복
 
         Vector3 direction = (targetPos - startPoint.position);
         direction.y = 0;
         float distance = direction.magnitude;
+
+        if (distance < 0.01f) return;
+
         direction = direction.normalized;
 
         float angleRad = firingAngle * Mathf.Deg2Rad;
@@ -136,6 +138,7 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
             Vector3 point = startPoint.position
                             + velocityVector * t
                             + Vector3.down * (0.5f * gravity * t * t);
+
             lineRenderer.SetPosition(i, point);
         }
     }

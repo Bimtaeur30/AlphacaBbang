@@ -8,6 +8,7 @@ public static class GunEvents
     public static readonly WeaponSlotEquipEvent WeaponSlotEquipEvent = new WeaponSlotEquipEvent();
     public static readonly WeaponDropEvent WeaponDropEvent = new WeaponDropEvent();
     public static readonly WeaponReloadEvent WeaponReloadEvent = new WeaponReloadEvent();
+    public static readonly WeaponSlotEquipEvent_UI WeaponSlotEquipEvent_UI = new WeaponSlotEquipEvent_UI();
 }
 
 public class WeaponEquipEvent : GameEvent // CurrentGun에 장착(1,2번 중 선택)
@@ -27,6 +28,19 @@ public enum WeaponSlotIndex
 {
     First,
     Second
+}
+public class WeaponSlotEquipEvent_UI : GameEvent // WeaponSlot에 장착(1,2번 중 선택)
+{
+    public GameObject Gun { get; private set; }
+    public WeaponSlotIndex SlotIndex { get; private set; }
+    public bool IsEquip { get; private set; } // true : 장착, false  : 해제
+    public WeaponSlotEquipEvent_UI Init(GameObject gun, WeaponSlotIndex slotIndex, bool IsEquip = true)
+    {
+        Gun = gun;
+        SlotIndex = slotIndex;
+        this.IsEquip = IsEquip;
+        return this;
+    }
 }
 public class WeaponSlotEquipEvent : GameEvent // WeaponSlot에 장착(1,2번 중 선택)
 {

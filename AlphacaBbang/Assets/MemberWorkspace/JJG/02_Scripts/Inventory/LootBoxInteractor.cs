@@ -34,7 +34,9 @@ public class LootBoxInteractor : MonoBehaviour
     private void OnDestroy()
     {
         InventoryChannel.RemoveListener<InventoryToggleEvt>(HandleInventoryToggle);
+        systemChannel.RemoveListener<LootboxDataSendEvent>(HandleLootboxDataSendEvent); // 추가
     }
+
  
     private void HandleInventoryToggle(InventoryToggleEvt evt)
     {
@@ -43,6 +45,7 @@ public class LootBoxInteractor : MonoBehaviour
             SlidePanelController.SlideOut();
             _currentLootBox?.gameObject.SetActive(false); // 닫을 때 사라지게
             _currentLootBox = null;
+            lootBoxContainer.Reset();
         }
     }
     

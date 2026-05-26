@@ -1,4 +1,4 @@
-﻿    using JJH._02_Scripts_Systems.EventSystems;
+﻿using JJH._02_Scripts_Systems.EventSystems;
 using System;
 using System.Collections;
 using System.Text;
@@ -24,6 +24,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
         [SerializeField] private EventChannelSO playerStatChannel;
         [SerializeField] private TextMeshProUGUI needItemText;
+        [SerializeField] private TextMeshProUGUI currentItemText;
         [SerializeField] private PlayerStatStruct[] _statViews;
 
         [SerializeField] private InventoryContainer inventory;
@@ -49,15 +50,20 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
                 _statViews[i].StatType = (PlayerStatType)i;
             }
 
-            var sb = new StringBuilder("");
+            var needSb = new StringBuilder("");
+            var curSB = new StringBuilder("");
             foreach (PlayerStatStruct pStruct in _statViews)
             {
                 int idx = (int)pStruct.StatType;
                 int cur = (int)GetCurrentStatValue(pStruct.StatType);
                 pStruct.statUpUi.StatTextChange(cur.ToString(), (cur + pStruct.statUpValue).ToString());
-                sb.AppendLine($"{StatLabels[idx]}: {pStruct.needItem.ItemName}X{pStruct.needItemCount}");
+                needSb.AppendLine($"{StatLabels[idx]}: {pStruct.needItem.ItemName}X{pStruct.needItemCount}");
+                curSB.AppendLine($"{StatLabels[idx]}: {pStruct.needItemCount}");
             }
-            needItemText.text = sb.ToString();
+            needItemText.text = needSb.ToString();
+
+            needSb.Clear();
+            
 
             foreach (PlayerStatStruct pStruct in _statViews)
             {

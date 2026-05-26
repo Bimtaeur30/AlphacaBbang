@@ -103,13 +103,11 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
     }
     private void UpdateHealthUI(AgentHealthChangeEvent evt)
     {
-        Debug.Log("업데이트 헐쓰 들어왔어ㅏㅓ다더");
         if (_healthBar != null)
             _healthBar.size = evt.CurrentHealth / MaxHealth;
         if (_healthBar != null)
         {
-            _healthText.text = $"{evt.CurrentHealth}";
-            Debug.Log("현제 체력어어어걱ㄱ" + evt.CurrentHealth);
+            _healthText.text = $"{evt.CurrentHealth} /{MaxHealth}";
         }
     }
     private void UpdateStaminaUI(float value)

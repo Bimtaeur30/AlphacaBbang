@@ -14,25 +14,26 @@ public class BulletCountUI : MonoBehaviour
     [SerializeField] private EventChannelSO gunChannel;
     [SerializeField] private WeaponSlotIndex index;
 
+    [SerializeField] private GameObject aa;
+
     private void Awake()
     {
-        gunChannel.AddListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
+        gunChannel.AddListener<WeaponSlotEquipEvent_UI>(HandleWeaponEquipEvent);
         uiChannel.AddListener<BulletCountHandleEvent>(HandleBulletCountChanged);
         bulletCountLabel.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        gunChannel.RemoveListener<WeaponEquipEvent>(HandleWeaponEquipEvent);
+        gunChannel.RemoveListener<WeaponSlotEquipEvent_UI>(HandleWeaponEquipEvent);
         uiChannel.RemoveListener<BulletCountHandleEvent>(HandleBulletCountChanged);
     }
 
-    private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
+    private void HandleWeaponEquipEvent(WeaponSlotEquipEvent_UI @event)
     {
-        if (@event.SlotIndex != index) return;
-        bulletCountLabel.gameObject.SetActive(@event.IsEquip);
-        //bulletText.text = "X";
-        Debug.Log(@event.IsEquip + " せせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせせ");
+            if (@event.SlotIndex != index) return;
+            bulletCountLabel.gameObject.SetActive(true);
+            //aa.gameObject.SetActive(false);        //bulletText.text = "X";
     }
     private void HandleBulletCountChanged(BulletCountHandleEvent @event)
     {

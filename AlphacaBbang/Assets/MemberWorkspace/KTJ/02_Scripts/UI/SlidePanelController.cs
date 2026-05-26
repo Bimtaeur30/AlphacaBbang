@@ -46,15 +46,13 @@ public class SlidePanelController : MonoBehaviour
     {
         _rectTransform = GetComponent<RectTransform>();
         _rootCanvas = GetRootCanvas();
-        Initialize();
-
     }
 
-    //private IEnumerator Start()
-    //{
-    //    yield return null;
-    //    Initialize();
-    //}
+    private IEnumerator Start()
+    {
+        yield return null;
+        Initialize();
+    }
 
     private void Initialize()
     {

@@ -7,7 +7,7 @@ namespace JJH._02_Scripts.UIs
     public class DPS : MonoBehaviour
     {
         [SerializeField] private AgentHealthModule healthModule;
-        [SerializeField] private TextMeshPro dpsText;
+        [SerializeField] private TextMeshProUGUI dpsText;
         [SerializeField] private float refreshTime = 1f;
 
         private float _prevHealth;

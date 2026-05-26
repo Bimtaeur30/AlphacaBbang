@@ -80,6 +80,7 @@ public class LootBoxInteractor : MonoBehaviour
         _isOpening = true;
         inventoryUIRoot?.SetActive(false);
         InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));
+        SlidePanelController.SlideIn();
  
         yield return new WaitForSeconds(0.2f);
  

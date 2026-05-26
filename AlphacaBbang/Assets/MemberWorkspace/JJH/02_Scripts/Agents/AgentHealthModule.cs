@@ -13,6 +13,8 @@ namespace JJH._02_Scripts.Agents
         [Header("HP Bar")]
         [SerializeField] private Slider slider;
         [SerializeField] private Image damageEffectImage;
+        [SerializeField] private RectTransform fillRect;
+        [SerializeField] private RectTransform damageEffectRect;
 
         [Header("Damage Effect")]
         [SerializeField] private float damageFadeDelay = 0.15f;
@@ -50,7 +52,7 @@ namespace JJH._02_Scripts.Agents
         private Tween _damageTween;
 
         private float _maxHealth;
-        private float _health;
+        [SerializeField] private float _health;
 
         public void Initialize(ModuleOwner owner)
         {
@@ -132,18 +134,25 @@ namespace JJH._02_Scripts.Agents
         private void ShowDamageEffect(float prevRatio, float currentRatio)
         {
             _damageTween?.Kill();
-            damageEffectImage.fillAmount = prevRatio;
+
+            float totalWidth = fillRect.rect.width;
+            float damageWidth = (prevRatio - currentRatio) * totalWidth;
+
+            if (damageWidth <= 0f)
+                return;
+
+            float currentX = currentRatio * totalWidth;
+
+            damageEffectRect.anchoredPosition = new Vector2(currentX, damageEffectRect.anchoredPosition.y);
+            damageEffectRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, damageWidth);
 
             Color color = damageEffectImage.color;
             color.a = 1f;
             damageEffectImage.color = color;
 
-            Sequence sequence = DOTween.Sequence();
-            sequence.AppendInterval(damageFadeDelay);
-            sequence.Append(damageEffectImage.DOFillAmount(currentRatio, damageFadeDuration));
-            sequence.Join(damageEffectImage.DOFade(0f, damageFadeDuration));
-
-            _damageTween = sequence;
+            _damageTween = damageEffectImage
+                                                .DOFade(0f, damageFadeDuration)
+                                                .SetDelay(damageFadeDelay);
         }
     }
 }

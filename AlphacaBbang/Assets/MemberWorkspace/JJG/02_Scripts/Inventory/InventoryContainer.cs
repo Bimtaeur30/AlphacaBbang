@@ -4,11 +4,6 @@ using System.Collections.Generic;
 
 public class InventoryContainer : ItemContainer, IInstaller
 {
-    private void Start()
-    {
-        //slots
-    }
-
     public override bool ClearSlot(int index)
     {
         bool result = base.ClearSlot(index);

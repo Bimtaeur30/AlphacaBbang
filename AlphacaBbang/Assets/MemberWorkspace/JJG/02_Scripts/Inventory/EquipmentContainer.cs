@@ -165,14 +165,33 @@ public class EquipmentContainer : ItemContainer
             if (!equipmentSlots[i].slot.IsEmpty)
                 continue;
 
-            Equip(i, itemData);
-            sourceContainer.ClearSlot(sourceIndex);
+            // ArmorEquip 호출을 위해 UseItem 먼저 실행
+            // UseItem 내부에서 agentArmorModule.ArmorEquip() 호출 후 아이템 제거
+            sourceContainer.UseItem(sourceIndex, sourceContainer.gameObject);
+
+            // 장비 슬롯 UI 업데이트
+            equipmentSlots[i].slot.ItemData = itemData;
+            equipmentSlots[i].slot.Amount = 1;
             NotifyEquipmentChanged();
             return true;
         }
 
         Debug.LogWarning("장착 가능한 빈 슬롯이 없습니다.");
         return false;
+    }
+    
+    public bool UnequipArmor(int index, ItemContainer inventoryContainer)
+    {
+        EquipmentSlot equipmentSlot = GetEquipmentSlot(index);
+        if (equipmentSlot == null || equipmentSlot.slot.IsEmpty)
+            return false;
+    
+        if (equipmentSlot.slot.ItemData is ArmorItemData armorData)
+            inventoryContainer.UnequipArmor(armorData);
+    
+        equipmentSlot.slot.Clear();
+        NotifyEquipmentChanged();
+        return true;
     }
 
     public void NotifyEquipmentChanged()

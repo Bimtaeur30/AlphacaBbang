@@ -24,6 +24,7 @@ public class Magazine : MonoBehaviour
         }
     }
     [field: SerializeField] public int MaxBulletCount { get; private set; } = 20;
+    [SerializeField] private InventoryContainer inventory;
 
     //[Header("UI")]
     //[SerializeField] private TextMeshProUGUI bulletCountTxt;
@@ -47,7 +48,7 @@ public class Magazine : MonoBehaviour
         _gun = gun;
         _reloadDuration = gun.WeaponData.ReloadDuration;
         MaxBulletCount = gun.WeaponData.MagCapacity;
-        Debug.Assert(_gun != null, "GunÀ» °¡Á®¿ÀÁö ¸øÇß½À´Ï´Ù.");
+        Debug.Assert(_gun != null, "Gunï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß½ï¿½ï¿½Ï´ï¿½.");
 
         //if (reloadUI != null)
         //    reloadUI.gameObject.SetActive(false);
@@ -77,20 +78,20 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is EnemyWeaponHandleModule)
             inventoryBulletCount = int.MaxValue;
         else
-            inventoryBulletCount = InventoryContainer.Instance.GetItemCount(_gun.WeaponData.BulletType);
+            inventoryBulletCount = inventory.GetItemCount(_gun.WeaponData.BulletType);
 
         int emptySpace = MaxBulletCount - CurrentBulletCount;
 
         if (emptySpace <= 0)
         {
-            Debug.Log("ÀÌ¹Ì ÅºÃ¢ÀÌ °¡µæ Ã¡½À´Ï´Ù.");
+            Debug.Log("ï¿½Ì¹ï¿½ ÅºÃ¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¡ï¿½ï¿½ï¿½Ï´ï¿½.");
             return false;
         }
 
         if (inventoryBulletCount <= 0)
         {
-            Debug.Log("ÀÎº¥Åä¸®¿¡ ÃÑ¾ËÀÌ ¾ø¾î¿ä!");
-            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("Åº¾ËºÎÁ·", "ÀÎº¥Åä¸®¿¡ Åº¾àÀÌ ºÎÁ·ÇØ¿ä"));
+            Debug.Log("ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½!");
+            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("Åºï¿½Ëºï¿½ï¿½ï¿½", "ï¿½Îºï¿½ï¿½ä¸®ï¿½ï¿½ Åºï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¿ï¿½"));
             return false;
         }
 
@@ -98,7 +99,7 @@ public class Magazine : MonoBehaviour
         if (_gun.WeaponHandleModule is not EnemyWeaponHandleModule)
         {
             for (int i = 0; i < reloadBulletCount; i++)
-                InventoryContainer.Instance.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
+                inventory.ConsumeBulletByName(_gun.WeaponData.BulletType.ItemName);
         }
 
         StartCoroutine(Reload(reloadBulletCount, OnReloadEnd));
@@ -142,7 +143,7 @@ public class Magazine : MonoBehaviour
         _loading = false;
         RefreshUI();
 
-        Debug.Log($"ÀçÀåÀü ¿Ï·á: {reloadBulletCount}¹ß ÀåÀü");
+        Debug.Log($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½: {reloadBulletCount}ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
         onReloadEnd?.Invoke();
     }
 

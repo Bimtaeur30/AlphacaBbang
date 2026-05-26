@@ -48,8 +48,6 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
 
     public void RestoreData(string data)
     {
-        Debug.Log("aaa");
-
         var parsedData = JsonUtility.FromJson<PlayerStateSaveData>(data);
         MaxHealth = parsedData.playerMaxHpSave;
         MaxStamina = parsedData.playerMaxRunStaminaSave;
@@ -64,26 +62,26 @@ public class PlayerSaveData : MonoBehaviour, ISaveable, IInstaller
     {
         MaxHealth += evt.val;
 
-        Debug.Log($"ÃÖ´ë Ã¼·Â Áõ°¡ : {evt.val}");
+        Debug.Log($"ï¿½Ö´ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : {evt.val}");
     }
 
     private void HandleAddMaxStamina(AddMaxStamina evt)
     {
         MaxStamina += evt.val;
 
-        Debug.Log($"ÃÖ´ë ½ºÅÂ¹Ì³ª Áõ°¡ : {evt.val}");
+        Debug.Log($"ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Â¹Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ : {evt.val}");
     }
     private void HandleAddMaxAimStamina(AddMaxAimStamina evt)
     {
         MaxAimStamina += evt.val;
 
-        Debug.Log($"ÃÖ´ë ¿¡ÀÓ ½ºÅÂ¹Ì³ª Áõ°¡ : {evt.val}");
+        Debug.Log($"ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â¹Ì³ï¿½ ï¿½ï¿½ï¿½ï¿½ : {evt.val}");
     }
 
     private void HandleAddGold(AddGold evt)
     {
         Gold += evt.val;
-        Debug.Log($"°ñµå Áõ°¡ : {evt.val}");
+        Debug.Log($"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : {evt.val}");
     }
 
     private void OnDisable()

@@ -234,7 +234,8 @@ public class PlayerController : Agent
     private void HandleMovement(Vector2 input)
     {
         _movementInput = input;
-        Movement.SetMovementDirection(input);
+        Vector3 dir = Quaternion.Euler(0, 45f, 0) * new Vector3(input.x, 0, input.y);
+        Movement.SetMovementDirection(new Vector2(dir.x, dir.z));
     }
 
     private void HandleSprint(bool isSprinting)

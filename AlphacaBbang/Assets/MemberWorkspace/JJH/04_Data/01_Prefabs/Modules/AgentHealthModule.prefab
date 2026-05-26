@@ -219,6 +219,81 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.UIs.FollowWorldCanvas
   targetTrans: {fileID: 0}
   offset: {x: 0, y: 0.75, z: 0}
+--- !u!1 &3425456609012448065
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2743632385811941975}
+  - component: {fileID: 3794967218925429299}
+  - component: {fileID: 457794600257064429}
+  m_Layer: 5
+  m_Name: DamageEffectImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2743632385811941975
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3425456609012448065}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6368783190050655057}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0.5}
+--- !u!222 &3794967218925429299
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3425456609012448065}
+  m_CullTransparentMesh: 1
+--- !u!114 &457794600257064429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3425456609012448065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9019608}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 785470d55c3504a4681ecd34c22d8703, type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 0
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 22.9
 --- !u!1 &5266845419468752196
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,9 +414,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2166cfae13dce954299a1133dd43b9d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.JJH._02_Scripts.Agents.AgentHealthModule
+  slider: {fileID: 7085302070360574870}
+  damageEffectImage: {fileID: 457794600257064429}
+  damageFadeDelay: 0.15
+  damageFadeDuration: 0.35
   hitSound: {fileID: 11400000, guid: db380658a9f318d4ab3ac9c195f9217a, type: 2}
   deadSound: {fileID: 11400000, guid: 8a5634eab53b177428378173e002e0b3, type: 2}
-  slider: {fileID: 7085302070360574870}
 --- !u!1 &6207788693495880917
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,6 +524,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7430711969324160731}
+  - {fileID: 2743632385811941975}
   m_Father: {fileID: 3827863041867979875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

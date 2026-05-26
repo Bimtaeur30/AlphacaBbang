@@ -11,7 +11,7 @@ public class InventoryContextMenu : MonoBehaviour
 {
     [SerializeField] private bool _handleEquipmentItems = false;
     [SerializeField] private GameObject rootPanel;
-    
+
     public static bool IsOpen { get; private set; }
 
     private static InventoryContextMenu _currentOpenMenu;
@@ -194,11 +194,7 @@ public class InventoryContextMenu : MonoBehaviour
     private void OnClickEquip()
     {
         ItemSlot slot = _container.GetSlot(_slotIndex);
-        if (slot == null || slot.IsEmpty)
-        {
-            Close();
-            return;
-        }
+        if (slot == null || slot.IsEmpty) { Close(); return; }
 
         ItemData itemData = slot.ItemData;
 
@@ -206,87 +202,70 @@ public class InventoryContextMenu : MonoBehaviour
         {
             if (weaponData.Gun != null)
             {
-                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
-                
-                // 기존 퀵슬롯의 다른 무기 제거 이벤트 발송
-                for (int i = 0; i < 3; i++)
+                ItemSlot slot0 = quickSlotContainer.GetSlot(0);
+                if (slot0 != null && !slot0.IsEmpty)
                 {
-                    if (i != targetSlotIndex)
-                    {
-                        ItemSlot otherSlot = quickSlotContainer.GetSlot(i);
-                        if (otherSlot != null && otherSlot.ItemData is WeaponItemData)
-                        {
-                            WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-                            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex, false));
-                        }
-                    }
+                    Debug.Log("장착이 안됨 - 무기 슬롯이 가득 찼습니다.");
+                    Close();
+                    return;
                 }
+
+                _container.MoveItemTo(_slotIndex, quickSlotContainer, 0);
+                gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, WeaponSlotIndex.First, false));
             }
             else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
             {
-                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 3);
-                if (targetSlotIndex >= 0 && weaponHolder != null)
+                if (weaponData.Gun != null)
+                {
+                    ItemSlot slot0 = quickSlotContainer.GetSlot(0);
+                    if (slot0 != null && !slot0.IsEmpty)
+                    {
+                        Debug.Log("장착이 안됨 - 무기 슬롯이 가득 찼습니다.");
+                        Close();
+                        return;
+                    }
+
+                    _container.MoveItemTo(_slotIndex, quickSlotContainer, 0);
+
+                    gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weaponData.Gun, WeaponSlotIndex.First));
+                    gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
+                }
+
+                _container.MoveItemTo(_slotIndex, quickSlotContainer, 0);
+                if (weaponHolder != null)
                 {
                     MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
-                    weaponHolder.EquipMeleeWeapon(targetSlotIndex, weaponData, meleeWeapon);
+                    weaponHolder.EquipMeleeWeapon(0, weaponData, meleeWeapon);
                 }
             }
         }
-        else if (itemData is ArmorItemData armorData)
+        else if (itemData is ThrowingItemData throwingData)
         {
-            // if (equipmentContainer == null)
-            // {
-            //     Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
-            //     Close();
-            //     return;
-            // }
-            //
-            // Debug.Log("Equip Armor");
-            //
-            // int targetSlotIndex = -1;
-            // for (int i = 0; i < equipmentContainer.SlotCount; i++)
-            // {
-            //     if (!equipmentContainer.CanEquip(i, itemData))
-            //         continue;
-            //
-            //     EquipmentSlot equipSlot = equipmentContainer.GetEquipmentSlot(i);
-            //     if (equipSlot == null || !equipSlot.slot.IsEmpty)
-            //         continue;
-            //
-            //     targetSlotIndex = i;
-            //     break;
-            // }
-            //
-            // if (targetSlotIndex < 0)
-            // {
-            //     Debug.LogWarning("장착 가능한 빈 슬롯이 없습니다.");
-            //     Close();
-            //     return;
-            // }
-            //
-            // if (_container.UseItem(_slotIndex, itemUser))
-            // {
-            //     equipmentContainer.Equip(targetSlotIndex, itemData);
-            //     equipmentContainer.NotifyEquipmentChanged();
-            // }
-            
+            ItemSlot slot1 = quickSlotContainer.GetSlot(1);
+            if (slot1 != null && !slot1.IsEmpty)
+            {
+                Debug.Log("장착이 안됨 - 수류탄 슬롯이 가득 찼습니다.");
+                Close();
+                return;
+            }
+
+            _container.MoveItemTo(_slotIndex, quickSlotContainer, 1);
+            if (weaponHolder != null)
+            {
+                weaponHolder.UnequipThrowingItem();
+                weaponHolder.EquipThrowingItem(1, throwingData);
+                hotkeyHandler.SetThrowingSlotIndex(1);
+            }
+        }
+        else if (itemData is ArmorItemData)
+        {
             if (equipmentContainer == null)
             {
                 Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
                 Close();
                 return;
             }
-
             equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
-        }
-        else if (itemData is ThrowingItemData throwingData)
-        {
-            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
-            if (targetSlotIndex >= 0 && weaponHolder != null)
-            {
-                weaponHolder.EquipThrowingItem(targetSlotIndex, throwingData);
-                hotkeyHandler.SetThrowingSlotIndex(targetSlotIndex);
-            }
         }
         else if (itemData.EquipType != EquipType.None)
         {
@@ -300,7 +279,13 @@ public class InventoryContextMenu : MonoBehaviour
         }
         else if (itemData is FoodItemData || itemData is MedicineItemData)
         {
-            TryMoveToQuickSlot(itemData, minIndex: 3, maxIndex: quickSlotContainer.SlotCount);
+            int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 2, maxIndex: quickSlotContainer.SlotCount);
+            if (targetSlotIndex < 0)
+            {
+                Debug.Log("장착이 안됨 - 슬롯이 가득 찼습니다.");
+                Close();
+                return;
+            }
         }
 
         Close();
@@ -322,8 +307,6 @@ public class InventoryContextMenu : MonoBehaviour
             if (eqSlot.allowedEquipType != targetType) continue;
 
             ItemData unequipItem = eqSlot.slot.ItemData;
-
-            // inventoryContainer를 직접 넘겨서 싱글톤 안 씀
             equipmentContainer.UnequipArmor(i, inventoryContainer);
 
             if (inventoryContainer != null)
@@ -352,19 +335,18 @@ public class InventoryContextMenu : MonoBehaviour
         {
             bool canPlace = quickSlotContainer.CanPlaceItem(i, itemData);
             ItemSlot targetSlot = quickSlotContainer.GetSlot(i);
-            Debug.Log($"슬롯 {i} | CanPlace: {canPlace} | IsEmpty: {targetSlot?.IsEmpty}");
 
             if (!canPlace) continue;
             if (targetSlot == null || !targetSlot.IsEmpty) continue;
 
             _container.MoveItemTo(_slotIndex, quickSlotContainer, i);
-            Debug.Log($"MoveItemTo 완료 → return {i}");
             return i;
         }
 
-        Debug.LogWarning("빈 슬롯이 없습니다.");
+        Debug.Log("장착이 안됨 - 슬롯이 가득 찼습니다.");
         return -1;
     }
+
     private void OnClickStore()
     {
         ItemSlot slot = _container.GetSlot(_slotIndex);
@@ -385,7 +367,6 @@ public class InventoryContextMenu : MonoBehaviour
 
         if (storageContainer == null) { Close(); return; }
 
-        // 무기를 창고에 넣을 때 퀵슬롯 이벤트 발송
         ItemData itemData = slot.ItemData;
         int slotIndex = _slotIndex;
 
@@ -417,7 +398,6 @@ public class InventoryContextMenu : MonoBehaviour
         {
             _container.ClearSlot(_slotIndex);
 
-            // 퀵슬롯에서 꺼낼 때만 이벤트 발송 (창고에서 꺼낼 땐 불필요)
             if (_container is MemberWorkspace.JJG._02_Scripts.QuickSlotContainer && _slotIndex < 2)
             {
                 WeaponSlotIndex weaponSlot = _slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
@@ -431,27 +411,22 @@ public class InventoryContextMenu : MonoBehaviour
 
         Close();
     }
-    
-    
 
     private void OnClickDrop()
     {
         ItemSlot slot = _container.GetSlot(_slotIndex);
         ItemData itemData = slot?.ItemData;
         int slotIndex = _slotIndex;
-        
+
         _container.ClearSlot(_slotIndex);
 
-        if (slotIndex < 2)
+        if (slotIndex == 0)
         {
-            WeaponSlotIndex weaponSlot = slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
             if (itemData is WeaponItemData)
-            {
-                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
-            }
-            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
+                gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First, false));
+            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, WeaponSlotIndex.First, false));
         }
-        
+
         Close();
     }
 }

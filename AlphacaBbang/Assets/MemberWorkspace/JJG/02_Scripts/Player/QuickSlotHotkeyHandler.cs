@@ -10,10 +10,11 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     [SerializeField] private GameObject itemUser;
     [SerializeField] private AgentAttack agentAttack;
     [SerializeField] private PlayerGunHandleModule playerGunHandleModule;
-    [SerializeField] private Transform grenadeHoldParent; // 방법 2: 인스펙터에서 직접 연결
+    [SerializeField] private Transform grenadeHoldParent;
 
-    private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2, Key.Digit3 };
-    private static readonly Key[] ItemKeys = { Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7 };
+    // 슬롯 0: 무기, 슬롯 1: 수류탄
+    private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2 };
+    private static readonly Key[] ItemKeys = { Key.Digit3, Key.Digit4, Key.Digit5, Key.Digit6 };
 
     private int _currentThrowingSlotIndex = -1;
     private GrenadeBehavior _currentGrenade;
@@ -45,12 +46,10 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
     private void OnThrowingItemChanged(ThrowingItemData throwingData)
     {
-        // 기존 수류탄 정리
         if (_currentGrenade != null)
         {
             _currentGrenade.OnFired -= HandleOnFired;
-            if (_currentGrenade != null)
-                Destroy(_currentGrenade.gameObject);
+            Destroy(_currentGrenade.gameObject);
             _currentGrenade = null;
         }
 
@@ -66,7 +65,6 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
 
-        // 본체 Instantiate → grenadeHoldParent에 배치
         GrenadeBehavior grenade = Instantiate(
             throwingData.GrenadeBehaviorPrefab,
             grenadeHoldParent.position,
@@ -75,15 +73,15 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         );
 
         grenade.Setup(throwingData.Grenade);
-        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 생성: {grenade.name} at {grenade.transform.position}");
         _currentGrenade = grenade;
-        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 설정 완료: {grenade.name} with GrenadeSO {throwingData.Grenade.name}");
         _currentGrenade.OnFired += HandleOnFired;
     }
 
     private void HandleOnFired()
     {
-        bool success = quickSlotContainer.UseItem(_currentThrowingSlotIndex, itemUser);
+        int slotIndex = _currentThrowingSlotIndex;
+
+        bool success = quickSlotContainer.UseItem(slotIndex, itemUser);
 
         if (!success)
         {
@@ -91,31 +89,37 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
 
-        ItemSlot slot = quickSlotContainer.GetSlot(_currentThrowingSlotIndex);
+        ItemSlot slot = quickSlotContainer.GetSlot(slotIndex);
         if (slot == null || slot.IsEmpty)
+        {
             weaponHolder.UnequipThrowingItem();
+        }
+        else
+        {
+            weaponHolder.UnequipThrowingItem();
+            if (slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.EquipThrowingItem(slotIndex, throwingData);
+                SetThrowingSlotIndex(slotIndex);
+            }
+        }
     }
 
     private void HandleThrowingInput()
     {
-        Debug.Log("%%%%  = 1");
         if (_currentGrenade == null) return;
-        Debug.Log("%%%%  = 2");
+
         var mouse = Mouse.current;
         if (mouse == null) return;
-        Debug.Log("%%%%  = 3");
+
         if (mouse.rightButton.isPressed)
         {
-            Debug.Log("%%%%  = 4");
             if (!_currentGrenade.IsAiming)
                 _currentGrenade.SetAim(true);
-            Debug.Log("%%%%  = 5");
+
             Vector3? targetPos = GetMouseWorldPosition();
             if (targetPos.HasValue)
-            {
-                Debug.Log($"%%%%  = 6, Target Position: {targetPos.Value}");
                 _currentGrenade.SetTarget(targetPos.Value);
-            }
         }
         else
         {
@@ -138,37 +142,49 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         {
             if (!keyboard[WeaponKeys[i]].wasPressedThisFrame) continue;
 
-            weaponHolder.UnequipThrowingItem();
-
-            ItemSlot slot = quickSlotContainer.GetSlot(i);
-            if (slot == null || slot.IsEmpty)
+            if (i == 0)
             {
-                weaponHolder.Unequip();
-                weaponHolder.UnequipMeleeWeapon();
-                return;
-            }
+                weaponHolder.UnequipThrowingItem();
 
-            if (slot.ItemData is ThrowingItemData throwingData)
-            {
-                weaponHolder.Unequip();
-                weaponHolder.UnequipMeleeWeapon();
-                weaponHolder.EquipThrowingItem(i, throwingData);
-                SetThrowingSlotIndex(i);
-                return;
-            }
-
-            if (slot.ItemData is WeaponItemData weaponData)
-            {
-                if (weaponData.Gun != null)
-                {
-                    weaponHolder.UnequipMeleeWeapon();
-                    weaponHolder.EquipWeapon(i, weaponData);
-                }
-                else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
+                ItemSlot slot = quickSlotContainer.GetSlot(0);
+                if (slot == null || slot.IsEmpty)
                 {
                     weaponHolder.Unequip();
-                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
-                    weaponHolder.EquipMeleeWeapon(i, weaponData, meleeWeapon);
+                    weaponHolder.UnequipMeleeWeapon();
+                    return;
+                }
+
+                if (slot.ItemData is WeaponItemData weaponData)
+                {
+                    if (weaponData.Gun != null)
+                    {
+                        weaponHolder.UnequipMeleeWeapon();
+                        weaponHolder.EquipWeapon(0, weaponData);
+                    }
+                    else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
+                    {
+                        weaponHolder.Unequip();
+                        MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
+                        weaponHolder.EquipMeleeWeapon(0, weaponData, meleeWeapon);
+                    }
+                }
+            }
+            else if (i == 1)
+            {
+                ItemSlot slot = quickSlotContainer.GetSlot(1);
+                if (slot == null || slot.IsEmpty)
+                {
+                    weaponHolder.UnequipThrowingItem();
+                    return;
+                }
+
+                if (slot.ItemData is ThrowingItemData throwingData)
+                {
+                    weaponHolder.Unequip();
+                    weaponHolder.UnequipMeleeWeapon();
+                    weaponHolder.UnequipThrowingItem();
+                    weaponHolder.EquipThrowingItem(1, throwingData);
+                    SetThrowingSlotIndex(1);
                 }
             }
             return;
@@ -191,15 +207,8 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
             weaponHolder.UnequipMeleeWeapon();
 
-            int slotIndex = 3 + i;
+            int slotIndex = 2 + i;
             ItemSlot slot = quickSlotContainer.GetSlot(slotIndex);
-
-            if (slot != null && slot.ItemData is ThrowingItemData throwingData)
-            {
-                weaponHolder.EquipThrowingItem(slotIndex, throwingData);
-                SetThrowingSlotIndex(slotIndex);
-                return;
-            }
 
             quickSlotContainer.UseItem(slotIndex, itemUser);
             return;

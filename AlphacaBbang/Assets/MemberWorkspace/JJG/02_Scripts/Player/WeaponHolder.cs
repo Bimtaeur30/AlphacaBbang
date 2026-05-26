@@ -73,6 +73,7 @@ public class WeaponHolder : MonoBehaviour
 
     private void OnQuickSlotChanged()
     {
+        Debug.Log("OnQuickSlotChanged 호출"); // ← 추가
         for (int i = 0; i < 2; i++)
         {
             ItemSlot slot = quickSlotContainer.GetSlot(i);
@@ -85,9 +86,9 @@ public class WeaponHolder : MonoBehaviour
 
             if (weapon != null)
             {
+                Debug.Log($"WeaponSlotEquipEvent 발생: {weapon.ItemName} → {slotIndex}"); // ← 추가
                 gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weapon.Gun, slotIndex));
                 equipmentContainer?.TryEquipWeapon(weapon, i);
-                Debug.Log($"[WeaponHolder] 슬롯 등록: {weapon.ItemName} → {slotIndex}");
             }
             else
             {
@@ -95,7 +96,6 @@ public class WeaponHolder : MonoBehaviour
             }
         }
     }
-
     public void EquipWeapon(int slotIndex, WeaponItemData weaponData)
     {
         if (CurrentSlotIndex == slotIndex && CurrentWeapon == weaponData)
@@ -112,18 +112,15 @@ public class WeaponHolder : MonoBehaviour
 
         if (slotIndex == 0)
         {
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, false));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weaponData.Gun, WeaponSlotIndex.First));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, true));
         }
         else if (slotIndex == 1)
         {
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, false));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weaponData.Gun, WeaponSlotIndex.Second));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.Second));
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, true));
         }
     }
-
     public void Unequip()
     {
         // 해제 전에 현재 슬롯 저장

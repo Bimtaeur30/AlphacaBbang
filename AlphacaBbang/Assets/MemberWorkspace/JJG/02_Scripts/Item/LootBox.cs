@@ -25,7 +25,6 @@ public class LootBox : MonoBehaviour
     public bool IsOpened => _isOpened;
 
     public void MarkAsOpened() => _isOpened = true;
-    public void MarkAsClosed() => _isOpened = false;
 
 #if UNITY_EDITOR
     private void OnValidate()

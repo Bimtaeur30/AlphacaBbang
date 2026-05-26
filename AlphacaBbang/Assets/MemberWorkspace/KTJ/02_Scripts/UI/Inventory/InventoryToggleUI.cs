@@ -19,7 +19,7 @@ public class InventoryToggleUI : MonoBehaviour
     private void Awake()
     {
         inventory = InventoryGroup.GetComponent<RectTransform>();
-        Debug.Assert(inventory != null, "�κ��丮 �׷쿡 RecTransform�� �������� �ʽ��ϴ�.");
+        Debug.Assert(inventory != null, " κ  丮  ׷쿡 RecTransform             ʽ  ϴ .");
 
         InventoryChannel.AddListener<InventoryToggleEvt>(HandleInventoryToggle);
     }
@@ -33,7 +33,7 @@ public class InventoryToggleUI : MonoBehaviour
         InventoryGroup.alpha = 0f;
         InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
     }
-    private void Update() // �׽�Ʈ �ڵ�
+    private void Update() //  ׽ Ʈ  ڵ 
     {
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
@@ -68,3 +68,4 @@ public class InventoryToggleUI : MonoBehaviour
         }
     }
 }
+

@@ -34,7 +34,9 @@ public class LootBoxInteractor : MonoBehaviour
     private void OnDestroy()
     {
         InventoryChannel.RemoveListener<InventoryToggleEvt>(HandleInventoryToggle);
+        systemChannel.RemoveListener<LootboxDataSendEvent>(HandleLootboxDataSendEvent); // 추가
     }
+
  
     private void HandleInventoryToggle(InventoryToggleEvt evt)
     {

@@ -18,7 +18,7 @@ public class GameEndUI : MonoBehaviour
     [SerializeField] private CanvasGroup successGroup;
     [SerializeField] private CanvasGroup failGroup;
     [SerializeField] private float TransitionDuration = 2.0f;
-    [SerializeField] private ItemContainer itemContainer;
+    [SerializeField] private InventoryContainer inventoryContainer;
     [SerializeField] private QuickSlotContainer quickSlotContainer;
     [SerializeField] private EquipmentContainer equipmentContainer;
     [SerializeField] bool isEnd = false;
@@ -47,26 +47,15 @@ public class GameEndUI : MonoBehaviour
         {
             failGroup.DOFade(1f, TransitionDuration);
             soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(failClip));
-            ClearAllEquipSlots();
-            ClearAllItemSlots();
-            ClearAllQuickSlots();
+            ClearAllOnDeath();
         }
         StartCoroutine(NextEndEffect());
     }
-    private void ClearAllItemSlots()
+    public void ClearAllOnDeath()
     {
-        for (int i = 0; i < itemContainer.SlotCount; i++)
-            itemContainer.ClearSlot(i);
-    }
-    private void ClearAllQuickSlots()
-    {
-        for (int i = 0; i < quickSlotContainer.SlotCount; i++)
-            quickSlotContainer.ClearSlot(i);
-    }
-    private void ClearAllEquipSlots()
-    {
-        for (int i = 0; i < equipmentContainer.SlotCount; i++)
-            equipmentContainer.ClearSlot(i);
+        inventoryContainer.ClearAllSlots();
+        quickSlotContainer.ClearAllSlots();
+        equipmentContainer.ClearAllSlots();
     }
     IEnumerator NextEndEffect()
     {

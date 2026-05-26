@@ -52,7 +52,7 @@ namespace JJH._02_Scripts.Agents
         private Tween _damageTween;
 
         private float _maxHealth;
-        private float _health;
+        [SerializeField] private float _health;
 
         public void Initialize(ModuleOwner owner)
         {

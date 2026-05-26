@@ -111,17 +111,35 @@ public class WeaponHolder : MonoBehaviour
         Debug.Log($"[WeaponHolder] 장착: {weaponData?.ItemName ?? "없음"} (슬롯 {slotIndex})");
 
         if (slotIndex == 0)
+        {
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, false));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, true));
+        }
         else if (slotIndex == 1)
+        {
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, false));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.Second));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, true));
+        }
     }
 
     public void Unequip()
     {
+        // 해제 전에 현재 슬롯 저장
+        int prevSlotIndex = CurrentSlotIndex;
+
         CurrentSlotIndex = -1;
         CurrentWeapon = null;
         OnWeaponChanged?.Invoke(null);
         OnWeaponRemoved?.Invoke();
+
+        // 해제 이벤트 발송
+        if (prevSlotIndex == 0)
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, false));
+        else if (prevSlotIndex == 1)
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, false));
+
         Debug.Log("[WeaponHolder] 무기 해제");
     }
 

@@ -32,7 +32,7 @@ public class BulletCountUI : MonoBehaviour
     private void HandleWeaponEquipEvent(WeaponSlotEquipEvent_UI @event)
     {
             if (@event.SlotIndex != index) return;
-            bulletCountLabel.gameObject.SetActive(true);
+            bulletCountLabel.gameObject.SetActive(@event.IsEquip);
             //aa.gameObject.SetActive(false);        //bulletText.text = "X";
     }
     private void HandleBulletCountChanged(BulletCountHandleEvent @event)

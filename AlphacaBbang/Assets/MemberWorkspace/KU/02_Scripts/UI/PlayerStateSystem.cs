@@ -106,14 +106,16 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
         if (_healthBar != null)
             _healthBar.size = evt.CurrentHealth / MaxHealth;
         if (_healthBar != null)
-            _healthText.text = $"{evt.CurrentHealth} / {MaxHealth}";
+        {
+            _healthText.text = $"{evt.CurrentHealth} /{MaxHealth}";
+        }
     }
     private void UpdateStaminaUI(float value)
     {
         if (_staminaBar != null)
             _staminaBar.size = value / MaxStamina;
         if (_healthBar != null)
-            _healthText.text = $"{value.ToString("F1")} / {MaxStamina}";
+            _staminaText.text = $"{value.ToString("F1")} / {MaxStamina}";
 
     }
     public bool CanRun()

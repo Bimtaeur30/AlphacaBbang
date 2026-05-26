@@ -321,10 +321,14 @@ public class InventoryContextMenu : MonoBehaviour
             if (eqSlot == null || eqSlot.slot.IsEmpty) continue;
             if (eqSlot.allowedEquipType != targetType) continue;
 
-            if (inventoryContainer != null)
-                inventoryContainer.AddItem(eqSlot.slot.ItemData, 1);
+            ItemData unequipItem = eqSlot.slot.ItemData;
 
-            equipmentContainer.Unequip(i);
+            // inventoryContainer를 직접 넘겨서 싱글톤 안 씀
+            equipmentContainer.UnequipArmor(i, inventoryContainer);
+
+            if (inventoryContainer != null)
+                inventoryContainer.AddItem(unequipItem, 1);
+
             break;
         }
 

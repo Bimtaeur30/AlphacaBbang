@@ -219,7 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JJH._02_Scripts.UIs.FollowWorldCanvas
   targetTrans: {fileID: 0}
   offset: {x: 0, y: 0.75, z: 0}
---- !u!1 &3425456609012448065
+--- !u!1 &2057465209336693078
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,23 +227,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2743632385811941975}
-  - component: {fileID: 3794967218925429299}
-  - component: {fileID: 457794600257064429}
+  - component: {fileID: 118621647922367480}
+  - component: {fileID: 6000353930455160468}
+  - component: {fileID: 7892480040632493252}
   m_Layer: 5
-  m_Name: DamageEffectImage
+  m_Name: DamageHitEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2743632385811941975
+--- !u!224 &118621647922367480
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3425456609012448065}
+  m_GameObject: {fileID: 2057465209336693078}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -251,26 +251,26 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6368783190050655057}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -0.004000053}
+  m_SizeDelta: {x: 13.8, y: 1.5}
   m_Pivot: {x: 0, y: 0.5}
---- !u!222 &3794967218925429299
+--- !u!222 &6000353930455160468
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3425456609012448065}
+  m_GameObject: {fileID: 2057465209336693078}
   m_CullTransparentMesh: 1
---- !u!114 &457794600257064429
+--- !u!114 &7892480040632493252
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3425456609012448065}
+  m_GameObject: {fileID: 2057465209336693078}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -415,7 +415,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MemberWorkspace.JJH._02_Scripts.Agents.AgentHealthModule
   slider: {fileID: 7085302070360574870}
-  damageEffectImage: {fileID: 457794600257064429}
+  damageEffectImage: {fileID: 6353350338798902824}
+  fillRect: {fileID: 7430711969324160731}
+  damageEffectRect: {fileID: 118621647922367480}
   damageFadeDelay: 0.15
   damageFadeDuration: 0.35
   hitSound: {fileID: 11400000, guid: db380658a9f318d4ab3ac9c195f9217a, type: 2}
@@ -523,8 +525,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 118621647922367480}
   - {fileID: 7430711969324160731}
-  - {fileID: 2743632385811941975}
   m_Father: {fileID: 3827863041867979875}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

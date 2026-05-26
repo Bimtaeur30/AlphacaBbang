@@ -8,10 +8,10 @@ namespace MemberWorkspace.CHG._02_Scripts
 {
     public struct ViewCastInfo
     {
-        public bool hit; //is hit?
-        public Vector3 point; //hit point
-        public float dst; // distance
-        public float angle; // shout angle
+        public bool hit;
+        public Vector3 point;
+        public float dst;
+        public float angle;
 
         public ViewCastInfo(bool hit, Vector3 point, float dst, float angle)
         {
@@ -22,7 +22,6 @@ namespace MemberWorkspace.CHG._02_Scripts
         }
     }
     
-    //find obstacle edge point
     public struct Edge
     {
         public Vector3 PointA, PointB;
@@ -41,12 +40,11 @@ namespace MemberWorkspace.CHG._02_Scripts
         [Range(0, 360f)]
         [SerializeField] private float viewAngle = 90f;
         
-
         [Header("layer")]
         [SerializeField] private LayerMask obstacleLayerMask;
 
         [Header("Mesh")]
-        public float meshResolution = 5f; //1 angle in ray count
+        public float meshResolution = 5f;
         public int edgeResolveIterations = 4;
         public float edgeDstThreshold = 0.5f;
         
@@ -56,19 +54,16 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         [Header("EnemyVisible")] 
         [SerializeField] private LayerMask enemyLayer;
-
         [SerializeField] private float checkDelay;
         
         private Mesh viewMesh;
         private Mesh circleMesh;
         private Collider[] _overlapResults = new Collider[50];
         private readonly HashSet<EnemyVisibility> _previousVisible = new();
-        [SerializeField] private float shadowOffset = 0.5f;
         
         public float ViewRadius => viewRadius;
         public float CloseViewRadius => closeViewRadius;
         public float ViewAngle => viewAngle;
-
         
         private IEnumerator Start()
         {
@@ -133,7 +128,6 @@ namespace MemberWorkspace.CHG._02_Scripts
             Vector3 toTarget = worldPosition - transform.position;
             float distance = toTarget.magnitude;
             
-            // close mesh
             if (distance <= closeViewRadius)
             {
                 bool blocked = Physics.Raycast(
@@ -144,7 +138,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 );
                 if (!blocked) return true;
             }
-            // con mesh
+            
             if (distance <= ViewRadius)
             {
                 float angle = Vector3.Angle(transform.forward, toTarget);
@@ -193,7 +187,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 prevViewCast = newViewCast;
             }
 
-            BuildMesh(viewMesh, viewPoints,0);
+            BuildMesh(viewMesh, viewPoints, 0f);
         }
         
         private void DrawCloseCircle()
@@ -211,8 +205,9 @@ namespace MemberWorkspace.CHG._02_Scripts
                 else
                     circlePoints.Add(transform.position + dir * closeViewRadius);
             }
-            BuildMesh(circleMesh, circlePoints,0);
+            BuildMesh(circleMesh, circlePoints, 0.01f);
         }
+        
         private void BuildMesh(Mesh mesh, List<Vector3> viewPoints, float height)
         {
             int count = viewPoints.Count;
@@ -239,46 +234,6 @@ namespace MemberWorkspace.CHG._02_Scripts
             mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
         }
-        
-        /*private void BuildMesh(Mesh mesh, List<Vector3> viewPoints)
-        {
-            float height = 3f; 
-            int count = viewPoints.Count;
-            int vertexCount = count * 2 + 2; 
-
-            Vector3[] vertices  = new Vector3[vertexCount];
-            List<int> triangles = new List<int>();
-
-            vertices[0] = Vector3.zero;
-            
-            vertices[0] = Vector3.zero;
-            vertices[1] = new Vector3(0, height, 0);
-
-            for (int i = 0; i < count; i++)
-            {
-                Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
-                vertices[2 + i * 2]     = p;                           
-                vertices[2 + i * 2 + 1] = new Vector3(p.x, height, p.z); 
-
-                if (i < count - 1)
-                {
-                    int a = 2 + i * 2;
-                    int b = 2 + i * 2 + 1;
-                    int c = 2 + (i + 1) * 2;
-                    int d = 2 + (i + 1) * 2 + 1;
-
-                    triangles.Add(0); triangles.Add(a); triangles.Add(c);
-                    triangles.Add(1); triangles.Add(d); triangles.Add(b);
-                    triangles.Add(a); triangles.Add(b); triangles.Add(c);
-                    triangles.Add(b); triangles.Add(d); triangles.Add(c);
-                }
-            }
-
-            mesh.Clear();
-            mesh.vertices  = vertices;
-            mesh.triangles = triangles.ToArray();
-            mesh.RecalculateNormals();
-        }*/
         
         private Edge FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
         {
@@ -316,11 +271,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 
             if (Physics.Raycast(transform.position, dir, out RaycastHit hit, ViewRadius, obstacleLayerMask))
             {
-                
-                Vector3 toHit = (hit.point - transform.position).normalized;
-                Vector3 adjustedPoint = hit.point - toHit * 0.1f;
-        
-                return new ViewCastInfo(true, adjustedPoint, hit.distance - 0.1f, globalAngle);
+                return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
             }
             else
             {
@@ -337,25 +288,5 @@ namespace MemberWorkspace.CHG._02_Scripts
                 Mathf.Sin((-angleDegrees + 90f) * Mathf.Deg2Rad)
             );
         }
-
-        /*private void RotateToMouse()
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-            {
-                Vector3 lookPoint = hit.point;
-                lookPoint.y = transform.position.y;
-                Vector3 dir = (lookPoint - transform.position).normalized;
-                if (dir.sqrMagnitude < 0.001f) return;
-
-                transform.rotation = Quaternion.Lerp(
-                    transform.rotation,
-                    Quaternion.LookRotation(dir),
-                    10f * Time.deltaTime
-                );
-            }
-        }*/
-        
-        
     }
 }

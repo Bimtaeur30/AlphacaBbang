@@ -105,7 +105,6 @@ public class PlayerController : Agent
 
     private void Update()
     {
-        HandleAimInput();
         HandleFootStep();
         UpdateAimState();
 
@@ -150,10 +149,8 @@ public class PlayerController : Agent
             _footStepTimer = walkSoundClip.clip.length;
         }
     }
-    private void HandleAimInput()
+    private void HandleAimInput(bool isPressed)
     {
-        bool isPressed = Mouse.current.rightButton.isPressed;
-
         if (_forceBlockAim)
             return;
 
@@ -490,10 +487,11 @@ public class PlayerController : Agent
 
     private void HandleAimKey(bool isPressed)
     {
+        HandleAimInput(isPressed);
         if (GunHandleModule == null)
             return;
 
-        // GunHandleModule.Aim(isPressed);
+        //GunHandleModule.Aim(isPressed);
     }
 
     private void HandleFireKey(bool isPressed)

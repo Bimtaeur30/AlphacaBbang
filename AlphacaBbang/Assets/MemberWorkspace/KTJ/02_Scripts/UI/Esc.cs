@@ -11,6 +11,7 @@ public class Esc : MonoBehaviour
     [SerializeField] private Button RestartBtn;
     [SerializeField] private Button SettingBtn;
     [SerializeField] private Button QuitBtn;
+    [SerializeField] private GameObject SettingUI;
 
     [SerializeField] SceneChangeManager sceneChangeManager;
 

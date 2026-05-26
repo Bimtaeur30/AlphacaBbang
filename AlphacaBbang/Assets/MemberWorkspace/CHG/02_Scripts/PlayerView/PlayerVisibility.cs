@@ -63,6 +63,7 @@ namespace MemberWorkspace.CHG._02_Scripts
         private Mesh circleMesh;
         private Collider[] _overlapResults = new Collider[50];
         private readonly HashSet<EnemyVisibility> _previousVisible = new();
+        [SerializeField] private float shadowOffset = 0.5f;
         
         public float ViewRadius => viewRadius;
         public float CloseViewRadius => closeViewRadius;
@@ -192,7 +193,7 @@ namespace MemberWorkspace.CHG._02_Scripts
                 prevViewCast = newViewCast;
             }
 
-            BuildMesh(viewMesh, viewPoints);
+            BuildMesh(viewMesh, viewPoints,0);
         }
         
         private void DrawCloseCircle()
@@ -210,10 +211,36 @@ namespace MemberWorkspace.CHG._02_Scripts
                 else
                     circlePoints.Add(transform.position + dir * closeViewRadius);
             }
-            BuildMesh(circleMesh, circlePoints);
+            BuildMesh(circleMesh, circlePoints,0);
         }
+        private void BuildMesh(Mesh mesh, List<Vector3> viewPoints, float height)
+        {
+            int count = viewPoints.Count;
+            Vector3[] vertices = new Vector3[count + 1];
+            List<int> triangles = new List<int>();
 
-        private void BuildMesh(Mesh mesh, List<Vector3> viewPoints)
+            vertices[0] = new Vector3(0, height, 0);
+
+            for (int i = 0; i < count; i++)
+            {
+                Vector3 p = transform.InverseTransformPoint(viewPoints[i]);
+                vertices[i + 1] = new Vector3(p.x, height, p.z);
+
+                if (i < count - 1) 
+                {
+                    triangles.Add(0);
+                    triangles.Add(i + 1);
+                    triangles.Add(i + 2);
+                }
+            }
+
+            mesh.Clear();
+            mesh.vertices = vertices;
+            mesh.triangles = triangles.ToArray();
+            mesh.RecalculateNormals();
+        }
+        
+        /*private void BuildMesh(Mesh mesh, List<Vector3> viewPoints)
         {
             float height = 3f; 
             int count = viewPoints.Count;
@@ -222,6 +249,8 @@ namespace MemberWorkspace.CHG._02_Scripts
             Vector3[] vertices  = new Vector3[vertexCount];
             List<int> triangles = new List<int>();
 
+            vertices[0] = Vector3.zero;
+            
             vertices[0] = Vector3.zero;
             vertices[1] = new Vector3(0, height, 0);
 
@@ -249,7 +278,7 @@ namespace MemberWorkspace.CHG._02_Scripts
             mesh.vertices  = vertices;
             mesh.triangles = triangles.ToArray();
             mesh.RecalculateNormals();
-        }
+        }*/
         
         private Edge FindEdge(ViewCastInfo minViewCast, ViewCastInfo maxViewCast)
         {
@@ -286,9 +315,17 @@ namespace MemberWorkspace.CHG._02_Scripts
             Vector3 dir = DirFromAngle(globalAngle, true);
 
             if (Physics.Raycast(transform.position, dir, out RaycastHit hit, ViewRadius, obstacleLayerMask))
-                return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
+            {
+                
+                Vector3 toHit = (hit.point - transform.position).normalized;
+                Vector3 adjustedPoint = hit.point - toHit * 0.1f;
+        
+                return new ViewCastInfo(true, adjustedPoint, hit.distance - 0.1f, globalAngle);
+            }
             else
+            {
                 return new ViewCastInfo(false, transform.position + dir * ViewRadius, ViewRadius, globalAngle);
+            }
         }
 
         public Vector3 DirFromAngle(float angleDegrees, bool angleIsGlobal)

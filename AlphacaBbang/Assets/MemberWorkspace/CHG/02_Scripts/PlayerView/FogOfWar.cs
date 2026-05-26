@@ -17,10 +17,16 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
         private Camera _mainCamera;
         private static readonly int MaskTexID = Shader.PropertyToID("_MaskTex");
         
+        private int _lastScreenWidth;
+        private int _lastScreenHeight;
+        
         private void Awake()
         {
             PlayerTransform   = player.transform;
             PlayerVisibility  = player.GetComponentInChildren<PlayerVisibility>();
+            
+            _lastScreenWidth = Screen.width;
+            _lastScreenHeight = Screen.height;
             
             MaskTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
             MaskTexture.depthStencilFormat = GraphicsFormat.D24_UNorm_S8_UInt;
@@ -45,13 +51,32 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerView
 
         private void LateUpdate()
         {
+            if (Screen.width != _lastScreenWidth || Screen.height != _lastScreenHeight)
+            {
+                RecreateRenderTexture();
+                _lastScreenWidth = Screen.width;
+                _lastScreenHeight = Screen.height;
+            }
+            
             SyncMaskCamera();
             maskCamera.Render();
             
             if (MaskTexture != null)
                 Shader.SetGlobalTexture(MaskTexID, MaskTexture);
         }
+        
+        private void RecreateRenderTexture()
+        {
+            if (MaskTexture != null)
+                MaskTexture.Release();
 
+            MaskTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.ARGB32);
+            MaskTexture.depthStencilFormat = GraphicsFormat.D24_UNorm_S8_UInt;
+            MaskTexture.Create();
+    
+            maskCamera.targetTexture = MaskTexture;
+        }
+        
         private void SyncMaskCamera()
         {
             maskCamera.transform.SetPositionAndRotation(

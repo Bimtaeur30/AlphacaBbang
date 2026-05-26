@@ -18,6 +18,7 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private void Awake()
         {
+            Debug.Log($"FogOfWarOverlay Awake: {gameObject.name}");
             _meshFilter = GetComponent<MeshFilter>();
             _renderer = GetComponent<MeshRenderer>();
 
@@ -54,6 +55,12 @@ namespace MemberWorkspace.CHG._02_Scripts
                 Vector3 pos = Camera.main.transform.position;
                 pos.y = y;
                 transform.position = pos;
+
+                float camHeight = Camera.main.transform.position.y - y;
+                float halfHeight = Mathf.Tan(Camera.main.fieldOfView * 0.5f * Mathf.Deg2Rad) * camHeight;
+                float halfWidth = halfHeight * Camera.main.aspect;
+        
+                transform.localScale = new Vector3(halfWidth * 2f / 10f, 1, halfHeight * 2f / 10f);
             }
         }
     }

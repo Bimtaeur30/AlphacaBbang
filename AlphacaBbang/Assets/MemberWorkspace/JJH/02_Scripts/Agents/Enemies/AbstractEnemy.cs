@@ -71,9 +71,12 @@ namespace JJH._02_Scripts.Agents.Enemies
             for (int i = 0; i < Renderer.Materials.Length; i++)
                 _originColors[i] = Renderer.Materials[i].color;
 
-            _btAgent = GetComponent<BehaviorGraphAgent>();
-            _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
-            _btAgent.SetVariableValue("Enemy", this);
+            if (_btAgent != null)
+            {
+                _btAgent = GetComponent<BehaviorGraphAgent>();
+                _btAgent.BlackboardReference.GetVariable("StateChannel", out _stateChannel);
+                _btAgent.SetVariableValue("Enemy", this);
+            }
 
             AgentEventChannel.AddListener<AgentDeadEvent>(HandkeEnemyDeadEvent);
             AgentEventChannel.AddListener<AgentHealthChangeEvent>(HandkeEnemyHealthChangeEvent);

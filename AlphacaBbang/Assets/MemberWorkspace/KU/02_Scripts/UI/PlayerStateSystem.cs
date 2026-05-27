@@ -4,67 +4,97 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 {
+    [Header("UI")]
     [SerializeField] private Scrollbar _healthBar;
     [SerializeField] private Scrollbar _staminaBar;
     [SerializeField] private TextMeshProUGUI _healthText;
     [SerializeField] private TextMeshProUGUI _staminaText;
+
+    [Header("Event Channel")]
     [SerializeField] private EventChannelSO systemChannel;
     [SerializeField] private EventChannelSO agentChannel;
 
-    public float MaxHealth = 100f;
+    [Header("Health")]
+    public float MaxHealth = 300f;
+
+    [SerializeField] private float currentHealth;
+    public float CurrentHealth => currentHealth;
+
+    [Header("Stamina")]
     public float MaxStamina = 10f;
-    public float CurrentStamina { get; private set; }
+
+    [SerializeField] private float currentStamina;
+    public float CurrentStamina => currentStamina;
 
     [SerializeField] private float _staminaDrainSpeed = 2f;
     [SerializeField] private float _staminaRegenSpeed = 1.5f;
+
     private PlayerController _controller;
+
     public bool IsRunning { get; private set; }
+
     public event Action<float> OnStaminaChanged;
 
     public PlayerSaveData SaveData { get; private set; }
 
+    private bool isDead = false;
+
     protected override void Awake()
     {
+        base.Awake();
+
         _controller = GetComponentInParent<PlayerController>();
         SaveData = GetComponentInParent<PlayerSaveData>();
 
         if (SaveData != null)
         {
-            MaxHealth = Mathf.Max(1, SaveData.MaxHealth);
-            _healthBar.size = MaxHealth / MaxHealth;
-            MaxStamina = Mathf.Max(1, SaveData.MaxStamina);
+            //MaxHealth = Mathf.Max(1, SaveData.MaxHealth);
+            //MaxStamina = Mathf.Max(1, SaveData.MaxStamina);
         }
 
-        CurrentStamina = MaxStamina;
+        currentHealth = MaxHealth;
+        currentStamina = MaxStamina;
 
         agentChannel.AddListener<AgentDeadEvent>(OnAgentDead);
         agentChannel.AddListener<AgentHealthChangeEvent>(UpdateHealthUI);
+
         OnStaminaChanged += UpdateStaminaUI;
+
+        UpdateHealthBar();
+        UpdateStaminaUI(currentStamina);
     }
 
     private void OnDestroy()
     {
         agentChannel.RemoveListener<AgentDeadEvent>(OnAgentDead);
         agentChannel.RemoveListener<AgentHealthChangeEvent>(UpdateHealthUI);
-        OnStaminaChanged -= UpdateStaminaUI;
-    }
 
-    bool isDead = false;
-    private void OnAgentDead(AgentDeadEvent evt)
-    {
-        if (evt.Agent == _controller && !isDead)
-        {
-            isDead = true;
-            systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
-            systemChannel.RaiseEvent(SystemEvents.SystemNotificationEvent.Init("사망", "인벤토리가 청산되었습니다."));
-        }
+        OnStaminaChanged -= UpdateStaminaUI;
     }
 
     private void Update()
     {
         UpdateStamina();
+    }
+
+    private void OnAgentDead(AgentDeadEvent evt)
+    {
+        if (evt.Agent == _controller && !isDead)
+        {
+            isDead = true;
+
+            systemChannel.RaiseEvent(SystemEvents.OnGameEnd.Init(false));
+
+            systemChannel.RaiseEvent(
+                SystemEvents.SystemNotificationEvent.Init(
+                    "사망",
+                    "인벤토리가 청산되었습니다."
+                )
+            );
+        }
     }
 
     public void TakeDamage(float damage)
@@ -84,43 +114,65 @@ public class PlayerStatSystem : MonoSingleton<PlayerStatSystem>
 
     private void UpdateStamina()
     {
-        if (IsRunning && CurrentStamina > 0f)
+        if (IsRunning && currentStamina > 0f)
         {
-            CurrentStamina -= _staminaDrainSpeed * Time.deltaTime;
-            if (CurrentStamina <= 0f)
+            currentStamina -= _staminaDrainSpeed * Time.deltaTime;
+
+            if (currentStamina <= 0f)
             {
-                CurrentStamina = 0f; IsRunning = false;
+                currentStamina = 0f;
+                IsRunning = false;
+
                 if (_controller != null)
                     _controller.RefreshMovementSpeed();
             }
         }
         else
         {
-            CurrentStamina += _staminaRegenSpeed * Time.deltaTime;
+            currentStamina += _staminaRegenSpeed * Time.deltaTime;
         }
-        CurrentStamina = Mathf.Clamp(CurrentStamina, 0, MaxStamina);
-        OnStaminaChanged?.Invoke(CurrentStamina);
+
+        currentStamina = Mathf.Clamp(currentStamina, 0f, MaxStamina);
+
+        OnStaminaChanged?.Invoke(currentStamina);
     }
+
     private void UpdateHealthUI(AgentHealthChangeEvent evt)
     {
-        if (_healthBar != null)
-            _healthBar.size = evt.CurrentHealth / MaxHealth;
+        currentHealth = evt.CurrentHealth;
+
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
         if (_healthBar != null)
         {
-            _healthText.text = $"{evt.CurrentHealth} /{MaxHealth}";
+            _healthBar.size = currentHealth / MaxHealth;
+        }
+
+        if (_healthText != null)
+        {
+            _healthText.text = $"{currentHealth:F0} / {MaxHealth:F0}";
         }
     }
+
     private void UpdateStaminaUI(float value)
     {
         if (_staminaBar != null)
+        {
             _staminaBar.size = value / MaxStamina;
-        if (_healthBar != null)
-            _staminaText.text = $"{value.ToString("F1")} / {MaxStamina}";
+        }
 
+        if (_staminaText != null)
+        {
+            _staminaText.text = $"{value:F1} / {MaxStamina:F1}";
+        }
     }
+
     public bool CanRun()
     {
-        return CurrentStamina > 0f;
+        return currentStamina > 0f;
     }
 
     [ContextMenu("테스트로 죽이기")]

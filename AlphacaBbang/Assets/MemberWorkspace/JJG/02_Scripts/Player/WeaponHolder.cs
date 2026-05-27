@@ -78,19 +78,20 @@ public class WeaponHolder : MonoBehaviour
             ItemSlot slot = quickSlotContainer.GetSlot(i);
             WeaponItemData weapon = slot?.ItemData as WeaponItemData;
 
-            if (weapon == _slotCache[i]) continue;
+            if (weapon == _slotCache[i]) continue; // ✅ 변경 없으면 완전히 스킵
             _slotCache[i] = weapon;
 
             WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
 
             if (weapon != null)
             {
+                // ✅ WeaponSlotEquipEvent만 발생, WeaponEquipEvent는 여기서 발생 안 함
                 gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weapon.Gun, slotIndex));
                 equipmentContainer?.TryEquipWeapon(weapon, i);
-                Debug.Log($"[WeaponHolder] 슬롯 등록: {weapon.ItemName} → {slotIndex}");
             }
             else
             {
+                gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex));
                 equipmentContainer?.UnequipWeapon(i);
             }
         }

@@ -171,37 +171,29 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         // 2번키 - 슬롯 1 (총/근접/투척)
         if (keyboard[WeaponKeys[1]].wasPressedThisFrame)
         {
+            weaponHolder.UnequipThrowingItem();
+
             ItemSlot slot = quickSlotContainer.GetSlot(1);
             if (slot == null || slot.IsEmpty)
             {
                 weaponHolder.Unequip();
                 weaponHolder.UnequipMeleeWeapon();
-                weaponHolder.UnequipThrowingItem();
                 return;
             }
 
-            if (slot.ItemData is WeaponItemData weaponData2)
+            if (slot.ItemData is WeaponItemData weaponData)
             {
-                weaponHolder.UnequipThrowingItem();
-                if (weaponData2.Gun != null)
+                if (weaponData.Gun != null)
                 {
                     weaponHolder.UnequipMeleeWeapon();
-                    weaponHolder.EquipWeapon(1, weaponData2);
+                    weaponHolder.EquipWeapon(1, weaponData);
                 }
-                else if (!string.IsNullOrEmpty(weaponData2.MeleeWeaponId))
+                else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
                 {
                     weaponHolder.Unequip();
-                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData2.MeleeWeaponId);
-                    weaponHolder.EquipMeleeWeapon(1, weaponData2, meleeWeapon);
+                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
+                    weaponHolder.EquipMeleeWeapon(1, weaponData, meleeWeapon);
                 }
-            }
-            else if (slot.ItemData is ThrowingItemData throwingData)
-            {
-                weaponHolder.Unequip();
-                weaponHolder.UnequipMeleeWeapon();
-                weaponHolder.UnequipThrowingItem();
-                weaponHolder.EquipThrowingItem(1, throwingData);
-                SetThrowingSlotIndex(1);
             }
             return;
         }

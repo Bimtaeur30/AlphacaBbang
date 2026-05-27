@@ -35,7 +35,6 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
             int result = Mathf.RoundToInt(t * 100f);
 
             volumeLabel.text = $"{result}";
-            volumeSlider.value = 0;
             muteToggle.isOn = false;
         }
 
@@ -59,10 +58,12 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         {
             _lastVolume = 0f;
             _currentVolume = 0f;
-            audioMixer.SetFloat(audioMixerParam, _lastVolume);
             _isMute = false;
+            audioMixer.SetFloat(audioMixerParam, _lastVolume);
             volumeLabel.text = $"{_lastVolume}";
             volumeSlider.value = _lastVolume;
+            muteToggle.isOn = false;
+            _isMute = false;
         }
 
         private void ChangeVolume(float volume)

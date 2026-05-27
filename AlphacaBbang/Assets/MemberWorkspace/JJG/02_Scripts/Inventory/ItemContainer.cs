@@ -282,13 +282,39 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         if (slot.IsEmpty)
             return false;
 
-        if (slot.Amount < amount)
+        ItemData itemData = slot.ItemData;
+
+        // 전체 보유량 확인
+        int totalAvailable = 0;
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (slots[i].IsEmpty || slots[i].ItemData != itemData) continue;
+            totalAvailable += slots[i].Amount;
+        }
+
+        if (totalAvailable < amount)
             return false;
 
-        slot.Amount -= amount;
-
+        // 지정 슬롯에서 먼저 제거
+        int remaining = amount;
+        int removeFromSlot = Mathf.Min(slot.Amount, remaining);
+        slot.Amount -= removeFromSlot;
+        remaining -= removeFromSlot;
         if (slot.Amount <= 0)
             slot.Clear();
+
+        // 부족하면 다른 슬롯에서 마저 제거
+        for (int i = 0; i < slots.Count && remaining > 0; i++)
+        {
+            if (i == index) continue;
+            if (slots[i].IsEmpty || slots[i].ItemData != itemData) continue;
+
+            int removeFromOther = Mathf.Min(slots[i].Amount, remaining);
+            slots[i].Amount -= removeFromOther;
+            remaining -= removeFromOther;
+            if (slots[i].Amount <= 0)
+                slots[i].Clear();
+        }
 
         NotifyContainerChanged();
         return true;

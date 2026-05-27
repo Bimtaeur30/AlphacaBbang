@@ -60,10 +60,12 @@ public class ItemContainer : MonoSingleton<ItemContainer>, IItemContainer, ISave
         return true;
     }
 
-    public void ClearAllSlots()
+    public virtual void ClearAllSlots()
     {
-        for (int i = 0; i < SlotCount; i++)
-            ClearSlot(i);
+        for (int i = 0; i < slots.Count; i++)
+            slots[i].Clear(); // ClearSlot() 대신 직접 Clear() → Compact() 안 탐
+
+        NotifyContainerChanged();
     }
 
     protected void InitializeSlots()

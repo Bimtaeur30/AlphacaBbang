@@ -149,13 +149,19 @@ public abstract class Gun : WeaponBase, IWeapon
         }
         else
         {
-            if (Magazine.TryReload(OnReloadEnd))
-            {
-                OnReloadStart();
-            }// 람다/Action 래핑 없이 직접 전달
-            StopFire(IsAiming);               // IsFiring = false
+            TryReload();
+           // IsFiring = false
             return false;
         }
+    }
+
+    public void TryReload()
+    {
+        if (Magazine.TryReload(OnReloadEnd))
+        {
+            OnReloadStart();
+        }// 람다/Action 래핑 없이 직접 전달
+        StopFire(IsAiming);
     }
 
     // 장전 시작 시 호출 (서브클래스 확장용)

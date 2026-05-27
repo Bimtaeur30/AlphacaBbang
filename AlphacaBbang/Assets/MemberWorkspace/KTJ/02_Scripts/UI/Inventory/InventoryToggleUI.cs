@@ -45,6 +45,7 @@ public class InventoryToggleUI : MonoBehaviour
             else if (_isOpen)
             {
                 InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
+                InventoryContextMenu.ForceClose();
                 _isOpen = false;
             }
         }

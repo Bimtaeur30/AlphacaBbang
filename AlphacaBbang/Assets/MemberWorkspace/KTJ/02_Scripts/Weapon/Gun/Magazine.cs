@@ -68,7 +68,7 @@ public class Magazine : MonoBehaviour
         return true;
     }
 
-    public bool TryReload(Action OnReloadEnd)
+    public bool TryReload(Action OnReloadEnd = null)
     {
         if (this == null || gameObject == null || !gameObject.activeInHierarchy)
             return false;

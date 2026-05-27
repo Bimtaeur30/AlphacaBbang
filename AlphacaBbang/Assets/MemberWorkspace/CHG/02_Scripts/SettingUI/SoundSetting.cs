@@ -31,7 +31,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         {
             volumeSlider.value = _lastVolume;
             
-            float t = Mathf.InverseLerp(-80f, 0f, _lastVolume);
+            float t = Mathf.InverseLerp(-40f, 0f, _lastVolume);
             int result = Mathf.RoundToInt(t * 100f);
 
             volumeLabel.text = $"{result}";
@@ -48,9 +48,14 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         public override void SettingData()
         {
             if (!_isMute)
-                audioMixer.SetFloat(audioMixerParam, _currentVolume);
+            {
+                if (Mathf.Approximately(_currentVolume, -40f))
+                    audioMixer.SetFloat(audioMixerParam, -80f);
+                else
+                    audioMixer.SetFloat(audioMixerParam, _currentVolume);
+            }
             else 
-                audioMixer.SetFloat(audioMixerParam, -80f);
+                audioMixer.SetFloat(audioMixerParam, -40f);
             _lastVolume = _currentVolume;
         }
 
@@ -69,7 +74,7 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         private void ChangeVolume(float volume)
         {
             _currentVolume = volume;
-            float t = Mathf.InverseLerp(-80f, 0f, volume);
+            float t = Mathf.InverseLerp(-40f, 0f, volume);
             int result = Mathf.RoundToInt(t * 100f);
 
             volumeLabel.text = $"{result}";

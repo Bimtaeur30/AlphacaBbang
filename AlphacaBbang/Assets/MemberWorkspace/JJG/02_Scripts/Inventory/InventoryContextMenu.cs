@@ -206,21 +206,8 @@ public class InventoryContextMenu : MonoBehaviour
         {
             if (weaponData.Gun != null)
             {
-                int targetSlotIndex = TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
-                
-                // 기존 퀵슬롯의 다른 무기 제거 이벤트 발송
-                for (int i = 0; i < 3; i++)
-                {
-                    if (i != targetSlotIndex)
-                    {
-                        ItemSlot otherSlot = quickSlotContainer.GetSlot(i);
-                        if (otherSlot != null && otherSlot.ItemData is WeaponItemData)
-                        {
-                            WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
-                            gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex, false));
-                        }
-                    }
-                }
+                // ✅ TryMoveToQuickSlotAndGetIndex만 호출, 이후 루프 삭제
+                TryMoveToQuickSlotAndGetIndex(itemData, minIndex: 0, maxIndex: 2);
             }
             else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
             {
@@ -232,51 +219,14 @@ public class InventoryContextMenu : MonoBehaviour
                 }
             }
         }
-        else if (itemData is ArmorItemData armorData)
+        else if (itemData is ArmorItemData)
         {
-            // if (equipmentContainer == null)
-            // {
-            //     Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
-            //     Close();
-            //     return;
-            // }
-            //
-            // Debug.Log("Equip Armor");
-            //
-            // int targetSlotIndex = -1;
-            // for (int i = 0; i < equipmentContainer.SlotCount; i++)
-            // {
-            //     if (!equipmentContainer.CanEquip(i, itemData))
-            //         continue;
-            //
-            //     EquipmentSlot equipSlot = equipmentContainer.GetEquipmentSlot(i);
-            //     if (equipSlot == null || !equipSlot.slot.IsEmpty)
-            //         continue;
-            //
-            //     targetSlotIndex = i;
-            //     break;
-            // }
-            //
-            // if (targetSlotIndex < 0)
-            // {
-            //     Debug.LogWarning("장착 가능한 빈 슬롯이 없습니다.");
-            //     Close();
-            //     return;
-            // }
-            //
-            // if (_container.UseItem(_slotIndex, itemUser))
-            // {
-            //     equipmentContainer.Equip(targetSlotIndex, itemData);
-            //     equipmentContainer.NotifyEquipmentChanged();
-            // }
-            
             if (equipmentContainer == null)
             {
                 Debug.LogWarning("EquipmentContainer가 연결되지 않았습니다.");
                 Close();
                 return;
             }
-
             equipmentContainer.TryEquipFromContainer(_container, _slotIndex);
         }
         else if (itemData is ThrowingItemData throwingData)

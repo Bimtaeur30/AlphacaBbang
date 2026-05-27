@@ -95,7 +95,7 @@ public class PlayerController : Agent
         UpdateColliderState();
 
         _saveData = GetComponent<PlayerSaveData>();
-        HealthModule.InitHealth(_saveData.MaxHealth);
+        HealthModule.InitHealth(_stat.MaxHealth);
 
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;

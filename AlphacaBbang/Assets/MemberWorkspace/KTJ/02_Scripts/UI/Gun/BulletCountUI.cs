@@ -7,7 +7,7 @@ public class BulletCountUI : MonoBehaviour
 {
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI bulletText;
-    [SerializeField] private GameObject bulletCountLabel; // toggle
+    [SerializeField] private CanvasGroup bulletCountLabel; // toggle
 
     [Header("System")]
     [SerializeField] private EventChannelSO uiChannel;
@@ -20,7 +20,7 @@ public class BulletCountUI : MonoBehaviour
     {
         gunChannel.AddListener<WeaponSlotEquipEvent_UI>(HandleWeaponEquipEvent);
         uiChannel.AddListener<BulletCountHandleEvent>(HandleBulletCountChanged);
-        bulletCountLabel.SetActive(false);
+        bulletCountLabel.alpha = 0;
     }
 
     private void OnDestroy()
@@ -31,9 +31,9 @@ public class BulletCountUI : MonoBehaviour
 
     private void HandleWeaponEquipEvent(WeaponSlotEquipEvent_UI @event)
     {
-            if (@event.SlotIndex != index) return;
-            bulletCountLabel.gameObject.SetActive(@event.IsEquip);
-            //aa.gameObject.SetActive(false);        //bulletText.text = "X";
+        if (@event.SlotIndex != index) return;
+        bulletCountLabel.alpha = @event.IsEquip ? 1 : 0;
+        //aa.gameObject.SetActive(false);        //bulletText.text = "X";
     }
     private void HandleBulletCountChanged(BulletCountHandleEvent @event)
     {

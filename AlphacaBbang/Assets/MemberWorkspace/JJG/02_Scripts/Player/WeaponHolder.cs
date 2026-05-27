@@ -73,29 +73,30 @@ public class WeaponHolder : MonoBehaviour
 
     private void OnQuickSlotChanged()
     {
-        Debug.Log("OnQuickSlotChanged 호출"); // ← 추가
         for (int i = 0; i < 2; i++)
         {
             ItemSlot slot = quickSlotContainer.GetSlot(i);
             WeaponItemData weapon = slot?.ItemData as WeaponItemData;
 
-            if (weapon == _slotCache[i]) continue;
+            if (weapon == _slotCache[i]) continue; // ✅ 변경 없으면 완전히 스킵
             _slotCache[i] = weapon;
 
             WeaponSlotIndex slotIndex = i == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
 
             if (weapon != null)
             {
-                Debug.Log($"WeaponSlotEquipEvent 발생: {weapon.ItemName} → {slotIndex}"); // ← 추가
+                // ✅ WeaponSlotEquipEvent만 발생, WeaponEquipEvent는 여기서 발생 안 함
                 gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weapon.Gun, slotIndex));
                 equipmentContainer?.TryEquipWeapon(weapon, i);
             }
             else
             {
+                gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, slotIndex));
                 equipmentContainer?.UnequipWeapon(i);
             }
         }
     }
+
     public void EquipWeapon(int slotIndex, WeaponItemData weaponData)
     {
         if (CurrentSlotIndex == slotIndex && CurrentWeapon == weaponData)
@@ -112,15 +113,18 @@ public class WeaponHolder : MonoBehaviour
 
         if (slotIndex == 0)
         {
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weaponData.Gun, WeaponSlotIndex.First));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, false));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, true));
         }
         else if (slotIndex == 1)
         {
-            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(weaponData.Gun, WeaponSlotIndex.Second));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.First, false));
             gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.Second));
+            gunChannel.RaiseEvent(GunEvents.WeaponSlotEquipEvent_UI.Init(null, WeaponSlotIndex.Second, true));
         }
     }
+
     public void Unequip()
     {
         // 해제 전에 현재 슬롯 저장

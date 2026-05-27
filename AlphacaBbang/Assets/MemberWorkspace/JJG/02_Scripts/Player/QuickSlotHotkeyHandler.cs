@@ -138,54 +138,70 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        for (int i = 0; i < WeaponKeys.Length; i++)
+        // 1번키 - 슬롯 0 (총/근접)
+        if (keyboard[WeaponKeys[0]].wasPressedThisFrame)
         {
-            if (!keyboard[WeaponKeys[i]].wasPressedThisFrame) continue;
+            weaponHolder.UnequipThrowingItem();
 
-            if (i == 0)
+            ItemSlot slot = quickSlotContainer.GetSlot(0);
+            if (slot == null || slot.IsEmpty)
             {
-                weaponHolder.UnequipThrowingItem();
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                return;
+            }
 
-                ItemSlot slot = quickSlotContainer.GetSlot(0);
-                if (slot == null || slot.IsEmpty)
+            if (slot.ItemData is WeaponItemData weaponData)
+            {
+                if (weaponData.Gun != null)
+                {
+                    weaponHolder.UnequipMeleeWeapon();
+                    weaponHolder.EquipWeapon(0, weaponData);
+                }
+                else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
                 {
                     weaponHolder.Unequip();
-                    weaponHolder.UnequipMeleeWeapon();
-                    return;
-                }
-
-                if (slot.ItemData is WeaponItemData weaponData)
-                {
-                    if (weaponData.Gun != null)
-                    {
-                        weaponHolder.UnequipMeleeWeapon();
-                        weaponHolder.EquipWeapon(0, weaponData);
-                    }
-                    else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
-                    {
-                        weaponHolder.Unequip();
-                        MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
-                        weaponHolder.EquipMeleeWeapon(0, weaponData, meleeWeapon);
-                    }
+                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
+                    weaponHolder.EquipMeleeWeapon(0, weaponData, meleeWeapon);
                 }
             }
-            else if (i == 1)
-            {
-                ItemSlot slot = quickSlotContainer.GetSlot(1);
-                if (slot == null || slot.IsEmpty)
-                {
-                    weaponHolder.UnequipThrowingItem();
-                    return;
-                }
+            return;
+        }
 
-                if (slot.ItemData is ThrowingItemData throwingData)
+        // 2번키 - 슬롯 1 (총/근접/투척)
+        if (keyboard[WeaponKeys[1]].wasPressedThisFrame)
+        {
+            ItemSlot slot = quickSlotContainer.GetSlot(1);
+            if (slot == null || slot.IsEmpty)
+            {
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                weaponHolder.UnequipThrowingItem();
+                return;
+            }
+
+            if (slot.ItemData is WeaponItemData weaponData2)
+            {
+                weaponHolder.UnequipThrowingItem();
+                if (weaponData2.Gun != null)
+                {
+                    weaponHolder.UnequipMeleeWeapon();
+                    weaponHolder.EquipWeapon(1, weaponData2);
+                }
+                else if (!string.IsNullOrEmpty(weaponData2.MeleeWeaponId))
                 {
                     weaponHolder.Unequip();
-                    weaponHolder.UnequipMeleeWeapon();
-                    weaponHolder.UnequipThrowingItem();
-                    weaponHolder.EquipThrowingItem(1, throwingData);
-                    SetThrowingSlotIndex(1);
+                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData2.MeleeWeaponId);
+                    weaponHolder.EquipMeleeWeapon(1, weaponData2, meleeWeapon);
                 }
+            }
+            else if (slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                weaponHolder.UnequipThrowingItem();
+                weaponHolder.EquipThrowingItem(1, throwingData);
+                SetThrowingSlotIndex(1);
             }
             return;
         }

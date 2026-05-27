@@ -32,6 +32,12 @@ public class InventoryContextMenu : MonoBehaviour
             _openHandled = false;
         }
     }
+    
+    public static void ForceClose()
+    {
+        CloseCurrent();
+        _openHandled = false;
+    }
 
     private static void CloseCurrent()
     {
@@ -354,6 +360,33 @@ public class InventoryContextMenu : MonoBehaviour
             Debug.LogWarning("창고가 가득 찼습니다.");
 
         Close();
+    }
+    
+    public static void RetrieveToInventory(ItemContainer container, int slotIndex)
+    {
+        // 현재 열린 인스턴스에서 inventoryContainer 참조
+        if (_currentOpenMenu == null)
+        {
+            // 인스턴스 찾기
+            var menu = FindFirstObjectByType<InventoryContextMenu>();
+            if (menu != null)
+                menu.RetrieveItem(container, slotIndex);
+        }
+        else
+        {
+            _currentOpenMenu.RetrieveItem(container, slotIndex);
+        }
+    }
+
+    private void RetrieveItem(ItemContainer container, int slotIndex)
+    {
+        ItemSlot slot = container.GetSlot(slotIndex);
+        if (slot == null || slot.IsEmpty || inventoryContainer == null) return;
+
+        if (inventoryContainer.AddItem(slot.ItemData, slot.Amount))
+            container.ClearSlot(slotIndex);
+        else
+            Debug.LogWarning("인벤토리가 가득 찼습니다.");
     }
 
     private void OnClickRetrieve()

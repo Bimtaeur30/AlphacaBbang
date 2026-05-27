@@ -184,13 +184,19 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         if (_container == null)
             return;
-        
+
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             ItemSlot slot = _container.GetSlot(_slotIndex);
-
             if (slot == null || slot.IsEmpty)
                 return;
+
+            // LootBox면 바로 인벤토리로 가져오기
+            if (_container is LootBoxContainer)
+            {
+                InventoryContextMenu.RetrieveToInventory(_container, _slotIndex);
+                return;
+            }
 
             InventoryContextMenu.Open(
                 _container,

@@ -10,10 +10,11 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
     [SerializeField] private GameObject itemUser;
     [SerializeField] private AgentAttack agentAttack;
     [SerializeField] private PlayerGunHandleModule playerGunHandleModule;
-    [SerializeField] private Transform grenadeHoldParent; // 방법 2: 인스펙터에서 직접 연결
+    [SerializeField] private Transform grenadeHoldParent;
 
-    private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2, Key.Digit3 };
-    private static readonly Key[] ItemKeys = { Key.Digit4, Key.Digit5, Key.Digit6, Key.Digit7 };
+    // 슬롯 0: 무기, 슬롯 1: 수류탄
+    private static readonly Key[] WeaponKeys = { Key.Digit1, Key.Digit2 };
+    private static readonly Key[] ItemKeys = { Key.Digit3, Key.Digit4, Key.Digit5, Key.Digit6 };
 
     private int _currentThrowingSlotIndex = -1;
     private GrenadeBehavior _currentGrenade;
@@ -45,12 +46,10 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
     private void OnThrowingItemChanged(ThrowingItemData throwingData)
     {
-        // 기존 수류탄 정리
         if (_currentGrenade != null)
         {
             _currentGrenade.OnFired -= HandleOnFired;
-            if (_currentGrenade != null)
-                Destroy(_currentGrenade.gameObject);
+            Destroy(_currentGrenade.gameObject);
             _currentGrenade = null;
         }
 
@@ -66,7 +65,6 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
 
-        // 본체 Instantiate → grenadeHoldParent에 배치
         GrenadeBehavior grenade = Instantiate(
             throwingData.GrenadeBehaviorPrefab,
             grenadeHoldParent.position,
@@ -75,15 +73,15 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         );
 
         grenade.Setup(throwingData.Grenade);
-        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 생성: {grenade.name} at {grenade.transform.position}");
         _currentGrenade = grenade;
-        Debug.Log($"[QuickSlotHotkeyHandler] 수류탄 설정 완료: {grenade.name} with GrenadeSO {throwingData.Grenade.name}");
         _currentGrenade.OnFired += HandleOnFired;
     }
 
     private void HandleOnFired()
     {
-        bool success = quickSlotContainer.UseItem(_currentThrowingSlotIndex, itemUser);
+        int slotIndex = _currentThrowingSlotIndex;
+
+        bool success = quickSlotContainer.UseItem(slotIndex, itemUser);
 
         if (!success)
         {
@@ -91,31 +89,37 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
             return;
         }
 
-        ItemSlot slot = quickSlotContainer.GetSlot(_currentThrowingSlotIndex);
+        ItemSlot slot = quickSlotContainer.GetSlot(slotIndex);
         if (slot == null || slot.IsEmpty)
+        {
             weaponHolder.UnequipThrowingItem();
+        }
+        else
+        {
+            weaponHolder.UnequipThrowingItem();
+            if (slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.EquipThrowingItem(slotIndex, throwingData);
+                SetThrowingSlotIndex(slotIndex);
+            }
+        }
     }
 
     private void HandleThrowingInput()
     {
-        Debug.Log("%%%%  = 1");
         if (_currentGrenade == null) return;
-        Debug.Log("%%%%  = 2");
+
         var mouse = Mouse.current;
         if (mouse == null) return;
-        Debug.Log("%%%%  = 3");
+
         if (mouse.rightButton.isPressed)
         {
-            Debug.Log("%%%%  = 4");
             if (!_currentGrenade.IsAiming)
                 _currentGrenade.SetAim(true);
-            Debug.Log("%%%%  = 5");
+
             Vector3? targetPos = GetMouseWorldPosition();
             if (targetPos.HasValue)
-            {
-                Debug.Log($"%%%%  = 6, Target Position: {targetPos.Value}");
                 _currentGrenade.SetTarget(targetPos.Value);
-            }
         }
         else
         {
@@ -134,26 +138,16 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        for (int i = 0; i < WeaponKeys.Length; i++)
+        // 1번키 - 슬롯 0 (총/근접)
+        if (keyboard[WeaponKeys[0]].wasPressedThisFrame)
         {
-            if (!keyboard[WeaponKeys[i]].wasPressedThisFrame) continue;
-
             weaponHolder.UnequipThrowingItem();
 
-            ItemSlot slot = quickSlotContainer.GetSlot(i);
+            ItemSlot slot = quickSlotContainer.GetSlot(0);
             if (slot == null || slot.IsEmpty)
             {
                 weaponHolder.Unequip();
                 weaponHolder.UnequipMeleeWeapon();
-                return;
-            }
-
-            if (slot.ItemData is ThrowingItemData throwingData)
-            {
-                weaponHolder.Unequip();
-                weaponHolder.UnequipMeleeWeapon();
-                weaponHolder.EquipThrowingItem(i, throwingData);
-                SetThrowingSlotIndex(i);
                 return;
             }
 
@@ -162,14 +156,52 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
                 if (weaponData.Gun != null)
                 {
                     weaponHolder.UnequipMeleeWeapon();
-                    weaponHolder.EquipWeapon(i, weaponData);
+                    weaponHolder.EquipWeapon(0, weaponData);
                 }
                 else if (!string.IsNullOrEmpty(weaponData.MeleeWeaponId))
                 {
                     weaponHolder.Unequip();
                     MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData.MeleeWeaponId);
-                    weaponHolder.EquipMeleeWeapon(i, weaponData, meleeWeapon);
+                    weaponHolder.EquipMeleeWeapon(0, weaponData, meleeWeapon);
                 }
+            }
+            return;
+        }
+
+        // 2번키 - 슬롯 1 (총/근접/투척)
+        if (keyboard[WeaponKeys[1]].wasPressedThisFrame)
+        {
+            ItemSlot slot = quickSlotContainer.GetSlot(1);
+            if (slot == null || slot.IsEmpty)
+            {
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                weaponHolder.UnequipThrowingItem();
+                return;
+            }
+
+            if (slot.ItemData is WeaponItemData weaponData2)
+            {
+                weaponHolder.UnequipThrowingItem();
+                if (weaponData2.Gun != null)
+                {
+                    weaponHolder.UnequipMeleeWeapon();
+                    weaponHolder.EquipWeapon(1, weaponData2);
+                }
+                else if (!string.IsNullOrEmpty(weaponData2.MeleeWeaponId))
+                {
+                    weaponHolder.Unequip();
+                    MeleeWeaponBase meleeWeapon = weaponHolder.FindMeleeWeapon(weaponData2.MeleeWeaponId);
+                    weaponHolder.EquipMeleeWeapon(1, weaponData2, meleeWeapon);
+                }
+            }
+            else if (slot.ItemData is ThrowingItemData throwingData)
+            {
+                weaponHolder.Unequip();
+                weaponHolder.UnequipMeleeWeapon();
+                weaponHolder.UnequipThrowingItem();
+                weaponHolder.EquipThrowingItem(1, throwingData);
+                SetThrowingSlotIndex(1);
             }
             return;
         }
@@ -191,15 +223,8 @@ public class QuickSlotHotkeyHandler : MonoBehaviour
 
             weaponHolder.UnequipMeleeWeapon();
 
-            int slotIndex = 3 + i;
+            int slotIndex = 2 + i;
             ItemSlot slot = quickSlotContainer.GetSlot(slotIndex);
-
-            if (slot != null && slot.ItemData is ThrowingItemData throwingData)
-            {
-                weaponHolder.EquipThrowingItem(slotIndex, throwingData);
-                SetThrowingSlotIndex(slotIndex);
-                return;
-            }
 
             quickSlotContainer.UseItem(slotIndex, itemUser);
             return;

@@ -79,7 +79,6 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
 
         OnFired?.Invoke();
 
-        // 본체 삭제 전에 폭탄 발사 정보를 넘겨줌
         GrenadeProjectileLauncher.Launch(_grenadeSO, spawnPos, targetPos, firingAngle, gravity, this);
 
         Destroy(gameObject);
@@ -93,7 +92,7 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
 
         _targetWorldPos = startPoint.position + dir;
 
-        DrawTrajectory(_targetWorldPos); // targetPoint 관계없이 바로 그리기
+        DrawTrajectory(_targetWorldPos);
     }
 
     private void Update()
@@ -103,11 +102,12 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
         else if (lineRenderer != null)
             lineRenderer.positionCount = 0;
     }
+
     private void DrawTrajectory(Vector3 targetPos)
     {
         if (lineRenderer == null) return;
 
-        lineRenderer.useWorldSpace = true; // 원복
+        lineRenderer.useWorldSpace = true;
 
         Vector3 direction = (targetPos - startPoint.position);
         direction.y = 0;
@@ -138,7 +138,6 @@ public abstract class GrenadeBehavior : WeaponBase, IWeapon
             Vector3 point = startPoint.position
                             + velocityVector * t
                             + Vector3.down * (0.5f * gravity * t * t);
-
             lineRenderer.SetPosition(i, point);
         }
     }

@@ -22,6 +22,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             RefreshItemTexts(statViews, inventory);
             RefreshStatUIs(statViews, saveData);
             RefreshGoldTexts(saveData, needGold);
+            
+            Debug.Log("Save Data test: " + saveData.MaxHealth);
         }
 
         public void RefreshItemTexts(PlayerStatStruct[] statViews, InventoryContainer inventory)

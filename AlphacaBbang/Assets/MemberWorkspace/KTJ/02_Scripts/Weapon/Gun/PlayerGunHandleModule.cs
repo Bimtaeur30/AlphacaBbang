@@ -6,6 +6,7 @@ using Reflex.Core;
 using Reflex.Injectors;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
 {
@@ -54,6 +55,18 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
         // �������
     }
 
+    private void Update()
+    {
+        if (Keyboard.current.rKey.wasPressedThisFrame)
+        {
+            if (CurrentWeapon is Gun)
+            {
+                Gun gun = CurrentWeapon as Gun;
+                gun.TryReload();
+            }
+        }
+    }
+
     //private void HandleWeaponDropEvent(WeaponDropEvent @event)
     //{
     //    Transform gunParent = gunHoldParent_1;
@@ -75,8 +88,6 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
         base.SetCurrentGun(gun);
         gunChannel.RaiseEvent(GunEvents.WeaponEquipDataEvent.Init(CurrentWeapon.WeaponData));
     }
-
-
 
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
     {

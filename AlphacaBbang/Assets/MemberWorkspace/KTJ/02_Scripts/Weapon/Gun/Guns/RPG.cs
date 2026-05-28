@@ -21,7 +21,7 @@ public class RPG : Gun
             Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180, 0)
         );
 
-        warHead.Fire(direction, 30f);
+        warHead.Fire(direction, 30f, WeaponData.Damage);
 
         OnFire(origin, direction);
     }

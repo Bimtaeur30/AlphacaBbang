@@ -112,6 +112,7 @@ public class PlayerController : Agent
             return;
 
         _isCanMoving = !evt.IsStop;
+        Debug.Log("무빙ㅇ이이이잉잉"+_isCanMoving);
 
         if (!_isCanMoving)
         {
@@ -239,8 +240,8 @@ public class PlayerController : Agent
     {
         if (!_isCanMoving)
         {
-            _movementInput = Vector2.zero;
-            Movement.SetMovementDirection(Vector2.zero);
+            // _movementInput = Vector2.zero;
+            // Movement.SetMovementDirection(Vector2.zero);
             return;
         }
 

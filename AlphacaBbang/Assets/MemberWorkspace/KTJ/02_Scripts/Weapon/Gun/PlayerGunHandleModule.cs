@@ -91,18 +91,17 @@ public class PlayerGunHandleModule : WeaponHandleModule, IAfterInitModule
 
     private void HandleWeaponEquipEvent(WeaponEquipEvent @event)
     {
-        Debug.Log($"HandleWeaponEquipEvent 호출: {@event.SlotIndex}, firstSlotGun: {firstSlotGun}"); // ← 추가
         switch (@event.SlotIndex)
         {
             case WeaponSlotIndex.First:
                 if (firstSlotGun == null) return;
+                currentGunIndex = WeaponSlotIndex.First; // ✅ 추가
                 SetCurrentGun(firstSlotGun);
                 break;
             case WeaponSlotIndex.Second:
                 if (secondSlotGun == null) return;
-                SetCurrentGun(secondSlotGun);
                 currentGunIndex = WeaponSlotIndex.Second;
-                //gunChannel.RaiseEvent(GunEvents.WeaponEquipEvent.Init(WeaponSlotIndex.First, false));
+                SetCurrentGun(secondSlotGun);
                 break;
         }
     }

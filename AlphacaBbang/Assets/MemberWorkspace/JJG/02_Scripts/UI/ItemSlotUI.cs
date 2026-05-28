@@ -1,4 +1,5 @@
 using TMPro;
+using MemberWorkspace.JJG._02_Scripts.Item;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -191,10 +192,11 @@ public class ItemSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             if (slot == null || slot.IsEmpty)
                 return;
 
-            // LootBox면 바로 인벤토리로 가져오기
-            if (_container is LootBoxContainer)
+            // LootBox나 Storage면 바로 인벤토리로 가져오기
+            if (_container is LootBoxContainer || _container.ContainerType == ContainerType.Storage)
             {
                 InventoryContextMenu.RetrieveToInventory(_container, _slotIndex);
+                ItemTooltip.Instance?.Hide();
                 return;
             }
 

@@ -10,6 +10,11 @@ public class QuickSlotUI : MonoBehaviour
     
     private QuickSlotContainer _quickSlotContainer;
 
+    private void Awake()
+    {
+        _quickSlotContainer = GetComponent<QuickSlotContainer>();
+    }
+
     private void OnEnable()
     {
         if (_quickSlotContainer != null)
@@ -24,8 +29,6 @@ public class QuickSlotUI : MonoBehaviour
 
     private void Start()
     {
-        _quickSlotContainer = GetComponent<QuickSlotContainer>();
-        
         RefreshUI();
     }
 

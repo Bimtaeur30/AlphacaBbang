@@ -39,7 +39,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             for (int i = 0; i < _statViews.Length; i++)
                 _statViews[i].statType = (PlayerStatType)i;
         }
-
+    
         public void UIRefresh()
         {
             _uiRefresher.RefreshAll(_statViews, inventory, _playerSaveData, needGold);
@@ -49,7 +49,6 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
         {
             PlayerStatType type = (PlayerStatType)index;
             PlayerStatStruct pStruct = _statViews[index];
-
             if (inventory.GetItemCount(pStruct.needItem) < pStruct.needItemCount)
             {
                 Debug.Log("Item이 부족합니다.");
@@ -60,6 +59,8 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
             int cur = (int)GetCurrentStatValue(type);
             int next = cur + _statViews[index].statUpValue;
 
+            Debug.Log("현재 스텟: " + cur + " 강화 스텟: " + next);
+            
             switch (type)
             {
                 case PlayerStatType.Health:
@@ -86,7 +87,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PlayerStat
 
             _statViews[index].needItemCount += _statViews[index].needValueIncrease;
 
-            _uiRefresher.RefreshAll(_statViews, inventory, _playerSaveData, needGold);
+            UIRefresh();
         }
 
         private float GetCurrentStatValue(PlayerStatType type) => type switch

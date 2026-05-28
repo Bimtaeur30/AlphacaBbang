@@ -44,11 +44,12 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
                 itemUI.itemImage.sprite = itemData.Icon;
                 itemUI.itemName.text = itemData.ItemName;
                 itemChoiceBtns.Add(itemUI);
-                itemUI.btn.onClick.AddListener(() => ChangeContent(itemData));
+                itemUI.btn.onClick.AddListener(() => SetCurrentContent(itemData));
             }
             //inventory = FindFirstObjectByType<InventoryContainer>();
-            ChangeContent(itemChoiceBtns[0].SaleItemDataSO);
             itemCountSlider.onValueChanged.AddListener(OnSliderValueChange);
+            //SetCurrentContent(itemChoiceBtns[0].SaleItemDataSO);
+            _curItemData = itemChoiceBtns[0].SaleItemDataSO;
         }
 
         private void OnDestroy()
@@ -56,26 +57,26 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             itemCountSlider.onValueChanged.RemoveAllListeners();
         }
 
-        public void FirstChangeContent()
-        {
-            ChangeContent(_curItemData);
-        }
-
         private void OnSliderValueChange(float value)
         {
             sliderValueText.text = ((int)value).ToString();
         }
 
-        private void ChangeContent(CountableItemData itemData)
+        private void SetCurrentContent(CountableItemData itemData)
         {
             _curItemData = itemData;
-            itemImage.sprite = itemData.Icon;
-            itemNameText.text = itemData.ItemName;
-            itemGradeText.text = itemData.GradeType.ToString();
-            itemPriceText.text = GetPrice(itemData).ToString();
-            itemDescriptionText.text = itemData.description;
+            ChangeContent();
+        }
+        
+        public void ChangeContent()
+        {
+            itemImage.sprite = _curItemData.Icon;
+            itemNameText.text = _curItemData.ItemName;
+            itemGradeText.text = _curItemData.GradeType.ToString();
+            itemPriceText.text = GetPrice(_curItemData).ToString();
+            itemDescriptionText.text = _curItemData.description;
             currentGoldText.text = PlayerStatSystem.Instance.SaveData.Gold.ToString();
-            int itemCount = inventory.GetItemCount(itemData);
+            int itemCount = inventory.GetItemCount(_curItemData);
             itemCountText.text = itemCount.ToString();
             itemCountSlider.maxValue = itemCount;
             itemCountSlider.value = 0;
@@ -90,7 +91,7 @@ namespace MemberWorkspace.CHG._02_Scripts.PawnShop
             AddGold evt = new AddGold();
             evt.Init(GetPrice(_curItemData) * (int)itemCountSlider.value);
             AddGoldChannel.RaiseEvent(evt);
-            ChangeContent(_curItemData);
+            ChangeContent();
         }
 
         [ContextMenu("ADDItem")]

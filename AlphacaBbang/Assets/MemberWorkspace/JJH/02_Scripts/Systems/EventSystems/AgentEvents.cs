@@ -8,7 +8,9 @@ namespace JJH._02_Scripts.Systems.EventSystems
     {
         public static readonly AgentDeadEvent AgentDeadEvent = new AgentDeadEvent();
         public static readonly AgentHealthChangeEvent AgentHealthChangeEvent = new AgentHealthChangeEvent();
+        public static readonly AgentStaminaChangeEvent agentStaminaChangeEvent = new AgentStaminaChangeEvent();
         public static readonly AgentArmorEquip AgentArmorEquip = new AgentArmorEquip();
+        public static readonly AgentStopMoveEvent AgentStopMoveEvent = new AgentStopMoveEvent();
     }
 
     public class AgentDeadEvent : GameEvent
@@ -63,6 +65,18 @@ namespace JJH._02_Scripts.Systems.EventSystems
         {
             Agent = agent;
             Armors = armors;
+            return this;
+        }
+    }
+    public class AgentStopMoveEvent : GameEvent
+    {
+        public Agent Agent { get; private set; }
+        public bool IsStop { get; private set; }
+
+        public AgentStopMoveEvent Init(Agent agent, bool isStop)
+        {
+            Agent = agent;
+            IsStop = isStop;
             return this;
         }
     }

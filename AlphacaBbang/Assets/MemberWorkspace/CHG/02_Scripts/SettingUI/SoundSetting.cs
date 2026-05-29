@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -14,8 +15,9 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         [SerializeField] private Slider volumeSlider;
         [SerializeField] private Toggle muteToggle;
 
-        private string UpperParam;
-        private float _lastVolume;
+        private static readonly Dictionary<string, float> _savedVolumes = new();
+        private static readonly Dictionary<string, bool> _savedMutes = new();
+
         private float _currentVolume;
         private bool _isMute;
 
@@ -23,59 +25,115 @@ namespace MemberWorkspace.CHG._02_Scripts.SettingUI
         {
             volumeSlider.onValueChanged.AddListener(ChangeVolume);
             muteToggle.onValueChanged.AddListener(Mute);
-            UpperParam = audioMixerParam.ToUpper();
             ResetData();
         }
-        
+
         public override void OnEnable()
         {
-            volumeSlider.value = _lastVolume;
-            
-            float t = Mathf.InverseLerp(-80f, 0f, _lastVolume);
-            int result = Mathf.RoundToInt(t * 100f);
+            float savedVolume = GetSavedVolume();
 
-            volumeLabel.text = $"{result}";
-            muteToggle.isOn = false;
+            volumeSlider.onValueChanged.RemoveListener(ChangeVolume);
+            volumeSlider.value = savedVolume;
+            volumeSlider.onValueChanged.AddListener(ChangeVolume);
+
+            _currentVolume = savedVolume;
+            _isMute = GetSavedMute();
+
+            muteToggle.onValueChanged.RemoveListener(Mute);
+            muteToggle.isOn = _isMute;
+            muteToggle.onValueChanged.AddListener(Mute);
+
+            UpdateLabel(savedVolume);
         }
 
         private void OnDestroy()
         {
             volumeSlider.onValueChanged.RemoveListener(ChangeVolume);
             muteToggle.onValueChanged.RemoveListener(Mute);
-            
         }
 
         public override void SettingData()
         {
-            if (!_isMute)
-                audioMixer.SetFloat(audioMixerParam, _currentVolume);
-            else 
-                audioMixer.SetFloat(audioMixerParam, -80f);
-            _lastVolume = _currentVolume;
+            float mixerValue;
+
+            if (_isMute)
+            {
+                mixerValue = -80f;
+            }
+            else if (Mathf.Approximately(_currentVolume, -40f))
+            {
+                mixerValue = -80f; 
+            }
+            else
+            {
+                mixerValue = _currentVolume;
+            }
+
+            audioMixer.SetFloat(audioMixerParam, mixerValue);
+
+            _savedVolumes[audioMixerParam] = _currentVolume;
+            _savedMutes[audioMixerParam] = _isMute;
         }
 
         public override void ResetData()
         {
-            _lastVolume = 0f;
-            _currentVolume = 0f;
-            _isMute = false;
-            audioMixer.SetFloat(audioMixerParam, _lastVolume);
-            volumeLabel.text = $"{_lastVolume}";
-            volumeSlider.value = _lastVolume;
-            muteToggle.isOn = false;
-            _isMute = false;
+            if (_savedVolumes.TryGetValue(audioMixerParam, out float saved))
+            {
+                _currentVolume = saved;
+            }
+            else
+            {
+                audioMixer.GetFloat(audioMixerParam, out _currentVolume);
+                _savedVolumes[audioMixerParam] = _currentVolume;
+            }
+
+            _isMute = GetSavedMute();
+
+            volumeSlider.onValueChanged.RemoveListener(ChangeVolume);
+            volumeSlider.value = _currentVolume;
+            volumeSlider.onValueChanged.AddListener(ChangeVolume);
+
+            muteToggle.onValueChanged.RemoveListener(Mute);
+            muteToggle.isOn = _isMute;
+            muteToggle.onValueChanged.AddListener(Mute);
+
+            UpdateLabel(_currentVolume);
+
+            ApplyToMixer();
         }
 
         private void ChangeVolume(float volume)
         {
             _currentVolume = volume;
-            float t = Mathf.InverseLerp(-80f, 0f, volume);
-            int result = Mathf.RoundToInt(t * 100f);
+            UpdateLabel(volume);
+        }
 
+        public void Mute(bool value)
+        {
+            _isMute = value;
+        }
+        private float GetSavedVolume()
+            => _savedVolumes.TryGetValue(audioMixerParam, out float v) ? v : 0f;
+
+        private bool GetSavedMute()
+            => _savedMutes.TryGetValue(audioMixerParam, out bool m) && m;
+
+        private void UpdateLabel(float volume)
+        {
+            float t = Mathf.InverseLerp(-40f, 0f, volume);
+            int result = Mathf.RoundToInt(t * 100f);
             volumeLabel.text = $"{result}";
         }
 
+        private void ApplyToMixer()
+        {
+            float mixerValue;
+            if (_isMute || Mathf.Approximately(_currentVolume, -40f))
+                mixerValue = -80f;
+            else
+                mixerValue = _currentVolume;
 
-        public void Mute(bool value) => _isMute = value;
+            audioMixer.SetFloat(audioMixerParam, mixerValue);
+        }
     }
 }

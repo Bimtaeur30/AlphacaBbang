@@ -39,7 +39,6 @@ namespace MemberWorkspace.CHG._02_Scripts
 
         private void OnShowNotification(SystemNotificationEvent notification)
         {
-            // 기존 코루틴 즉시 중단
             if (_currentCoroutine != null)
                 StopCoroutine(_currentCoroutine);
 
@@ -53,7 +52,6 @@ namespace MemberWorkspace.CHG._02_Scripts
 
             yield return null;
 
-            // 패널이 열려있으면 먼저 닫기
             if (!_slidePanelController.IsHidden)
             {
                 _isMoving = true;
@@ -61,7 +59,6 @@ namespace MemberWorkspace.CHG._02_Scripts
                 yield return new WaitUntil(() => !_isMoving);
             }
 
-            // 텍스트 갱신 후 열기
             if (_slidePanelController.IsHidden)
             {
                 _isMoving = true;
@@ -69,10 +66,8 @@ namespace MemberWorkspace.CHG._02_Scripts
                 yield return new WaitUntil(() => !_isMoving);
             }
 
-            // 알림 표시 유지
             yield return new WaitForSeconds(showDuration);
 
-            // 닫기
             if (!_slidePanelController.IsHidden)
             {
                 _isMoving = true;

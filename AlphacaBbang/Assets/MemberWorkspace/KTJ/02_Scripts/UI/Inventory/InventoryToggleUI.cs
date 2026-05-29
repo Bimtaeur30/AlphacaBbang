@@ -1,6 +1,7 @@
 using DG.Tweening;
 using JJH._02_Scripts_Systems.EventSystems;
 using System;
+using JJH._02_Scripts.Systems.EventSystems;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class InventoryToggleUI : MonoBehaviour
     [SerializeField] private SlidePanelController slidePanel;
     [SerializeField] private CanvasGroup InventoryGroup;
     [SerializeField] private EventChannelSO InventoryChannel;
+    [SerializeField] private EventChannelSO playerChannel;
+    [SerializeField] private Agent agent;
     [SerializeField] private CanvasGroup bg;
     [SerializeField] private StorageOpener storageOpener;
     [SerializeField] private float AnimDuration = 1f;
@@ -40,11 +43,13 @@ public class InventoryToggleUI : MonoBehaviour
             if (!_isOpen)
             {
                 InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(true));
+                playerChannel.RaiseEvent(AgentEvents.AgentStopMoveEvent.Init(agent, true));
                 _isOpen = true;
             }
             else if (_isOpen)
             {
                 InventoryChannel.RaiseEvent(InventoryEvents.InventoryToggle.Init(false));
+                playerChannel.RaiseEvent(AgentEvents.AgentStopMoveEvent.Init(agent, false));
                 InventoryContextMenu.ForceClose();
                 _isOpen = false;
             }

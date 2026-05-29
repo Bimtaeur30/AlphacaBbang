@@ -24,11 +24,14 @@ public class PlayerController : Agent
 
     [SerializeField] private SoundClipSO equipSoundClip;
     [SerializeField] private EventChannelSO soundChannel;
+    [SerializeField] private EventChannelSO playerChannel;
 
 
     public bool IsPureAiming => _aimState == PlayerAimState.Aiming;
 
     private AgentMovement _agentMovement;
+
+    private bool _isCanMoving = true; //중요하긴회!
 
     private PlayerSaveData _saveData;
     private PlayerStaminaGaugeSystem _stamina;
@@ -100,10 +103,51 @@ public class PlayerController : Agent
         PlayerInput.OnMovementChange += HandleMovement;
         PlayerInput.OnSprintAction += HandleSprint;
 
+        playerChannel.AddListener<AgentStopMoveEvent>(PlayerMoveStop);
+    }
+
+    private void PlayerMoveStop(AgentStopMoveEvent evt)
+    {
+        if (evt.Agent != this)
+            return;
+
+        _isCanMoving = !evt.IsStop;
+        Debug.Log("무빙ㅇ이이이잉잉"+_isCanMoving);
+
+        if (!_isCanMoving)
+        {
+            _movementInput = Vector2.zero;
+            Movement.SetMovementDirection(Vector2.zero);
+
+            _stat?.SetRunning(false);
+
+            ForceStopAim();
+
+            GunHandleModule?.Fire(false);
+
+            base.Renderer.SetFloat(_speedParam.ParamHash, 0f);
+
+            if (_agentMovement != null)
+                _agentMovement.SetSpeedMultiplier(0f);
+        }
+        else
+        {
+            UpdateSpeed();
+        }
     }
 
     private void Update()
     {
+        if (!_isCanMoving)
+        {
+            UpdateAnimation();
+            return;
+        }
+
+        if(Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            playerChannel.RaiseEvent(AgentEvents.AgentStopMoveEvent.Init(this, true));
+        }
         UpdateAimState();
 
         if (IsAiming)
@@ -115,6 +159,8 @@ public class PlayerController : Agent
     }
     private void HandleAimInput(bool isPressed)
     {
+        if (!_isCanMoving)
+            return;
         if (_forceBlockAim)
             return;
 
@@ -125,11 +171,9 @@ public class PlayerController : Agent
 
             if (AimState == PlayerAimState.Idle)
             {
-                // 스태미나 부족 시 조준 불가
                 if (_stamina != null && !_stamina.CanAim)
                     return;
 
-                // 현재 무기가 없으면 조준 불가
                 if (weaponHandleModule == null ||
                     weaponHandleModule.CurrentWeapon == null)
                     return;
@@ -194,13 +238,26 @@ public class PlayerController : Agent
 
     private void HandleMovement(Vector2 input)
     {
+        if (!_isCanMoving)
+        {
+            // _movementInput = Vector2.zero;
+            // Movement.SetMovementDirection(Vector2.zero);
+            return;
+        }
+
         _movementInput = input;
-        Vector3 dir = Quaternion.Euler(0, 45f, 0) * new Vector3(input.x, 0, input.y);
+
+        Vector3 dir = Quaternion.Euler(0, 45f, 0)
+            * new Vector3(input.x, 0, input.y);
+
         Movement.SetMovementDirection(new Vector2(dir.x, dir.z));
     }
 
     private void HandleSprint(bool isSprinting)
     {
+        if (!_isCanMoving)
+            return;
+
         if (_stat != null && !_stat.CanRun())
             isSprinting = false;
 
@@ -460,6 +517,8 @@ public class PlayerController : Agent
 
     private void HandleFireKey(bool isPressed)
     {
+        if (!_isCanMoving)
+            return;
         if (GunHandleModule == null)
             return;
 

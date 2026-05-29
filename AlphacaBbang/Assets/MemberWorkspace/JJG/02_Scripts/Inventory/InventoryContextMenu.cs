@@ -405,7 +405,17 @@ public class InventoryContextMenu : MonoBehaviour
             {
                 WeaponSlotIndex weaponSlot = _slotIndex == 0 ? WeaponSlotIndex.First : WeaponSlotIndex.Second;
                 if (itemData is WeaponItemData)
-                    gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                {
+                    if (weaponHolder != null && weaponHolder.CurrentSlotIndex == _slotIndex)
+                        weaponHolder.Unequip();
+                    else
+                        gunChannel?.RaiseEvent(GunEvents.WeaponEquipEvent.Init(weaponSlot, false));
+                }
+                else if (itemData is ThrowingItemData)
+                {
+                    if (weaponHolder != null && weaponHolder.CurrentThrowingSlotIndex == _slotIndex)
+                        weaponHolder.UnequipThrowingItem();
+                }
                 gunChannel?.RaiseEvent(GunEvents.WeaponSlotEquipEvent.Init(null, weaponSlot, false));
             }
         }

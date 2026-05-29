@@ -68,7 +68,7 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     private void SyncAimState()
     {
-        if (_controller == null)
+        if (!_controller.IsCanMoving)
             return;
 
         bool currentAiming = _controller.IsAiming;
@@ -85,6 +85,8 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     private void UpdateGauge()
     {
+        if (!_controller.IsCanMoving)
+            return;
         if (_isAiming)
         {
             CurrentGauge -= _useSpeed * Time.deltaTime;
@@ -110,6 +112,8 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     private void UpdateCooldown()
     {
+        if (!_controller.IsCanMoving)
+            return;
         if (_canAim)
             return;
 
@@ -123,6 +127,8 @@ public class PlayerStaminaGaugeSystem : MonoSingleton<PlayerStaminaGaugeSystem>
 
     private void UpdateUI(float value)
     {
+        if (!_controller.IsCanMoving)
+            return;
         float fill = GaugeMaxTime <= 0f
             ? 0f
             : CurrentGauge / GaugeMaxTime;

@@ -31,7 +31,7 @@ public class PlayerController : Agent
 
     private AgentMovement _agentMovement;
 
-    private bool _isCanMoving = true; //중요하긴회!
+    public bool IsCanMoving { get; private set; } = true; //중요하긴회!
 
     private PlayerSaveData _saveData;
     private PlayerStaminaGaugeSystem _stamina;
@@ -111,10 +111,10 @@ public class PlayerController : Agent
         if (evt.Agent != this)
             return;
 
-        _isCanMoving = !evt.IsStop;
-        Debug.Log("무빙ㅇ이이이잉잉"+_isCanMoving);
+        IsCanMoving = !evt.IsStop;
+        Debug.Log("무빙ㅇ이이이잉잉"+IsCanMoving);
 
-        if (!_isCanMoving)
+        if (!IsCanMoving)
         {
             _movementInput = Vector2.zero;
             Movement.SetMovementDirection(Vector2.zero);
@@ -138,9 +138,9 @@ public class PlayerController : Agent
 
     private void Update()
     {
-        if (!_isCanMoving)
+        if (!IsCanMoving)
         {
-            UpdateAnimation();
+            //UpdateAnimation();
             return;
         }
 
@@ -159,7 +159,7 @@ public class PlayerController : Agent
     }
     private void HandleAimInput(bool isPressed)
     {
-        if (!_isCanMoving)
+        if (!IsCanMoving)
             return;
         if (_forceBlockAim)
             return;
@@ -208,6 +208,8 @@ public class PlayerController : Agent
 
     private void UpdateAimState()
     {
+        if (!IsCanMoving)
+            return;
         if (AimState != PlayerAimState.Releasing)
             return;
 
@@ -238,7 +240,7 @@ public class PlayerController : Agent
 
     private void HandleMovement(Vector2 input)
     {
-        if (!_isCanMoving)
+        if (!IsCanMoving)
         {
             // _movementInput = Vector2.zero;
             // Movement.SetMovementDirection(Vector2.zero);
@@ -255,7 +257,7 @@ public class PlayerController : Agent
 
     private void HandleSprint(bool isSprinting)
     {
-        if (!_isCanMoving)
+        if (!IsCanMoving)
             return;
 
         if (_stat != null && !_stat.CanRun())
@@ -268,6 +270,8 @@ public class PlayerController : Agent
 
     private void UpdateSpeed()
     {
+        if (!IsCanMoving)
+            return;
         float multiplier = 1f;
 
         if (IsAiming)
@@ -303,6 +307,8 @@ public class PlayerController : Agent
 
     private void UpdateAnimation()
     {
+        if (!IsCanMoving)
+            return;
         float speed = _agentMovement.Velocity.magnitude;
         float normalized = speed / 8f;
 
@@ -351,6 +357,8 @@ public class PlayerController : Agent
 
     private void UpdateAttackAnimation(Vector2 input)
     {
+        if (!IsCanMoving)
+            return;
         if (input.sqrMagnitude < 0.01f)
         {
             base.Renderer.SetFloat(_attackXParam.ParamHash, 0f, 0.1f, Time.deltaTime);
@@ -517,7 +525,7 @@ public class PlayerController : Agent
 
     private void HandleFireKey(bool isPressed)
     {
-        if (!_isCanMoving)
+        if (!IsCanMoving)
             return;
         if (GunHandleModule == null)
             return;
@@ -527,6 +535,8 @@ public class PlayerController : Agent
 
     private void OnStartAiming()
     {
+        if (!IsCanMoving)
+            return;
         _cursorController.ChangeCursorMode(CursorMode.Gun);
         soundChannel.RaiseEvent(SoundEvents.PlaySoundEvent.Init(equipSoundClip, this.transform));
         GunHandleModule.Aim(true);
@@ -534,6 +544,8 @@ public class PlayerController : Agent
 
     private void OnStopAiming()
     {
+        if (!IsCanMoving)
+            return;
         _cursorController.ChangeCursorMode(CursorMode.Default);
 
         GunHandleModule.Aim(false);

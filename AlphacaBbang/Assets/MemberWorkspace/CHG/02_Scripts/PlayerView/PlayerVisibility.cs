@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using MemberWorkspace.CHG._02_Scripts.PlayerView;
 using UnityEngine;
@@ -60,7 +61,8 @@ namespace MemberWorkspace.CHG._02_Scripts
         private Mesh circleMesh;
         private Collider[] _overlapResults = new Collider[50];
         private readonly HashSet<EnemyVisibility> _previousVisible = new();
-        
+        private readonly HashSet<EnemyVisibility> _currentVisible = new();
+
         public float ViewRadius => viewRadius;
         public float CloseViewRadius => closeViewRadius;
         public float ViewAngle => viewAngle;
@@ -82,39 +84,57 @@ namespace MemberWorkspace.CHG._02_Scripts
             while (true)
             {
                 yield return delay;
-                
-                HashSet<EnemyVisibility> currentVisible = new();
-                
-                int cnt = Physics.OverlapSphereNonAlloc(
-                    transform.position, viewRadius, _overlapResults, enemyLayer
-                );
-                
-                for (int i = 0; i < cnt; i++)
+
+                try
                 {
-                    if (!_overlapResults[i].TryGetComponent(out EnemyVisibility enemy))
-                        continue;
-
-                    if (!IsVisible(_overlapResults[i].transform.position))
-                        continue;
-
-                    currentVisible.Add(enemy);
-
-                    if (!_previousVisible.Contains(enemy))
-                    {
-                        enemy.Show();
-                    }
+                    UpdateVisibility();
                 }
-
-                foreach (var enemy in _previousVisible)
+                catch (Exception e)
                 {
-                    if (!currentVisible.Contains(enemy))
-                        enemy.Hide();
+                    Debug.LogException(e, this);
                 }
-
-                _previousVisible.Clear();
-                foreach (var enemy in currentVisible)
-                    _previousVisible.Add(enemy);
             }
+        }
+
+        private void UpdateVisibility()
+        {
+            _currentVisible.Clear();
+
+            int cnt = Physics.OverlapSphereNonAlloc(
+                transform.position, viewRadius, _overlapResults, enemyLayer
+            );
+
+            for (int i = 0; i < cnt; i++)
+            {
+                Collider col = _overlapResults[i];
+                if (col == null)
+                    continue;
+
+                if (!col.TryGetComponent(out EnemyVisibility enemy))
+                    continue;
+
+                if (!IsVisible(col.transform.position))
+                    continue;
+
+                _currentVisible.Add(enemy);
+
+                enemy.Show();
+            }
+
+            foreach (var enemy in _previousVisible)
+            {
+                if (enemy == null)
+                    continue;
+
+                if (_currentVisible.Contains(enemy))
+                    continue;
+
+                enemy.Hide();
+            }
+
+            _previousVisible.Clear();
+            foreach (var enemy in _currentVisible)
+                _previousVisible.Add(enemy);
         }
 
         private void LateUpdate()
